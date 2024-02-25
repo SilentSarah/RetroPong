@@ -1,0 +1,122 @@
+@media screen and (max-width: 576px){
+    .btn-retro {
+        width: 80px;
+        height: 35px;
+    }
+    .btn-retro::before {
+        top: -1px;
+        left: -1px;
+        width: 102%;
+        height: 103%;
+        border-radius: 20px;
+    }
+    .fs-d {
+        font-size: 1rem;
+    }
+    #MainSectionRacket {
+        width: 200px;
+        display: none;
+    }
+    #MainSectionContent {
+        width: 200px;
+    }
+    .rp_title {
+        font-size: 80px;
+    }
+    .rp_desc {
+        font-size: 50px;
+    }
+    .header-font {
+        font-size: 40px;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .btn-retro {
+        width: 100px;
+        height: 40px;
+    }
+    .btn-retro::before {
+        top: -1px;
+        left: -1px;
+        width: 102%;
+        height: 103%;
+        border-radius: 20px;
+    }
+    .fs-d {
+        font-size: 1rem;
+    }
+    #MainSectionRacket {
+        width: 275px;
+    }
+    #MainSectionContent {
+        width: 500px;
+    }
+    .rp_title {
+        font-size: 80px;
+    }
+    .rp_desc {
+        font-size: 50px;
+    }
+    .header-font {
+        font-size: 60px;
+    }
+}
+
+@media screen and (max-width: 1024px){
+    .btn-retro {
+        width: 120px;
+        height: 50px;
+    }
+    .btn-retro::before {
+        top: -1.5px;
+        left: -1px;
+        width: 102%;
+        height: 100%;
+        border-radius: 25px;
+    }
+    .fs-d {
+        font-size: 1.3rem;
+    }
+    #MainSectionRacket {
+        width: 350px;
+    }
+    #MainSectionContent {
+        width: 50%;
+    }
+    .rp_title {
+        font-size: 65px;
+    }
+    .rp_desc {
+        font-size: 40px;
+    }
+    .header-font {
+        font-size: 80px;
+    }
+}
+
+@media screen and (min-width: 1025px){
+    .btn-retro {
+        width: 120px;
+        height: 50px;
+    }
+    .btn-retro::before {
+        top: -1.5px;
+        left: -1px;
+        width: 102%;
+        height: 100%;
+        border-radius: 25px;
+    }
+    .fs-d {
+        font-size: 1.3rem;
+    }
+    #MainSectionRacket {
+        width: 50%;
+    }
+    #MainSectionContent {
+        width: 50%;
+    }
+    .header-font {
+        font-size: 128px;
+    }
+}

@@ -1,0 +1,134 @@
+/* SSarah Meftah 25-02-2024 */
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Taprom&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Copse&family=Lato:wght@700&family=Taprom&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nokora:wght@100;300;400;700;900&display=swap');
+
+body {
+    height: auto;
+}
+.retro_bg {
+    background: linear-gradient(180.07deg, #1E1E1E 0.06%, #172573 9.13%, rgba(106, 102, 217, 0.8) 31%, rgba(240, 128, 242, 0.5) 58.21%, rgba(1, 3, 38, 1) 106.75%);
+}
+.rnavbar {
+    width: 100%;
+    height: 125px;
+}
+.btn-retro {
+    position: relative;
+    width: 140px;
+    height: 50px;
+    background: #000000;
+    border-radius: 25px;
+    text-decoration: none;
+    border-width: 1px;
+}
+.btn-retro::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 103%;
+    height: 105%;
+    background: rgb(240,128,242);
+    background: linear-gradient(180deg, rgb(240, 128, 242) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 30px;
+    z-index: -1;
+    box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.235);
+}
+.btn-retro-2 {
+    position: relative;
+    width: 140px;
+    height: 50px;
+    background: #000000;
+    border-radius: 25px;
+    text-decoration: none;
+    border-width: 1px;
+}
+.btn-retro-2::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    width: 103%;
+    height: 105%;
+    background: rgb(240,128,242);
+    background: linear-gradient(180deg, rgb(240, 128, 242) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 30px;
+    z-index: -1;
+    box-shadow: 0px 4px 10px hsla(0, 0%, 0%, 0.235);
+}
+.btn-text-retro {
+    background: linear-gradient(to bottom, #F080F2 30%, #ffffff00 100%);
+    text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.60);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.taprom {
+    font-family: 'Taprom', sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.img-shadow {
+    filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.6));
+}
+.btn:hover {
+    background-color: #000000 !important;
+}
+.btn-text-retro:hover {
+    text-shadow: 0px 0px 15px rgb(255, 255, 255);
+}
+.btn-retro:hover {
+    animation: glow 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+}
+.rp_title {
+    font-size: 110px;
+    background: linear-gradient(180deg, rgba(240,128,242,1) 0%, rgba(242,146,244,0.75) 75%, rgba(255,255,255,0.84) 100%);
+    background-clip: text;
+    text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.25);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: normal;
+}
+.rp_desc {
+    font-size: 85px;
+}
+.copse {
+    font-family: 'Copse', sans-serif;
+}
+.text-glow {
+    text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.50);
+}
+.text-pink-gradient {
+    background: linear-gradient(180deg, rgba(240,128,242,1) 33%, rgba(255,255,255,1) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.header-glow-text {
+    background: linear-gradient(180deg, rgba(106,102,217,0.9) 10%, rgba(255,255,255,0.6) 50%, rgba(242,146,244,0.75) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.50);
+}
+.text-sunnyred {
+    background: linear-gradient(173.25deg, rgba(106, 237, 255, 0.2) 8.63%, rgba(0, 56, 255, 0.2) 98.08%), linear-gradient(186.75deg, #FFF065 8.37%, #FF0000 97.82%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0px 0px 10px rgba(255, 240, 101, 0.56);
+}
+.inter {
+    font-family: 'Inter', sans-serif;
+}
+.nokora {
+    font-family: 'Nokora', serif;
+}
+.card-shadow {
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+}
+.line-height {
+    line-height: auto;
+}
