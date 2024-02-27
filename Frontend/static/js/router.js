@@ -3,7 +3,7 @@ const routes = [
         component: () => grabContent('/static/content/404.html')
     },
     {   path: '/',
-        component: () => grabContent('/static/content/home.html')
+        component: () => grabContent('/static/content/login.html')
     },
     {
         path: '/about',
@@ -48,3 +48,4 @@ document.querySelectorAll('a').forEach(link => {
 });
 
 router();
+

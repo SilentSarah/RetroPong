@@ -29,6 +29,9 @@
     .header-font {
         font-size: 40px;
     }
+    .login-card {
+        width: 576px;
+    }
 }
 
 @media screen and (max-width: 768px){
@@ -53,10 +56,10 @@
         width: 500px;
     }
     .rp_title {
-        font-size: 80px;
+        font-size: 25px;
     }
     .rp_desc {
-        font-size: 50px;
+        font-size: 25px;
     }
     .header-font {
         font-size: 60px;
@@ -95,7 +98,7 @@
     }
 }
 
-@media screen and (min-width: 1025px){
+@media screen and (min-width: 1024px){
     .btn-retro {
         width: 120px;
         height: 50px;
@@ -111,12 +114,53 @@
         font-size: 1.3rem;
     }
     #MainSectionRacket {
+        width: 450px;
+    }
+    #MainSectionContent {
         width: 50%;
+    }
+    .rp_title {
+        font-size: 96px;
+    }
+    .rp_desc {
+        font-size: 56px;
+    }
+    .header-font {
+        font-size: 80px;
+    }
+}
+
+@media screen and (min-width: 1440px){
+    .btn-retro {
+        width: 150px;
+        height: 60px;
+    }
+    .btn-retro::before {
+            top: -2px;
+            left: -3px;
+            width: 104%;
+            height: 105%;
+            border-radius: 25px;
+    }
+    .fs-d {
+        font-size: 1.75rem;
+    }
+    #MainSectionRacket {
+        width: 800px;
     }
     #MainSectionContent {
         width: 50%;
     }
     .header-font {
         font-size: 128px;
+    }
+    .rp_title {
+        font-size: 196px;
+    }
+    .rp_desc {
+        font-size: 128px;
+    }
+    .header-font {
+        font-size: 192px;
     }
 }
