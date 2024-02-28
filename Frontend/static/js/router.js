@@ -1,19 +1,32 @@
 const routes = [
     {   path: '/404', 
+        on: false,
         component: () => grabContent('/static/content/404.html')
     },
     {   path: '/',
+        on: false,
+        component: () => grabContent('/static/content/home.html')
+    },
+    {
+        path: '/login',
+        on: false,
         component: () => grabContent('/static/content/login.html')
     },
     {
-        path: '/about',
-        component: () => grabContent('/static/content/about.html')
-    },
-    {
         path: '/contact',
+        on: false,
         component: () => grabContent('/static/content/contact.html')
     },
 ]
+
+async function StartLoading(route) {
+    console.log(route);
+    if (route.on === true) {
+        return;
+    }
+    const loading = await fetch('/static/content/loadingStatus.html').then(response => response.text());
+    document.getElementById('mainContent').innerHTML = loading;
+}
 
 async function grabContent(path) {
     const response = await fetch(path);
@@ -27,15 +40,31 @@ async function grabContent(path) {
 function router() {
     const path = window.location.pathname;
     const route = routes.find(route => route.path === path);
+    let mainContent = document.getElementById('mainContent');
+    StartLoading(route);
+    setTimeout(() => {
     if (route) {
+        if (route.on === true)
+            return;
         route.component().then(html => {
-            document.getElementById('mainContent').innerHTML = html;
+            mainContent.innerHTML = html;
+            loadEvents();
         });
+        route.on = true;
+        for (let i = 0; i < routes.length; i++) {
+            if (routes[i].path !== path && routes[i].on) {
+                routes[i].on = false;
+            }
+        }
     } else {
+        if (route.on === true)
+            return;
         routes[0].component().then(html => {
-            document.getElementById('mainContent').innerHTML = html;
+            mainContent.innerHTML = html;
+            loadEvents();
+            routes[0].on = true;
         });
-    }
+    }}, 750);
 }
 
 window.addEventListener('popstate', router);
@@ -48,4 +77,3 @@ document.querySelectorAll('a').forEach(link => {
 });
 
 router();
-

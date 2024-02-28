@@ -87,6 +87,9 @@
     #MainSectionContent {
         width: 50%;
     }
+    #RacketLogin {
+        display: none;
+    }
     .rp_title {
         font-size: 65px;
     }
@@ -155,10 +158,10 @@
         font-size: 128px;
     }
     .rp_title {
-        font-size: 196px;
+        font-size: 8rem;
     }
     .rp_desc {
-        font-size: 128px;
+        font-size: 5rem;
     }
     .header-font {
         font-size: 192px;
