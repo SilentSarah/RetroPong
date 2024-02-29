@@ -13,14 +13,13 @@ const routes = [
         component: () => grabContent('/static/content/login.html')
     },
     {
-        path: '/contact',
+        path: '/register',
         on: false,
-        component: () => grabContent('/static/content/contact.html')
+        component: () => grabContent('/static/content/registration.html')
     },
 ]
 
 async function StartLoading(route) {
-    console.log(route);
     if (route.on === true) {
         return;
     }
@@ -66,14 +65,5 @@ function router() {
         });
     }}, 750);
 }
-
-window.addEventListener('popstate', router);
-document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
-        e.preventDefault();
-        history.pushState(null, null, this.href);
-        router();
-    });
-});
 
 router();

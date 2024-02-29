@@ -109,8 +109,8 @@ body {
 .card-shadow {
     filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 }
-.line-height {
-    line-height: auto;
+.line-height-1 {
+    line-height: 150%;
 }
 .login-card {
     position: relative;
