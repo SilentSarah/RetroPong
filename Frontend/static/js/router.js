@@ -5,7 +5,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/home.html')
+        component: () => grabContent('/static/content/dashboard.html')
     },
     {
         path: '/login',
@@ -64,6 +64,7 @@ function router() {
             routes[0].on = true;
         });
     }}, 750);
+    console.log('Router called')
 }
 
 router();

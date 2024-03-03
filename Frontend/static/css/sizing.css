@@ -30,7 +30,38 @@
         font-size: 40px;
     }
     .login-card {
+        width: 100%;
+        border-radius: 0;
+        border-width: 2px;
+    }
+    .rl_header {
+        font-size: 64px !important;
+        margin: 0 !important;
+    }
+    .desktop-dashboard-card-bg {
+        width: 100%;
+    }
+    .desktop-dashboard-card-bg::before {
+        display: none;
+    }
+    .bg-photo {
         width: 576px;
+    }
+    .btn-retro-d {
+        width: 75% !important;
+    }
+    .btn-retro-d::before {
+        display: none;
+    }
+    .container-fluid {
+        padding: 0 !important;
+    }
+    .info-container {
+        border: 2px 2px 0 0;
+        border-radius: 0 !important;
+    }
+    .info-card:nth-child(2), .info-card:nth-child(3) {
+        margin-top: 1.5rem;
     }
 }
 
@@ -64,6 +95,25 @@
     .header-font {
         font-size: 60px;
     }
+    .desktop-dashboard-card-bg {
+        width: calc(1024px * 0.9);
+    }
+    .bg-photo {
+        width: calc(768px * 0.9);
+    }
+    .acc-stats {
+        margin-top: 2.5rem;
+        inset: 0;
+    }
+    .info-card {
+        background-size: contain;
+    }
+    .acc_stats_holder {
+        justify-content: center;
+    }
+    .info-card:nth-child(2), .info-card:nth-child(3) {
+        margin-top: 1.5rem;
+    }
 }
 
 @media screen and (max-width: 1024px){
@@ -87,9 +137,6 @@
     #MainSectionContent {
         width: 50%;
     }
-    #RacketLogin {
-        display: none;
-    }
     .rp_title {
         font-size: 65px;
     }
@@ -99,9 +146,18 @@
     .header-font {
         font-size: 80px;
     }
+    .desktop-dashboard-card-bg {
+        width: calc(1024px * 0.9);
+    }
+    .bg-photo {
+        width: calc(1024px * 0.9);
+    }
+    #RacketLogin {
+        display: none;
+    }
 }
 
-@media screen and (min-width: 1024px){
+@media screen and (min-width: 1025px){
     .btn-retro {
         width: 120px;
         height: 50px;
@@ -130,6 +186,15 @@
     }
     .header-font {
         font-size: 80px;
+    }
+    .desktop-dashboard-card-bg {
+        width: calc(1024px * 0.9);
+    }
+    .bg-photo {
+        width: calc(1024px * 0.9);
+    }
+    #RacketLogin {
+        display: none;
     }
 }
 
@@ -165,5 +230,15 @@
     }
     .header-font {
         font-size: 192px;
+    }
+    .desktop-dashboard-card-bg {
+        width: calc(100vh * 0.9);
+        height: 100%;
+    }
+    .bg-photo {
+        width: calc(1024px * 0.9);
+    }
+    #RacketLogin {
+        display: block;
     }
 }
