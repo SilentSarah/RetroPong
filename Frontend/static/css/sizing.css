@@ -1,0 +1,244 @@
+@media screen and (max-width: 576px){
+    .btn-retro {
+        width: 80px;
+        height: 35px;
+    }
+    .btn-retro::before {
+        top: -1px;
+        left: -1px;
+        width: 102%;
+        height: 103%;
+        border-radius: 20px;
+    }
+    .fs-d {
+        font-size: 1rem;
+    }
+    #MainSectionRacket {
+        width: 200px;
+        display: none;
+    }
+    #MainSectionContent {
+        width: 200px;
+    }
+    .rp_title {
+        font-size: 80px;
+    }
+    .rp_desc {
+        font-size: 50px;
+    }
+    .header-font {
+        font-size: 40px;
+    }
+    .login-card {
+        width: 100%;
+        border-radius: 0;
+        border-width: 2px;
+    }
+    .rl_header {
+        font-size: 64px !important;
+        margin: 0 !important;
+    }
+    .desktop-dashboard-card-bg {
+        width: 100%;
+    }
+    .desktop-dashboard-card-bg::before {
+        display: none;
+    }
+    .bg-photo {
+        width: 576px;
+    }
+    .btn-retro-d {
+        width: 75% !important;
+    }
+    .btn-retro-d::before {
+        display: none;
+    }
+    .container-fluid {
+        padding: 0 !important;
+    }
+    .info-container {
+        border: 2px 2px 0 0;
+        border-radius: 0 !important;
+    }
+    .info-card:nth-child(2), .info-card:nth-child(3) {
+        margin-top: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 768px){
+    .btn-retro {
+        width: 100px;
+        height: 40px;
+    }
+    .btn-retro::before {
+        top: -1px;
+        left: -1px;
+        width: 102%;
+        height: 103%;
+        border-radius: 20px;
+    }
+    .fs-d {
+        font-size: 1rem;
+    }
+    #MainSectionRacket {
+        width: 275px;
+    }
+    #MainSectionContent {
+        width: 500px;
+    }
+    .rp_title {
+        font-size: 25px;
+    }
+    .rp_desc {
+        font-size: 25px;
+    }
+    .header-font {
+        font-size: 60px;
+    }
+    .desktop-dashboard-card-bg {
+        width: calc(1024px * 0.9);
+    }
+    .bg-photo {
+        width: calc(768px * 0.9);
+    }
+    .acc-stats {
+        margin-top: 2.5rem;
+        inset: 0;
+    }
+    .info-card {
+        background-size: contain;
+    }
+    .acc_stats_holder {
+        justify-content: center;
+    }
+    .info-card:nth-child(2), .info-card:nth-child(3) {
+        margin-top: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 1024px){
+    .btn-retro {
+        width: 120px;
+        height: 50px;
+    }
+    .btn-retro::before {
+        top: -1.5px;
+        left: -1px;
+        width: 102%;
+        height: 100%;
+        border-radius: 25px;
+    }
+    .fs-d {
+        font-size: 1.3rem;
+    }
+    #MainSectionRacket {
+        width: 350px;
+    }
+    #MainSectionContent {
+        width: 50%;
+    }
+    .rp_title {
+        font-size: 65px;
+    }
+    .rp_desc {
+        font-size: 40px;
+    }
+    .header-font {
+        font-size: 80px;
+    }
+    .desktop-dashboard-card-bg {
+        width: calc(1024px * 0.9);
+    }
+    .bg-photo {
+        width: calc(1024px * 0.9);
+    }
+    #RacketLogin {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1025px){
+    .btn-retro {
+        width: 120px;
+        height: 50px;
+    }
+    .btn-retro::before {
+        top: -1.5px;
+        left: -1px;
+        width: 102%;
+        height: 100%;
+        border-radius: 25px;
+    }
+    .fs-d {
+        font-size: 1.3rem;
+    }
+    #MainSectionRacket {
+        width: 450px;
+    }
+    #MainSectionContent {
+        width: 50%;
+    }
+    .rp_title {
+        font-size: 96px;
+    }
+    .rp_desc {
+        font-size: 56px;
+    }
+    .header-font {
+        font-size: 80px;
+    }
+    .desktop-dashboard-card-bg {
+        width: calc(1024px * 0.9);
+    }
+    .bg-photo {
+        width: calc(1024px * 0.9);
+    }
+    #RacketLogin {
+        display: none;
+    }
+}
+
+@media screen and (min-width: 1440px){
+    .btn-retro {
+        width: 150px;
+        height: 60px;
+    }
+    .btn-retro::before {
+            top: -2px;
+            left: -3px;
+            width: 104%;
+            height: 105%;
+            border-radius: 25px;
+    }
+    .fs-d {
+        font-size: 1.75rem;
+    }
+    #MainSectionRacket {
+        width: 800px;
+    }
+    #MainSectionContent {
+        width: 50%;
+    }
+    .header-font {
+        font-size: 128px;
+    }
+    .rp_title {
+        font-size: 8rem;
+    }
+    .rp_desc {
+        font-size: 5rem;
+    }
+    .header-font {
+        font-size: 192px;
+    }
+    .desktop-dashboard-card-bg {
+        width: calc(100vh * 0.9);
+        height: 100%;
+    }
+    .bg-photo {
+        width: calc(1024px * 0.9);
+    }
+    #RacketLogin {
+        display: block;
+    }
+}
