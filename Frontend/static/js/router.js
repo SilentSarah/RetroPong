@@ -5,7 +5,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/settings.html')
+        component: () => grabContent('/static/content/dashboard.html')
     },
     {
         path: '/login',
