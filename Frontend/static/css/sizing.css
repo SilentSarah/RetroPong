@@ -63,6 +63,27 @@
     .info-card:nth-child(2), .info-card:nth-child(3) {
         margin-top: 1.5rem;
     }
+    .settings_card {
+        width: 100% !important;
+        border-radius: 0 !important;
+    }
+    .tfa {
+        width: 100% !important;
+        border-radius: 0 !important;
+    }
+    form {
+        width: 100% !important;
+    }
+    .prompt-width {
+        width: 100% !important;
+        text-align: center !important;
+    }
+    .form-control {
+        width: 80% !important;
+    }
+    label {
+        text-align: center;
+    }
 }
 
 @media screen and (max-width: 768px){
