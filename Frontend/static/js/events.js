@@ -96,9 +96,41 @@ function loadEvents() {
             
         });
     }
+    Click();
     // Dashboard Page
     GenerateChart();
 
+}
+
+function Click() {
+    let id_open = document.getElementById('#open_id');
+    let id_close = document.getElementById('#close_id');
+    let blur_id = document.getElementById('#blur_id');
+    let menu_items = document.getElementById('#menu_items');
+   
+    if(id_open && id_close && blur_id) {    
+        id_open.addEventListener('click', function() {
+            console.log(window)
+            id_open.classList.add('d-none');
+            id_close.classList.remove('d-none');
+            blur_id.style.filter = 'blur(2px)';
+            menu_items.classList.remove('d-none');
+        });
+        id_close.addEventListener('click', function() {
+            id_open.classList.remove('d-none');
+            id_close.classList.add('d-none');
+            blur_id.style.filter = 'blur(0px)';
+            menu_items.classList.add('d-none');
+
+        });
+        window.addEventListener('resize',function(){
+            id_open.classList.remove('d-none');
+            id_close.classList.add('d-none');
+            blur_id.style.filter = 'blur(0px)';
+            menu_items.classList.add('d-none');
+
+        })        
+    }
 }
 
 function findHighiestGrade(matches) {
