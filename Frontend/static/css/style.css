@@ -230,7 +230,7 @@ body {
 .user-bg-picture {
     background: url('/static/img/bg_pics/bgggg.jpg');
     background-size: cover;
-    background-position: bottom;
+    background-position: center;
     background-attachment: fixed;
     background-repeat: no-repeat;
     box-shadow: 0px 5px 15px hsla(0, 0%, 0%, 0.50) inset,
@@ -294,4 +294,18 @@ body {
     align-items: normal;
     flex-direction: row;
     flex-wrap: wrap;
+}
+.border-prompt {
+    border-top: 1px solid #fda5ffb3;
+    border-left: 1px solid #fda5ffb3;
+    border-right: 1px solid #fda5ffb3;
+    border-bottom: 0px;
+}
+.prompt-width {
+    width: 426px;
+}
+.settings_card {
+background: linear-gradient(158.66deg, rgba(0, 0, 0, 0.4875) 61.07%, rgba(240, 128, 242, 0.6) 100%), linear-gradient(156.28deg, #000000 0%, #1F1F1F 84.74%);
+border-radius: 25px;
+
 }

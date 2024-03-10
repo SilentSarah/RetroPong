@@ -1,0 +1,88 @@
+.menu_items::-webkit-scrollbar{
+    display: none;
+}
+
+@media screen and (max-width: 1768px){
+    .chat-container{
+        width: max-content !important;
+        height: max-content !important;
+    }
+    .chat-wrapper{
+        padding: 50px  !important;
+        justify-content: center !important;
+    }
+    .items-left {
+        display: none !important;
+    }
+    .items-iconMenuOpen{
+        right: 14px !important;
+    }
+    .cards{
+        flex-direction: column !important;
+        gap: 30px !important;
+    }
+    .items-right-top{
+        margin-top: 50px !important;
+    }
+    .items-right-bottom{
+        margin-top: 80px !important;
+    }
+    .item-card-bottom button{
+        margin-bottom: 10px;
+    }
+    .menu_items{
+        width: 10% !important;
+    }
+}
+
+@media screen and (max-width: 1365px){
+    
+    .items-right-top > h1{
+        font-size: 48px !important;
+    }
+    .items-right-bottom > h1{
+        font-size: 30px !important;
+    }
+    .items-right-top-search{
+        width: 430px !important;
+    }
+}
+
+@media screen and (max-width: 1024px){
+    .items-right-top > h1{
+        font-size: 30px !important;
+    }
+    .items-right-bottom > h1{
+        font-size: 26px !important;
+    }
+    .items-right-top-search{
+        width: 400px !important;
+        height: 40px !important;
+    }
+}
+
+@media screen and (max-width: 640px){
+    .chat-container{
+        width: max-content !important;
+    }
+    .item-card-bottom{
+        width: 350px !important;
+        margin: 0px 10px !important;
+    }
+    .items-right-top > h1{
+        font-size: 26px !important;
+    }
+    .items-right-bottom > h1{
+        font-size: 24px !important;
+    }
+    .items-right-top-search{
+        width: 300px !important;
+        height: 30px !important;
+    }
+    .items-right-top-search > img{
+        width: 20px !important;
+    }
+    .menu_items{
+        width: 15% !important;
+    }
+}
