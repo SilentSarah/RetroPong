@@ -309,3 +309,29 @@ background: linear-gradient(158.66deg, rgba(0, 0, 0, 0.4875) 61.07%, rgba(240, 1
 border-radius: 25px;
 
 }
+.grade {
+    display: flex;
+    height: 20px;
+    vertical-align:text-bottom;
+    text-align: right;
+    padding: 0 6px;
+    color: whitesmoke;
+    list-style: none;
+}
+
+.mt-chart {
+    margin-top: 0.8rem !important;
+}
+.bg-pink {
+    background: rgba(240,128,242,1);
+}
+.main-stats-container {
+    width: 350px; 
+    height: 300px; 
+    background: rgba(0, 0, 0, 0.25);
+}
+.stats-chart-container {
+    background: repeating-linear-gradient(to top, rgba(255,255,255,0.2) 0px, rgba(0,0,0,0) 1px, rgba(0,0,0,0) 30px);
+    width:250px; 
+    height:180px
+}
