@@ -5,7 +5,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/dashboard.html')
+        component: () => grabContent('/static/content/chat.html')
     },
     {
         path: '/login',
@@ -16,16 +16,6 @@ const routes = [
         path: '/register',
         on: false,
         component: () => grabContent('/static/content/registration.html')
-    },
-    {
-        path: '/dashboard',
-        on: false,
-        component: () => grabContent('/static/content/dashboard.html')
-    },
-    {
-        path: '/settings',
-        on: false,
-        component: () => grabContent('/static/content/settings.html')
     },
 ]
 

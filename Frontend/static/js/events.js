@@ -17,9 +17,9 @@ function confirmOperartion(type, parent) {
 function scanInput() {
     let items = document.querySelectorAll('input');
     items.forEach(item => {
-        item.addEventListener('keypress', function(e) {
+        item.addEventListener('keypress', function (e) {
             if (e.key === 'Enter')
-            console.log('Enter key pressed');
+                console.log('Enter key pressed');
         });
     });
 }
@@ -27,7 +27,7 @@ function scanInput() {
 function scanLinks() {
     window.addEventListener('popstate', router);
     document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function(e) {
+        link.addEventListener('click', function (e) {
             e.preventDefault();
             history.pushState(null, null, this.href);
             router();
@@ -38,11 +38,11 @@ function scanLinks() {
 function copyIDListener() {
     let cpyID = document.getElementById('cpyID');
     if (cpyID) {
-        cpyID.addEventListener('click', function() {
+        cpyID.addEventListener('click', function () {
             let copyText = document.getElementById('player_id');
             navigator.clipboard.writeText(copyText.innerHTML);
             confirmOperartion('copy', copyText.parentElement);
-    
+
         });
     }
 }
@@ -55,14 +55,14 @@ function handlePictureUploads() {
     fileInputBg.type = 'file';
     fileInputPfp.type = 'file';
     if (uploadBG && uploadPFP) {
-        uploadBG.addEventListener('click', function() {
+        uploadBG.addEventListener('click', function () {
             fileInputBg.click();
             if (fileInputBg.files) {
                 // TO BE FURTHER IMPLEMENTED
             }
 
         });
-        uploadPFP.addEventListener('click', function() {
+        uploadPFP.addEventListener('click', function () {
             fileInputPfp.click();
             if (fileInputPfp.files) {
                 // TO BE FURTHER IMPLEMENTED
@@ -75,7 +75,7 @@ function TwoFactorAuthHandler() {
     let Offbtn = document.getElementById('offBtn');
     let Onbtn = document.getElementById('onBtn');
     if (Offbtn && Onbtn) {
-        Offbtn.addEventListener('click', function() {
+        Offbtn.addEventListener('click', function () {
             Offbtn.setAttribute('fill', 'white');
             Offbtn.setAttribute('x', '7');
             Offbtn.setAttribute('y', '23');
@@ -89,7 +89,7 @@ function TwoFactorAuthHandler() {
             Onbtn.classList.remove('text-glow');
             Offbtn.classList.add('text-glow');
         });
-        Onbtn.addEventListener('click', function() {
+        Onbtn.addEventListener('click', function () {
             Onbtn.setAttribute('fill', 'white');
             Onbtn.setAttribute('x', '7');
             Onbtn.setAttribute('y', '23');
@@ -102,38 +102,21 @@ function TwoFactorAuthHandler() {
             //=====//
             Offbtn.classList.remove('text-glow');
             Onbtn.classList.add('text-glow');
-            
+
         });
     }
+    // Dashboard Page
+    GenerateChart();
+
 }
 
-let ChartData = {
-    'Matches Played': {
-        "24/07": 120,
-        "25/07": 150,
-        "26/07": 100,
-        "27/07": 20,
+function findHighiestGrade(matches) {
+    let highiest = 0;
+    for([key, value] of Object.entries(matches)) {
+        if (value['won'] > highiest) {
+            highiest = value['won'];
+        }
     }
-};
+    return highiest;
 
-function loadEvents() {
-    scanLinks();
-    if (window.location.pathname === '/') {
-            const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
-            Chart.Component.then(html => {
-                document.getElementById('ChartMark').innerHTML = html;
-                Chart.setChartTitle();
-                Chart.setGrades();
-                Chart.setDates();
-                Chart.setBarValues();
-            });
-    }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register')
-        scanInput();
-    else if (window.location.pathname == '/dashboard' || window.location.pathname == '/')
-        copyIDListener();
-    else if (window.location.pathname === '/settings') {
-        handlePictureUploads();
-        TwoFactorAuthHandler();
-    }
 }
