@@ -17,6 +17,11 @@ const routes = [
         on: false,
         component: () => grabContent('/static/content/registration.html')
     },
+    {
+        path: '/dashboard',
+        on: false,
+        component: () => grabContent('/static/content/dashboard.html')
+    },
 ]
 
 async function StartLoading(route) {
