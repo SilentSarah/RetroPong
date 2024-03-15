@@ -14,8 +14,7 @@ function confirmOperartion(type, parent) {
     }
 }
 
-
-function loadEvents() {
+function scanInput() {
     let items = document.querySelectorAll('input');
     items.forEach(item => {
         item.addEventListener('keypress', function(e) {
@@ -23,6 +22,9 @@ function loadEvents() {
             console.log('Enter key pressed');
         });
     });
+}
+
+function scanLinks() {
     window.addEventListener('popstate', router);
     document.querySelectorAll('a').forEach(link => {
         link.addEventListener('click', function(e) {
@@ -31,7 +33,9 @@ function loadEvents() {
             router();
         });
     });
-    // Profile Page
+}
+
+function copyIDListener() {
     let cpyID = document.getElementById('cpyID');
     if (cpyID) {
         cpyID.addEventListener('click', function() {
@@ -41,7 +45,9 @@ function loadEvents() {
     
         });
     }
-    // Settings Page
+}
+
+function handlePictureUploads() {
     let uploadBG = document.getElementById('uploadBG');
     let uploadPFP = document.getElementById('uploadPFP');
     let fileInputBg = document.createElement('input');
@@ -63,6 +69,9 @@ function loadEvents() {
             }
         });
     }
+}
+
+function TwoFactorAuthHandler() {
     let Offbtn = document.getElementById('offBtn');
     let Onbtn = document.getElementById('onBtn');
     if (Offbtn && Onbtn) {
@@ -96,30 +105,35 @@ function loadEvents() {
             
         });
     }
-    // Dashboard Page
-    switch (window.location.pathname) {
-        case '/':
-            const ChartData = {
-                Dates: {
-                    "24/05": 182,
-                    "25/05": 20,
-                    "26/05": 40,
-                    "27/05": 100,
-                }
-            }
+}
 
-            const Chart = new SSChart(ChartData, 'Dates', '/static/content/components/chart.html');
+let ChartData = {
+    'Matches Played': {
+        "24/07": 120,
+        "25/07": 150,
+        "26/07": 100,
+        "27/07": 20,
+    }
+};
+
+function loadEvents() {
+    scanLinks();
+    if (window.location.pathname === '/') {
+            const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
             Chart.Component.then(html => {
-                document.getElementById('mainContent').innerHTML = html;
+                document.getElementById('ChartMark').innerHTML = html;
                 Chart.setChartTitle();
                 Chart.setGrades();
                 Chart.setDates();
                 Chart.setBarValues();
             });
-
-            break;
-        default:
-            break;
     }
-
+    if (window.location.pathname === '/login' || window.location.pathname === '/register')
+        scanInput();
+    else if (window.location.pathname == '/dashboard' || window.location.pathname == '/')
+        copyIDListener();
+    else if (window.location.pathname === '/settings') {
+        handlePictureUploads();
+        TwoFactorAuthHandler();
+    }
 }
