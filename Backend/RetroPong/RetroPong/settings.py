@@ -74,9 +74,16 @@ WSGI_APPLICATION = 'RetroPong.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        'OPTIONS': {
+            'options': '-c search_path=schema'
+        },
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": "144.24.202.150",
+        "NAME": "retropong",
+        "USER": "retropong_admin",
+        "PASSWORD": "retropong_2024",
+        "PORT": "5432",
     }
 }
 
