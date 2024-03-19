@@ -105,9 +105,6 @@ function TwoFactorAuthHandler() {
 
         });
     }
-    // Dashboard Page
-    GenerateChart();
-
 }
 
 function findHighiestGrade(matches) {
@@ -119,4 +116,35 @@ function findHighiestGrade(matches) {
     }
     return highiest;
 
+}
+
+let ChartData = {
+    'Matches Played': {
+        "24/07": 120,
+        "25/07": 150,
+        "26/07": 100,
+        "27/07": 20,
+    }
+};
+
+function loadEvents() {
+    scanLinks();
+    if (window.location.pathname === '/') {
+            // const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
+            // Chart.Component.then(html => {
+            //     document.getElementById('ChartMark').innerHTML = html;
+            //     Chart.setChartTitle();
+            //     Chart.setGrades();
+            //     Chart.setDates();
+            //     Chart.setBarValues();
+            // });
+    }
+    if (window.location.pathname === '/login' || window.location.pathname === '/register')
+        scanInput();
+    else if (window.location.pathname == '/dashboard' )
+        copyIDListener();
+    else if (window.location.pathname === '/settings' || window.location.pathname == '/') {
+        handlePictureUploads();
+        TwoFactorAuthHandler();
+    }
 }
