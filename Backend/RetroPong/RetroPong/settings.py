@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -79,11 +83,11 @@ DATABASES = {
             'options': '-c search_path=schema'
         },
         "ENGINE": "django.db.backends.postgresql",
-        "HOST": "144.24.202.150",
-        "NAME": "retropong",
-        "USER": "retropong_admin",
-        "PASSWORD": "retropong_2024",
-        "PORT": "5432",
+        "HOST": config["HOST"],
+        "NAME": config["DB"],
+        "USER": config["USER"],
+        "PASSWORD": config["PASS"],
+        "PORT": config["PORT"],
     }
 }
 
