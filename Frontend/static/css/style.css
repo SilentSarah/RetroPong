@@ -5,16 +5,98 @@
 @import url('https://fonts.googleapis.com/css2?family=Nokora:wght@100;300;400;700;900&display=swap');
 
 body {
-    min-height: 100vh;
-    max-width: 100vw;
+    min-height: 100svh;
+    max-width: 100svw;
     line-height: normal;
+    background: url('/static/img/general/BG.jpeg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    backdrop-filter: brightness(0.5);
 }
+
+body::after {
+    content: '';
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: linear-gradient(180.07deg, #1E1E1E 0.06%, #172573 9.13%, rgba(106, 102, 217, 0.8) 31%, rgba(240, 128, 242, 0.5) 58.21%, rgba(1, 3, 38, 1) 106.75%);
+    opacity: 0.75;
+    z-index: -1;
+}
+
+
 .retro_bg {
     background: linear-gradient(180.07deg, #1E1E1E 0.06%, #172573 9.13%, rgba(106, 102, 217, 0.8) 31%, rgba(240, 128, 242, 0.5) 58.21%, rgba(1, 3, 38, 1) 106.75%);
 }
+
+.zn-1 {
+    z-index: -1;
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+.object-fit-contain {
+    object-fit: contain;
+}
+.object-fit-fill {
+    object-fit: fill;
+}
+.object-fit-scale-down {
+    object-fit: scale-down;
+}
+.object-position-center {
+    object-position: center;
+}
+.object-position-top {
+    object-position: top;
+}
+.object-position-bottom {
+    object-position: bottom;
+}
+.object-position-left {
+    object-position: left;
+}
+.object-position-right {
+    object-position: right;
+}
+
+.filter-brightness-1 {
+    filter: brightness(1);
+}
+.filter-brightness-0-5 {
+    filter: brightness(0.5);
+}
+.filter-brightness-0-75 {
+    filter: brightness(0.75);
+}
+.filter-brightness-0-25 {
+    filter: brightness(0.25);
+}
+
+.mainTitle {
+    /* RetroPong */
+
+font-family: 'Taprom';
+font-style: normal;
+font-weight: 400;
+font-size: 196px;
+line-height: 354px;
+display: flex;
+align-items: center;
+
+color: #F080F2;
+
+text-shadow: 0px 0px 7px #F080F2;
+
+}
+
 .rnavbar {
     width: 100%;
     height: 125px;
+    background: rgb(2,0,36);
+    background: linear-gradient(180deg, rgba(2,0,36,1) 0%, rgba(255,255,255,0) 100%);
 }
 .btn-retro {
     position: relative;
@@ -261,8 +343,8 @@ body {
     border-radius: 25px;
 }
 .acc-stats {
-    width: 650px;
     height: 375px;
+    width: 250px;
     background: linear-gradient(135.6deg, rgba(0, 0, 0, 0.5) 52.02%, rgba(240, 128, 242, 0.2) 78.29%);
     border-radius: 25px;
 
@@ -290,7 +372,7 @@ body {
 }
 .acc_stats_holder {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: normal;
     flex-direction: row;
     flex-wrap: wrap;
@@ -308,4 +390,30 @@ body {
 background: linear-gradient(158.66deg, rgba(0, 0, 0, 0.4875) 61.07%, rgba(240, 128, 242, 0.6) 100%), linear-gradient(156.28deg, #000000 0%, #1F1F1F 84.74%);
 border-radius: 25px;
 
+}
+.grade {
+    display: flex;
+    height: 20px;
+    vertical-align:text-bottom;
+    text-align: right;
+    padding: 0 6px;
+    color: whitesmoke;
+    list-style: none;
+}
+
+.mt-chart {
+    margin-top: 0.8rem !important;
+}
+.bg-pink {
+    background: rgba(240,128,242,1);
+}
+.main-stats-container {
+    width: 400px; 
+    height: 375px;
+    background: rgba(0, 0, 0, 0.25);
+}
+.stats-chart-container {
+    background: repeating-linear-gradient(to top, rgba(255,255,255,0.2) 0px, rgba(0,0,0,0) 1px, rgba(0,0,0,0) 30px);
+    width:250px; 
+    height:180px
 }

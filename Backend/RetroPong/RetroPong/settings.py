@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,9 +78,16 @@ WSGI_APPLICATION = 'RetroPong.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        'OPTIONS': {
+            'options': '-c search_path=schema'
+        },
+        "ENGINE": "django.db.backends.postgresql",
+        "HOST": config["HOST"],
+        "NAME": config["DB"],
+        "USER": config["USER"],
+        "PASSWORD": config["PASS"],
+        "PORT": config["PORT"],
     }
 }
 

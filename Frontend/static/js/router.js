@@ -5,7 +5,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/chat.html')
+        component: () => grabContent('/static/content/settings.html')
     },
     {
         path: '/login',
@@ -18,6 +18,10 @@ const routes = [
         component: () => grabContent('/static/content/registration.html')
     },
     {
+        path: '/dashboard',
+        on: false,
+        component: () => grabContent('/static/content/dashboard.html')
+    },
 ]
 
 async function StartLoading(route) {
