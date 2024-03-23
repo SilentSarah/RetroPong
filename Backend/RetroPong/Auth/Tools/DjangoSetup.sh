@@ -56,19 +56,7 @@ create_superuser() {
         exit 1
     fi
     echo "Creating a Superuser"
-    output=$(echo "from django.contrib.auth.models import User; User.objects.create_superuser('$1', '$3', '$2')" | python3 $5/manage.py shell 2>&1)
-    exitcode=$?
-    echo $output | grep exists > /dev/null
-    if [ $? -eq 0 ]
-    then
-        echo "Admin Account already exists, skipping."
-    elif [ $exitcode -eq 1 ]
-    then
-        echo "Failed to Create a Superuser."
-        exit 1
-    else
-        echo "Superuser was created successfuly."
-    fi
+    python3 $5/manage.py shell < /Toolkit/PythonSuperUserCheck.py
 }
 
 check_project_setup() {

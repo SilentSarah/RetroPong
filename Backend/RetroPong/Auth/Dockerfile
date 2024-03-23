@@ -35,16 +35,18 @@ RUN apt install libpq5 -y -f
 
 COPY Configuration/settings.py /Toolkit/settings.py
 
-COPY Configuration/Setup.sh /Toolkit/Setup.sh
+COPY Tools/Setup.sh /Toolkit/Setup.sh
 RUN chmod +x /Toolkit/Setup.sh
 RUN bash /Toolkit/Setup.sh
 
-COPY Configuration/DjangoSetup.sh /Toolkit/DjangoSetup.sh
+COPY Configuration/PythonSuperUserCheck.py /Toolkit/PythonSuperUserCheck.py
+
+COPY Tools/DjangoSetup.sh /Toolkit/DjangoSetup.sh
 RUN chmod +x /Toolkit/DjangoSetup.sh
 RUN /Toolkit/DjangoSetup.sh
 ENV SETUP_DONE=1
 
-COPY Configuration/ProjectCheck.sh /Toolkit/ProjectCheck.sh
+COPY Tools/ProjectCheck.sh /Toolkit/ProjectCheck.sh
 RUN chmod +x /Toolkit/ProjectCheck.sh
 
 ENTRYPOINT [ "bash", "/Toolkit/ProjectCheck.sh" ]

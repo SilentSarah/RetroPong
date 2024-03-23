@@ -43,7 +43,7 @@ install_python_package() {
 
 SetupDependenciesAndCommands() {
 
-    DjangoDeps=("django" "psycopg" "psycopg2", "djangorestframework-simplejwt")
+    DjangoDeps=("django" "psycopg" "djangorestframework-simplejwt")
     echo "Setup is Starting..."
     sleep 1
 
