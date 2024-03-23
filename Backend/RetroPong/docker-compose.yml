@@ -31,5 +31,5 @@ volumes:
   Retropong-volume:
     driver_opts:
         type: none
-        device: /home/sarah/Desktop/AuthenticationDocker/RPVOLUME
+        device: ./RPVOLUME
         o: bind
