@@ -37,7 +37,7 @@ COPY Configuration/settings.py /Toolkit/settings.py
 
 COPY Configuration/Setup.sh /Toolkit/Setup.sh
 RUN chmod +x /Toolkit/Setup.sh
-RUN /Toolkit/Setup.sh
+RUN bash /Toolkit/Setup.sh
 
 COPY Configuration/DjangoSetup.sh /Toolkit/DjangoSetup.sh
 RUN chmod +x /Toolkit/DjangoSetup.sh

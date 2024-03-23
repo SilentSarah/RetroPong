@@ -42,13 +42,16 @@ install_python_package() {
 }
 
 SetupDependenciesAndCommands() {
+
+    DjangoDeps=("django" "psycopg" "psycopg2", "djangorestframework-simplejwt")
     echo "Setup is Starting..."
     sleep 1
 
     install_sys_dependency "python3"
-    install_python_package "django"
-    install_python_package "psycopg"
-    install_python_package "psycopg2"
+    for dep in ${DjangoDeps[@]}
+    do
+        install_python_package $dep
+    done
 
     mkdir -p /VolumeData
 }
