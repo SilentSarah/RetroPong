@@ -1,5 +1,6 @@
 "use strict"
 import { mkGradient, setShadow, clearShadow } from "./misc.js";
+import { gameSocket } from "./socket.js";
 
 export class Paddle
 {
@@ -12,6 +13,7 @@ export class Paddle
 		this.offset = canvas.el.width / 50;
 		this.x = side == 'r' ? (canvas.el.width - this.width) - (this.lineWidth + this.offset) : 0 + (this.lineWidth + this.offset);
 		this.y = (canvas.el.height  - this.height) / 2;
+		console.log("The x, y are: ", this.x, this.y);
 		this.fillColor = '#000';
 		this.strokeGradColors = strokeGradColors || this.strokeGradColors;
 	}
@@ -42,23 +44,37 @@ export class Paddle
 		return (canvas.el.height * 0.01);
 	}
 
-	updatePaddlePos(canvas)
+	goUp(canvas)
 	{
-		if (canvas.state.keyDown == 'w' && this.y >= 0)
-		{
-			const newVal = this.y - this.lineWidth / 2 - this.getStep(canvas);
+		const newVal = this.y - this.lineWidth / 2 - this.getStep(canvas);
 			if (newVal >= 0)
 				this.y = newVal;
 			else
 				this.y = 0 + this.lineWidth / 2;
-		}
+		// test socket
+		gameSocket.send(JSON.stringify({
+			'posY': this.y / canvas.el.height
+		}));
+	}
+
+	goDown(canvas)
+	{
+		const newVal = this.y + this.lineWidth / 2 + this.getStep(canvas);
+		if (newVal <= canvas.el.height - this.height)
+			this.y = newVal;
+		else
+			this.y = canvas.el.height - this.height - this.lineWidth / 2;
+		// test socket
+		gameSocket.send(JSON.stringify({
+			'posY': this.y / canvas.el.height
+		}));
+	}
+
+	updatePaddlePos(canvas)
+	{
+		if (canvas.state.keyDown == 'w' /* && this.y >= 0 */)
+			this.goUp(canvas);
 		else if (canvas.state.keyDown == 's')
-		{
-			const newVal = this.y + this.lineWidth / 2 + this.getStep(canvas);
-			if (newVal <= canvas.el.height - this.height)
-				this.y = newVal;
-			else
-				this.y = canvas.el.height - this.height - this.lineWidth / 2;
-		}
+			this.goDown(canvas);
 	}
 }

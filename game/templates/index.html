@@ -1,0 +1,16 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{% static 'styles.css' %}">
+	<title>Pong Game JavaScript</title>
+</head>
+<body>
+	<div id="container"><canvas id="pong" tabindex="0"></canvas></div>
+	<script type="module" src="{% static 'socket.js' %}"></script>
+	<script type="module" src="{% static 'index.js' %}"></script>
+	<!-- The below is for testing only -->
+	<button id="demo-button">send msg</button>
+</body>
+</html>

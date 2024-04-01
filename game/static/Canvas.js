@@ -139,16 +139,20 @@ export class Canvas
 		this.resetBall();
 	}
 
-	moveCom()
+	moveCom(posY)
 	{
+		// will receive its Y from the socket
+		this.com.y = posY * this.el.height;
+
+
 		// computer plays for itself, and we must be able to beat it
 		// simple AI
-		const increment = ((this.ball.y - (this.com.y + this.com.height/2))) * this.dpr * 0.1;
-		if (increment + this.com.y < 0
-			|| (increment + this.com.y) + (this.com.height + this.com.lineWidth) > this.el.height)
-			this.com.y += 0;
-		else
-			this.com.y += increment;
+		// const increment = ((this.ball.y - (this.com.y + this.com.height/2))) * this.dpr * 0.1;
+		// if (increment + this.com.y < 0
+		// 	|| (increment + this.com.y) + (this.com.height + this.com.lineWidth) > this.el.height)
+		// 	this.com.y += 0;
+		// else
+		// 	this.com.y += increment;
 	}
 
 	checkWallCollision()

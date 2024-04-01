@@ -2,6 +2,7 @@
 
 import { Canvas } from './Canvas.js';
 import { Paddle } from './Paddle.js';
+import { gameSocket } from "./socket.js";
 
 const canvas = new Canvas(document.getElementById("pong"));
 canvas.user = new Paddle();
@@ -16,7 +17,7 @@ function update()
     // the ball has a velocity
     canvas.ball.x += canvas.ball.velocityX;
     canvas.ball.y += canvas.ball.velocityY;
-	canvas.moveCom();
+	// canvas.moveCom();
 	canvas.checkWallCollision();
 	canvas.checkPaddleCollision();
     
@@ -41,3 +42,10 @@ function game(){
 }
 
 game();
+
+// Socket code below
+gameSocket.onmessage = function(e) {
+	const data = JSON.parse(e.data);
+	canvas.moveCom(data.posY);
+	// console.log("The data received is: ", data);
+};
