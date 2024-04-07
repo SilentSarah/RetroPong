@@ -11,15 +11,15 @@ class Paddle:
 			self.x = (self.lineWidth + self.offset)
 		self.y = (1  - self.height) / 2
 	
-	def updatePos(self, movement):
+	def move(self, direction):
 		step = 1/100
-		if (movement == 'up' and self.y >= 0):
+		if (direction == 'up' and self.y >= 0):
 			newVal = self.y - self.lineWidth / 2 - step
 			if (newVal >= 0):
 				self.y = newVal
 			else:
 				self.y = 0 + self.lineWidth / 2
-		elif (movement == 'down'):
+		elif (direction == 'down'):
 			newVal = self.y + self.lineWidth / 2 + step
 			if (newVal <= 1 - self.height):
 				self.y = newVal

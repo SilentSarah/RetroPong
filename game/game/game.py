@@ -23,15 +23,21 @@ class Game:
 	def add_paddle(self, paddle):
 		self.paddles.append(paddle)
 
-	def broadcast(self):
+	# def broadcast(self):
 		# async_to_sync(self.consumer.channel_layer.group_send)(
 		# 	self.name(), {
 		# 		"type": "recv.broadcast",# will look into this later
 		# 		})
-		async_to_sync(self.consumer.send_json)(content={"type": "update", "x": self.ball['x'], "y": self.ball['y']})
+		# async_to_sync(self.consumer.send_json)(content={"type": "update", "x": self.ball['x'], "y": self.ball['y']})
 		# async_to_sync(self.consumer.send_json)(content={"type": "log", "log": "Broadcasting..."},)
 
-	async def start(self):
+	def move(self, side, direction):
+		if (side == 'left'):
+			self.paddles[0].move(direction)
+		elif (side == 'right'):
+			self.paddles[1].move(direction)
+
+	def start(self):
 		# testing
 		# 1/60 for 60 fps
 		interval = set_interval(1/60, self.update)
@@ -70,8 +76,8 @@ class Game:
 		self.ball["y"] += self.ball["velocityY"]
 		self.check_wall_collision()
 		self.check_paddle_collision()
-		self.broadcast()
-		print(f"-{time.time()}-", file=sys.stderr)
+		# self.broadcast()
+		# print(f"-{time.time()}-", file=sys.stderr)
 		# here we will be sending updates to all players
 
 	def reset_ball(self):
