@@ -18,9 +18,11 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	def join_game(self): # returns game object
 		for game in GameConsumer.games:
 			if (game.joined_players() < 2):
+				self.side = "right"
 				game.add_player(self.channel_name) # will be using channel_names for now, until the auth is set
-				game.add_paddle(Paddle("right"))
+				game.add_paddle(Paddle(self.side))
 				return game
+		self.side = "left"
 		GameConsumer.games.append(Game(self))
 		return GameConsumer.games[-1]
 
@@ -46,7 +48,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		else:
 			#tell them all to be ready
 			await self.send_json(content={"type": "log", "log": "Be ready to start playing..."})
-			await self.game.start()
+			self.game.start()
 		# print(">>> I reach here", file=sys.stderr)
 		# await self.send_json(content={"type": "position"})
 
@@ -54,7 +56,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# await self.send_json(content={"type": "status", "connected": len(self.connected_clients)})
 		# print("the total connected clients are: ")
 
-	async def disconnect(self, close_code):
+	def disconnect(self, close_code):
 		color = "\033[31;42m"
 		reset_color = "\033[0;0m"
 		print(f"{color}[{datetime.now()}] The socket got disconnected{reset_color}", file=sys.stderr)
@@ -67,8 +69,29 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
 	async def receive_json(self, content):
 		type = content["type"]
-		if (type == "join"):
-			self.join_game()
+		# paddle = {}
+		if (type == "update" and self.game.joined_players() == 2):
+			if (self.side == 'left'):
+				p1 = self.game.paddles[0]
+				p2 = self.game.paddles[1]
+			elif (self.side == 'right'):
+				p1 = self.game.paddles[1]
+				p2 = self.game.paddles[0]
+		
+			await self.send_json(content={
+				"type": "update",
+				"x": self.game.ball['x'],
+				"y": self.game.ball['y'],
+				"p1X": p1.x,
+				"p1Y": p1.y,
+				"p2X": p2.x,
+				"p2Y": p2.y,
+			})
+		elif (type == "move"):
+			self.game.move(self.side, content['direction'])
+		# type = content["type"]
+		# if (type == "join"):
+		# 	self.join_game()
 		# log = f"the type of the message received by server is: [{type}]"
 
 		# await self.send_json(content={"type": "log", "log": log})
@@ -81,10 +104,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
 
 	# Receive message from room group
-	async def recv_broadcast(self, event):
+	# def recv_broadcast(self, event):
 		# print(f"I have received in the function recv_broadcast: '{event["message"]}'", file=sys.stderr)
 		# message = event["message"]
 		# channel_name = event["channel_name"]
 		# if (channel_name != self.channel_name):
 		# 	# Send message to WebSocket
-		await self.send_json(content={"type": "update", "ball": self.game.ball})
+		# async_to_sync(self.send_json)(content={"type": "update", "ball": self.game.ball})
