@@ -53,6 +53,7 @@ export class Paddle
 				this.y = 0 + this.lineWidth / 2;
 		// test socket
 		gameSocket.send(JSON.stringify({
+			'type': 'move',
 			'posY': this.y / canvas.el.height
 		}));
 	}
@@ -66,6 +67,7 @@ export class Paddle
 			this.y = canvas.el.height - this.height - this.lineWidth / 2;
 		// test socket
 		gameSocket.send(JSON.stringify({
+			'type': 'move',
 			'posY': this.y / canvas.el.height
 		}));
 	}

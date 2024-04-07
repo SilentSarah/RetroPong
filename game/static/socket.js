@@ -8,12 +8,17 @@ export const gameSocket = new WebSocket(
 
 gameSocket.onclose = function(e) {
 	console.error('Game socket closed unexpectedly');
+	
 };
 
-document.getElementById('demo-button').onclick = function(e) {
-	console.log("I ran")
-	const message = "Demo Message";
+document.getElementById('join-game').onclick = function(e) {
 	gameSocket.send(JSON.stringify({
-		'message': message
+		'type': 'join'
 	}));
 };
+
+// document.getElementById('leave-game').onclick = function(e) {
+// 	gameSocket.send(JSON.stringify({
+// 		'type': 'leave'
+// 	}));
+// };

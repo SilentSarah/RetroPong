@@ -68,11 +68,20 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'game.wsgi.application'
+# WSGI_APPLICATION = 'game.wsgi.application' # commented this out, so both http and ws would be served by Daphne
 ASGI_APPLICATION = "game.asgi.application"
+# We can switch to redis later using the following config
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "channels_redis.core.RedisChannelLayer",
+# 		"CONFIG": {
+#             "hosts": [("127.0.0.1", 6379)],
+#         },
+#     },
+# }
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
     },
 }
 

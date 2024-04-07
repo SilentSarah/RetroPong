@@ -11,6 +11,9 @@
 	<script type="module" src="{% static 'socket.js' %}"></script>
 	<script type="module" src="{% static 'index.js' %}"></script>
 	<!-- The below is for testing only -->
-	<button id="demo-button">send msg</button>
+	<!-- The button below would send a socket to the server of type "join" -->
+	<!-- The server will look for a room avaiable -->
+	<button id="join-game" class="main-btn">Join a game</button>
+	<button id="leave-game" class="main-btn red">Leave game</button>
 </body>
 </html>

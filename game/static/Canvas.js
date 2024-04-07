@@ -81,13 +81,13 @@ export class Canvas
 	drawBall()
 	{
 		// console.log("ball from drawBall: ", this.ball);
-		setShadow(this);
+		// setShadow(this);
 		this.ctx.fillStyle = this.ball.color;
 		this.ctx.beginPath();
 		this.ctx.arc(this.ball.x, this.ball.y, this.ball.r, 0, Math.PI*2, true);
 		this.ctx.closePath();
 		this.ctx.fill();
-		clearShadow(this);
+		// clearShadow(this);
 	}
 
 	// draw the net
@@ -202,6 +202,6 @@ export class Canvas
 		drawRect(this, 0, 0, this.el.width , this.el.height ,
 		mkGradient(this, 0, 0, 0, this.el.height , '#262f81', '#c773ca'));
 		// draw the net
-		this.drawNet();
+		// this.drawNet();
 	}
 }
