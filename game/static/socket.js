@@ -2,8 +2,6 @@ export const gameSocket = new WebSocket(
 	'ws://'
 	+ window.location.host
 	+ '/ws/game/'
-	// + roomName
-	// + '/'
 );
 
 gameSocket.onclose = function(e) {
@@ -16,9 +14,3 @@ document.getElementById('join-game').onclick = function(e) {
 		'type': 'join'
 	}));
 };
-
-// document.getElementById('leave-game').onclick = function(e) {
-// 	gameSocket.send(JSON.stringify({
-// 		'type': 'leave'
-// 	}));
-// };
