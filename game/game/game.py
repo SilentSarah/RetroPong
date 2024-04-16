@@ -2,7 +2,7 @@ import sys
 import math
 import threading
 from game.set_interval import set_interval
-from asgiref.sync import async_to_sync
+# from asgiref.sync import async_to_sync
 from game.paddle import Paddle
 import time
 
@@ -31,11 +31,20 @@ class Game:
 		# async_to_sync(self.consumer.send_json)(content={"type": "update", "x": self.ball['x'], "y": self.ball['y']})
 		# async_to_sync(self.consumer.send_json)(content={"type": "log", "log": "Broadcasting..."},)
 
+	def move_paddles(self):
+		for paddle in self.paddles:
+			paddle.move()
+	# move & stop will be optimized later when the auth will be set
 	def move(self, side, direction):
 		if (side == 'left'):
-			self.paddles[0].move(direction)
+			self.paddles[0].moving_direction =  direction
 		elif (side == 'right'):
-			self.paddles[1].move(direction)
+			self.paddles[1].moving_direction =  direction
+	def stop(self, side):
+		if (side == 'left'):
+			self.paddles[0].stop()
+		elif (side == 'right'):
+			self.paddles[1].stop()
 
 	def start(self):
 		# testing
@@ -76,6 +85,7 @@ class Game:
 		self.ball["y"] += self.ball["velocityY"]
 		self.check_wall_collision()
 		self.check_paddle_collision()
+		self.move_paddles()
 		# self.broadcast()
 		# print(f"-{time.time()}-", file=sys.stderr)
 		# here we will be sending updates to all players

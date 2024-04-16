@@ -2,7 +2,6 @@
 
 export function	mkGradient(canvas, sx, sy, ex, ey, sc, ec)
 {
-	// console.log("sx, sy, ex, ey, sc, ec: ", sx, sy, ex, ey, sc, ec)
 	const grad = canvas.ctx.createLinearGradient(sx, sy, ex, ey);
 	grad.addColorStop(0, sc);
 	grad.addColorStop(1, ec);

@@ -71,12 +71,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		type = content["type"]
 		# paddle = {}
 		if (type == "update" and self.game.joined_players() == 2):
-			if (self.side == 'left'):
-				p1 = self.game.paddles[0]
-				p2 = self.game.paddles[1]
-			elif (self.side == 'right'):
-				p1 = self.game.paddles[1]
-				p2 = self.game.paddles[0]
+			# if (self.side == 'left'):
+			p1 = self.game.paddles[0]
+			p2 = self.game.paddles[1]
+			# elif (self.side == 'right'):
+			# 	p1 = self.game.paddles[1]
+			# 	p2 = self.game.paddles[0]
 		
 			await self.send_json(content={
 				"type": "update",
@@ -86,9 +86,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				"p1Y": p1.y,
 				"p2X": p2.x,
 				"p2Y": p2.y,
+				"side": self.side
 			})
 		elif (type == "move"):
 			self.game.move(self.side, content['direction'])
+		elif (type == 'stop'):
+			self.game.stop(self.side)
 		# type = content["type"]
 		# if (type == "join"):
 		# 	self.join_game()

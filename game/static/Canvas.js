@@ -62,17 +62,14 @@ export class Canvas
 		// this Object, side, gradient colors
 		this.user.setup( this, 'l', ['#feec63', '#ff0100'] );
 		this.com.setup( this, 'r', ['#68ebff', '#013afe'] );
-		// this.resetBall();
 	}
 
 	// draw the ball
 	drawBall()
 	{
-		// console.log("ball from drawBall: ", this.ball);
-		// setShadow(this);
+		setShadow(this);
 		this.ctx.fillStyle = this.ball.color;
 		this.ctx.beginPath();
-		// console.log(">>>>>>>>>>>this.ball.x * this.el.width, this.ball.y * this.el.height,: ", this.ball.x * this.el.width, this.ball.y * this.el.height,)
 		this.ctx.arc(
 			this.ball.x * this.el.width,
 			this.ball.y * this.el.height,
@@ -83,7 +80,24 @@ export class Canvas
 		);
 		this.ctx.closePath();
 		this.ctx.fill();
-		// clearShadow(this);
+		clearShadow(this);
+	}
+
+	// draw the net
+	drawNet()
+	{
+		setShadow(this);
+		this.ctx.setLineDash([this.el.height / 7, this.el.height / 20]);//pattern
+		// Set line color and width
+		this.ctx.strokeStyle = '#fff7';
+		this.ctx.lineWidth = this.el.width / 120;
+		// Draw the dashed line
+		this.ctx.beginPath();
+		this.ctx.moveTo(this.el.width / 2, this.el.height / 20); // Starting point
+		this.ctx.lineTo(this.el.width / 2, this.el.height); // Ending point
+		this.ctx.stroke();
+		this.ctx.setLineDash([]);
+		clearShadow(this);
 	}
 
 	clear()
@@ -91,6 +105,6 @@ export class Canvas
 		drawRect(this, 0, 0, this.el.width , this.el.height ,
 		mkGradient(this, 0, 0, 0, this.el.height , '#262f81', '#c773ca'));
 		// draw the net
-		// this.drawNet();
+		this.drawNet();
 	}
 }

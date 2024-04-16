@@ -1,6 +1,5 @@
 "use strict"
 import { mkGradient, setShadow, clearShadow } from "./misc.js";
-import { gameSocket } from "./socket.js";
 
 export class Paddle
 {
@@ -18,8 +17,7 @@ export class Paddle
 	}
 
 	draw(canvas)
-	{// test goes here
-		// console.log("THe draw paddle gets called!!!")
+	{
 		let drawX, drawY, drawW, drawH, drawR, drawLineWidth;
 
 		drawX = this.x * canvas.el.width;

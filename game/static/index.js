@@ -10,10 +10,8 @@ canvas.com = new Paddle();
 canvas.setup();
 window.addEventListener('resize', canvas.setup.bind(canvas));
 
-// this.el.addEventListener("keydown", (e) => { e.preventDefault(); e.stopPropagation(); this.state.keyDown = e.key });
-// this.el.addEventListener("keyup", (e) => { e.preventDefault(); e.stopPropagation(); this.state.keyDown = '' });
-
 canvas.el.addEventListener("keydown", (e) => {
+	// maybe I'll do a global state here for optimization
 	e.preventDefault(); e.stopPropagation();
 	let direction;
 	if (e.key == 'w')
@@ -27,31 +25,26 @@ canvas.el.addEventListener("keydown", (e) => {
 		'direction': direction
 	}));
 });
-// canvas.el.addEventListener("keyup", (e) => {
-// 	e.preventDefault(); e.stopPropagation(); this.state.keyDown = ''
-// });
 
-// update function, the function that does all calculations
+canvas.el.addEventListener("keyup", (e) => {
+	e.preventDefault(); e.stopPropagation();
+	gameSocket.send(JSON.stringify({
+		'type': 'stop'
+	}));
+});
+
+// update function, the function sends update request to the server
 function update()
 {
 	if (gameSocket.readyState == WebSocket.OPEN)
 		gameSocket.send(JSON.stringify({
 			'type': 'update'
 		}));
-	// canvas.checkScore();
-    // the ball has a velocity
-    // canvas.ball.x += canvas.ball.velocityX;
-    // canvas.ball.y += canvas.ball.velocityY;
-	// canvas.moveCom();
-	// canvas.checkWallCollision();
-	// canvas.checkPaddleCollision();
-    
 }
 
 // render function, the function that does all the drawing
 function render(){
 	// clear the canvas
-	// console.log("ball(x, y): ", canvas.ball.x, canvas.ball.y)
 	canvas.clear();
 	// update and draw user's paddle
 	canvas.user.draw(canvas, 'player');
@@ -64,15 +57,12 @@ function render(){
 function game(){
 	update();
     render();
-	requestAnimationFrame(game);
 }
 
-game();
+setInterval(game, 1/60) // doing a 60 fps
 
 // Socket code below
 gameSocket.onmessage = function(e) {
-	// console.log("Message arrived: ", Date.now());
-
 	const data = JSON.parse(e.data);
 
 	const {type, x, y, p1X, p1Y, p2X, p2Y} = data;
@@ -84,7 +74,6 @@ gameSocket.onmessage = function(e) {
 		canvas.user.y = p1Y;
 		canvas.com.x = p2X;
 		canvas.com.y = p2Y;
-		// console.log("<<<<<<<<<<<<<< x, y, p1X, p1Y, p2X, p2Y: ", x, y, p1X, p1Y, p2X, p2Y);
 	}
 
 };
