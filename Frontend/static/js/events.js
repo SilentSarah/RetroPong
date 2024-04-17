@@ -120,24 +120,24 @@ function findHighiestGrade(matches) {
 
 let ChartData = {
     'Matches Played': {
-        "24/07": 120,
+        "24/07": 15777,
         "25/07": 150,
         "26/07": 100,
-        "27/07": 20,
+        "27/07": 0,
     }
 };
 
 function loadEvents() {
     scanLinks();
     if (window.location.pathname === '/') {
-            // const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
-            // Chart.Component.then(html => {
-            //     document.getElementById('ChartMark').innerHTML = html;
-            //     Chart.setChartTitle();
-            //     Chart.setGrades();
-            //     Chart.setDates();
-            //     Chart.setBarValues();
-            // });
+            const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
+            Chart.Component.then(html => {
+                document.getElementById('ChartMark').innerHTML = html;
+                Chart.setChartTitle();
+                Chart.setGrades();
+                Chart.setDates();
+                Chart.setBarValues();
+            });
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
         scanInput();
