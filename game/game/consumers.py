@@ -56,10 +56,11 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# await self.send_json(content={"type": "status", "connected": len(self.connected_clients)})
 		# print("the total connected clients are: ")
 
-	def disconnect(self, close_code):
-		color = "\033[31;42m"
-		reset_color = "\033[0;0m"
-		print(f"{color}[{datetime.now()}] The socket got disconnected{reset_color}", file=sys.stderr)
+	async def disconnect(self, close_code):
+		# color = "\033[31;42m"
+		# reset_color = "\033[0;0m"
+		# print(f"{color}[{datetime.now()}] The socket got disconnected{reset_color}", file=sys.stderr)
+		print("Pass")
 		pass
 		# await self.channel_layer.group_discard(
 		# 	# self.room_group_name, self.channel_name
