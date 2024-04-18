@@ -49,21 +49,24 @@ class Game:
 	def start(self):
 		# testing
 		# 1/60 for 60 fps
-		interval = set_interval(1/60, self.update)
+		self.game_loop_interval = set_interval(1/60, self.update)
 
 		# will stop interval in 5s
 		# t = threading.Timer(5, interval.cancel)
 		# t.start()
 		
 		# print("The start function was called however!", file=sys.stderr)
-		
+	
+	def finish(self):
+		self.game_loop_interval.cancel()
+
 	def name(self):
 		return (self.details['name'])
 	
 	def add_player(self, player):
 		self.players.append(player)
 	
-	def joined_players(self):
+	def players_count(self):
 		return (len(self.players))
 
 	# async def broadcast():
