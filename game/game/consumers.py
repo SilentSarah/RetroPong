@@ -17,7 +17,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	
 	def join_game(self): # returns game object
 		for game in GameConsumer.games:
-			if (game.joined_players() < 2):
+			if (game.players_count() < 2):
 				self.side = "right"
 				game.add_player(self.channel_name) # will be using channel_names for now, until the auth is set
 				game.add_paddle(Paddle(self.side))
@@ -26,12 +26,20 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		GameConsumer.games.append(Game(self))
 		return GameConsumer.games[-1]
 
-	
+	def leave_game(self): # returns game object
+		# remove from active players
+		for player in self.game.players:
+			del GameConsumer.active_players[player]
+		# set the game as finished
+		self.game.finish()
+
 	async def connect(self):
 		# self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		# self.room_group_name = f"game_{self.room_name}"
 		self.check_player()
 		self.game = self.join_game()
+		# I ll see to randomize the name of the game later
+		print(f"game_name is: {self.game.name()}", file=sys.stderr)
 		await self.channel_layer.group_add(self.game.name(), self.channel_name) # to be added to channel group, so I can broadcast
 		# await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		# Will be dealt with later -> # await self.channel_layer.group_add(self.group_name, self.channel_name)
@@ -41,9 +49,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# print(f"{color}[{datetime.now()}] new socket got connected{reset_color}", file=sys.stderr)
 		# await self.send_json(content={"type": "log", "log": "check alive"})
 		
-		if self.game.joined_players() < 2:
+		if self.game.players_count() < 2:
 			# tell the currect player to wait
-			log = f"[{self.game.name()}]: waiting for another player to join... [No# Players: {self.game.joined_players()}]"
+			log = f"[{self.game.name()}]: waiting for another player to join... [No# Players: {self.game.players_count()}]"
 			await self.send_json(content={"type": "log", "log": log})
 		else:
 			#tell them all to be ready
@@ -57,10 +65,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# print("the total connected clients are: ")
 
 	async def disconnect(self, close_code):
+		self.leave_game()
+		await self.channel_layer.group_discard(
+			self.game.name(), self.channel_name
+		)
 		# color = "\033[31;42m"
 		# reset_color = "\033[0;0m"
 		# print(f"{color}[{datetime.now()}] The socket got disconnected{reset_color}", file=sys.stderr)
 		print("Pass")
+		await self.channel_layer.group_send(
+			self.game.name(), {
+				"type": "game.receive.broadcast",
+				"message": "The Game is over!"
+				})
 		pass
 		# await self.channel_layer.group_discard(
 		# 	# self.room_group_name, self.channel_name
@@ -68,10 +85,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# )
 		# self.connected_clients.remove(self.channel_name)
 
+	async def game_receive_broadcast(self, event_obj):
+		# print("I got inside the receive broadcast", sys.stderr)
+		msg = event_obj['message']
+		await self.send_json(content={
+				"type": "log",
+				"log": msg
+			})
+
+
 	async def receive_json(self, content):
 		type = content["type"]
 		# paddle = {}
-		if (type == "update" and self.game.joined_players() == 2):
+		if (type == "update" and self.game.players_count() == 2):
 			# if (self.side == 'left'):
 			p1 = self.game.paddles[0]
 			p2 = self.game.paddles[1]

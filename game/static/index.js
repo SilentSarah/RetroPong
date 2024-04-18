@@ -75,5 +75,9 @@ gameSocket.onmessage = function(e) {
 		canvas.com.x = p2X;
 		canvas.com.y = p2Y;
 	}
+	else if (type == 'log')
+	{
+		console.log("Log: ", data.log);
+	}
 
 };
