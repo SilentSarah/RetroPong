@@ -41,13 +41,20 @@
 	background: linear-gradient(#32398d, #9a5ba4, #868586);
 }
 
+#game-container {
+	border: 3px solid pink;
+}
+
+.game-info {
+	background: #343a4063 !important;
+}
+
 #game-container .game-info {
 	flex: 1 1 100%;
 	grid-area: specs;
 	display: grid;
 	grid-template-columns: 2fr 1.5fr 2fr;
 	align-items: center;
-	background-color: #313131;
 	padding: 0 3.5em;
 	padding-bottom: 2em;
 	color: #fff;
