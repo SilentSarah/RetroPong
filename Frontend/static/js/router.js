@@ -80,4 +80,4 @@ function router() {
 }
 
 // uncomment below to turn dynamic on
-// router();
+router();
