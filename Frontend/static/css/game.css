@@ -7,14 +7,29 @@
 
 #game-container {
 	/* background-color: green; */
-	min-height: 70vh;
+	max-height: max-content;
 	width: 100%;
 	max-width: 1280px;
 	display: grid !important;
 	grid-template-columns: 1fr 1fr; /* Define the width of columns */
+	grid-template-rows: minmax(auto, max-content) minmax(auto, max-content); /* Define the width of columns */
 	grid-template-areas:
 		"game	game"
-		"specs	score";
+		"specs	specs";
+	border-radius: 3em;
+	overflow: hidden;
+}
+
+#game-container h1,
+#game-container h2,
+#game-container p {
+	text-align: center;
+	margin: 1rem 0;
+}
+
+#game-container img {
+	width: 100%;
+	height: 100%;
 }
 
 #game {
@@ -23,78 +38,76 @@
 	/* set max as HD */
 	max-width: 1280px;
 	max-height: 720px;
-	background-color: gray;
+	background: linear-gradient(#32398d, #9a5ba4, #868586);
 }
-	
-#special-abilities {
+
+#game-container .game-info {
+	flex: 1 1 100%;
 	grid-area: specs;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	/* background-color: yellow; */
-}
-
-#special-abilities > * {
-	/* background-color: pink; */
-	flex: 1 1 auto;
-	margin-right: 1em;
-}
-
-.ability {
-	background: linear-gradient(#2e2aae, #d946a3);
-	padding: 1em;
-	border: .3em solid #fff;
-	border-radius: 1em;
-	padding: 1em;
-	aspect-ratio: 1;
-}
-
-.ability:active {
-	text-indent: .1em;
-}
-
-.ability:hover svg {
-	transform: translateY(-.3rem);
-	fill: yellow;
-}
-
-.ability svg {
-	position: relative;
-	fill: #fff;
-	height: 100%;
-	width: 100%;
-	max-height: 5rem;
-	transition: transform .2s ease-in-out, fill .2s ease-in-out;
-}
-
-#scorePannel {
-	color: #000;
-	grid-area: score;
-	background-color: #ffffff5c;
-	display: flex;
-	flex-direction: column;
-	border-radius: 1em;
-	padding: 1em;
-}
-
-#scorePannel h2,
-#scorePannel p {
-	text-align: center;
-}
-
-#scorePannel > div {
-	flex-grow: 1;
 	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 1fr 3fr;
-	/* background-color: #030; */
+	grid-template-columns: 2fr 1.5fr 2fr;
 	align-items: center;
+	background-color: #313131;
+	padding: 0 3.5em;
+	padding-bottom: 2em;
+	color: #fff;
 }
 
-.score {
-	font-size: 3rem;
+.player-info {
+	/* background-color: pink; */
 }
 
-.score + .score {
-	border-left: 1px solid #000;
+/* added # to increase priority */
+#game-container .specs-wrapper {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: #fff2;
+	border-radius: 5em;
+	overflow: hidden;
+	padding: 1.5em 0;
+}
+
+.spec {
+	background: initial;
+	border: initial;
+	aspect-ratio: 1;
+	max-height: 2em;
+	transition: opacity .2s ease-in-out;
+}
+
+.spec:hover {
+	opacity: .8;
+}
+
+.spec.disabled {
+	opacity: .2;
+}
+
+.score * {
+	text-shadow: 0px 0px 4px #fff;
+}
+
+.score > p {
+	font-size: 2rem;
+}
+
+.score #leave {
+	display: block;
+	background: initial;
+	border: initial;
+	border-radius: 50%;
+	padding: 1em;
+	background-color: #fff2;
+	margin: 0 auto;
+	opacity: .5;
+	transition: opacity .2s ease-in-out;
+}
+
+.score #leave:hover {
+	opacity: 1;
+}
+
+.score #leave img {
+	max-height: 2rem;
 }
