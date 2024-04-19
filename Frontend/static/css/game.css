@@ -1,0 +1,47 @@
+#game-container {
+	background-color: green;
+	min-height: 70vh;
+	width: 100%;
+	max-width: 1280px;
+	display: grid !important;
+	grid-template-columns: 1fr 1fr; /* Define the width of columns */
+	grid-template-areas:
+		"game	game"
+		"specs	score";
+}
+
+#game {
+	grid-area: game;
+	aspect-ratio: 16 / 9; /* To keep an aspect ratio of 16:9 */
+	/* set max as HD */
+	max-width: 1280px;
+	max-height: 720px;
+	background-color: red;
+}
+
+#special-abilities {
+	grid-area: specs;
+	background-color: yellow;
+	display: flex;
+	gap: 3em;
+}
+
+#special-abilities > * {
+	background-color: pink;
+	flex: 1 1 auto;
+}
+
+.ability {
+	/* #d946a3 retro-pink*/
+	/* #080728 retro-blue*/
+	background: linear-gradient(#d946a3, #080728);
+}
+
+.ability svg {
+	fill: yellow;
+}
+
+#score {
+	grid-area: score;
+	background-color: black;
+}
