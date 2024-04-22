@@ -1,8 +1,4 @@
-FROM debian:bookworm
-
-LABEL AUTHOR="Sarah Meftah"
-LABEL INFO="Generic Microservice Container for RetroPong"
-LABEL VERSION="1.0"
+FROM python:3
 
 ARG RP_HOST
 ARG RP_PORT
@@ -27,13 +23,15 @@ ENV SU_PASS=${SU_PASS}
 ENV SU_EMAIL=${SU_EMAIL}
 ENV PYTHONUNBUFFERED=1
 
-RUN apt update && apt upgrade
-RUN apt install dos2unix -y -f
-RUN apt install python3 -y -f
-RUN apt install python3-django -y -f
-RUN apt install python3-pip -y -f
+RUN apt -y update && apt -y upgrade
 RUN apt install libpq5 -y -f
-
+RUN apt install dos2unix -y -f
+RUN pip install --no-cache-dir --upgrade pip
+RUN pip install Django psycopg djangorestframework-simplejwt channels daphne
+  # RUN apt install python3 -y -f
+# RUN apt install pipx -y -f
+# RUN apt install python3-django -y -f
+# RUN apt install python3-pipx -y -f
 
 COPY Configuration/settings.py /Toolkit/settings.py
 

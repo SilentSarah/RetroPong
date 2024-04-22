@@ -43,15 +43,15 @@ install_python_package() {
 
 SetupDependenciesAndCommands() {
 
-    DjangoDeps=("django" "psycopg" "djangorestframework-simplejwt")
-    echo "Setup is Starting..."
-    sleep 1
+    # DjangoDeps=("django" "psycopg" "djangorestframework-simplejwt")
+    # echo "Setup is Starting..."
+    # sleep 1
 
-    install_sys_dependency "python3"
-    for dep in ${DjangoDeps[@]}
-    do
-        install_python_package $dep
-    done
+    # install_sys_dependency "python3"
+    # for dep in ${DjangoDeps[@]}
+    # do
+    #     install_python_package $dep
+    # done
 
     mkdir -p /VolumeData
 }
