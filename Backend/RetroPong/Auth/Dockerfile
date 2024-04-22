@@ -28,25 +28,35 @@ ENV SU_EMAIL=${SU_EMAIL}
 ENV PYTHONUNBUFFERED=1
 
 RUN apt update && apt upgrade
+RUN apt install dos2unix -y -f
 RUN apt install python3 -y -f
 RUN apt install python3-django -y -f
 RUN apt install python3-pip -y -f
 RUN apt install libpq5 -y -f
 
+
 COPY Configuration/settings.py /Toolkit/settings.py
 
 COPY Tools/Setup.sh /Toolkit/Setup.sh
+# CRLF -> LF
+RUN dos2unix /Toolkit/Setup.sh
 RUN chmod +x /Toolkit/Setup.sh
 RUN bash /Toolkit/Setup.sh
 
 COPY Configuration/PythonSuperUserCheck.py /Toolkit/PythonSuperUserCheck.py
+# CRLF -> LF
+RUN dos2unix /Toolkit/PythonSuperUserCheck.py
 
 COPY Tools/DjangoSetup.sh /Toolkit/DjangoSetup.sh
+# CRLF -> LF
+RUN dos2unix /Toolkit/DjangoSetup.sh
 RUN chmod +x /Toolkit/DjangoSetup.sh
 RUN /Toolkit/DjangoSetup.sh
 ENV SETUP_DONE=1
 
 COPY Tools/ProjectCheck.sh /Toolkit/ProjectCheck.sh
+# CRLF -> LF
+RUN dos2unix /Toolkit/ProjectCheck.sh
 RUN chmod +x /Toolkit/ProjectCheck.sh
 
 ENTRYPOINT [ "bash", "/Toolkit/ProjectCheck.sh" ]
