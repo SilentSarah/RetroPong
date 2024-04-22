@@ -30,6 +30,7 @@ networks:
 
 volumes:
   Retropong-volume:
+    driver: local
     driver_opts:
         type: none
         device: ./RPVOLUME
