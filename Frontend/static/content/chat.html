@@ -1,52 +1,168 @@
-<div class="chat-root d-none align-items-center justify-content-center  w-100 " style="height: calc(100vh - 220.5px);">
-    <div class="chat-container rounded-4 position-relative"
-        style="overflow: hidden; height: 845px; border: 4px solid #f080f280; width: 1400px; max-width: 1400px; min-width: 300px">
-        <!-- ICONS MENU -->
-        <img id="#open_id" class="items-iconMenuOpen z-1 position-absolute"
-            style="cursor: pointer; width: 45px; top: 15px;right: -1000px;" src="/static/img/general/Vector .png"
-            alt="avatar" class="avatar" style="width: 100px; height: 100px; border-radius: 50%; ">
-        <!-- Menu items -->
-        <div id="#menu_items"
-            class="menu_items d-flex d-none flex-column align-items-center z-1  h-100  position-absolute"
-            style="overflow-y:auto; width:15%; gap: 10px; flex: 1; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);">
-            <img id="#close_id" class="items-iconMenuOpen z-1 " src="/static/img/general/Vector1.png" alt="avatar"
-                class="avatar" style="width:30px;height: 30px; margin-top: 10px;">
-            <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar" style="width:58px;height: 58px; ">
-            <!-- ADD MANY IMAGE HERE TO CHECK SCROLL -->
-            <img src="/static/img/general/frog.jpeg" alt="avatar" class="avatar-peopel avatar">
-            <img src="/static/img/general/black.jpeg" alt="avatar" class="avatar-peopel avatar">
-            <img src="/static/img/general/Group 3.png" alt="avatar" class="avatar" style="width:58px;height: 58px; ">
-        </div>
-        <div id="#blur_id" class="chat-wrapper d-flex w-100 h-100 "
-            style="background: rgb(240,128,242);background: linear-gradient(180deg, rgba(240,128,242,0.2) 0%, rgba(0,0,0,1) 100%);">
-            <!-- LEFT -->
-            <div class="items-left d-flex flex-column align-items-center "
-                style="width:100px;flex: 1; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); overflow-y:auto;">
-                <div style="width:100px;height: 100px; " class="d-flex align-items-center justify-content-center">
-                    <img src="/static/img/general/DM 1.png" alt="avatar " class="avatar w-70 h-70">
+ <!-- Hidden container for user details start-->
+<!-- Hidden container for user details start-->
+<div id="#details" class="user_details position-absolute z-1  d-flex d-none flex-column align-items-center" style=" border-radius: 25px 25px 0px 25px;background: rgb(255,255,255); background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(0,0,0,1) 55%);border: 1px solid #F080F2;">
+    <img src="/static/img/general/Rectangle 80.png" alt="avatar"class="m-0" style="object-fit:cover; width: 150px; height: 65px; cursor: pointer;">
+    <div class="user_details_person d-flex align-items-center  w-100 p-1">
+        <img  src="/static/img/general/frog.jpeg" alt="avatar"class=" position-absolute" style="top: 45px; object-fit:cover; width: 50px; height: 50px; cursor: pointer; border: 1px solid #F080F2;border-radius: 10px;object-fit: cover;  ">
+        <div class="user_details_person_text d-flex flex-column w-100 align-items-end px-3  justify-content-start">
+            <div>
+                <span class="text-white"  style="font-size: 12px;">Ahmed_sekk</span>  
+                <div class="user_details_ID" style="margin-top: -10px;">
+                    <span class="text-white" style="font-size:6px;">call me Med</span>  
+                    <!-- add icon copy here --> 
                 </div>
-                <!-- ADD MANY IMAGE HERE TO CHECK SCROLL -->
-                <img src="/static/img/general/black.jpeg" alt="avatar p-3" class="avatar-peopel avatar">
-                <img src="/static/img/general/frog.jpeg" alt="avatar p-3" class="avatar-peopel avatar">
-                <img src="/static/img/general/Group 3.png" alt="avatar p-3" class="avatar"
-                    style="width:70px;height: 70px; ">
+            </div>
+        </div>
+    </div>
+    <div class="user_details_ranks mt-4 d-flex flex-column justify-content-center align-items-center w-100 p-2 text-align-start" style="max-width: 80%;border:1px solid #F080F2;border-radius: 25px 25px 0px 0px;border-bottom: none;">
+        <h4 class="p-1 w-80" style="font-size: 12px; border: 1px solid #F080F2; border-radius: 5px;background: #F080F2;background: linear-gradient(to top, #F080F2 40%, #FFFFFF 49%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">Rank: <span>42</span></h4>
+        <h4 class="p-1 w-80" style="font-size: 12px; border: 1px solid #F080F2; border-radius: 5px;background: #F080F2;background: linear-gradient(to top, #F080F2 40%, #FFFFFF 49%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">eXP: <span>42</span></h4>
+        <h4 class="p-1 w-80" style="font-size: 12px; border: 1px solid #F080F2; border-radius: 5px;background: #F080F2;background: linear-gradient(to top, #F080F2 40%, #FFFFFF 49%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;">Ratio: <span>42</span></h4>
+    </div>
+</div>
+<!-- Hidden container for user details finished-->
+<!-- Hidden container for user details finished-->
+
+
+
+<div class="chat-root d-flex align-items-center justify-content-center  w-100  h-100 position-relative" style="">
+    <div class="chat-container rounded-4 position-relative" style="overflow: hidden; height: 845px; border: 4px solid #f080f280; width: 1400px; max-width: 1400px; min-width: 300px">
+        <img id="#open_chat_btn" class="items-iconMenuOpen z-1 position-absolute mt-3"  src="/static/img/general/Vector .png" class="avatar " style="cursor: pointer; width: 40px; border-radius: 50%; left: -1000px;">
+        <!-- <img id="#close_members_btn" class="items-iconMenuOpen-1 z-3 position-absolute mt-3 d-none" src="/static/img/general/Vector1.png" alt="avatar"  class="avatar" style="width:30px;height: 30px; margin: 10px 0px 0px 15px; cursor: pointer; right: 10px;"> -->
+        <img id="#open_members_btn" class="items-iconMenuOpen-1 z-1 position-absolute mt-3"  src="/static/img/general/channels.png" class="avatar " style="cursor: pointer; width: 40px; border-radius: 50%; right: 14px; display: none;">
+        
+        <!-- Start Menu items Channels-->
+        <!-- Start Menu items Channels-->
+        <div id="#menu_items" class="menu_items d-flex d-none flex-column  z-1  h-100  position-absolute w-100" style="padding: 10px 0px 0px 10px; overflow-y:auto; width:1000px; gap: 10px; background-color: rgb(0,0,0); background: linear-gradient(180deg, rgba(0, 0, 0, 0.371) 0%, rgba(0, 0, 0, 0.597) 100%);">
+            <div class="w-100 d-flex align-items-end justify-content-center" style="padding:0px 10px;"> 
+                <img id="#close_chat_btn" class="items-iconMenuOpen z-1" src="/static/img/general/Vector1.png" alt="avatar"  class="avatar" style="width:30px;height: 30px; margin: 10px 0px 0px 15px; cursor: pointer;">
+            </div>    
+            <!-- transition to chat -->
+            <div id="#chat_btn" class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
+                <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar " style="width:58px;height: 58px;  cursor: pointer; ">
+                <h3 class="text-white" style="font-size: 25px;  white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">Members</h3>
+            </div>
+
+            <div class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
+                <img src="/static/img/general/gmc.webp" alt="avatar" class="avatar-peopel" style="width:58px;height: 58px;  cursor: pointer; ">
+                <h3 class="text-white" style="font-size: 25px; font-family: oxegyn;  ;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">L_9AYD AISA</h3>
+            </div>
+
+            <div class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
+                <img src="/static/img/general/frog.jpeg" alt="avatar" class="avatar-peopel" style="width:58px;height: 58px;  cursor: pointer; ">
+                <h3 class="text-white" style="font-size: 25px; font-family: oxegyn;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">FRY L9NB</h3>
+            </div>
+
+            <div class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
+                <img src="/static/img/general/51c84zdlGsL._SS500.webp" alt="avatar" class="avatar-peopel" style="width:58px;height: 58px;  cursor: pointer; ">
+                <h3 class="text-white" style="font-size: 25px; font-family: oxegyn;  ;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">SAWT SAFIRO LBOLBOLI erfrfeferfer</h3>
+            </div>
+       
+            <div id="#descover_btn" class="channel d-flex align-items-center w-100" style="gap: 10px;"> <!-- transition to discover a new members or channels -->
+                <img src="/static/img/general/Group 3.png" alt="avatar" class="avatar" style="width:58px;height: 58px;  cursor: pointer;">
+                <h3 class="text-white" style="font-size: 25px;  flex: 3;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">ADD</h3>
+            </div>
+            <!-- ADD MANY IMAGE HERE TO CHECK SCROLL -->
+        </div>
+        <!--Finished Menu items -->
+        <!--Finished Menu items -->
+
+        <!-- Start Menu items Members -->
+        <!-- Start Menu items Members -->
+        <div id="#menu_items-1" class="menu_items-1 d-flex d-none flex-column  z-1  h-100  position-absolute w-100" style="right: 0 ;gap:5px;overflow-y:auto; width:1000px;background-color: rgb(0,0,0); background: linear-gradient(180deg, rgba(0, 0, 0, 0.371) 0%, rgba(0, 0, 0, 0.597) 100%);">
+            
+            <div class="w-100 d-flex align-items-end justify-content-center" style="padding:0px 10px;"> 
+                <img id="#close_members_btn" class="items-iconMenuOpen z-1 d-flex justify-content-end align-items-end my-4 mr-4" src="/static/img/general/Vector1.png" alt="avatar"  class="avatar" style="width:30px;height: 30px; cursor: pointer;">
+            </div>
+            <!-- transition to chat -->
+            <div class="memb5er d-flex align-items-center p-1 justify-content-between w-100" style="gap: 2px;background-color: rgba(128, 128, 128, 0.113);">
+                <div class="d-flex align-items-center">
+                    <div class="zone_img position-relative">
+                        <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                        <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                    </div>                    <div class=" d-flex flex-column text-white p-2">
+                        <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                        <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                    </div>
+                </div>
+                <div class="circle rounded-circle border border-black " style="width: 10px; height: 10px;background-color: #75E25A;"></div>
+            </div>
+            <div class="memb5er d-flex align-items-center p-1 justify-content-between w-100" style="gap: 2px;background-color: rgba(128, 128, 128, 0.113);">
+                <div class="d-flex align-items-center">
+                    <div class="zone_img position-relative">
+                        <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                        <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                    </div>                    <div class=" d-flex flex-column text-white p-2">
+                        <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                        <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                    </div>
+                </div>
+                <div class="circle rounded-circle border border-black " style="width: 10px; height: 10px;background-color: #75E25A;"></div>
+            </div>
+            <div class="memb5er d-flex align-items-center p-1 justify-content-between w-100" style="gap: 2px;background-color: rgba(128, 128, 128, 0.113);">
+                <div class="d-flex align-items-center">
+                    <div class="zone_img position-relative">
+                        <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                        <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                    </div>                    <div class=" d-flex flex-column text-white p-2">
+                        <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                        <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                    </div>
+                </div>
+                <div class="circle rounded-circle border border-black " style="width: 10px; height: 10px;background-color: #75E25A;"></div>
+            </div>
+            
+           
+            <!-- ADD MANY IMAGE HERE TO CHECK SCROLL -->
+        </div>
+        <!--Finished Menu items -->
+        <!--Finished Menu items -->
+
+        <div id="#blur_id" class="chat-wrapper d-flex w-100 h-100 position-relative" style="background: rgb(240,128,242);background: linear-gradient(180deg, rgba(240,128,242,0.2) 0%, rgba(0,0,0,1) 100%);">
+            <!-- LEFT -->
+            <div id="#items_left" class="items-left items_left d-flex flex-column align-items-start"style="width: 60px;min-width:60px; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); overflow-y:auto;">
+                 <!-- transition to chat -->
+                <div id="#chat_btn_lg" class="channel d-flex align-items-center w-100 mt-2" style="gap: 5px; ">
+                    <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar " style="width:50px;height: 50px;  cursor: pointer; ">
+                    <h3 class="title_items text-white inter" style="font-size: 14px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">Members</h3>
+                </div>
+                <div class="channel d-flex align-items-center w-100"  style="gap: 5px;">
+                    <img src="/static/img/general/gmc.webp" alt="avatar" class="avatar-peopel" style="width:50px;height: 50px;  cursor: pointer; ">
+                    <h3 class="title_items text-white inter" style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">L_9AYD AISA</h3>
+                </div>
+    
+                <div class="channel d-flex align-items-center w-100" style="gap: 5px;">
+                    <img src="/static/img/general/frog.jpeg" alt="avatar" class="avatar-peopel" style="width:50px;height: 50px;  cursor: pointer; ">
+                    <h3 class="title_items text-white inter" style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">FRY L9NB</h3>
+                </div>
+    
+                <div class="channel d-flex align-items-center  w-100" style="gap: 5px;">
+                    <img src="/static/img/general/51c84zdlGsL._SS500.webp" alt="avatar" class="avatar-peopel" style="width:50px;height: 50px;  cursor: pointer; ">
+                    <h3 class="title_items text-white inter" style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">SAWT SAFIRO LBOLBOLI</h3>
+                </div>
+           
+                <div id="#descover_btn_lg" class="channel d-flex align-items-center w-100" style="gap: 5px;"> <!-- transition to discover a new members or channels -->
+                    <img src="/static/img/general/Group 3.png" alt="avatar" class="avatar" style="width:50px;height: 50px;  cursor: pointer;">
+                    <h3 class="title_items text-white inter" style="font-size: 14px;  flex: 3;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">ADD</h3>
+                </div>
+                <!-- ADD TWO BUTTONS FOR USING OPEN SHOW MORE OR LESS OF NAVBAR  -->
+                <!-- ADD TWO BUTTONS FOR USING OPEN SHOW MORE OR LESS OF NAVBAR  -->
+                <div id="#btns_less_more" class="w-10 h-100 position-absolute d-flex align-items-center" style="left: 60px;">
+                    <img id="#arrow_left" class="position-absolute d-flex d-none" style="width: 10px;height: 40px;  cursor: pointer;" src="/static/img/general/arrow-left.png" alt="">
+                    <img id="#arrow_right" class="position-absolute d-flex" style="width: 10px;height: 40px; cursor: pointer;" src="/static/img/general/arrow-right.png" alt="">
+                </div>
             </div>
             <!-- CHAT PAGE RIGHT-0 -->
-            <div class="items-right d-flex flex-column" style="flex:18">
-                <div class="items-right-top d-flex flex-column justify-content-center align-items-center nokora"
-                    style="flex: 1; gap: 20px; background-color: rgba(0, 0, 0, 0.171);">
+            <!-- CHAT PAGE RIGHT-0 -->
+            <!-- CHAT PAGE RIGHT-0 -->
+            <div id="#section_descover" class="items-right d-flex flex-column w-100 h-100">
+                <div class="items-right-top d-flex flex-column justify-content-center align-items-center nokora"style="flex: 1; gap: 20px; background-color: rgba(0, 0, 0, 0.171);">
                     <!--TOP-->
-                    <h1 class="fw-bold text-white"
-                        style="font-size: 64px; background: #999999;background: linear-gradient(to top, #999999 0%, #FFFFFF 65%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.251));">
-                        Discover new communities</h1>
-                    <div class="items-right-top-search position-relative d-flex align-items-center  border-0"
-                        style="width: 750px; height: 50px; border-radius: 25px; overflow: hidden; background-color: #E6E6E6;filter: drop-shadow(0px 4px 7px #000000);">
-                        <input type="text" class="border-0 w-100"
-                            style="outline: none; margin-left: 40px;background-color: #E6E6E6;">
-                        <button class="h-100 border-0 text-white nokora"
-                            style="font-size: 24px; width: 100px; border-radius: 0; background-color: #A46089;text-shadow: rgb(0, 0, 0) 1px 0px 0px, rgb(0, 0, 0) 0.540302px 0.841471px 0px, rgb(0, 0, 0) -0.416147px 0.909297px 0px, rgb(0, 0, 0) -0.989992px 0.14112px 0px, rgb(0, 0, 0) -0.653644px -0.756802px 0px, rgb(0, 0, 0) 0.283662px -0.958924px 0px, rgb(0, 0, 0) 0.96017px -0.279415px 0px;filter:drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.251));">Search</button>
-                        <img class="position-absolute" style="width:35px ; left: 5px;"
-                            src="/static/img/general/icons8-search-512 1.png" alt="">
+                    <h1 class="fw-bold text-white"style="font-size: 64px; background: #999999;background: linear-gradient(to top, #999999 0%, #FFFFFF 65%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.251));">Discover new communities</h1>
+                    <div class="items-right-top-search position-relative d-flex align-items-center  border-0" style="width: 750px; height: 50px; border-radius: 25px; overflow: hidden; background-color: #E6E6E6;filter: drop-shadow(0px 4px 7px #000000);">
+                        <input type="text" class="border-0 w-100"   style="outline: none; margin-left: 40px;background-color: #E6E6E6;">
+                        <button class="h-100 border-0 text-white nokora" style="font-size: 24px; width: 100px; border-radius: 0; background-color: #A46089;text-shadow: rgb(0, 0, 0) 1px 0px 0px, rgb(0, 0, 0) 0.540302px 0.841471px 0px, rgb(0, 0, 0) -0.416147px 0.909297px 0px, rgb(0, 0, 0) -0.989992px 0.14112px 0px, rgb(0, 0, 0) -0.653644px -0.756802px 0px, rgb(0, 0, 0) 0.283662px -0.958924px 0px, rgb(0, 0, 0) 0.96017px -0.279415px 0px;filter:drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.251));">Search</button>
+                        <img class="position-absolute" style="width:35px ; left: 5px;"  src="/static/img/general/icons8-search-512 1.png" alt="">
                     </div>
                 </div>
                 <div class="items-right-bottom d-flex flex-column align-items-center justify-content-start"
@@ -162,182 +278,321 @@
                     </div>
                 </div>
             </div>
+            <!-- CHAT PAGE RIGHT-1 -->
+            <!-- CHAT PAGE RIGHT-1 -->
+            <!-- CHAT PAGE RIGHT-1 -->
+            
+            <div id="#section_chat" class="right-1 d-flex d-none " style="flex:18; width: 1400px; height: 845px;">
+                <div class="right-1-items nokora d-flex w-100 h-100 d-flex "style="">
+                    <div class="center d-flex flex-column w-100"  style="flex: 5; background: rgb(240, 128, 242); background: linear-gradient(180deg, rgba(240, 128, 242, 0.629) 0%, rgba(0,0,0,1) 100%); ">
+                        <!-- Top of Center page chat-1 -->
+                        <!-- Top of Center page chat-1 -->
+                        <div class="center-in-top d-flex flex-column justify-content-center align-items-center " style="padding: 2.5px; flex:1;background: rgb(130,77,133);background: linear-gradient(90deg, rgba(130,77,133,1) 0%, rgba(0,0,0,1) 50%, rgba(131,77,133,1) 100%);">
+                            <h1 class="taprom" style="font-size: 32px; background: #F080F2;background: linear-gradient(to right, #F080F2 0%, #FFFFFF 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;"> #General</h1>
+                            <span class="center-text-desc nokora fw-bold " style="font-size: 14px; color: #848484;">DO NOT POST RECARDO DANCING FOR THE LAST TIME!</span>
+                        </div>
+                        <!-- Center of Center page chat-1 -->
+                        <!-- Center of Center page chat-1 -->
+                            <div id="#items-right-center-bottom" class="items-right-center-bottom d-flex flex-column align-items-center  w-100" style="flex:8; overflow-y:auto; max-height: 680px;">
+                                <div class="items-top-message h-100 w-100 p-4"style="gap:10px; ">
+                                    <!--add here many messages-->
+                                    <!--add here many messages  format -->
+                                   
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center w-100" style=" padding:10px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                     <!--add here many messages  finished format-->
+                                   
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>   
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>   
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center fw-regular" style="padding: 11px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                    <div class=" d-flex flex-column w-100" style="text-align: end; ">
+                                        <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
+                                        <div class="d-flex w-100" style="gap: 10px;">
+                                            <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.51);">
+                                            <div class="items-text w-100  fw-light d-flex inter align-items-center " style=" padding:1px 15px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  font-size: 16px;color: #dbdee1;">Lorem ipsum guack guack HAAA!!!!</div>   
+                                        </div>
+                                    </div>    
+                                     
+                                </div>
+                            </div>
+                            <!-- Bottom of Center page chat-1 (input messages) -->
+                            <!-- Bottom of Center page chat-1 (input messages) -->
+                            <!-- Bottom of Center page chat-1 (input messages) -->
+                            <div class="btn-message  p-4 w-100 d-flex align-items-center" style="flex: 1; height: 20%;">
+                                <div class="items-bottom-message-items position-relative d-flex align-items-center justify-content-center ps-4" style=" gap: 8px; height: 50px;width: 100%; ">
+                                        <!-- <div class="items-bottom-details d-none align-items-center align-items-center">
+                                            <img  src="/static/img/general/channels.png" alt="avatar"class="" style="object-fit:cover; width: 20px; height: 20px; cursor: pointer;">
+                                            <img src="/static/img/general/members.png" alt="avatar"class="" style="object-fit:cover; width: 20px; height: 20px;  cursor: pointer;">
+                                        </div> -->
+                                        <input type="text" class="items-input-message d-flex border text-white h-100 w-100"placeholder="Write a message..."style="text-align: center; border-radius: 25px;background: rgb(190,109,177);background: linear-gradient(180deg, rgba(190,109,177,0.7) 0%, rgba(88,50,82,1) 100%);outline: none;">
+                                         <img class="send-message-icon position-absolute" src="/static/img/general/send.png" style="width: 35px; right: 10px;" alt="">
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- right members page chat-1 (input messages) -->
+                    <!-- right members page chat-1 (input messages) -->
+                    <div class="rightNav d-flex flex-column" style="flex: 1; background-color: #482548;">
+                        <div style="flex: 1;" class="rightNav_lengthMembers text-secondary fs-1 d-flex align-items-center text-align-center justify-content-center"  >
+                            <span   class="rightNavTopMem" style="font-size: 14px;">Members: </span>
+                            <span style="font-size:14px;">200</span>
+                        </div>
+                        <div class="rightNavMembers d-flex flex-column" style="flex: 9; overflow-y: auto;">
+                            <!--add here many messages  format-->
+                            <!--add here many messages  format-->
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                               
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <!--add here many messages  finished format-->
+                            <!--add here many messages  finished format-->
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+                            <div class="member d-flex align-items-center p-1" style="gap: 2px; background-color: #d9d9d92d;">
+                                <div class="zone_img position-relative">
+                                    <div class="circle rounded-circle border border-black position-absolute " style="width: 10px; height: 10px;bottom: 8px;left: 42px ;background-color: #75E25A;"></div>
+                                    <img id="#user_img" src="/static/img/general/frog.jpeg" alt="" class="rounded-circle border border-black" style="height: 50px; width: 50px;">
+                                </div>
+                                <div class="items_user d-flex flex-column text-white p-2">
+                                    <span class="" style="font-size: 16px;">Ahmed_sekk</span>
+                                    <span class="text-secondary" style="font-size: 10px;" >call me Med</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+     </div>
 </div>
-
-
-
-<div class="chat-root-1 d-flex align-items-center justify-content-center  w-100 " style="height: calc(100vh - 220.5px);">
-    <div class="chat-container-1 rounded-4 position-relative" style="overflow: hidden; height: 845px; border: 4px solid #f080f280; width: 1400px; max-width: 1400px; min-width: 300px">
-                <img id="#open_id_1" class="items-iconMenuOpen z-1 position-absolute"style="cursor: pointer; width: 45px; top: 15px;left: -1000px;" src="/static/img/general/Vector .png"alt="avatar" class="avatar" style="width: 100px; height: 100px; border-radius: 50%; ">
-                <img id="#open_id_2" class="items-iconMenuOpenMem z-1 position-absolute"style="cursor: pointer; width: 45px; top: 15px;right: -1000px;" src="/static/img/general/member.png"alt="avatar" class="avatar" style="width: 100px; height: 100px; border-radius: 50%; ">
-        <!-- Menu items -->
-        <div id="#menu_items_1" class="menu_items-1 d-flex d-none flex-column align-items-center z-1  h-100  position-absolute " style="overflow-y:auto; width:15%; gap: 10px; flex: 1; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%);">
-                <img id="#close_id_1" class="items-iconMenuOpen z-1 mt-2" src="/static/img/general/Vector1.png" alt="avatar" class="avatar" style="width:30px;height: 30px; margin-top: 10px;">
-                <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar" style="width:58px;height: 58px; ">
-                <!-- ADD MANY IMAGE HERE TO CHECK SCROLL -->
-                <img src="/static/img/general/frog.jpeg" alt="avatar" class="avatar-peopel avatar">
-                <img src="/static/img/general/black.jpeg" alt="avatar" class="avatar-peopel avatar">
-                <img src="/static/img/general/Group 3.png" alt="avatar" class="avatar"style="width:58px;height: 58px; ">
-        </div>
-        <!-- LIST MEMEBERS FORM MOBILE-->
-        <div id="#list_member" class="menu_items-2 d-flex d-none flex-column   z-1  h-100 w-100 position-absolute" style="background-color:#482548; gap: 1px;">
-            <img id="#close_id_2" class="items-iconMenuOpen z-1 m-4 d-flex align-items-start" src="/static/img/general/Vector1.png" alt="avatar" class="avatar" style="cursor: pointer; width:30px;height: 30px; margin-top: 10px;">
-            <div class="text-white d-flex align-items-center w-100" style="background-color:#d9d9d93c;gap: 10px; padding: 8px;">
-                <div class="d-flex align-items-center position-relative" style="height: 50px;">
-                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar m-0 rounded-circle border border-black w-100 h-100"style="object-fit:cover;">
-                    <div class="position-absolute border border-black"
-                        style="width: 10px; height: 10px; background-color: #00FF00; border-radius: 50%; bottom: 0; right: 6px;">
-                    </div>
-                </div>
-                <div class="  d-flex flex-column">
-                    <span class="fw-bold nokora " style="font-size: 24px; margin-bottom: -5px;">Test</span>
-                    <span class="fw-light nokora" style="font-size: 10px; color: #ffffffa3;">guack guack guack</span>
-                </div>
-            </div>
-            <div class="text-white d-flex align-items-center w-100" style="background-color:#d9d9d93c;gap: 10px; padding: 8px;">
-                <div class="d-flex align-items-center position-relative" style="height: 50px;">
-                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar m-0 rounded-circle border border-black w-100 h-100"style="object-fit:cover;">
-                    <div class="position-absolute border border-black"
-                        style="width: 10px; height: 10px; background-color: #00FF00; border-radius: 50%; bottom: 0; right: 6px;">
-                    </div>
-                </div>
-                <div class="  d-flex flex-column">
-                    <span class="fw-bold nokora " style="font-size: 24px; margin-bottom: -5px;">Test</span>
-                    <span class="fw-light nokora" style="font-size: 10px; color: #ffffffa3;">guack guack guack</span>
-                </div>
-            </div>
-            <div class="text-white d-flex align-items-center w-100" style="background-color:#d9d9d93c;gap: 10px; padding: 8px;">
-                <div class="d-flex align-items-center position-relative" style="height: 50px;">
-                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar m-0 rounded-circle border border-black w-100 h-100"style="object-fit:cover;">
-                    <div class="position-absolute border border-black"
-                        style="width: 10px; height: 10px; background-color: #00FF00; border-radius: 50%; bottom: 0; right: 6px;">
-                    </div>
-                </div>
-                <div class="  d-flex flex-column">
-                    <span class="fw-bold nokora " style="font-size: 24px; margin-bottom: -5px;">Test</span>
-                    <span class="fw-light nokora" style="font-size: 10px; color: #ffffffa3;">guack guack guack</span>
-                </div>
-            </div>
-            <div class="text-white d-flex align-items-center w-100" style="background-color:#d9d9d93c;gap: 10px; padding: 8px;">
-                <div class="d-flex align-items-center position-relative" style="height: 50px;">
-                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar m-0 rounded-circle border border-black w-100 h-100"style="object-fit:cover;">
-                    <div class="position-absolute border border-black"
-                        style="width: 10px; height: 10px; background-color: #00FF00; border-radius: 50%; bottom: 0; right: 6px;">
-                    </div>
-                </div>
-                <div class="  d-flex flex-column">
-                    <span class="fw-bold nokora " style="font-size: 24px; margin-bottom: -5px;">Test</span>
-                    <span class="fw-light nokora" style="font-size: 10px; color: #ffffffa3;">guack guack guack</span>
-                </div>
-            </div>
-            <div class="text-white d-flex align-items-center w-100" style="background-color:#d9d9d93c;gap: 10px; padding: 8px;">
-                <div class="d-flex align-items-center position-relative" style="height: 50px;">
-                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar m-0 rounded-circle border border-black w-100 h-100"style="object-fit:cover;">
-                    <div class="position-absolute border border-black"
-                        style="width: 10px; height: 10px; background-color: #00FF00; border-radius: 50%; bottom: 0; right: 6px;">
-                    </div>
-                </div>
-                <div class="  d-flex flex-column">
-                    <span class="fw-bold nokora " style="font-size: 24px; margin-bottom: -5px;">Test</span>
-                    <span class="fw-light nokora" style="font-size: 10px; color: #ffffffa3;">guack guack guack</span>
-                </div>
-            </div>
-        </div>
-        <!--finished part member-->
-
-        <div id="#blur_id_1" class="chat-wrapper d-flex w-100 h-100 "style="background: rgb(240,128,242);background: linear-gradient(180deg, rgba(240,128,242,0.2) 0%, rgba(0,0,0,1) 100%);">
-            <!-- LEFT -->
-            <div class="items-left-1 d-flex flex-column align-items-center overflow-hidden" style="width:100px ;flex: 1; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); overflow-y:auto;">
-                    <div style="width:100px;height: 100px; " class="d-flex align-items-center justify-content-center">
-                             <img src="/static/img/general/DM 1.png" alt="avatar " class="avatar w-70 h-70">
-                    </div>
-                    <!-- ADD MANY IMAGE HERE TO CHECK SCROLL -->
-                    <img src="/static/img/general/black.jpeg" alt="avatar p-3" class="avatar-peopel avatar">
-                    <img src="/static/img/general/frog.jpeg" alt="avatar p-3" class="avatar-peopel avatar">
-                    <img src="/static/img/general/Group 3.png" alt="avatar p-3" class="avatar" style="width:70px;height: 70px; ">
-            </div>
-            <!--  CHAT PAGE RIGHT-1  -->
-            <div class="items-right d-flex w-100" style="flex:18; height: 845px;">
-                <!-- CENTER CHAT -->
-                <div class="itmes-right-center bg-primary d-flex flex-column h-100 w-100" style="flex-grow: 1;">
-                    <!--TOP-->
-                    <div class="items-right-center-top d-flex align-items-center justify-content-center flex-column"
-                        style="flex: 1/10;height: 100px;background: rgb(130,77,133);background: linear-gradient(90deg, rgba(130,77,133,1) 0%, rgba(0,0,0,1) 50%, rgba(131,77,133,1) 100%);">
-                        <h1 class="taprom" style="font-size: 32px; background: #F080F2;background: linear-gradient(to right, #F080F2 0%, #FFFFFF 100%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;"> #General</h1>
-                        <span class="nokora fw-bold " style="font-size: 16px; color: #848484;">DO NOT POST RECARDO DANCING FOR THE LAST TIME!</span>
-                    </div>
-                    <!--BOTTOM messages-->
-                    <div id="#items-right-center-bottom" class="items-right-center-bottom bg-secondary d-flex flex-column align-items-center h-100 w-100" style="flex:8; background: rgb(240, 128, 242); background: linear-gradient(180deg, rgba(240, 128, 242, 0.629) 0%, rgba(0,0,0,1) 100%); overflow-y:auto;">
-                        <div class="items-top-message d-flex flex-column justify-content-end h-100 w-100"style="flex: 10; padding: 43px; gap: 15px;">
-                            <!--add here many messages-->
-                            
-                            <div class=" d-flex flex-column w-100" style="text-align: end; ">
-                                <div class="d-flex" style="gap: 4px;">
-                                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px;">
-                                    <div class="items-text text-white d-flex fw-light inter align-items-center " style="padding: 11px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  ">texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext text texttext texttexttext texttexttext texttexttext texttexttext texttexttext texttexttext texttexttext text</div>   
-                                </div>
-                                <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
-                            </div>
-
-                            <div class=" d-flex flex-column w-100" style="text-align: end; ">
-                                <div class="d-flex" style="gap: 4px;">
-                                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px;">
-                                    <div class="items-text text-white d-flex fw-light inter align-items-center " style="padding: 11px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  ">texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext text texttext texttexttext texttexttext texttexttext texttexttext texttexttext texttexttext texttexttext text</div>   
-                                </div>
-                                <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
-                            </div>
-
-                            <div class=" d-flex flex-column w-100" style="text-align: end; ">
-                                <div class="d-flex" style="gap: 4px;">
-                                    <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar-user m-0 rounded-circle border border-black "style="object-fit:cover; width: 50px; height: 50px;">
-                                    <div class="items-text text-white d-flex fw-light inter align-items-center " style="padding: 11px; border-radius: 25px; text-align: start;word-wrap: break-word;height: auto; background-color: #231423;  ">texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext text texttext texttexttext texttexttext texttexttext texttexttext texttexttext texttexttext texttexttext text</div>   
-                                </div>
-                                <span class="mt-1" style=" color: #b8b8b8;font-size: 10px; margin-right: 10px;">10:22 AM</span>
-                            </div>
-                            
-                        </div>
-                        <div class="items-bottom-message d-flex align-items-center  w-100 justify-content-end mb-4" style="flex: 1;">
-                            <div class="items-bottom-message-items w-100 d-flex align-items-center" style="max-width: 96%; gap: 8px; height: 50px; ">
-                                <input type="text" class="items-input-message d-flex border text-white h-100 w-90"placeholder="Write a message..."style="text-align: center; border-radius: 25px;background: rgb(190,109,177);background: linear-gradient(180deg, rgba(190,109,177,0.7) 0%, rgba(88,50,82,1) 100%);outline: none;">
-                                <div class="send-message border  rounded-circle d-flex align-items-center justify-content-center" style="height:50px;width:50px; background: rgb(190,109,177);background: linear-gradient(180deg, rgba(190,109,177,0.7) 0%, rgba(88,50,82,1) 100%); ">
-                                    <img class="send-message-icon w-50 " src="/static/img/general/send.png" alt="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Right CHAT -->
-                <div class="itmes-right-left-1  d-flex flex-column h-100 " style="width: 250px; background-color:#482548;">
-                    <!--TOP-->
-                    <div class="items-right-left-top fw-bold nokora d-flex align-items-center justify-content-center"style="height: 100px; flex: 1/10;color: #9e9e9e;">
-                        <span class="members">Members:</span>
-                        <span>200</span>
-                    </div>
-                    <!--BOTTOM-->
-                    <div class="items-right-left-bottom w-100" style="flex: 8; overflow-y: auto;">
-                        <!--U-N-->
-                        <div class="items-right-left-top-wrapper text-white d-flex align-items-center" style="background-color:#d9d9d93c;gap: 10px; padding: 8px;">
-                            <div class="d-flex align-items-center position-relative" style="height: 50px;">
-                                <img src="/static/img/general/gmc.webp" alt="avatar"class="avatar m-0 rounded-circle border border-black w-100 h-100"style="object-fit:cover;">
-                                <div class="position-absolute border border-black"
-                                    style="width: 10px; height: 10px; background-color: #00FF00; border-radius: 50%; bottom: 0; right: 6px;">
-                                </div>
-                            </div>
-                            <div class="items-users d-flex flex-column">
-                                <span class="items-user-name  fw-bold nokora " style="font-size: 24px; margin-bottom: -5px;">Test</span>
-                                <span class="items-user-desc fw-light nokora" style="font-size: 10px; color: #ffffffa3;">guack guack guack</span>
-                            </div>
-                        </div>
-                        <!--U-N-->
-                        
-                        <!-- ADD MANY IMAGE HERE TO CHECK SCROLL + -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-

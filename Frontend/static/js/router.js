@@ -5,7 +5,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/settings.html')
+        component: () => grabContent('/static/content/chat.html')
     },
     {
         path: '/login',
@@ -21,6 +21,11 @@ const routes = [
         path: '/dashboard',
         on: false,
         component: () => grabContent('/static/content/dashboard.html')
+    },
+    {
+        path: '/game',
+        on: false,
+        component: () => grabContent('/static/content/game.html')
     },
 ]
 
@@ -43,7 +48,9 @@ async function grabContent(path) {
 
 function router() {
     const path = window.location.pathname;
+	// below is temp to go directly to game page :)
     const route = routes.find(route => route.path === path);
+	// const route = routes.find(route => route.path === '/game'); // to load game directly
     let mainContent = document.getElementById('mainContent');
     StartLoading(route);
     setTimeout(() => {
@@ -72,4 +79,5 @@ function router() {
     console.log('Router called')
 }
 
+// uncomment below to turn dynamic on
 router();
