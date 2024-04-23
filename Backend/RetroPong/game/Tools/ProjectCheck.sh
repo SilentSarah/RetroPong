@@ -11,7 +11,7 @@ check_project_availability() {
     if [ -d "/VolumeData/$PROJECT_NAME" ]
     then
         echo "$PROJECT_NAME is available"
-        if [ -d "/VolumeData/$PROJECT_NAME/$PROJECT_APP" ]
+        if [ -d "/VolumeData/$PROJECT_APP" ]
         then
             echo "$PROJECT_APP is available"
         else

@@ -53,8 +53,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# ROOT_URLCONF = 'game.urls'
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -80,7 +78,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = f'{os.environ.get("PROJECT_NAME")}.wsgi.application'
-ASGI_APPLICATION = "game.asgi.application"
+ASGI_APPLICATION = f'{os.environ.get("PROJECT_NAME")}.asgi.application'
 # We can switch to redis later using the following config
 # CHANNEL_LAYERS = {
 #     "default": {
@@ -95,7 +93,6 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels.layers.InMemoryChannelLayer"
     },
 }
-
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
