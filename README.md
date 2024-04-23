@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-
 # Ui for the App
 
 =======
