@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./static/css/sizing.css">
     <link rel="stylesheet" href="./static/css/animation.css">
     <link rel="stylesheet" href="./static/css/chat.css">
+	<link rel="stylesheet" href="./static/css/game.css">
 </head>
 
 <body class="d-flex flex-column justify-content-between">
@@ -24,7 +25,11 @@
             <a href="/login" class="btn btn-retro ">
                 <p class="text-center btn-text-retro taprom fs-d p-0">Login</p>
             </a>
-        </div>
+			<!-- for testing -->
+			<a href="/game" class="btn btn-retro ">
+                <p class="text-center btn-text-retro taprom fs-d p-0">Game</p>
+            </a>
+		</div>
         <a href="/" class="ms-auto me-3">
             <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
         </a>
@@ -38,7 +43,14 @@
             Design by <span class="taprom text-pink-gradient text-shadow fs-4">SSarah</span></p>
     </footer>
     <script src="/static/js/SSChart.js"></script>
-    <script src="/static/js/events.js"></script>
+	<!-- Game -->
+	<script src="./static/js/game/misc.js"></script>
+	<script src="./static/js/game/socket.js"></script>
+    <script src="./static/js/game/Paddle.js"></script>
+    <script src="./static/js/game/Canvas.js"></script>
+    <script src="./static/js/game/index.js"></script>
+	<!-- Game end -->
+	<script src="/static/js/events.js"></script>
     <script src="./static/js/router.js"></script>
     <script src="./static/js/animation.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

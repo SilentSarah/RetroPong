@@ -16,6 +16,7 @@
 	grid-template-areas:
 		"game	game"
 		"specs	specs";
+	border: 3px solid pink;
 	border-radius: 3em;
 	overflow: hidden;
 }
@@ -33,20 +34,13 @@
 }
 
 #game {
+	display: flex;
 	grid-area: game;
 	aspect-ratio: 16 / 9; /* To keep an aspect ratio of 16:9 */
 	/* set max as HD */
 	max-width: 1280px;
 	max-height: 720px;
 	background: linear-gradient(#32398d, #9a5ba4, #868586);
-}
-
-#game-container {
-	border: 3px solid pink;
-}
-
-.game-info {
-	background: #343a4063 !important;
 }
 
 #game-container .game-info {
@@ -58,6 +52,7 @@
 	padding: 0 3.5em;
 	padding-bottom: 2em;
 	color: #fff;
+	background-color: #343a4063;
 }
 
 .player-info {

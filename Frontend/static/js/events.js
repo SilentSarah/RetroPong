@@ -1,4 +1,3 @@
-
 function confirmOperartion(type, parent) {
     let Confirmation = document.createElement('div');
     if (type === 'copy') {
@@ -147,4 +146,6 @@ function loadEvents() {
         handlePictureUploads();
         TwoFactorAuthHandler();
     }
+	else if (window.location.pathname === '/game')
+		initGame();
 }

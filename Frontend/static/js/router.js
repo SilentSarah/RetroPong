@@ -49,8 +49,8 @@ async function grabContent(path) {
 function router() {
     const path = window.location.pathname;
 	// below is temp to go directly to game page :)
-    // const route = routes.find(route => route.path === path);
-	const route = routes.find(route => route.path === '/game'); // to load game directly
+    const route = routes.find(route => route.path === path);
+	// const route = routes.find(route => route.path === '/game'); // to load game directly
     let mainContent = document.getElementById('mainContent');
     StartLoading(route);
     setTimeout(() => {
