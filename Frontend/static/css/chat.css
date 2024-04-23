@@ -9,7 +9,6 @@
 .avatar-peopel{
     border-radius: 50%;
     object-fit: cover;
-<<<<<<< HEAD
     width: 60px;
     height: 60px;
 } 
@@ -25,10 +24,8 @@
 .items-right-center-bottom::-webkit-scrollbar-thumb, .items-right-left-bottom::-webkit-scrollbar-thumb {
     background: rgba(160, 160, 160, 0.536); 
     border-radius: 10px;
-=======
     width: 50px;
     height: 50px;
->>>>>>> 7ee9337dfdca8afa6bcdf858c2f6508b1137bae6
 }
 
  
