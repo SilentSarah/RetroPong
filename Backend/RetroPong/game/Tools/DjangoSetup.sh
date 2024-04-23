@@ -36,8 +36,8 @@ create_app() {
         exit 1
     fi
     echo "Creating App with name: $1"
-    cd $2/$3
-    python3 ../manage.py startapp $1
+    cd /VolumeData/
+    python3 ./manage.py startapp $1
     result=$?
     if [ $result -eq 1 ]
     then

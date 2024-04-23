@@ -28,7 +28,7 @@ RUN apt install libpq5 -y -f
 RUN apt install dos2unix -y -f
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install Django psycopg djangorestframework-simplejwt channels daphne
-  # RUN apt install python3 -y -f
+# RUN apt install python3 -y -f
 # RUN apt install pipx -y -f
 # RUN apt install python3-django -y -f
 # RUN apt install python3-pipx -y -f

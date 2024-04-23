@@ -1,10 +1,10 @@
 version: '3'
 
 services:
-  auth:
-    container_name: Retropong-Auth
+  game:
+    container_name: Retropong-game
     build:
-      context: ./Auth
+      context: ./game
       args:
         - RP_HOST=${RP_HOST}
         - RP_PORT=${RP_PORT}
