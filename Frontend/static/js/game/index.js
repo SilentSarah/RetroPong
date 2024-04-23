@@ -3,6 +3,7 @@
 function initGame()
 {
 	console.log("initGame got called!");
+	initSocket();
 	const canvas = new Canvas(document.getElementById("gameCanvas"));
 	canvas.user = new Paddle();
 	canvas.com = new Paddle();
