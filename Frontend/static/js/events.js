@@ -20,45 +20,67 @@ function Click() {
     let close_chat_btn = document.getElementById('#close_chat_btn');    // to close the menu
     let blur_id = document.getElementById('#blur_id');      // to blur the background
     let menu_items = document.getElementById('#menu_items');  // to show the menu items
-
-    let open_member_btn = document.getElementById('#open_members_btn'); // to open the menu
-    let close_member_btn = document.getElementById('#close_members_btn');    // to close the menu
+    
+    // to open & close 
+    let open_member_btn = document.getElementById('#open_members_btn');  
+    let close_member_btn = document.getElementById('#close_members_btn');     
     let menu_items_1 = document.getElementById('#menu_items-1');  // to show the menu items
+
+
+    let descover_btn = document.getElementById("#descover_btn"); // to show the descover section
+    let chat_btn = document.getElementById("#chat_btn"); // to show the chat section
+    let section_descover = document.getElementById("#section_descover");
+    let section_chat = document.getElementById("#section_chat");
 
     if (open_chat_btn && close_chat_btn && blur_id) {
         open_chat_btn.addEventListener('click', function () { // to open the menu
+            open_chat_btn.classList.add('d-none');
             close_chat_btn.classList.remove('d-none');
             blur_id.style.filter = 'blur(5px)';
             menu_items.classList.remove('d-none');
+            open_member_btn.style.right = '-1000px';
         });
         close_chat_btn.addEventListener('click', function () { // to close the menu
             menu_items.classList.add('d-none');
+            open_chat_btn.classList.remove('d-none');
             blur_id.style.filter = 'blur(0px)';
-            open_member_btn.classList.remove('d-none');
+            console.log(section_chat.classList.contains('d-none'))
+            if(!section_chat.classList.contains('d-none'))
+                open_member_btn.style.right = '14px';
         });
         window.addEventListener('resize', function () { // to close the menu when the window is resized
-            close_chat_btn.classList.add('d-none');
             menu_items.classList.add('d-none');
+            open_chat_btn.classList.remove('d-none');
             blur_id.style.filter = 'blur(0px)';
-            close_member_btn.classList.add('d-none');
-            menu_items_1.classList.add('d-none');
+            console.log(section_chat.classList.contains('d-none'))
+            if(!section_chat.classList.contains('d-none'))
+                open_member_btn.style.right = '14px';
         })
     }
 
     // this part about the details users when click on the member image
     if (open_member_btn && close_member_btn && blur_id) {
         open_member_btn.addEventListener('click', function () { // to open the menu
-            open_member_btn.classList.add('d-none');
+            open_member_btn.style.right = '-1000px';
             close_member_btn.classList.remove('d-none');
             blur_id.style.filter = 'blur(5px)';
             menu_items_1.classList.remove('d-none');
+            open_chat_btn.classList.add('d-none')  
         });
         close_member_btn.addEventListener('click', function () { // to close the menu
-            open_member_btn.classList.remove('d-none');
+            open_member_btn.style.right = '14px';
             close_member_btn.classList.add('d-none');
             menu_items_1.classList.add('d-none');
             blur_id.style.filter = 'blur(0px)';
+            open_chat_btn.classList.remove('d-none');
         });
+        window.addEventListener('resize', function () {  
+            open_member_btn.style.right = '14px';
+            close_member_btn.classList.add('d-none');
+            menu_items_1.classList.add('d-none');
+            blur_id.style.filter = 'blur(0px)';
+            open_chat_btn.classList.remove('d-none');
+        })
     }
   
 
@@ -92,10 +114,7 @@ function Click() {
     })
 
     // this part about the descover and chat section in the mobile view
-    let descover_btn = document.getElementById("#descover_btn"); // to show the descover section
-    let chat_btn = document.getElementById("#chat_btn"); // to show the chat section
-    let section_descover = document.getElementById("#section_descover");
-    let section_chat = document.getElementById("#section_chat");
+    // switch between the descover and chat section
     if(descover_btn && section_descover && section_chat){
          descover_btn.addEventListener('click',function(){
             section_descover.classList.remove('d-none');
@@ -104,6 +123,7 @@ function Click() {
             close_chat_btn.classList.add('d-none');
             menu_items.classList.add('d-none');
             blur_id.style.filter = 'blur(0px)';
+            open_member_btn.style.right = '-1000px';
         })
 
         chat_btn.addEventListener('click',function(){
@@ -113,10 +133,14 @@ function Click() {
             close_chat_btn.classList.add('d-none');
             menu_items.classList.add('d-none');
             blur_id.style.filter = 'blur(0px)';
+            open_member_btn.style.right = '14px';
+
         })
         
     }
-    // this part about the descover and chat section in the laptop view
+    
+    
+    // this part about the descover and chat section in the large view
     let descover_btn_lg = document.getElementById("#descover_btn_lg"); // to show the descover section
     let chat_btn_lg = document.getElementById("#chat_btn_lg"); // to show the chat section
     if(descover_btn_lg && section_descover && section_chat){
@@ -129,7 +153,6 @@ function Click() {
             blur_id.style.filter = 'blur(0px)';
             open_member_btn.classList.add('d-none');
         })
-
         chat_btn_lg.addEventListener('click',function(){
             section_descover.classList.add('d-none');
             section_chat.classList.remove('d-none');
@@ -140,7 +163,6 @@ function Click() {
             open_member_btn.classList.remove('d-none');
 
         })
-        
     }
 
     // this part about the menu items to expand and collapse the items
@@ -166,12 +188,6 @@ function Click() {
          }
         )
     }
-
-    // check if was in section chat or descover to show the right section
-    // window.addEventListener('load',function(){
-    //     console.log(window)
-    //     console.log(object)
-    // })
 }
 
 function scanInput() {
