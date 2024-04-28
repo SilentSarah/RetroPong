@@ -14,12 +14,13 @@
 } 
 
 
-.items-right-center-bottom::-webkit-scrollbar, .items-right-left-bottom::-webkit-scrollbar{
+.items-right-center-bottom::-webkit-scrollbar, .items-right-left-bottom::-webkit-scrollbar, .users::-webkit-scrollbar{
      width: 7px;
 }
-.items-right-center-bottom::-webkit-scrollbar-track, .items-right-left-bottom::-webkit-scrollbar-track{
+.items-right-center-bottom::-webkit-scrollbar-track, .items-right-left-bottom::-webkit-scrollbar-track, .users::-webkit-scrollbar-track{
     box-shadow: inset 0 0 5px grey; 
     border-radius: 10px;
+    padding: 10px;
 }
 .items-right-center-bottom::-webkit-scrollbar-thumb, .items-right-left-bottom::-webkit-scrollbar-thumb {
     background: rgba(160, 160, 160, 0.536); 
@@ -45,15 +46,24 @@
     width: 100px;
 }
 
-.title_items{
-    /* display: none; */
+ 
+ 
+.list_filter>li{
+    font-size: 17px;
+    cursor: pointer;
+    border-right: 2px solid rgba(160, 160, 160, 0.536);
+    padding-right: 25px;
+    margin: 15px;
 }
 
 
 
 
-
 @media screen and (max-width: 1768px) {
+ 
+    .items-iconMenuOpen-1{
+        display: none !important;
+    }
     .chat-root{
         height:auto !important;
     }
@@ -150,10 +160,14 @@
     .items-iconMenuOpen {
        left: 14px !important;
     }
+    .filter{
+       justify-content: space-evenly;
+    }
 
 }
 
 @media screen and (max-width: 850px) {
+    
     .itmes-right-left-1 {
         width: max-content !important;
     }
@@ -175,9 +189,12 @@
     .items-right-left-top-wrapper{
         background-color:transparent !important;
     }
-
- 
-    
+    .filter{
+        gap:0px !important;
+    }
+    .list_filter>li{
+        font-size: 13px !important;
+    }
 }
 
 @media screen and (max-width: 640px) {
@@ -259,13 +276,34 @@
     .items-bottom-details{
         display: flex !important;
     }
+
+    .filter{
+        flex-direction: column !important;
+        border: 0px !important;
+        gap: 10px !important;
+    }
+    .list_filter>li{
+        font-size: 15px !important;
+        padding-right: 18px !important;
+        margin: 10px !important;
+    }
+    .icon{
+        width: 25px !important;
+        height: 25px !important;
+    }
+    .filters_count{
+        font-size: 13px;
+    }
+    .name{
+        font-size: 15px !important;
+    }
+    .status{
+        font-size: 10px !important;
+    }
 }
 
 
-
 /* Animation part */
-
-
 .items-left{
     transition: 0.51s ease-in-out;
 }
@@ -278,7 +316,6 @@
     animation: itemsright 0.5s ease-in-out;
 }
 
-
 @keyframes itemsright {
     0% {
         transform: translateX(5%);
@@ -287,6 +324,5 @@
     100% {
         transform: translateX(0%);
          opacity: 1;
-    }
-    
+    } 
 }
