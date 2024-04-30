@@ -1,11 +1,11 @@
 const routes = [
     {   path: '/404', 
         on: false,
-        component: () => grabContent('/static/content/404.html')
+        component: () => grabContent('/404.html')
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/dashboard.html')
+        component: () => grabContent('/static/content/home.html')
     },
     {
         path: '/login',
@@ -30,7 +30,7 @@ const routes = [
 ]
 
 async function StartLoading(route) {
-    if (route.on === true) {
+    if (route != undefined && route != null && route.on === true) {
         return;
     }
     const loading = await fetch('/static/content/loadingStatus.html').then(response => response.text());
@@ -48,9 +48,7 @@ async function grabContent(path) {
 
 function router() {
     const path = window.location.pathname;
-	// below is temp to go directly to game page :)
-    const route = routes.find(route => route.path === path);
-	// const route = routes.find(route => route.path === '/game'); // to load game directly
+    let route = routes.find(route => route.path === path);
     let mainContent = document.getElementById('mainContent');
     StartLoading(route);
     setTimeout(() => {
@@ -68,16 +66,13 @@ function router() {
             }
         }
     } else {
-        if (route.on === true)
-            return;
         routes[0].component().then(html => {
+            console.log("404");
             mainContent.innerHTML = html;
             loadEvents();
             routes[0].on = true;
         });
     }}, 750);
-    console.log('Router called')
 }
 
-// uncomment below to turn dynamic on
 router();
