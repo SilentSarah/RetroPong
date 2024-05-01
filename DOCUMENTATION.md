@@ -59,3 +59,23 @@ Here's how to setup the environment to start:
 * Run the service inside the container
 
 After you finish working on the microservice assigned to you please make to commit and to push to the appropriate branch.
+
+## 4 - Microservice Diagram, Explanations
+
+Microservice Architecture is a backend design in which a set of services (servers) communicate with each other in order for them to relay content, validate client requests and to minimize downtime during deployment and development.
+
+For example imagine there's 3 Microservices:
+
+* Auth
+* Profile
+
+1. The **Client** will send a request to the **Profile** **Microservice** in order to get his profile information by sending his token (cookies or JWTs).
+2. The **Profile** **Microservice** will send a request to **Auth Microservice**, Relaying the token acquired from the **Client** for it to be verified and serve the client the content he requested.
+3. After the verification is done and is valid, The **Auth Microservice** will confirm it by regenerating a new token for the **Client** with a new expiry date, and sends it back to the **Profile Microservice**
+4. The **Profile Microservice** will generate the requested data and sends it back to the **Client.**
+
+Below you'll find some diagrams showing communication between The Microservices mentioned:
+
+![img](https://i.imgur.com/tMXO45L.png)
+
+![img](https://i.imgur.com/DgooOcK.png)

@@ -1,0 +1,6 @@
+django 
+bcrypt
+psycopg2
+djangorestframework-simplejwt
+requests
+python-dotenv
