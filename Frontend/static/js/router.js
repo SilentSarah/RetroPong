@@ -27,6 +27,11 @@ const routes = [
         on: false,
         component: () => grabContent('/static/content/game.html')
     },
+    {
+        path: '/settings',
+        on: false,
+        component: () => grabContent('/static/content/settings.html')
+    },
 ]
 
 async function StartLoading(route) {
