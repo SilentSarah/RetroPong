@@ -64,7 +64,7 @@ After you finish working on the microservice assigned to you please make to comm
 
 Microservice Architecture is a backend design in which a set of services (servers) communicate with each other in order for them to relay content, validate client requests and to minimize downtime during deployment and development.
 
-For example imagine there's 3 Microservices:
+For example imagine there's 2 Microservices:
 
 * Auth
 * Profile
