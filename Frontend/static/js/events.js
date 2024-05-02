@@ -16,10 +16,12 @@ function confirmOperartion(type, parent) {
 
 function scanInput() {
     let items = document.querySelectorAll('input');
+
     items.forEach(item => {
         item.addEventListener('keypress', function (e) {
             if (e.key === 'Enter')
-                console.log('Enter key pressed');
+                if (window.location.pathname === '/login' || window.location.pathname === '/register')
+                    log_user_in(items);
         });
     });
 }
@@ -107,6 +109,21 @@ function TwoFactorAuthHandler() {
     }
 }
 
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 function findHighiestGrade(matches) {
     let highiest = 0;
     for([key, value] of Object.entries(matches)) {
@@ -139,9 +156,10 @@ function loadEvents() {
             //     Chart.setBarValues();
             // });
     }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register')
+    if (window.location.pathname === '/login' || window.location.pathname === '/register') {
         scanInput();
-    else if (window.location.pathname == '/dashboard' )
+    }
+    else if (window.location.pathname === '/dashboard')
         copyIDListener();
     else if (window.location.pathname === '/settings' || window.location.pathname == '/') {
         handlePictureUploads();
