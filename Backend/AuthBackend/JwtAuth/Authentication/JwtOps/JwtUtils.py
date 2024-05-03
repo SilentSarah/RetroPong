@@ -2,16 +2,15 @@ import jwt
 from ..models import *
 from django.http import *
 from dotenv import dotenv_values
-import os
 import datetime
 import time
 
 
 env = dotenv_values("../../.env")
 
-SECRET_KEY = os.getenv('SECRET_KEY')
-CLIENT_ID = os.getenv('CLIENT_ID')
-CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+SECRET_KEY = env.get('SECRET_KEY')
+CLIENT_ID = env.get('CLIENT_ID')
+CLIENT_SECRET = env.get('CLIENT_SECRET')
 
 
 
@@ -76,11 +75,13 @@ class JwtOps:
         if (new_token == None):
             return JsonResponse({ 'error': 'Invalid token' })
         else:
+            user_id = JwtOps.retrieve_user_id_using_token(new_token)
             response = JsonResponse({
-                "user_id": JwtOps.retrieve_user_id_using_token(new_token),
+                "user_id": user_id,
                 "access": new_token,
                 })
             response.set_cookie('access', new_token, max_age=datetime.timedelta(days=MAX_DURATION),httponly=False)
+            response.set_cookie('user_id', user_id, max_age=datetime.timedelta(days=MAX_DURATION), httponly=False)
             return response
         
     @staticmethod
@@ -102,9 +103,13 @@ class JwtOps:
             'exp': int(time.time() + datetime.timedelta(days=3).total_seconds())
         }
         try:
+            print(
+                SECRET_KEY
+            )
             token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
             return token
-        except:
+        except Exception as e:
+            print("JwtOps.create_token: ", e)
             return None
         
     @staticmethod

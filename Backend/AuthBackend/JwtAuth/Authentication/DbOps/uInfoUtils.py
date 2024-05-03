@@ -12,10 +12,10 @@ class DbOps:
     
     @staticmethod
     def authenticate_user(request: HttpRequest):
-        data = json.loads(request.body.decode('utf-8'))
-        username = data.get("username")
-        password = data.get("password")
         try:
+            data = json.loads(request.body.decode('utf-8'))
+            username = data.get("username")
+            password = data.get("password")
             user = Users.objects.get(uUsername=username)
             hash_comparision = bcrypt.checkpw(password.encode('utf-8'), user.uPassword.encode('utf-8'))
             if (hash_comparision == False):
@@ -48,14 +48,18 @@ class DbOps:
         user = DbOps.authenticate_user(request)
         if (user == None):
             return JsonResponse({ 'error': 'Invalid username or password' }, status=401)
+        elif (user == 400):
+            return JsonResponse({ 'error': 'Bad Request' }, status=400)
         from ..JwtOps.JwtUtils import JwtOps
         access_token = JwtOps.create_token(user)
+        user_id = JwtOps.retrieve_user_id_using_token(access_token)
         response = JsonResponse(
             {
-                "user_id": JwtOps.retrieve_user_id_using_token(access_token),
+                "user_id": user_id,
                 "access": access_token,
             }, status=201)
         response.set_cookie('access', access_token, max_age=datetime.timedelta(days=MAX_DURATION),httponly=False)
+        response.set_cookie('user_id', user_id, max_age=datetime.timedelta(days=MAX_DURATION), httponly=False)
         return response
     
     @staticmethod
