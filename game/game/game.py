@@ -9,6 +9,7 @@ import time
 class Game:
 	game_number = 0
 	def __init__(self, consumer):
+		self.finished = False
 		self.consumer = consumer
 		self.players = [consumer.channel_name]
 		self.paddles = [Paddle("left")]
@@ -49,7 +50,8 @@ class Game:
 	def start(self):
 		# testing
 		# 1/60 for 60 fps
-		self.game_loop_interval = set_interval(1/60, self.update)
+		if (not self.finished):
+			self.game_loop_interval = set_interval(1/60, self.update)
 
 		# will stop interval in 5s
 		# t = threading.Timer(5, interval.cancel)
@@ -58,7 +60,9 @@ class Game:
 		# print("The start function was called however!", file=sys.stderr)
 	
 	def finish(self):
-		self.game_loop_interval.cancel()
+		if (not self.finished and self.players_count() >= 2):
+			self.game_loop_interval.cancel()
+		self.finished = True
 
 	def name(self):
 		return (self.details['name'])

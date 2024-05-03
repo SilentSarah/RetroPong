@@ -2,10 +2,30 @@
 
 import { mkGradient, drawRect, setShadow, clearShadow } from './misc.js';
 
+// function drawRotated(context, canvas, image, degrees){
+//     // save the unrotated context of the canvas so we can restore it later
+//     // the alternative is to untranslate & unrotate after drawing
+// 	context.save();
+
+//     // move to the center of the canvas
+//     context.translate(canvas.width/2,canvas.height/2);
+
+//     // rotate the canvas to the specified degrees
+//     context.rotate(degrees*Math.PI/180);
+
+//     // draw the image
+//     // since the context is rotated, the image will be rotated also
+//     context.drawImage(image,-image.width/2,-image.width/2);
+
+//     // we’re done with the rotating so restore the unrotated context
+//     context.restore();
+// }
+
 export class Canvas
 {
 	state = {
-		keyDown: ''
+		keyDown: '',
+		counter: 0 //test
 	}
 
 	constructor (el)
@@ -17,6 +37,15 @@ export class Canvas
 		this.setSizeAttrib();
 		this.dprAdjust();
 		this.el.focus();
+		// test start
+		this.fireballSprites = [];
+		this.fireballSprites.length = 5;
+		for (let i = 0; i < this.fireballSprites.length; i++)
+		{
+			this.fireballSprites[i] = new Image();
+			this.fireballSprites[i].src = `/static/sprites/${i}.png`
+		}
+		// test end
 	}
 
 	setSizeAttrib()
@@ -81,6 +110,14 @@ export class Canvas
 		this.ctx.closePath();
 		this.ctx.fill();
 		clearShadow(this);
+		// Add animation after
+		// test start
+		this.ctx.drawImage(
+			this.fireballSprites[this.state.counter++ % 5],
+			this.ball.x * this.el.width - 30/2,
+			this.ball.y * this.el.height - 30/2, 30, 30
+		);
+		// test end
 	}
 
 	// draw the net

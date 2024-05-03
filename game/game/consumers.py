@@ -29,13 +29,21 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	def leave_game(self): # returns game object
 		# remove from active players
 		for player in self.game.players:
-			del GameConsumer.active_players[player]
+			if player in GameConsumer.active_players:
+				del GameConsumer.active_players[player]
 		# set the game as finished
 		self.game.finish()
 
 	async def connect(self):
 		# self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		# self.room_group_name = f"game_{self.room_name}"
+
+		# Test Start
+		user = self.scope["user"]
+		print(f"The user is: {user}")
+		# Test End
+
+
 		self.check_player()
 		self.game = self.join_game()
 		# I ll see to randomize the name of the game later
@@ -65,6 +73,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# print("the total connected clients are: ")
 
 	async def disconnect(self, close_code):
+		print(f"\033[91m >> The channel just disconnected is: { self.channel_name } << \033[0m")
 		self.leave_game()
 		await self.channel_layer.group_discard(
 			self.game.name(), self.channel_name
