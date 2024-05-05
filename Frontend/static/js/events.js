@@ -392,7 +392,7 @@ function filter_all_pending_online_blocks() {
     const blocks = document.getElementById('blocks');
     const btns = [btn_all, btn_pending, btn_online, btn_blocks];
     const filters = [all, pending, online, blocks];
-    
+    const notify = document.getElementById('notify_msg');
     if(btn_all)
     btn_all.addEventListener('click', () => {
         all.classList.remove('d-none');
@@ -405,7 +405,14 @@ function filter_all_pending_online_blocks() {
             if (btn.id !== 'btn_all')
                 btn.style.color = '';
         })
+        if(notify.style.display === 'flex')
+        {
+            Remove_notification('message')
+            notify.style.display = 'none'
+        }
     });
+    const notify_invite = document.getElementById('notify_invite')
+
     if(btn_pending)
     btn_pending.addEventListener('click', () => {
         pending.classList.remove('d-none');
@@ -418,6 +425,11 @@ function filter_all_pending_online_blocks() {
             if (btn.id !== 'btn_pending')
                 btn.style.color = '';
         })
+        if(btn_pending.style.display === 'flex')
+        {
+            Remove_notification('invite')
+            notify_invite.style.display = 'none'
+        }
     });
     if(btn_online)
     btn_online.addEventListener('click', () => {
@@ -451,6 +463,8 @@ function transition_between_channels_and_friends() {
     const btn_channels = document.querySelectorAll('[id="btn_channel"]');
     console.log(btn_channels)
     const btn_friends = document.getElementById('btn_friends');
+    const btn_friendss = document.getElementById('btn_friendss');
+    
     const channels = document.getElementById('chat');
     const friends = document.querySelectorAll('[id="Friends"]');
     const bar_members = document.getElementById('bar_members');
@@ -459,6 +473,15 @@ function transition_between_channels_and_friends() {
 
     if(btn_friends)
     btn_friends.addEventListener('click', () => {
+        channels.classList.add('d-none');
+        // members.classList.add('d-none');
+        friends.forEach(friend => {
+            console.log("object")
+            friend.classList.remove('d-none');
+        });
+    });
+    if(btn_friendss)
+    btn_friendss.addEventListener('click', () => {
         channels.classList.add('d-none');
         // members.classList.add('d-none');
         friends.forEach(friend => {
@@ -478,8 +501,6 @@ function transition_between_channels_and_friends() {
             });
         })
     });
-
-
 }
 
 function findHighiestGrade(matches) {

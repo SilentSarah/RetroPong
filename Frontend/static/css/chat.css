@@ -67,10 +67,7 @@
     padding-right: 25px;
     margin: 15px;
 }
-
-
-
-
+ 
 @media screen and (max-width: 1768px) {
  
     .items-iconMenuOpen-1{
@@ -284,9 +281,10 @@
         margin: 10px !important;
     }
     .icon{
-        width: 25px !important;
+        width: 30px !important;
         height: 25px !important;
     }
+    
     .filters_count{
         font-size: 13px;
     }

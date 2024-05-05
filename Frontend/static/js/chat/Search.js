@@ -1,6 +1,4 @@
 class Search{
-    constructor(){}
-    
     Generate_card(user, isPend){
         return `<div class="item-card-bottom" style="flex: 1; height: 310px; width: 400px;max-width: 400px;border-radius: 25px;overflow:hidden; background: rgb(240,128,242);background: linear-gradient(180deg, rgba(240,128,242,0.5) 0%, rgba(0,0,0,0.25) 100%);filter: drop-shadow(0px 4px 4px #000000);box-shadow: 10px -10px 19px 0px rgba(255,255,255,0.25) inset;-webkit-box-shadow: 10px -10px 19px 0px rgba(255,255,255,0.25) inset;-moz-box-shadow: 10px -10px 19px 0px rgba(255,255,255,0.25) inset;">
         <div style="margin:10px;" class="d-flex align-items-center">
@@ -24,19 +22,14 @@ class Search{
             <button   data-user-id='${user.id}' class="btn_invite button-join nokora text-white " style="border:none;font-weight: 700;background-color: transparent; width: 100px; height: 40px; border-radius: 25px;background: rgb(0,0,0);background: linear-gradient(0deg, rgba(0,0,0,0.5) 0%, rgba(240,128,242,0.5) 100%);filter: drop-shadow(0px 4px 4px #000000);box-shadow: 0px -4px 4px 0px rgba(255,255,255,0.25) inset;-webkit-box-shadow: 0px -4px 4px 0px rgba(255,255,255,0.25) inset;-moz-box-shadow: 0px -4px 4px 0px rgba(255,255,255,0.25) inset;">${isPend ? 'Pending' : 'Invite'}</button>
         </div>
     </div>`
-    }
+}}
 
-
-}
 
 const current_user = parseInt(localStorage.getItem('user_id'))
 
 function pending(data,id){
     if(data.status.some(rec => rec.receiver === id))
-    {
-        console.log(data.status.map(rec => rec.receiver ), id)
-        return true
-    }
+          return true
     return false
 }
 
@@ -45,16 +38,13 @@ async function search(){
     const search_input = document.getElementById('search_input')
     const search_container = document.getElementById('search_container')
     const search = new Search()
-    console.log(current_user)
-    
-     
+
     const data = await Fetch_info_user()
     search_container.innerHTML = data.users.map(user => search.Generate_card(user,pending(data,user.id))).join('')
     search_btn.addEventListener('click', async () => {
         if(search_input.value !== ''){
             value = search_input.value
             const users = data.users.filter(user =>  user.username.toLowerCase().startsWith(value.toLowerCase()))
-            console.log(users)
             if(users.length > 0)
             {   
                 search_container.style.display = 'grid'
@@ -64,10 +54,10 @@ async function search(){
                 search_container.style.display = 'flex'
                 search_container.innerHTML = `<div class="d-flex justify-content-center align-items-center" > <h1 class="text-secondary">No user found</h1>`
             }
+            Send_invite()
         }
     }) 
     Send_invite()
-
 }
 
 async function Send_invite()
@@ -77,9 +67,7 @@ async function Send_invite()
     {
         btn_invite[i].addEventListener('click',async () => {
             const data = Fetching(`http://localhost:8000/invite/${current_user}/${btn_invite[i].dataset.userId}/`, 'GET')
-            console.log(data)
             search()
         })
     }
- 
 }

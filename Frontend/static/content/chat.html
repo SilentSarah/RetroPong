@@ -37,33 +37,24 @@
     <div class="chat-container rounded-4 position-relative"
         style="overflow: hidden; height: 845px; border: 4px solid #f080f280; width: 1400px; max-width: 1400px; min-width: 300px">
         <!--BUTTON OPEN CHAT-->
-        <img id="#open_chat_btn" class="items-iconMenuOpen z-1 position-absolute mt-3"
-            src="/static/img/general/Vector .png" class="avatar "
-            style="cursor: pointer; width: 40px; border-radius: 50%; left: -1000px;">
-
+        <img id="#open_chat_btn" class="items-iconMenuOpen z-1 position-absolute mt-3" src="/static/img/general/Vector .png" class="avatar " style="cursor: pointer; width: 40px; border-radius: 50%; left: -1000px;">
         <!-- WHEN click on BUTTON *OPEN CHAT*-->
         <div id="#menu_items" class="menu_items d-flex d-none flex-column  z-1  h-100  position-absolute w-100"
             style="padding: 10px 0px 0px 10px; overflow-y:auto; width:1000px; gap: 10px; background-color: rgb(0,0,0); background: linear-gradient(180deg, rgba(0, 0, 0, 0.371) 0%, rgba(0, 0, 0, 0.597) 100%);">
             <!--BUTTON CLOSER CHAT-->
             <div class="w-100 position-relative" style="padding:0px 10px;">
-                <img id="#close_chat_btn" class="position-absolute" src="/static/img/chat/Vector.png" alt="avatar"
-                    style="width:30px; height: 30px; margin: 10px 0px 0px 15px; cursor: pointer;right: 15px;top:5px">
+                <img id="#close_chat_btn" class="position-absolute" src="/static/img/chat/Vector.png" alt="avatar"  style="width:30px; height: 30px; margin: 10px 0px 0px 15px; cursor: pointer;right: 15px;top:5px">
             </div>
             <!-- BUTTON transition you TO CHAT PAGE -->
-            <div id="#chat_btn" class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
-                <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar "
-                    style="width:58px;height: 58px;  cursor: pointer; ">
-                <h3 class="text-white"
-                    style="font-size: 25px;  white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">Members</h3>
+            <div id="#chat_btn"  class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
+                <img id="btn_friendss" src="/static/img/general/DM 1.png" alt="avatar" class="avatar "   style="width:58px;height: 58px;  cursor: pointer; ">
+                <h3 class="text-white" style="font-size: 25px;  white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">Members</h3>
             </div>
             <!-- This div contains items of channel (NAME AND IMAGE) -->
-            <div  id="btn_channel" class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
-                <img src="/static/img/general/gmc.webp" alt="avatar" class="avatar-peopel"
-                    style="width:58px;height: 58px;  cursor: pointer; ">
-                <h3 class="text-white"
-                    style="font-size: 25px; font-family: oxegyn;  ;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">
-                    L_9AYD AISA</h3>
-            </div>  `
+            <div id="btn_channel" class="channel d-flex align-items-center w-100" style="gap: 10px; width: 90px;">
+                <img src="/static/img/general/gmc.webp" alt="avatar" class="avatar-peopel" style="width:58px;height: 58px;  cursor: pointer; ">
+                <h3 class="text-white" style="font-size: 25px; font-family: oxegyn;  ;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;"> L_9AYD AISA</h3>
+            </div>  
 
             <!-- BUTTON transition you TO DICOVER PAGE -->
             <div id="#descover_btn" class="channel d-flex align-items-center w-100" style="gap: 10px;">
@@ -141,15 +132,13 @@
                 style="width: 60px;min-width:60px; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); overflow-y:auto;">
                 <!-- this div used to change from channel to chat and reverse  -->
                 <div id="btn_friends" class="channel d-flex align-items-center w-100 mt-2" style="gap: 5px; ">
-                    <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar "
-                        style="width:50px;height: 50px;  cursor: pointer; ">
+                    <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar " style="width:50px;height: 50px;  cursor: pointer; ">
                     <h3 class="title_items text-white inter"
                         style="font-size: 14px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">Members
                     </h3>
                 </div>
                 <div id="btn_channel" class="channel d-flex align-items-center w-100" style="gap: 5px;">
-                    <img src="/static/img/general/gmc.webp" alt="avatar" class="avatar-peopel"
-                        style="width:50px;height: 50px;  cursor: pointer; ">
+                    <img src="/static/img/general/gmc.webp" alt="avatar" class="avatar-peopel" style="width:50px;height: 50px;  cursor: pointer; ">
                     <h3 class="title_items text-white inter"
                         style="font-size: 14px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">L_9AYD
                         AISA</h3>
@@ -173,12 +162,8 @@
                 <!-- (LEFT LESS&MORE) ADD TWO BUTTONS FOR USING OPEN SHOW MORE OR LESS OF NAVBAR   -->
                 <div id="#btns_less_more" class="w-10 h-100 position-absolute d-flex align-items-center"
                     style="left: 60px;">
-                    <img id="#arrow_left" class="position-absolute d-flex d-none"
-                        style="width: 10px;height: 40px;  cursor: pointer;" src="/static/img/general/arrow-left.png"
-                        alt="">
-                    <img id="#arrow_right" class="position-absolute d-flex"
-                        style="width: 10px;height: 40px; cursor: pointer;" src="/static/img/general/arrow-right.png"
-                        alt="">
+                    <img id="#arrow_left" class="position-absolute d-flex d-none" style="width: 10px;height: 40px;  cursor: pointer;" src="/static/img/general/arrow-left.png" alt="">
+                    <img id="#arrow_right" class="position-absolute d-flex" style="width: 10px;height: 40px; cursor: pointer;" src="/static/img/general/arrow-right.png" alt="">
                 </div>
             </div>
             <!-- (DISCOVER CENTER) PART OF SECTION OF DICOVER PAGE CONTAIN TITLE AND SEARCH -->
@@ -216,19 +201,21 @@
                     <div class="center d-flex flex-column w-100 h-100">
                         <div id="Friends" class="filter d-flex align-items-center h-10 border-bottom border-secondary border-1 text-white" style="gap:8rem;">
                             <div class="title-firends">
-                                <span class="Friends taprom fs-1 text-white px-4">Friends</span>
-                            </div>
+                                <span class="Friends taprom fs-1 text-white px-5" style="cursor:text;">Friends</span>
+                            </div> 
                             <ul class="list_filter d-flex p-0 m-0 nokora" style="list-style-type: none; gap: 20px;">
-                                <li id="btn_all" style="color:rgb(248, 65, 172) ">
-                                    ALL
+                                <li id="btn_all" style="color:rgb(248, 65, 172) ;display: flex;align-items: center;gap: 10px;">
+                                     <span>ALL</span>
+                                     <div id="notify_msg" style="display: none; width: 8px;height: 8px;border-radius: 50%;background-color: rgb(255, 0, 0); border: 1px solid white;"></div>
                                 </li>
                                 <li id="btn_online">
                                     ONLINE
                                 </li>
-                                <li id="btn_pending">
+                                <li id="btn_pending" style="display: flex;align-items: center;gap: 10px;">
                                     PENDING
+                                    <div id="notify_invite" style="display: none; width: 8px;height: 8px;border-radius: 50%;background-color: rgb(255, 0, 0); border: 1px solid white;"></div>
                                 </li>
-                                <li id="btn_blocks">
+                                <li id="btn_blocks" style="border: none;"> 
                                     BLOCKS
                                 </li>
                             </ul>

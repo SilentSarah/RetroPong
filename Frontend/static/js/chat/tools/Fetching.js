@@ -28,11 +28,10 @@ const Fetching = async (url,method, body) => {
         }
         catch(err){
             console.log(err);
-        }
+        } 
     }
     
 }  
-
 
 function transition_between_channels_and_friends_1() {
     const channels = document.getElementById('chat');
@@ -49,5 +48,31 @@ function transition_between_channels_and_friends_1() {
 }
 
 function Fetch_info_user(){
-    return Fetching('http://localhost:8000/info_user/6/','GET')
+    return Fetching('http://localhost:8000/info_user/2/','GET')
+}
+
+function Notifications(notify)
+{   
+    if(notify.length === 0) return
+    const notify_msg = document.getElementById('notify_msg')
+    const notify_invite = document.getElementById('notify_invite')
+    console.log(notify )
+    const current_user = parseInt(localStorage.getItem('user_id'))
+    if(notify[0].nID_id === current_user && notify[0].isNewMessage)
+    {
+        notify_msg.style.display = 'flex'
+        console.log(notify[0].isNewMessage)
+    }
+    if(notify[0].nID_id === current_user && notify[0].isNewInvite === true)  
+    {
+        notify_invite.style.display = 'flex'
+        console.log(notify[0].IsNewInvite)
+
+    }
+}
+
+function Remove_notification(type)
+{
+    const current_user = parseInt(localStorage.getItem('user_id'))
+    const notify = Fetching(`http://localhost:8000/notification/${current_user}/${type}/`,'GET','')
 }
