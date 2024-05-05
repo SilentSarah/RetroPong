@@ -1,3 +1,16 @@
+/****************************************************
+*     ██████  ▄▄▄       ██▀███   ▄▄▄       ██░ ██   *
+*   ▒██    ▒ ▒████▄    ▓██ ▒ ██▒▒████▄    ▓██░ ██▒  *
+*   ░ ▓██▄   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██▀▀██░  *
+*     ▒   ██▒░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█ ░██   *
+*   ▒██████▒▒ ▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▓█▒░██▓  *
+*   ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ▒ ░░▒░▒  *
+*   ░ ░▒  ░ ░  ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░ ▒ ░▒░ ░  *
+*   ░  ░  ░    ░   ▒     ░░   ░   ░   ▒    ░  ░░ ░  *
+*         ░        ░  ░   ░           ░  ░ ░  ░  ░  *
+*                All Rights Reserved                *
+*                        1337                       *
+*****************************************************/
 
 function confirmOperartion(type, parent) {
     let Confirmation = document.createElement('div');
@@ -20,8 +33,10 @@ function scanInput() {
     items.forEach(item => {
         item.addEventListener('keypress', function (e) {
             if (e.key === 'Enter')
-                if (window.location.pathname === '/login' || window.location.pathname === '/register')
+                if (window.location.pathname === '/login')
                     log_user_in(items);
+                else if (window.location.pathname === '/register')
+                    register_user(items);
         });
     });
 }
