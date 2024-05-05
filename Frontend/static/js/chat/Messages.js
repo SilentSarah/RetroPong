@@ -21,14 +21,12 @@ class Message {
         <div class="member d-flex flex-column align-items-center p-1" style="gap: 2px; background-color: #5D315D;">
             <div class="zone_img position-relative">
                 <div class="circle rounded-circle  position-absolute " style="width: 15px; height: 15px;bottom: 8px;right: 7px ;background-color: #75E25A;border:2px solid #565656"> </div>
-                <img id="#user_img" src=${friend.img} alt="" class="rounded-circle  " style="height: 75px; width: 75px; border:2px solid #565656">
+                <img id="#user_img" src=${friend.img} alt="" class="rounded-circle  " style="height: 75px; width: 75px;object-fit:cover; border:2px solid #565656">
             </div>
             <div class="items_user d-flex flex-column text-white p-2 " style="width:251px ; gap:10px">
-                    <div class="username d-flex justify-content-center align-items-center  w-100" style="height:45px;background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px">Ahmed sekak</div>
+                    <div class="username d-flex justify-content-center align-items-center  w-100" style="height:45px;background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px">${friend.username}</div>
                     <div class ="details_user d-flex align-items-c enter justify-content-between taprom " style="background: #FFF065; background: linear-gradient(to bottom, #FFF065 53%, #FF0000 64%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;text-shadow: 0px 0px 10px rgba(255, 0, 0, 0.48);
-                    "> 
-                        <span class="d-flex justify-content-center align-items-center " style="height:45px; padding:0px 20px;background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px">Punisher</span>
-                        <span class="rank d-flex justify-content-center align-items-center " style="height:45px;padding:0px 8px;background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px">52 <img src="/static/img/chat/rank.png" style="border-radius:50%; width:30px;height:30px;background-color:rgb(255,255,255,.25);" /></span>
+                    ">  <span class="d-flex justify-content-center align-items-center " style="height:45px; padding:0px 20px;background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px">Punisher</span> <span class="rank d-flex justify-content-center align-items-center " style="height:45px;padding:0px 8px;background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px">52 <img src="/static/img/chat/rank.png" style="border-radius:50%; width:30px;height:30px;background-color:rgb(255,255,255,.25);" /></span>
                     </div>
                     <div style="background-color:rgba(0, 0, 0, 0.25);font-size:20px; border-radius:25px" class="d-flex flex-column align-items-center justify-content-center">
                         <span class="my-2">About</span>
@@ -84,7 +82,6 @@ function Send()
     
     btn_send.addEventListener('click', async () => {
         const message = input_message.value
-        console.log(message)
         await Fetching(`http://localhost:8000/chat/${user_id}/${id}/`, 'POST', message)
         input_message.value = ''
         element !== 0 &&  element.click()
@@ -97,5 +94,4 @@ async function AcceptDeclineBlockUnblock(id, status)
     const current_user = parseInt(localStorage.getItem('user_id'))
     const data = await  Fetching(`http://localhost:8000/friends/${current_user}/${id}/${status}/`,'GET',"")
     fetch_info_user()
-    console.log(data)
 }

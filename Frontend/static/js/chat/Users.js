@@ -1,7 +1,6 @@
 class InfoUser {
     constructor(data) {
         this.data = data;
-        console.log(data)
     }
 
 
@@ -161,11 +160,11 @@ const fetch_info_user = async () => {
     // Message Button
     MessageButton(data)
     Action_btns()
+    Notifications(data.notification)
  }
 
 function Action_btns(){
     const action_btns = document.querySelectorAll('.action_btns')
-    console.log(action_btns)
     action_btns.forEach(btn =>{
         btn.addEventListener('click',()=>{
             AcceptDeclineBlockUnblock(btn.dataset.userId, btn.dataset.status)
