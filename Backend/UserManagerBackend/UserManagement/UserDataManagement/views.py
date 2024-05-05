@@ -6,7 +6,11 @@ from .DbOps.DbOps import *
 from .WebOps.WebOps import *
 from django.shortcuts import redirect
 from .ViewAssist.ViewAssist import *
+import datetime
 import json
+
+
+MAX_DURATION = 7
 
 @csrf_exempt
 @require_http_methods(["GET"])
@@ -31,10 +35,12 @@ def create_user(request: HttpRequest):
         if (jwt is not None):
             new_response = JsonResponse(
                 {
+                    "message":"User Created Successfully",
                     "user_id": user.get('id'),
                     "access": jwt
                 }, status=201)
-            new_response.set_cookie('access', jwt)
+            new_response.set_cookie('user_id', user.get('id'), max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False, httponly=False)
+            new_response.set_cookie('access', jwt, max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False, httponly=False)
             return new_response
         else:
             return JsonResponse({"error":"JWT wasn't acquired please sign in manually"}, status=404)
@@ -71,7 +77,7 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
                 return JsonResponse({"Error":"Missing Params when creating/searching for user"}, status=400)
             jwt_token = ViewAssist.request_jwt_from_auth_server(user_data, "http://127.0.0.1:8000/auth/42login/create")
             if (jwt_token is None):
-                return HttpResponse(status=400)
+                return JsonResponse({"error":"JWT couldn't be acquired, please log in manually"}, status=400)
             else:
                 res = HttpResponseRedirect("http://localhost:5501/dashboard")
                 res.set_cookie('access', jwt_token)
