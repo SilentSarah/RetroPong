@@ -101,7 +101,7 @@ class Canvas
 	clear()
 	{
 		drawRect(this, 0, 0, this.el.width , this.el.height ,
-		mkGradient(this, 0, 0, 0, this.el.height , '#262f81', '#c773ca'));
+		mkGradient(this, 0, 0, 0, this.el.height , '#32398d', '#9a5ba4', '#868586'));
 		// draw the net
 		this.drawNet();
 	}

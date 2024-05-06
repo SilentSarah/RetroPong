@@ -35,7 +35,7 @@ class Paddle
 		canvas.ctx.arcTo(drawX, drawY + drawH, drawX, drawY, drawR);
 		canvas.ctx.arcTo(drawX, drawY, drawX + drawW, drawY, drawR);
 		canvas.ctx.fillStyle = this.fillColor;
-		canvas.ctx.strokeStyle = mkGradient(canvas, drawX, drawY, drawX, drawY + drawH, this.strokeGradColors[0], this.strokeGradColors[1]);
+		canvas.ctx.strokeStyle = mkGradient(canvas, drawX, drawY, drawX, drawY + drawH, this.strokeGradColors[0], '#0000', this.strokeGradColors[1]);
 		canvas.ctx.lineWidth = drawLineWidth;
 		canvas.ctx.fill();  // Fill the path with the specified color
 		canvas.ctx.stroke();  // Stroke the path (border)

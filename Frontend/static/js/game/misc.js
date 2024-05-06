@@ -1,9 +1,10 @@
 "use strict"
 
-function mkGradient(canvas, sx, sy, ex, ey, sc, ec)
+function mkGradient(canvas, sx, sy, ex, ey, sc, mc, ec)
 {
 	const grad = canvas.ctx.createLinearGradient(sx, sy, ex, ey);
 	grad.addColorStop(0, sc);
+	grad.addColorStop(.5, mc);
 	grad.addColorStop(1, ec);
 	return (grad);
 }
