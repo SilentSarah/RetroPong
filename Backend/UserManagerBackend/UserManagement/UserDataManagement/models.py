@@ -13,7 +13,7 @@ class User(models.Model):
     id = models.AutoField(primary_key=True)
     uusername = models.CharField(db_column='uUsername', unique=True, max_length=50)  # Field name made lowercase.
     upassword = models.CharField(db_column='uPassword', max_length=128)  # Field name made lowercase.
-    uemail = models.CharField(db_column='uEmail', max_length=64, default="")  # Field name made lowercase.
+    uemail = models.CharField(db_column='uEmail', max_length=64, unique=True, default="")  # Field name made lowercase.
     ufname = models.CharField(db_column='uFName', max_length=64, default="")  # Field name made lowercase.
     ulname = models.CharField(db_column='uLName', max_length=64, default="")  # Field name made lowercase.
     uregdate = models.DateTimeField(db_column='uRegDate', default="")  # Field name made lowercase.
