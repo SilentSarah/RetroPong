@@ -39,8 +39,8 @@ def create_user(request: HttpRequest):
                     "user_id": user.get('id'),
                     "access": jwt
                 }, status=201)
-            new_response.set_cookie('user_id', user.get('id'), max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False, httponly=False)
-            new_response.set_cookie('access', jwt, max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False, httponly=False)
+            new_response.set_cookie('user_id', user.get('id'), max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False)
+            new_response.set_cookie('access', jwt, max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False)
             return new_response
         else:
             return JsonResponse({"error":"JWT wasn't acquired please sign in manually"}, status=404)
@@ -79,16 +79,10 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             if (jwt_token is None):
                 return JsonResponse({"error":"JWT couldn't be acquired, please log in manually"}, status=400)
             else:
-                res = HttpResponseRedirect("http://localhost:5501/dashboard")
-                res.set_cookie('access', jwt_token)
-                res.set_cookie('user_id', user_data.get('id'))
+                res = HttpResponseRedirect("http://localhost:5500/dashboard")
+                res.set_cookie('access', jwt_token, samesite="None", secure=True)
+                res.set_cookie('user_id', user_data.get('id'), samesite="None", secure=True)
                 print("token:", jwt_token)
-                # new_response = JsonResponse(
-                #     {
-                #         "user_id": user_data.get('id'),
-                #         "access": jwt_token
-                #     }, status=201,)
-                # new_response.set_cookie('access', jwt_token)
                 return res
         except Exception as e:
             print("error:", e)
