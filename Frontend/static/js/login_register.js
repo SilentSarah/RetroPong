@@ -96,6 +96,7 @@ function log_user_in() {
     };
     fetch('http://127.0.0.1:8000/auth/', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -114,12 +115,12 @@ function log_user_in() {
         console.log('Success:', data);
         localStorage.setItem('user_id', data.user_id);
         settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
-        passUserToDashboard();
+        // passUserToDashboard();
     })
     .catch((error) => {
         console.error('Error:', error);
         settoastmsg(toasty, 'Login failed', 'bg-danger');
-        passUserToDashboard();
+        // passUserToDashboard();
     });
 }
 
