@@ -68,12 +68,9 @@ function loginWith42() {
     .then(response => {
         if (response.status === 200) {
             return response.text();
-        } else {
-            throw new Error('Server error');
         }
     })
     .then(data => {
-        console.log('Success:', data);
         window.location.href = data;
     })
     .catch((error) => {
@@ -136,33 +133,57 @@ function unblock_inputs(inputs) {
     });
 }
 
-function getClientIpAddress() {
-    return fetch('https://api.ipify.org?format=json')
-        .then(response => response.json())
-        .then(data => data.ip);
+function check_pass_strength(pass) {
+    if (pass.length < 8) {
+        toast('Password must be at least 8 characters long', 'bg-danger');
+        return false;
+    }
+    if (pass.search(/[a-z]/) === -1) {
+        toast('Password must contain at least one lowercase letter', 'bg-danger');
+        return false;
+    }
+    if (pass.search(/[A-Z]/) === -1) {
+        toast('Password must contain at least one uppercase letter', 'bg-danger');
+        return false;
+    }
+    if (pass.search(/[0-9]/) === -1) {
+        toast('Password must contain at least one number', 'bg-danger');
+        return false;
+    }
+    if (pass.search(/[!@#$%^&*]/) === -1) {
+        toast('Password must contain at least one special character', 'bg-danger');
+        return false;
+    }
 }
-
 
 function register_user() {
     const inputs = document.querySelectorAll('input');
+    const btn = document.querySelector('button');
     toast('Registering...', 'bg-primary');
     block_inputs(inputs);
+    btn.disabled = true;
     inputs.forEach(input => {
         if (input.value === '' || input.value === null || input.value === undefined) {
             toast('Please fill in all fields', 'bg-danger');
             unblock_inputs(inputs);
+            btn.disabled = false;
             return;
         }
     });
-
+    
     const uUsername = inputs[1].value;
     const uPassword = inputs[3].value;
     const uEmail = inputs[2].value;
     const uFullName = inputs[0].value.split(' ');
     const uFname = uFullName[0];
     const uLname = uFullName[1];
-
-
+    
+    
+    if (check_pass_strength(uPassword) === false) {
+        unblock_inputs(inputs);
+        btn.disabled = false;
+        return;
+    }
     const data = {
         "uUsername": uUsername,
         "uPassword": uPassword,
@@ -172,7 +193,7 @@ function register_user() {
         "uProfilepic": "null",
         "uProfilebgpic": "null",
         "uDesc":"null",
-        "uIp": getClientIpAddress().then(res => data["uIp"] = res),
+        "uIp": "null",
         "ucIDs":[],
         "uIs42": false,
     }
@@ -186,23 +207,18 @@ function register_user() {
     })
     .then(response => {
         if (response.status === 201) {
-            return response.json();
-        } else if (response.status >= 400 && response.status < 500) {
-            throw new Error('Invalid credentials');
-        } else {
-            throw new Error('Server error');
-        }
-    })
-    .then(data => {
-        console.log('Success:', data);
-        localStorage.setItem('user_id', data.user_id);
-        toast('Registration successful, Redirecting...', 'bg-success');
-        // passUserToDashboard();
+            toast('Registration successful, Redirecting...', 'bg-success');
+            passUserToDashboard();
+        } else if (response.status === 409)
+            toast('Username/Email already exists', 'bg-danger');
+        else if (response.status >= 400 && response.status < 500)
+            toast('Invalid credentials', 'bg-danger');
+        if (response.status > 201)
+            unblock_inputs(inputs);
+            btn.disabled = false;
     })
     .catch((error) => {
-        error = error.json();
-        console.error('Error:', error.get('error'));
-        toast('Registration failed', 'bg-danger');
+        console.error('Error:', error);
         unblock_inputs(inputs);
     });
 }
