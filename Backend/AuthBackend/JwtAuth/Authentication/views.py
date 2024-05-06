@@ -27,7 +27,7 @@ def authenticate_user(request: HttpRequest):
         if (JwtOps.verify_token(auth_token, request) == False):
             response = JsonResponse({ 'error': 'Invalid token' })
             response.status_code = 401
-            response.set_cookie('access', '', max_age=0, httponly=False, secure=False)
+            response.set_cookie('access', '', max_age=0, samesite="None", secure=True)
             return response
         else:
             response = JwtOps.return_new_token(auth_token)
@@ -57,5 +57,5 @@ def generate_42_user_token(request: HttpRequest):
             'user_id': user_id,
             'access': token 
         }, status=201)
-    response.set_cookie('access', token, max_age=datetime.timedelta(days=MAX_DURATION), httponly=False, secure=False)
+    response.set_cookie('access', token, max_age=datetime.timedelta(days=MAX_DURATION), samesite="None", secure=True)
     return response

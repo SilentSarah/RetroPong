@@ -58,8 +58,8 @@ class DbOps:
                 "user_id": user_id,
                 "access": access_token,
             }, status=201)
-        response.set_cookie('access', access_token, max_age=datetime.timedelta(days=MAX_DURATION),httponly=False)
-        response.set_cookie('user_id', user_id, max_age=datetime.timedelta(days=MAX_DURATION), httponly=False)
+        response.set_cookie('access', access_token, max_age=datetime.timedelta(days=MAX_DURATION), samesite='None', secure=True)
+        response.set_cookie('user_id', user_id, max_age=datetime.timedelta(days=MAX_DURATION), samesite='None', secure=True)
         return response
     
     @staticmethod
