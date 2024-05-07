@@ -6,6 +6,7 @@
 }
 
 #game-container {
+	--pink: #cb71d5;
 	/* background-color: green; */
 	max-height: max-content;
 	width: 100%;
@@ -16,7 +17,7 @@
 	grid-template-areas:
 		"game	game"
 		"specs	specs";
-	border: 3px solid pink;
+	border: 3px solid var(--pink);
 	border-radius: 3em;
 	overflow: hidden;
 }
@@ -26,6 +27,26 @@
 #game-container p {
 	text-align: center;
 	margin: 1rem 0;
+}
+
+#game-container .btns-wrapper {
+	position: relative;
+}
+
+#game-container .btns-wrapper .icon-btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background: var(--pink);
+	border: initial;
+	border-radius: 50%;
+	width: 10%;
+	aspect-ratio: 1;
+	color: #fff;
+	top: 1em;
+	left: 1em;
+	font-size: 1rem;
+	margin: initial;
 }
 
 #game-container img {
@@ -61,7 +82,7 @@
 }
 
 .player-info {
-	/* background-color: pink; */
+	/* background-color: var(--pink); */
 }
 
 /* added # to increase priority */
@@ -143,7 +164,7 @@
 	display: block;
 	font-size: 1.3rem;
 	padding: .5em 1em;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	background-color: #0004;
 	border-radius: 2em;
 	color: #fff;
@@ -181,7 +202,7 @@
 	max-width: 35%;
 	flex: 1 1 auto;
 	background-color: #0005;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	border-radius: 2em;
 	margin: 1.5em auto 0;
 }
@@ -198,7 +219,7 @@
 	max-width: 80%;
 	font-size: 1rem;
 	padding: .5em 1em;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	background-color: #0004;
 	border-radius: 2em;
 	color: #fff;
@@ -236,7 +257,7 @@
 	max-width: 35%;
 	flex: 1 1 auto;
 	background-color: #0005;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	border-radius: 2em;
 	margin: 0 auto;
 }
@@ -280,7 +301,7 @@
 #waitMenu #waitStatus {
 	color: #fff;
 	background-color: #0005;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	border-radius: 1.5em;
 	padding: .5em 1em;
 	max-width: max-content;
@@ -319,14 +340,14 @@
 }
 
 #waitMenu .players-grid .media {
-	/* background-color: pink; */
+	/* background-color: var(--pink); */
 	color: #fff;
 	display: flex;
 	column-gap: .5em;
 }
 
 #waitMenu .players-grid .media .pfp {
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	border-radius: 1em;
 }
 
@@ -373,7 +394,7 @@
 	max-width: 35%;
 	flex: 1 1 auto;
 	background-color: #0005;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	border-radius: 2em;
 	margin: 1.5em auto 0;
 }
@@ -411,7 +432,7 @@
 	max-width: 60%;
 	font-size: 1.5rem;
 	padding: .5em 1em;
-	border: 1px solid pink;
+	border: 1px solid var(--pink);
 	background-color: #0004;
 	border-radius: 2em;
 	color: #fff;
