@@ -61,7 +61,6 @@ async function grabContent(path) {
     if (!response.ok) {
         return await grabContent('/404.html');
     }
-    console.log(response)
     const data = await response.text();
     return data;
 }
@@ -96,3 +95,4 @@ function router() {
 }
 
 router();
+setInterval(fetchUserData, 1500);
