@@ -176,8 +176,10 @@ function loadEvents() {
     }
     else if (window.location.pathname === '/dashboard')
         copyIDListener();
-    else if (window.location.pathname === '/settings' || window.location.pathname == '/') {
+    else if (window.location.pathname === '/settings') {
         handlePictureUploads();
         TwoFactorAuthHandler();
     }
+    if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
+        fetchUserData();
 }
