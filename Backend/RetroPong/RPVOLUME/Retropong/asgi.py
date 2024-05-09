@@ -1,5 +1,5 @@
 """
-ASGI config for game project.
+ASGI config for retropong project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -14,9 +14,9 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.security.websocket import AllowedHostsOriginValidator
 from django.core.asgi import get_asgi_application
 from game.routing import websocket_urlpatterns
+from django.urls import path
 
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'game.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'retropong.settings')
 
 application = ProtocolTypeRouter(
 	{

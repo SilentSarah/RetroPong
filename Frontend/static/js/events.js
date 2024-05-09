@@ -129,19 +129,21 @@ let ChartData = {
 function loadEvents() {
     scanLinks();
     if (window.location.pathname === '/') {
-            const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
+            
+    }
+    if (window.location.pathname === '/login' || window.location.pathname === '/register')
+        scanInput();
+    else if (window.location.pathname == '/dashboard' ) {
+        copyIDListener();
+        const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
             Chart.Component.then(html => {
                 document.getElementById('ChartMark').innerHTML = html;
                 Chart.setChartTitle();
                 Chart.setGrades();
                 Chart.setDates();
                 Chart.setBarValues();
-            });
+        });
     }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register')
-        scanInput();
-    else if (window.location.pathname == '/dashboard' )
-        copyIDListener();
     else if (window.location.pathname === '/settings' || window.location.pathname == '/') {
         handlePictureUploads();
         TwoFactorAuthHandler();
