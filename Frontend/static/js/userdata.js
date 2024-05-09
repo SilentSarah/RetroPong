@@ -156,12 +156,6 @@ function fetchUserData() {
         });
     }
 }
-/**
- * Sets the user data in the dashboard, or displays other people's profiles.
- *
- * @param {bool} selfUser boolean to determine if the user is viewing their own profile
- * @param {int} id the id of the user to display if the SelfUser is false
- */
 function setDashboardStats() {
     let date = new Date(sessionStorage.getItem('regdate'));
     let username = document.getElementById('username');
