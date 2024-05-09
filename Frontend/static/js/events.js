@@ -174,8 +174,10 @@ function loadEvents() {
     if (window.location.pathname === '/login' || window.location.pathname === '/register') {
         scanInput();
     }
-    else if (window.location.pathname === '/dashboard')
+    else if (window.location.pathname === '/dashboard') {
+        setDashboardStats();
         copyIDListener();
+    }
     else if (window.location.pathname === '/settings') {
         handlePictureUploads();
         TwoFactorAuthHandler();
