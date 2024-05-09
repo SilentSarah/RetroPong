@@ -114,11 +114,9 @@ function getCookie(cname) {
     }
     return "";
 }
-
 function deleteCookie(name) {
     document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 }
-
 function fetchUserData() {
     if (getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
@@ -157,4 +155,23 @@ function fetchUserData() {
             }
         });
     }
+}
+/**
+ * Sets the user data in the dashboard, or displays other people's profiles.
+ *
+ * @param {bool} selfUser boolean to determine if the user is viewing their own profile
+ * @param {int} id the id of the user to display if the SelfUser is false
+ */
+function setDashboardStats() {
+    let date = new Date(sessionStorage.getItem('regdate'));
+    let username = document.getElementById('username');
+    username.innerHTML = sessionStorage.getItem('username');
+    let player_id = document.getElementById('player_id');
+    player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;
+    let full_name = document.getElementById('full_name');
+    full_name.innerHTML = `${sessionStorage.getItem('fname')} ${sessionStorage.getItem('lname')}`;
+    let email = document.getElementById('email');
+    email.innerHTML = sessionStorage.getItem('email');
+    let regdate = document.getElementById('regdate');
+    regdate.innerHTML = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
 }
