@@ -405,11 +405,11 @@ function filter_all_pending_online_blocks() {
             if (btn.id !== 'btn_all')
                 btn.style.color = '';
         })
-        if(notify.style.display === 'flex')
-        {
-            Remove_notification('message')
-            notify.style.display = 'none'
-        }
+        // if(notify.style.display === 'flex')
+        // {
+        //     Remove_notification('message')
+        //     notify.style.display = 'none'
+        // }
     });
     const notify_invite = document.getElementById('notify_invite')
 
@@ -425,11 +425,11 @@ function filter_all_pending_online_blocks() {
             if (btn.id !== 'btn_pending')
                 btn.style.color = '';
         })
-        if(btn_pending.style.display === 'flex')
-        {
-            Remove_notification('invite')
-            notify_invite.style.display = 'none'
-        }
+        // if(notify_invite.style.display === 'flex')
+        // {
+        //     Remove_notification('invite')
+        //     notify_invite.style.display = 'none'
+        // }
     });
     if(btn_online)
     btn_online.addEventListener('click', () => {

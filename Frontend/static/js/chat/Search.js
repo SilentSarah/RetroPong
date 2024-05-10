@@ -27,35 +27,27 @@ class Search{
 
 const current_user = parseInt(localStorage.getItem('user_id'))
 
-function pending(data,id){
-    if(data.status.some(rec => rec.receiver === id))
-          return true
-    return false
-}
-
 async function search(){
     const search_btn = document.getElementById('search_btn')
     const search_input = document.getElementById('search_input')
     const search_container = document.getElementById('search_container')
     const search = new Search()
 
-    const data = await Fetch_info_user()
-    search_container.innerHTML = data.users.map(user => search.Generate_card(user,pending(data,user.id))).join('')
-    search_btn.addEventListener('click', async () => {
+    function FilterSearch()
+    {
         if(search_input.value !== ''){
             value = search_input.value
-            const users = data.users.filter(user =>  user.username.toLowerCase().startsWith(value.toLowerCase()))
-            if(users.length > 0)
-            {   
-                search_container.style.display = 'grid'
-                const cards = users.map(user => search.Generate_card(user, pending(data,user.id))).join('')
-                search_container.innerHTML = cards ? cards : ''
-            }else{
-                search_container.style.display = 'flex'
-                search_container.innerHTML = `<div class="d-flex justify-content-center align-items-center" > <h1 class="text-secondary">No user found</h1>`
-            }
+            filterSearchUser(search_container, data, search, value)
             Send_invite()
         }
+    }
+
+    const data = await Fetch_info_user()
+    loadDataToElement(search_container, data, search)
+    search_btn.addEventListener('click', ()=>FilterSearch())
+    search_input.addEventListener('keypress',(event)=>{
+        if(event.key==='Enter')
+            FilterSearch()
     }) 
     Send_invite()
 }
