@@ -181,8 +181,8 @@
                     </div>
                 </div>
                 <!-- (DISCOVER BOTTOM) PART OF SECTION OF DICOVER PAGE CONTAIN RECOMMENDATIONS -->
-                <div class="items-right-bottom d-flex flex-column align-items-center justify-content-start" style="flex: 1; margin-bottom: 63px;">
-                    <h1 class="mt-4 fw-bold text-white"  style="font-size: 48px; background: #999999;background: linear-gradient(to top,#999999 0%, #FFFFFF 65%);background: linear-gradient(to top, #999999 0%, #FFFFFF 65%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.251));">  Recommendations</h1>
+                <div id="DiscoverSection" class="items-right-bottom d-flex flex-column align-items-center justify-content-start" style="flex: 1; margin-bottom: 63px;">
+                    <h1 id="DiscoverTitle" class="mt-4 fw-bold text-white"  style="font-size: 48px; background: #999999;background: linear-gradient(to top,#999999 0%, #FFFFFF 65%);background: linear-gradient(to top, #999999 0%, #FFFFFF 65%);-webkit-background-clip: text;-webkit-text-fill-color: transparent;filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.251));">  Recommendations</h1>
                     <div class="cards" style="margin-top: 22px;" id="search_container">
                         <!--CARD 1-->
                         
@@ -195,7 +195,7 @@
             <!--FINISHED DISCOVER PAGE -->
 
             <!-- START CHAT PAGE -->
-            <div id="#section_chat" class="right-1 d-flex   " style="flex:18; width: 1400px; height: 845px;">
+            <div   id="#section_chat" class="right-1 d-flex   " style="flex:18; width: 1400px; height: 845px;">
                 <div class="right-1-items nokora d-flex w-100 h-100 d-flex ">
                     <!-- START SECTION FREINDS-->
                     <div class="center d-flex flex-column w-100 h-100">
@@ -206,13 +206,13 @@
                             <ul class="list_filter d-flex p-0 m-0 nokora" style="list-style-type: none; gap: 20px;">
                                 <li id="btn_all" style="color:rgb(248, 65, 172) ;display: flex;align-items: center;gap: 10px;">
                                      <span>ALL</span>
-                                     <div id="notify_msg" style="display: none; width: 8px;height: 8px;border-radius: 50%;background-color: rgb(255, 0, 0); border: 1px solid white;"></div>
+                                     <div id="notify_msg" style="font-size:14px; width: 20px;height: 20px;border-radius: 50%;background-color: rgb(248, 65, 172);" class="text-white  d-flex align-items-center justify-content-center "></div>
                                 </li>
                                 <li id="btn_online">
                                     ONLINE
                                 </li>
                                 <li id="btn_pending" style="display: flex;align-items: center;gap: 10px;">
-                                    PENDING
+                                    <span>Pending</span>
                                     <div id="notify_invite" style="display: none; width: 8px;height: 8px;border-radius: 50%;background-color: rgb(255, 0, 0); border: 1px solid white;"></div>
                                 </li>
                                 <li id="btn_blocks" style="border: none;"> 
@@ -265,7 +265,7 @@
                         </div>
                         <!-- FINISHED SECTION FREINDS-->
                         <!-- Start chat -->
-                        <div id="chat" class="center d-flex h-100 w-100 d-none"  style=" background: rgb(240, 128, 242); background: linear-gradient(180deg, rgba(240, 128, 242, 0.629) 0%, rgba(0,0,0,1) 100%); ">
+                        <div  id="chat" class="center d-flex h-100 w-100 d-none"  style=" background: rgb(240, 128, 242); background: linear-gradient(180deg, rgba(240, 128, 242, 0.629) 0%, rgba(0,0,0,1) 100%); ">
                             <div class="w-100 h-100 d-flex flex-column">
                                 <!-- TITLE AND DESCRIPTION OF CHAT -->
                                 <div class="center-in-top d-flex flex-column justify-content-center align-items-center " style="padding: 2.5px; flex:1;background: rgb(130,77,133);background: linear-gradient(90deg, rgba(130,77,133,1) 0%, rgba(0,0,0,1) 50%, rgba(131,77,133,1) 100%);">
@@ -286,8 +286,8 @@
                                 <!-- THIS DIV USED TO SEND MESSAGE (SEND)-->
                                 <div class="btn-message  p-4 w-100 d-flex align-items-center" style="flex: 1; height: 20%;">
                                     <div class="items-bottom-message-items position-relative d-flex align-items-center justify-content-center ps-4"  style=" gap: 8px; height: 50px;width: 100%; ">
-                                        <input type="text" id="input_message" class="items-input-message d-flex border text-white h-100 w-100" placeholder="Write a message..." style="text-align: center; border-radius: 25px;background: rgb(190,109,177);background: linear-gradient(180deg, rgba(190,109,177,0.7) 0%, rgba(88,50,82,1) 100%);outline: none;">
-                                        <img class="send-message-icon position-absolute" id="btn_send_message" src="/static/img/general/send.png" style="width: 35px; right: 10px;" alt="">
+                                        <input type="text" id="input_message" class="items-input-message d-flex border text-white h-100 w-100" placeholder="Write a message..." style="text-align: center; border-radius: 25px;background: rgb(190,109,177);background: linear-gradient(180deg, rgba(190,109,177,0.7) 0%, rgba(88,50,82,1) 100%);outline: none;" >
+                                        <img class="send-message-icon position-absolute" id="btn_send_message" src="/static/img/general/send.png" style="width: 35px; right: 10px;" alt="" >
                                     </div>
                                 </div>
                             </div>

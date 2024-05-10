@@ -160,7 +160,7 @@ const fetch_info_user = async () => {
     // Message Button
     MessageButton(data)
     Action_btns()
-    Notifications(data.notification)
+    MessageNotify()
  }
 
 function Action_btns(){
@@ -171,3 +171,4 @@ function Action_btns(){
         })
     })
 }
+
