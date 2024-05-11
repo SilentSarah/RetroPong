@@ -18,7 +18,7 @@
 <body class="d-flex flex-column justify-content-between">
     <!-- Navbar -->
     <div id="navbar" class="rnavbar d-flex align-items-center justify-content-between">
-        <a href="/" class="ms-3">
+        <!-- <a href="/" class="ms-3">
             <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
         </a>
         <div class="d-flex gap-2 me-3">
@@ -28,6 +28,38 @@
             <a href="/login" class="nav_btn">
                 <img src="/static/img/login_register_utils/Login.png" width="40px">
             </a>
+        </div> -->
+        <div id="retro_menu" class="nav_btn ms-2 position-relative">
+            <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
+            <div id="menu_content" class="d-flex flex-column justify-content-center align-items-center position-absolute gap-2">
+                <a href="/dashboard" class="nav_btn selected">
+                    <img src="/static/img/general/Account.png" width="30px">
+                </a>
+                <a href="/chat" class="nav_btn selected">
+                    <img src="/static/img/general/Chat.png" width="30px">
+                </a>
+                <a href="/game" class="nav_btn selected">
+                    <img src="/static/img/general/Game.png" width="30px">
+                </a>
+                <a href="/tournament" class="nav_btn selected">
+                    <img src="/static/img/general/Tournament.png" width="30px">
+                </a>
+                <a href="/settings" class="nav_btn selected">
+                    <img src="/static/img/general/Settings.png" width="30px">
+                </a>
+            </div>
+        </div>
+        <a href="/" class="ms-3">
+            <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
+        </a>
+        <div class="d-flex gap-2 me-3">
+            <div id="notification" href="" class="nav_btn position-relative">
+                <img src="/static/img/general/Notfication.png" width="40px">
+                <div id="notification_light" class="d-none"></div>
+            </div>
+            <div id="logout" href="" class="nav_btn">
+                <img src="/static/img/general/Logout.png" width="40px">
+            </div>
         </div>
     </div>
     <!-- Main Content -->
