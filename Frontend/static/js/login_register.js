@@ -103,8 +103,10 @@ function log_user_in() {
         if (response.status === 201) {
             return response.json();
         } else if (response.status >= 400 && response.status < 500) {
+            settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
         } else {
+            settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Server error');
         }
     })
@@ -112,11 +114,11 @@ function log_user_in() {
         console.log('Success:', data);
         localStorage.setItem('user_id', data.user_id);
         settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
+        DisplayNavBar();
         passUserToDashboard();
     })
     .catch((error) => {
         console.error('Error:', error);
-        settoastmsg(toasty, 'Login failed', 'bg-danger');
     });
 }
 
@@ -207,6 +209,7 @@ function register_user() {
     .then(response => {
         if (response.status === 201) {
             toast('Registration successful, Redirecting...', 'bg-success');
+            DisplayNavBar();
             passUserToDashboard();
         } else if (response.status === 409)
             toast('Username/Email already exists', 'bg-danger');

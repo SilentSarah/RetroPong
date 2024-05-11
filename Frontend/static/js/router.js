@@ -12,6 +12,7 @@
 *                        1337                       *
 *****************************************************/
 
+let fetchID;
 const routes = [
     {   path: '/404', 
         on: false,
@@ -95,4 +96,5 @@ function router() {
 }
 
 router();
-setInterval(fetchUserData, 1500);
+fetchUserData();
+fetchID = setInterval(fetchUserData, 1000);

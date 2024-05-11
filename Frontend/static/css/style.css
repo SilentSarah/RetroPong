@@ -440,4 +440,33 @@ border-radius: 25px;
     }
 }
 
+.nav_btn:hover {
+    animation: soft_light_up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    -webkit-animation-iteration-count: 1;
+    /* add a transition property for the hover state if needed */
+    transition: transform 0.5s;
+}
 
+@keyframes soft_light_up {
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    100% {
+        transform: scale(1.1);
+        filter: brightness(1.5);
+    }
+}
+
+#notification_light {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: coral;
+    position: absolute;
+    top: 10%;
+    right: 75%;
+}
