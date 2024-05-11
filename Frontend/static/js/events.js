@@ -12,6 +12,45 @@
 *                        1337                       *
 *****************************************************/
 
+function delete_cookie(name) {
+    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function DisplayNavBar() {
+    let navbar_logged_in = `
+    <div id="retro_menu" class="nav_btn ms-2">
+        <img src="/static/img/general/Menu.png" width="40px">
+    </div>
+    <a href="/" class="ms-2">
+        <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
+    </a>
+    <div class="d-flex gap-2 me-2">
+        <div id="notification" href="" class="nav_btn position-relative">
+            <img src="/static/img/general/Notfication.png" width="40px">
+            <div id="notification_light" class="d-none"></div>
+        </div>
+        <div id="logout" href="" class="nav_btn">
+            <img src="/static/img/general/Logout.png" width="40px">
+        </div>
+    </div>`
+
+    let navbar = document.getElementById('navbar');
+    if (document.getElementById("retro_menu") === null 
+        || document.getElementById("notification") === null 
+        || document.getElementById("logout") === null) {
+        navbar.innerHTML = navbar_logged_in;
+        document.getElementById('notification').addEventListener('click', function () {
+            console.log('Notification');
+        });
+        document.getElementById('logout').addEventListener('click', function () {
+            sessionStorage.clear();
+            clearInterval(fetchID);
+            delete_cookie('access');
+            window.location.href = '/';
+        });
+    }
+}
+
 function confirmOperartion(type, parent) {
     let Confirmation = document.createElement('div');
     if (type === 'copy') {
@@ -124,21 +163,6 @@ function TwoFactorAuthHandler() {
     }
 }
 
-function getCookie(cname) {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
-}
 function findHighiestGrade(matches) {
     let highiest = 0;
     for([key, value] of Object.entries(matches)) {
@@ -162,7 +186,6 @@ let ChartData = {
 function loadEvents() {
     scanLinks();
     if (window.location.pathname === '/') {
-            
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
         scanInput();
@@ -184,7 +207,6 @@ function loadEvents() {
 	else if (window.location.pathname === '/game')
 		initGame();
     else if (window.location.pathname === '/dashboard') {
-        setDashboardStats();
         copyIDListener();
     }
     else if (window.location.pathname === '/settings') {

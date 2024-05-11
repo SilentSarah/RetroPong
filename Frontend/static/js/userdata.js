@@ -114,9 +114,7 @@ function getCookie(cname) {
     }
     return "";
 }
-function deleteCookie(name) {
-    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-}
+
 function fetchUserData() {
     if (getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
@@ -144,11 +142,16 @@ function fetchUserData() {
             }
         })
         .then(data => {
+            sessionStorage.clear();
             for (const [key, value] of Object.entries(data)) {
                 sessionStorage.setItem(key, value);
             }
+            if (window.location.href === "/dashboard")
+                setDashboardStats();
+            DisplayNavBar();
         })
         .catch((error) => {
+            sessionStorage.clear();
             console.error('Error:', error);
             if (window.location.pathname !== "/login") {
                 window.location.href = "/login";
