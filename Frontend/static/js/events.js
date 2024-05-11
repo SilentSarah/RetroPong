@@ -21,10 +21,10 @@ function DisplayNavBar() {
     <div id="retro_menu" class="nav_btn ms-2">
         <img src="/static/img/general/Menu.png" width="40px">
     </div>
-    <a href="/" class="ms-2">
+    <a href="/" class="ms-3">
         <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
     </a>
-    <div class="d-flex gap-2 me-2">
+    <div class="d-flex gap-2 me-3">
         <div id="notification" href="" class="nav_btn position-relative">
             <img src="/static/img/general/Notfication.png" width="40px">
             <div id="notification_light" class="d-none"></div>
