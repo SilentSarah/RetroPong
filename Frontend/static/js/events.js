@@ -1,3 +1,17 @@
+/****************************************************
+*     ██████  ▄▄▄       ██▀███   ▄▄▄       ██░ ██   *
+*   ▒██    ▒ ▒████▄    ▓██ ▒ ██▒▒████▄    ▓██░ ██▒  *
+*   ░ ▓██▄   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██▀▀██░  *
+*     ▒   ██▒░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█ ░██   *
+*   ▒██████▒▒ ▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▓█▒░██▓  *
+*   ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ▒ ░░▒░▒  *
+*   ░ ░▒  ░ ░  ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░ ▒ ░▒░ ░  *
+*   ░  ░  ░    ░   ▒     ░░   ░   ░   ▒    ░  ░░ ░  *
+*         ░        ░  ░   ░           ░  ░ ░  ░  ░  *
+*                All Rights Reserved                *
+*                        1337                       *
+*****************************************************/
+
 function confirmOperartion(type, parent) {
     let Confirmation = document.createElement('div');
     if (type === 'copy') {
@@ -15,10 +29,14 @@ function confirmOperartion(type, parent) {
 
 function scanInput() {
     let items = document.querySelectorAll('input');
+
     items.forEach(item => {
         item.addEventListener('keypress', function (e) {
             if (e.key === 'Enter')
-                console.log('Enter key pressed');
+                if (window.location.pathname === '/login')
+                    log_user_in(items);
+                else if (window.location.pathname === '/register')
+                    register_user(items);
         });
     });
 }
@@ -106,6 +124,21 @@ function TwoFactorAuthHandler() {
     }
 }
 
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
+}
 function findHighiestGrade(matches) {
     let highiest = 0;
     for([key, value] of Object.entries(matches)) {
@@ -144,10 +177,20 @@ function loadEvents() {
                 Chart.setBarValues();
         });
     }
-    else if (window.location.pathname === '/settings' || window.location.pathname == '/') {
+    else if (window.location.pathname === '/settings') {
         handlePictureUploads();
         TwoFactorAuthHandler();
     }
 	else if (window.location.pathname === '/game')
 		initGame();
+    else if (window.location.pathname === '/dashboard') {
+        setDashboardStats();
+        copyIDListener();
+    }
+    else if (window.location.pathname === '/settings') {
+        handlePictureUploads();
+        TwoFactorAuthHandler();
+    }
+    if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
+        fetchUserData();
 }
