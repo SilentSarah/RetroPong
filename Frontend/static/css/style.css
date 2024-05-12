@@ -481,25 +481,24 @@ border-radius: 25px;
     right: 75%;
 }
 
-#retro_menu {
-    position: relative;
-    backdrop-filter: blur(10px);
-}
-
 #retro_menu_img {
     position: relative;
-    z-index: 15 !important;
+    z-index: 16;
 }
 
 #menu_content {
+    z-index: 15;
     left: 0;
     right: 0;
     top: 50%;
     padding-top: 40px;
     padding-bottom: 20px;
-    border-left: 1.5px solid rgb(240, 128, 242, 0.33);
-    border-right: 1.5px solid rgba(253, 165, 255, 0.33);
-    border-bottom: 1.5px solid rgba(253, 165, 255, 0.3);
-    z-index: 11;
+    border-left: 1.5px solid rgb(240, 128, 242, 0.5);
+    border-right: 1.5px solid rgba(253, 165, 255, 0.5);
+    border-bottom: 1.5px solid rgba(253, 165, 255, 0.5);
     background-color: rgb(0, 0, 0, 0.33);
 }
+
+/* #login_btn {
+    transform: rotate(180deg) !important;
+} */

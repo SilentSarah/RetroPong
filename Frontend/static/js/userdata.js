@@ -152,7 +152,11 @@ function fetchUserData() {
         })
         .catch((error) => {
             sessionStorage.clear();
-            console.error('Error:', error);
+            if (error.message === 'Failed to fetch') {
+                toast('Server is not responding, try again later.', 'bg-danger');
+                clearInterval(fetchID);
+                return ;
+            }
             if (window.location.pathname !== "/login") {
                 window.location.href = "/login";
             }

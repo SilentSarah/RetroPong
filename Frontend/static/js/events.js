@@ -22,7 +22,7 @@ function DisplayNavBar() {
         <img src="/static/img/general/Menu.png" width="40px">
     </div>
     <a href="/" class="ms-3">
-        <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
+        <img class="img img-shadow" src="./static/img/general/Logo.png" width="150px">
     </a>
     <div class="d-flex gap-2 me-3">
         <div id="notification" href="" class="nav_btn position-relative">
