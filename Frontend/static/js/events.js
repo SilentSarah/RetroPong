@@ -18,11 +18,28 @@ function delete_cookie(name) {
 
 function DisplayNavBar() {
     let navbar_logged_in = `
-    <div id="retro_menu" class="nav_btn ms-2">
-        <img src="/static/img/general/Menu.png" width="40px">
+    <div id="retro_menu" class="nav_btn ms-2 position-relative">
+            <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
+            <div id="menu_content" class="flex-column justify-content-center align-items-center gap-2 position-absolute">
+                <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
+                    <img src="/static/img/general/Account.png" width="30px">
+                </a>
+                <a href="/chat" class="nav_btn selected">
+                    <img src="/static/img/general/Chat.png" width="30px">
+                </a>
+                <a href="/game" class="nav_btn selected">
+                    <img src="/static/img/general/Game.png" width="30px">
+                </a>
+                <a href="/tournament" class="nav_btn selected">
+                    <img src="/static/img/general/Tournament.png" width="30px">
+                </a>
+                <a href="/settings" class="nav_btn selected">
+                    <img src="/static/img/general/Settings.png" width="30px">
+                </a>
+            </div>
     </div>
     <a href="/" class="ms-3">
-        <img class="img img-shadow" src="./static/img/general/Logo.png" width="150px">
+        <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
     </a>
     <div class="d-flex gap-2 me-3">
         <div id="notification" href="" class="nav_btn position-relative">
@@ -35,6 +52,7 @@ function DisplayNavBar() {
     </div>`
 
     let navbar = document.getElementById('navbar');
+    let open = false;
     if (document.getElementById("retro_menu") === null 
         || document.getElementById("notification") === null 
         || document.getElementById("logout") === null) {
@@ -47,6 +65,18 @@ function DisplayNavBar() {
             clearInterval(fetchID);
             delete_cookie('access');
             window.location.href = '/';
+        });
+        let retro_menu = document.getElementById('retro_menu');
+        retro_menu.addEventListener('click', function () {
+            console.log('Menu');
+            let menu = document.getElementById('menu_content');
+            if (open === false) {
+                menu.classList.add('open');
+                open = true;
+            } else {
+                menu.classList.remove('open');
+                open = false;
+            }
         });
     }
 }
