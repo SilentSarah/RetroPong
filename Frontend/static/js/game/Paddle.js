@@ -5,12 +5,12 @@ class Paddle
 	setup(canvas, side, strokeGradColors)
 	{
 		this.width = 1 / 28; // width
-		this.height = this.width * 2.5; // height
+		this.height = this.width * 3; // height
 		this.radius = 1 / 80; // radius
 		this.lineWidth = 1 / 400; // line width
 		this.offset = 1 / 50;
 		this.x = side == 'r' ? (1 - this.width) - (this.lineWidth + this.offset) : 0 + (this.lineWidth + this.offset);
-		this.y = (1  - this.height) / 2;
+		this.y = -1;
 		this.fillColor = '#000';
 		this.strokeGradColors = strokeGradColors || this.strokeGradColors;
 	}

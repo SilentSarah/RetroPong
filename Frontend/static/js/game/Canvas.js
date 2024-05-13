@@ -8,13 +8,14 @@ class Canvas
 
 	constructor (el)
 	{
+		this.canvasColors = ['#262f81', '#c773ca', '#878387']
 		this.el = el;
 		this.ctx = el.getContext("2d");
 		this.dpr = window.devicePixelRatio;
 		this.updateStyle();
 		this.setSizeAttrib();
 		this.dprAdjust();
-		this.el.focus();
+		// this.el.focus();
 	}
 
 	setSizeAttrib()
@@ -49,8 +50,8 @@ class Canvas
 	{
 		this.dprAdjust();
 		this.ball = {
-			x : 1 / 2,
-			y : 1 / 2,
+			x : -1,
+			y : -1,
 			r : 1 / 150,
 			speed : 0.007 * 1,
 			velocityX : 0.007 * 1,
@@ -101,7 +102,7 @@ class Canvas
 	clear()
 	{
 		drawRect(this, 0, 0, this.el.width , this.el.height ,
-		mkGradient(this, 0, 0, 0, this.el.height , '#262f81', '#c773ca'));
+		mkGradient(this, 0, 0, 0, this.el.height , ...this.canvasColors));
 		// draw the net
 		this.drawNet();
 	}
