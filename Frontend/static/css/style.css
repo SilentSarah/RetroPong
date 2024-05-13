@@ -504,10 +504,12 @@ border-radius: 25px;
     transform: translateY(5px);
     filter: opacity(0);
     transition: all 0.5s ease-in-out;
+    pointer-events: none;
 }
 
 #menu_content.open {
-    display: flex;
     transform: translateY(10px);
     filter: opacity(1);
+    display: flex;
+    pointer-events: all;
 }
