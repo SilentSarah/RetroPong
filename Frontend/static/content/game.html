@@ -2,11 +2,139 @@
 	<div id="game-container">
 		<div id="game">
 			<canvas id="gameCanvas" tabindex="0"></canvas>
+			<div class="menu-container">
+				<!-- Main Menu -->
+				<div id="mainMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<button class="game-mode-btn" onclick="startMode(0)"><i class="lni lni-user"></i> Solo Mode</button>
+						<button class="game-mode-btn" onclick="startMode(1)"><i class="lni lni-users"></i> Duo Mode</button>
+						<button class="game-mode-btn" onclick="startMode(2)"><i class="lni lni-cup"></i> Tournament</button>
+					</div>
+				</div>
+				<!-- Options Menu -->
+				<div class="fade-in hidden" id="optionsMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<button onclick="toggleMenu('optionsMenu')" class="icon-btn">
+							<i class="lni lni-arrow-left"></i>
+						</button>
+						<h1>Pause</h1>
+						<button onclick="toggleMenu('optionsMenu', 'backgroundsMenu')">Background Colors</button>
+						<button onclick="window.location.replace('/')">Leave Match</button>
+					</div>
+				</div>
+				<!-- Background Menu -->
+				<div class="fade-in hidden" id="backgroundsMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<button onclick="toggleMenu('backgroundsMenu', 'optionsMenu')" class="icon-btn">
+							<i class="lni lni-arrow-left"></i>
+						</button>
+						<h1>BG Colors</h1>
+						<!-- #1 palette -->
+						<div onclick="setCanvasColor(0)" class="palette">
+							<img src="static/img/general/bg1.png" alt="retro">
+							<span>RetroPong</span>
+						</div>
+						<!-- #2 palette -->
+						<div onclick="setCanvasColor(1)" class="palette">
+							<img src="static/img/general/bg2.png" alt="sunrise">
+							<span>Sunrise</span>
+						</div>
+						<!-- #3 palette -->
+						<div onclick="setCanvasColor(2)" class="palette">
+							<img src="static/img/general/bg3.png" alt="pastel">
+							<span>Pastel</span>
+						</div>
+						<!-- #4 palette -->
+						<div onclick="setCanvasColor(3)" class="palette">
+							<img src="static/img/general/bg4.png" alt="classic">
+							<span>Classic</span>
+						</div>
+					</div>
+				</div>
+				<!-- Wait Menu -->
+				<div class="fade-in hidden" id="waitMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div id="waitStatus">Starting Game in 3 Seconds</div>
+					<div class="players-grid">
+						<div class="left">
+							one
+							<div class="media">
+								<img class="pfp" src="static/img/pfp/L7afouzli9.jpg" alt="L7afouzli9">
+								<div class="details">
+									<p class="taprom text-pink-gradient">L7afouzli9</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div>
+							two
+							<div class="media">
+								<img class="pfp" src="static/img/general/gmc.webp" alt="gmc">
+								<div class="details">
+									<p class="taprom text-pink-gradient">player</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<p class="taprom text-pink-gradient">VS</p>
+						<div class="right">
+							one
+							<div class="media">
+								<img class="pfp" src="static/img/pfp/me.gif" alt="gmc">
+								<div class="details">
+									<p class="taprom text-pink-gradient">SSarah</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div>
+							two
+							<div class="media">
+								<img class="pfp" src="static/img/general/gmc.webp" alt="gmc">
+								<div class="details">
+									<p class="taprom text-pink-gradient">Player</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- WinLose Menu -->
+				<div class="fade-in hidden" id="winLoseMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<h1 class="taprom">Win</h1>
+						<div id="xp">
+							<p>XP Earned</p>
+							<p class="taprom text-pink-gradient">755 XP</p>
+						</div>
+						<button>Exit</button>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div class="game-info">
+		<div class="hidden" id="gameInfo"> <!--class="hidden"-->
 			<div class="player-info">
-				<h1 class="taprom">SSarah</h1>
+				<h1 class="taprom txt-orange">SSarah</h1>
+				<h1 class="score">7</h1>
+			</div>
+			<div>
+				<h1 class="taprom txt-glow-fff">VS</h1>
 				<div class="specs-wrapper">
+					<button onclick="toggleMenu('optionsMenu')" class="spec">
+						<img src="static/img/icons/pause.svg" alt="pause">
+					</button>
 					<button class="spec">
 						<img src="static/img/icons/explosion.svg" alt="explosion">
 					</button>
@@ -17,27 +145,15 @@
 						<img src="static/img/icons/speed.svg" alt="speed">
 					</button>
 				</div>
-			</div>
-			<div class="score">
-				<h2 class="taprom">Score</h2>
+				<!-- <h2 class="taprom">Score</h2>
 				<p>7-7</p>
 				<button id="leave">
 					<img src="static/img/icons/leave.svg" alt="leave">
-				</button>
+				</button> -->
 			</div>
 			<div class="player-info">
-				<h1 class="taprom">Zoran</h1>
-				<div class="specs-wrapper">
-					<button class="spec">
-						<img src="static/img/icons/explosion.svg" alt="explosion">
-					</button>
-					<button class="spec">
-						<img src="static/img/icons/defence.svg" alt="defence">
-					</button>
-					<button class="spec">
-						<img src="static/img/icons/speed.svg" alt="speed">
-					</button>
-				</div>
+				<h1 class="taprom txt-blue">SSarah</h1>
+				<h1 class="score">7</h1>
 			</div>
 		</div>
 		<!-- <form id="special-abilities">
