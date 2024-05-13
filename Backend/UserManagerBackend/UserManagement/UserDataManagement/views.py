@@ -79,7 +79,7 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             if (jwt_token is None):
                 return JsonResponse({"error":"JWT couldn't be acquired, please log in manually"}, status=400)
             else:
-                res = HttpResponseRedirect("http://localhost:5500/dashboard")
+                res = HttpResponseRedirect("http://127.0.0.1:5500/dashboard")
                 res.set_cookie('access', jwt_token, samesite="None", secure=True)
                 res.set_cookie('user_id', user_data.get('id'), samesite="None", secure=True)
                 print("token:", jwt_token)
@@ -97,3 +97,17 @@ def update_user(request: HttpRequest):
             return HttpResponse(status=400)
         else:
             return HttpResponse(status=200)
+        
+        
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def logout_user(request: HttpRequest):
+    try:
+        token, user_id = ViewAssist.verify_token(request)
+        if (token is None or user_id is None):
+            return HttpResponse(status=401)
+        response = JsonResponse({"message":"Logged Out Successfully"}, status=200)
+        response.set_cookie('access', '', max_age=1, samesite='none', secure=True)
+        return response
+    except Exception as e:
+        return JsonResponse({"error":"Bad Request"}, status=401)
