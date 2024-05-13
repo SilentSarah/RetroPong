@@ -4,15 +4,24 @@ function initGame()
 {
 	console.log("initGame got called!");
 	initSocket();
+
+	// const gameEl = document.getElementById("game");
 	const canvas = new Canvas(document.getElementById("gameCanvas"));
 	canvas.user = new Paddle();
 	canvas.com = new Paddle();
 	canvas.setup();
 	window.addEventListener('resize', canvas.setup.bind(canvas));
 
-	canvas.el.addEventListener("keydown", (e) => {
+	console.log("I init the game>>");
+	// gameEl.focus();
+	window.addEventListener('click', ()=> {
+		console.log("I received the click however");
+	})
+	window.addEventListener("keydown", (e) => {
 		// maybe I'll do a global state here for optimization
-		e.preventDefault(); e.stopPropagation();
+		console.log("The keydown is detected!!!");
+		// e.preventDefault()
+		// e.preventDefault(); e.stopPropagation();
 		let direction;
 		if (e.key == 'w')
 			direction = 'up'
@@ -26,8 +35,8 @@ function initGame()
 		}));
 	});
 
-	canvas.el.addEventListener("keyup", (e) => {
-		e.preventDefault(); e.stopPropagation();
+	window.addEventListener("keyup", (e) => {
+		// e.preventDefault(); e.stopPropagation();
 		gameSocket.send(JSON.stringify({
 			'type': 'stop'
 		}));
@@ -79,6 +88,11 @@ function initGame()
 		{
 			console.log("Log: ", data.log);
 		}
-
+		else if (type == 'standby')
+		{
+			console.log("Players joined are: ", data.players);
+		}
 	};
+	// So that canvas can be accessible to other outside functions
+	window.canvasObj = canvas;
 }
