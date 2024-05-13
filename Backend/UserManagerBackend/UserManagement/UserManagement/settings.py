@@ -30,28 +30,20 @@ SECRET_KEY = 'django-insecure-^a$f%2q-v*t73-o27^r%507ny(us74u!r5^-69qaabw7jjfsnc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
 
 # Application definition
 
 INSTALLED_APPS = [
-<<<<<<< HEAD:Backend/RetroPong/RPVOLUME/Retropong/settings.py
-	'daphne',
-=======
     "corsheaders",
->>>>>>> UserManager-Backend:Backend/UserManagerBackend/UserManagement/UserManagement/settings.py
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-<<<<<<< HEAD:Backend/RetroPong/RPVOLUME/Retropong/settings.py
-	'game'
-=======
     'UserDataManagement',
->>>>>>> UserManager-Backend:Backend/UserManagerBackend/UserManagement/UserManagement/settings.py
 ]
 
 MIDDLEWARE = [
@@ -83,27 +75,8 @@ TEMPLATES = [
     },
 ]
 
-<<<<<<< HEAD:Backend/RetroPong/RPVOLUME/Retropong/settings.py
-WSGI_APPLICATION = f'{os.environ.get("PROJECT_NAME")}.wsgi.application'
-ASGI_APPLICATION = f'{os.environ.get("PROJECT_NAME")}.asgi.application'
-# We can switch to redis later using the following config
-# CHANNEL_LAYERS = {
-#     "default": {
-#         "BACKEND": "channels_redis.core.RedisChannelLayer",
-# 		"CONFIG": {
-#             "hosts": [("127.0.0.1", 6379)],
-#         },
-#     },
-# }
-CHANNEL_LAYERS = {
-    "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer"
-    },
-}
-=======
 WSGI_APPLICATION = 'UserManagement.wsgi.application'
 
->>>>>>> UserManager-Backend:Backend/UserManagerBackend/UserManagement/UserManagement/settings.py
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
