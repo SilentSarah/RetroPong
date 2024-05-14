@@ -79,6 +79,7 @@ function DisplayNavBar() {
             }
         });
     }
+    scanLinks();
 }
 
 function confirmOperartion(type, parent) {
@@ -222,6 +223,7 @@ function loadEvents() {
     }
     else if (window.location.pathname === '/dashboard') {
         copyIDListener();
+        setDashboardStats();
     }
     else if (window.location.pathname === '/settings') {
         handlePictureUploads();
