@@ -124,7 +124,7 @@ function fetchUserData() {
     } else {
         if (window.location.pathname === "/login" || window.location.pathname === "/register") {
             window.location.href = "/dashboard";
-        }
+        }  
         fetch("http://127.0.0.1:8001/userdata/",
         { 
             method: 'GET',
@@ -142,11 +142,10 @@ function fetchUserData() {
             }
         })
         .then(data => {
-            sessionStorage.clear();
             for (const [key, value] of Object.entries(data)) {
                 sessionStorage.setItem(key, value);
             }
-            if (window.location.href === "/dashboard")
+            if (window.location.pathname === "/dashboard")
                 setDashboardStats();
             DisplayNavBar();
         })
