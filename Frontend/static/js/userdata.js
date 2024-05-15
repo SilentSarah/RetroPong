@@ -12,51 +12,6 @@
 *                        1337                       *
 *****************************************************/
 
-class UserData {
-    constructor(id, username, email, fname, lname, pfp, bg, about, regdate, cids) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.fname = fname;
-        this.lname = lname;
-        this.pfp = pfp;
-        this.bg = bg;
-        this.about = about;
-        this.regdate = regdate;
-        this.cids = cids;
-    }
-    getID() {
-        return this.id;
-    }
-    getUsername() {
-        return this.username;
-    }
-    getEmail() {
-        return this.email;
-    }
-    getFname() {
-        return this.fname;
-    }
-    getLname() {
-        return this.lname;
-    }
-    getPfp() {
-        return this.pfp;
-    }
-    getBg() {
-        return this.bg;
-    }
-    getAbout() {
-        return this.about;
-    }
-    getRegdate() {
-        return this.regdate;
-    }
-    getCids() {
-        return this.cids;
-    }
-}
-
 function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
@@ -155,9 +110,6 @@ function fetchUserData() {
                 toast('Server is not responding, try again later.', 'bg-danger');
                 clearInterval(fetchID);
                 return ;
-            }
-            if (window.location.pathname !== "/login") {
-                window.location.href = "/login";
             }
         });
     }
