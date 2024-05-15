@@ -14,15 +14,15 @@
 } 
 
 
-.items-right-center-bottom::-webkit-scrollbar, .items-right-left-bottom::-webkit-scrollbar, .users::-webkit-scrollbar, .cards::-webkit-scrollbar {
+.items-right-center-bottom::-webkit-scrollbar, .items-right-left-bottom::-webkit-scrollbar, .users::-webkit-scrollbar, .cards::-webkit-scrollbar , .blocks::-webkit-scrollbar{
      width: 7px;
 }
-.items-right-center-bottom::-webkit-scrollbar-track, .items-right-left-bottom::-webkit-scrollbar-track, .users::-webkit-scrollbar-track, .cards::-webkit-scrollbar-track {
+.items-right-center-bottom::-webkit-scrollbar-track, .items-right-left-bottom::-webkit-scrollbar-track, .users::-webkit-scrollbar-track, .cards::-webkit-scrollbar-track ,.blocks::-webkit-scrollbar-track{
     box-shadow: inset 0 0 5px grey; 
     border-radius: 10px;
     padding: 10px;
 }
-.items-right-center-bottom::-webkit-scrollbar-thumb, .items-right-left-bottom::-webkit-scrollbar-thumb ,.cards::-webkit-scrollbar-thumb {
+.items-right-center-bottom::-webkit-scrollbar-thumb, .items-right-left-bottom::-webkit-scrollbar-thumb ,.cards::-webkit-scrollbar-thumb, .blocks::-webkit-scrollbar-thumb {
     background: rgba(160, 160, 160, 0.536); 
     border-radius: 10px;
     width: 50px;
