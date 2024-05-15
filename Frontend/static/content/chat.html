@@ -131,7 +131,7 @@
             <div id="#items_left" class="items-left items_left d-flex flex-column align-items-start"
                 style="width: 60px;min-width:60px; background: rgb(0,0,0); background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%); overflow-y:auto;">
                 <!-- this div used to change from channel to chat and reverse  -->
-                <div id="btn_friends" class="channel d-flex align-items-center w-100 mt-2" style="gap: 5px; ">
+                <div id="btn_friends"  class="channel d-flex align-items-center w-100 mt-2" style="gap: 5px; ">
                     <img src="/static/img/general/DM 1.png" alt="avatar" class="avatar " style="width:50px;height: 50px;  cursor: pointer; ">
                     <h3 class="title_items text-white inter"
                         style="font-size: 14px; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">Members
@@ -212,8 +212,8 @@
                                     ONLINE
                                 </li>
                                 <li id="btn_pending" style="display: flex;align-items: center;gap: 10px;">
-                                    <span>Pending</span>
-                                    <div id="notify_invite" style="display: none; width: 8px;height: 8px;border-radius: 50%;background-color: rgb(255, 0, 0); border: 1px solid white;"></div>
+                                    <span>PENDING</span>
+                                    <div id="notify_invite" style="font-size:14px; width: 20px;height: 20px;border-radius: 50%;background-color: rgb(248, 65, 172);" class="text-white  d-flex align-items-center justify-content-center "></div>
                                 </li>
                                 <li id="btn_blocks" style="border: none;"> 
                                     BLOCKS
@@ -221,39 +221,39 @@
                             </ul>
                         </div>
                         <div class="result h-100 w-100 p-4 text-white" id="Friends">
-                            <div class="all" id="all">
-                                <span id="number_all" class="filters_count"></span>
+                            <div class="all h-100 w-100" id="all">
+                                <span id="number_all" class="filters_count" ></span>
                                 <!-- Users -->
-                                <div id="userContainer" class="userContainer h-100 w-100" style="overflow-y: auto;">
+                                <div id="userContainer" class="users userContainer h-80 w-100 mt-2" style="overflow-y: auto;">
                                     <!-- User 1 -->
                                     <!-- +++++++++++++++++ -->
                                 </div>
                             </div>
 
-                            <div class="online d-none" id="online">
+                            <div class="online d-none  h-100 w-100" id="online">
                                 <span id="number_online" class="filters_count"></span>
                                 <!-- Users -->
-                                <div id="onlineContainer" class="users h-100 w-100" style="overflow-y: auto;">
+                                <div id="onlineContainer" class="users h-80 w-100 mt-2" style="overflow-y: auto;">
                                     <!-- User 1 -->
                                     <!-- +++++++++++++++++ -->
                                      
                                 </div>
                             </div>
 
-                            <div class="pending d-none" id="pending">
+                            <div class="pending d-none  h-100 w-100" id="pending">
                                 <span id="number_pending" class="filters_count"></span>
                                 <!-- Users -->
-                                <div id="pendingContainer" class="users h-100 w-100" style="overflow-y: auto;">
+                                <div id="pendingContainer" class="users h-80 w-100 mt-2" style="overflow-y: auto;">
                                     <!-- User 1 -->
                                     <!-- +++++++++++++++++ -->
                                     
                                 </div>
                             </div>
 
-                            <div class="blocks d-none" id="blocks">
+                            <div class="blocks d-none  h-100 w-100" id="blocks">
                                 <span id="number_block" class="filters_count"></span>
                                 <!-- Users -->
-                                <div id="blockContainer" class="users h-100 w-100" style="overflow-y: auto;">
+                                <div id="blockContainer" class="users h-80 w-100 mt-2" style="overflow-y: auto;">
                                     <!-- User 1 -->
                                     <!-- +++++++++++++++++ -->
                                      
@@ -321,7 +321,6 @@
                             </div>
                         </div>
                         <!-- FINISHED CHAT & MESSAGES -->
-
                     </div>
                 </div>
             </div>

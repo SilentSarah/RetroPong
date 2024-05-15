@@ -166,29 +166,7 @@ function Click() {
             open_chat_btn.classList.remove('d-none');
         })
     }
-
-
-    // this part about the details users when click on the user image
-    // let click = document.getElementById("#user_img");
-    // let details = document.getElementById("#details");
-    // window.addEventListener('click', function (event) {
-    //     if (event.target.className === click.className && click) {
-    //         console.log(event.clientY)
-    //         let Y = event.clientY;
-    //         let X = event.clientX;
-    //         details.classList.remove('d-none');
-    //         details.style.top = (Y - 233) + 'px';
-    //         details.style.left = (X - 200) + 'px';
-    //     }
-    //     this.window.addEventListener('resize', function () {
-    //         details.classList.add('d-none');
-    //     })
-    //     this.window.addEventListener('click', function (event) {
-    //         if (event.target.className !== click.className) {
-    //             details.classList.add('d-none');
-    //         }
-    //     })
-    // })
+ 
 
     // this part about the chat section to keep the scroll in the bottom
     let scroll_chat = document.getElementById("#items-right-center-bottom");
@@ -217,7 +195,6 @@ function Click() {
             menu_items.classList.add('d-none');
             blur_id.style.filter = 'blur(0px)';
             open_member_btn.style.right = '14px';
-
         })
 
     }
@@ -379,7 +356,7 @@ function TwoFactorAuthHandler() {
 }
 
 
-function filter_all_pending_online_blocks() {
+function navbarFriends() {
     // buttons
     const btn_all = document.getElementById('btn_all');
     const btn_pending = document.getElementById('btn_pending');
@@ -405,11 +382,6 @@ function filter_all_pending_online_blocks() {
             if (btn.id !== 'btn_all')
                 btn.style.color = '';
         })
-        // if(notify.style.display === 'flex')
-        // {
-        //     Remove_notification('message')
-        //     notify.style.display = 'none'
-        // }
     });
     const notify_invite = document.getElementById('notify_invite')
 
@@ -425,11 +397,6 @@ function filter_all_pending_online_blocks() {
             if (btn.id !== 'btn_pending')
                 btn.style.color = '';
         })
-        // if(notify_invite.style.display === 'flex')
-        // {
-        //     Remove_notification('invite')
-        //     notify_invite.style.display = 'none'
-        // }
     });
     if(btn_online)
     btn_online.addEventListener('click', () => {
@@ -479,6 +446,7 @@ function transition_between_channels_and_friends() {
             console.log("object")
             friend.classList.remove('d-none');
         });
+
     });
     if(btn_friendss)
     btn_friendss.addEventListener('click', () => {
@@ -524,10 +492,6 @@ let ChartData = {
 };
 
 function loadEvents() {
-    Click();
-    filter_all_pending_online_blocks();
-    transition_between_channels_and_friends();
-    
     scanLinks();
     if (window.location.pathname === '/') {
     }
