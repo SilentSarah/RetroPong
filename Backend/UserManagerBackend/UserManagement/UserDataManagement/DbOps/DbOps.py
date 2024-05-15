@@ -1,6 +1,7 @@
 from ..models import *
 import bcrypt
 from django.utils import timezone
+import datetime
 
 class DbOps:
     def __init__(self):
@@ -17,6 +18,7 @@ class DbOps:
             User: Database User Object
         """
         try:
+            start = datetime.datetime.now()
             if (username is not None):
                 user = User.objects.get(uusername=username)
             else:
@@ -32,8 +34,16 @@ class DbOps:
                 "profilepic": user.uprofilepic,
                 "profilebgpic": user.uprofilebgpic,
                 "desc": user.udesc,
-                "cids": user.ucids
+                "ucids": user.ucids,
+                "is42": user.uIs42,
+                "matchesplayed": user.matchesplayed,
+                "matcheswon": user.matcheswon,
+                "matcheslost": user.matcheslost,
+                "xp": user.xp,
+                "rank": user.rank
             }
+            end = datetime.datetime.now()
+            print("Time taken:", end - start)
             return user
         except User.DoesNotExist:
             user = None
