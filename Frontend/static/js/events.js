@@ -78,8 +78,8 @@ function DisplayNavBar() {
                 open = false;
             }
         });
+        scanLinks();
     }
-    scanLinks();
 }
 
 function confirmOperartion(type, parent) {
@@ -111,15 +111,25 @@ function scanInput() {
     });
 }
 
+function linkClickHandler(e) {
+    e.preventDefault();
+    history.pushState(null, null, this.href);
+    router();
+}
+
+function iterateOverLinks(link) {
+    link.addEventListener('click', linkClickHandler);
+}
+
+function removeLinkHandlers(link) {
+    link.removeEventListener('click', linkClickHandler);
+}
+
 function scanLinks() {
+    window.removeEventListener('popstate', router);
+    document.querySelectorAll('a').forEach(removeLinkHandlers);
     window.addEventListener('popstate', router);
-    document.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', function (e) {
-            e.preventDefault();
-            history.pushState(null, null, this.href);
-            router();
-        });
-    });
+    document.querySelectorAll('a').forEach(iterateOverLinks);
 }
 
 function copyIDListener() {

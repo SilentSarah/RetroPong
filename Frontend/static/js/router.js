@@ -73,6 +73,7 @@ function router() {
     StartLoading(route);
     setTimeout(() => {
     if (route) {
+        console.log(route);
         if (route.on === true)
             return;
         route.component().then(html => {
@@ -89,12 +90,17 @@ function router() {
         routes[0].component().then(html => {
             console.log("404");
             mainContent.innerHTML = html;
-            loadEvents();
             routes[0].on = true;
+            for (let i = 1; i < routes.length; i++) {
+                if (routes[i].on) {
+                    routes[i].on = false;
+                }
+            }
+            loadEvents();
         });
     }}, 750);
 }
 
 router();
 fetchUserData();
-fetchID = setInterval(fetchUserData, 1000);
+fetchID = setInterval(fetchUserData, 1500);

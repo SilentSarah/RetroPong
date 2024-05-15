@@ -15,7 +15,7 @@ function initGame()
 	console.log("I init the game>>");
 	// gameEl.focus();
 	window.addEventListener('click', ()=> {
-		console.log("I received the click however");
+		//console.log("I received the click however");
 	})
 	window.addEventListener("keydown", (e) => {
 		// maybe I'll do a global state here for optimization
