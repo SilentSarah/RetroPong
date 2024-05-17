@@ -126,4 +126,14 @@ function setDashboardStats() {
     email.innerHTML = sessionStorage.getItem('email');
     let regdate = document.getElementById('regdate');
     regdate.innerHTML = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
+    let rank = document.getElementById('rank');
+    rank.innerHTML = sessionStorage.getItem('rank');
+    let matches = document.getElementById('matches');
+    matches.innerHTML = sessionStorage.getItem('matchesplayed');
+    let matches_won = document.getElementById('matches_won');
+    matches_won.innerHTML = sessionStorage.getItem('matcheswon');
+    let matches_lost = document.getElementById('matches_lost');
+    matches_lost.innerHTML = sessionStorage.getItem('matcheslost');
+    let Experience = document.getElementById('Experience');
+    Experience.innerHTML = sessionStorage.getItem('xp');
 }
