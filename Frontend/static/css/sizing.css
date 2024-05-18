@@ -181,6 +181,17 @@
 }
 
 @media screen and (min-width: 769px) and (max-width: 1024px){
+    #tier {
+        order: 3;
+    }
+    #name_title {
+        order: 2;
+    }
+    #desc {
+        order: 1;
+        text-align: center;
+        flex: 2;
+    }
     .btn-retro {
         width: 120px;
         height: 50px;
