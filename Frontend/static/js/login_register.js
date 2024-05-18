@@ -151,10 +151,10 @@ function check_pass_strength(pass) {
         toast('Password must contain at least one number', 'bg-danger');
         return false;
     }
-    if (pass.search(/[!@#$%^&*]/) === -1) {
-        toast('Password must contain at least one special character', 'bg-danger');
-        return false;
-    }
+    // if (pass.search(/[!@#$%^&*;]/) === -1) {
+    //     toast('Password must contain at least one special character', 'bg-danger');
+    //     return false;
+    // }
 }
 
 function register_user() {
