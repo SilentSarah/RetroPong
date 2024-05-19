@@ -93,7 +93,6 @@ function fetchUserData() {
                 return response.json();
             } else {
                 deleteCookie("access");
-                throw new Error('Token Expired or Invalid');
             }
         })
         .then(data => {
@@ -114,26 +113,32 @@ function fetchUserData() {
         });
     }
 }
+function setElementInnerHTML(id, sessionKey, defaultValue = "") {
+    let element = document.getElementById(id);
+    let value = sessionStorage.getItem(sessionKey);
+    element.innerHTML = value === "" ? defaultValue : value;
+}
+
 function setDashboardStats() {
-    let date = new Date(sessionStorage.getItem('regdate'));
-    let username = document.getElementById('username');
-    username.innerHTML = sessionStorage.getItem('username');
-    let player_id = document.getElementById('player_id');
+    setElementInnerHTML('username', 'username');
+    setElementInnerHTML('title', 'title', 'The NPC');
+    setElementInnerHTML('email', 'email');
+    setElementInnerHTML('discordid', 'discordid', 'None');
+    setElementInnerHTML('Experience', 'xp');
+    setElementInnerHTML('level', 'level');
+    setElementInnerHTML('tournamentsplayed', 'tournamentsplayed');
+    setElementInnerHTML('tournamentswon', 'tournamentswon');
+    setElementInnerHTML('tournamentslost', 'tournamentslost');
+    setElementInnerHTML('desc', 'desc');
+    setElementInnerHTML('matches', 'matchesplayed');
+    setElementInnerHTML('matches_won', 'matcheswon');
+    setElementInnerHTML('matches_lost', 'matcheslost');
+
+    let player_id = document.getElementById("player_id");
     player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;
-    let full_name = document.getElementById('full_name');
-    full_name.innerHTML = `${sessionStorage.getItem('fname')} ${sessionStorage.getItem('lname')}`;
-    let email = document.getElementById('email');
-    email.innerHTML = sessionStorage.getItem('email');
-    let regdate = document.getElementById('regdate');
-    regdate.innerHTML = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-    let rank = document.getElementById('rank');
-    rank.innerHTML = sessionStorage.getItem('rank');
-    let matches = document.getElementById('matches');
-    matches.innerHTML = sessionStorage.getItem('matchesplayed');
-    let matches_won = document.getElementById('matches_won');
-    matches_won.innerHTML = sessionStorage.getItem('matcheswon');
-    let matches_lost = document.getElementById('matches_lost');
-    matches_lost.innerHTML = sessionStorage.getItem('matcheslost');
-    let Experience = document.getElementById('Experience');
-    Experience.innerHTML = sessionStorage.getItem('xp');
+
+    let full_name = document.getElementById("full_name");
+    let first_name = sessionStorage.getItem('fname');
+    let last_name = sessionStorage.getItem('lname');
+    full_name.innerHTML = first_name + " " + last_name;
 }

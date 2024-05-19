@@ -5,10 +5,15 @@
         <div class="d-flex justify-content-center aesthetic-placement">
             <div class="user-profile-picture border-pink"></div>
             <div class="d-flex flex-column justify-content-end ms-2">
-                <h4 class="text-pink-gradient taprom text-glow mb-0 text-turncate">SSarah</h4>
-                <p class="text-secondary nokora text-glow mb-0 d-flex align-items-center" style="font-size: 12px;">RP-ID-01
-                    <span><img src="/static/img/dashboard_utils/cpy.png" width="16px" class="d-inline"></span>
-                </p>
+                <h4 id="username" class="text-pink-gradient taprom text-glow mb-0 text-turncate">
+                    <span class="text-shadow-drop-center">Loading...</span>
+                </h4>
+                <div class="d-flex align-items-center">
+                    <p id="player_id" class="text-secondary nokora text-glow mb-0 d-flex align-items-center" style="font-size: 12px;">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                    <img id="cpyID" src="/static/img/dashboard_utils/cpy.png" width="16px">
+                </div>
             </div>
         </div>
     </div>
@@ -20,23 +25,31 @@
             <div class="d-flex flex-column gap-2 flex-fill order-lg-1" style="width: 350px;">
                 <div class="d-flex align-items-center p-2 bg-black-transparent-0-05 border-transparent-0-5 rounded-3">
                     <img src="/static/img/dashboard_utils/mail.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">hichammeftah4@gmail.com</p>
+                    <p id="email" class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center p-2 bg-black-transparent-0-05 border-transparent-0-5 rounded-3">
                     <img src="/static/img/dashboard_utils/dc.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">shmeftah</p>
+                    <p id="discordid" class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
             </div>
             <!-- Ranking -->
             <img id="tier" src="/static/img/rank/STier.png" width="140px" height="140px" class="box-shadow order-2 order-md-4 order-xxl-2">
             <!-- Full Name and Title -->
             <div id="name_title" class="d-flex flex-column align-items-center bg-black-transparent-0-05 border-transparent-0-5 rounded-4 order-1 flex-fill flex-sm-fill order-md-3 order-lg-3" style="width: 400px; height:140px">
-                <h4 class="text-pink-gradient taprom line-height-1 text-glow">Shape Shifter</h4>
-                <h1 class="text-chrome taprom line-height-1 text-glow">Sarah Meftah</h1>
+                <h4 id="title" class="text-pink-gradient taprom line-height-1 text-glow">
+                    <span class="text-shadow-drop-center">Loading...</span>
+                </h4>
+                <h1 id="full_name" class="text-chrome taprom line-height-1 text-glow">
+                    <span class="text-shadow-drop-center">Loading...</span>
+                </h1>
             </div>
             <!-- Description -->
             <p id="desc" class="border-transparent-0-5 bg-black-transparent-0-05 nokora text-white fw-light rounded-4 align-self-start flex-fill m-0 p-3 text-center text-xxl-start order-xxl-5 order-xl-5 order-lg-4 flex-lg-grow" style="width:350px; height:80px">
-                Your favorite shape shifter ;)
+                <span class="text-shadow-drop-center">Loading...</span>
             </p>
         </div>
         <!-- Lower Part -->
@@ -46,35 +59,51 @@
             <div class="d-flex flex-wrap bg-black-transparent-0-05 border-transparent-0-5 rounded-4 justify-content-evenly align-items-center gap-3 p-3 p-md-3 gap-md-2 flex-md-fill" style="width: 550px; height:auto">
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/XP.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="Experience" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/Tournaments.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="tournamentsplayed" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/LVL.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="level" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/TWins.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="tournamentswon" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/VS.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="matches" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/TLoss.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="tournamentslost" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/Wins.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="matches_won" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
                 <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
                     <img src="/static/img/dashboard_utils/Losses.png" width="45px" height="45px">
-                    <p class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">6555 XP</p>
+                    <p id="matches_lost" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
             </div>
             <!-- Match History -->
@@ -82,24 +111,36 @@
                 <div class="d-flex bg-loss border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
                     <img src="/static/img/pfp/me.gif" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
                     <div class="d-flex flex-column align-items-center mx-3">
-                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-danger text-shadow">LOSS</p>
-                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">5 - 7</p>
+                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-danger text-shadow">
+                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
+                        </p>
+                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
+                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
+                        </p>
                     </div>
                     <img src="/static/img/pfp/asekkak.jpeg" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
                 </div>
                 <div class="d-flex bg-win border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
                     <img src="/static/img/pfp/me.gif" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
                     <div class="d-flex flex-column align-items-center mx-3">
-                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-success text-shadow">WIN</p>
-                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">7 - 5</p>
+                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-success text-shadow">
+                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
+                        </p>
+                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
+                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
+                        </p>
                     </div>
                     <img src="/static/img/pfp/asekkak.jpeg" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
                 </div>
                 <div class="d-flex bg-loss border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
                     <img src="/static/img/pfp/me.gif" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
                     <div class="d-flex flex-column align-items-center mx-3">
-                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-danger text-shadow">LOSS</p>
-                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">5 - 7</p>
+                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-danger text-shadow">
+                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
+                        </p>
+                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
+                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
+                        </p>
                     </div>
                     <img src="/static/img/pfp/asekkak.jpeg" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
                 </div>
