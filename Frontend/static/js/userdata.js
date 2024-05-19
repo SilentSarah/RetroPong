@@ -98,6 +98,7 @@ function fetchUserData() {
         .then(data => {
             for (const [key, value] of Object.entries(data)) {
                 sessionStorage.setItem(key, value);
+                console.log(`${key}: ${value}`)
             }
             if (window.location.pathname === "/dashboard")
                 setDashboardStats();
@@ -119,6 +120,13 @@ function setElementInnerHTML(id, sessionKey, defaultValue = "") {
     element.innerHTML = value === "" ? defaultValue : value;
 }
 
+function setPlayerRank() {
+    let rank = sessionStorage.getItem('rank');
+    let tier = document.getElementById('tier');
+    if (tier)
+        tier.src=`/static/img/rank/${rank}.png`;
+}
+
 function setDashboardStats() {
     setElementInnerHTML('username', 'username');
     setElementInnerHTML('title', 'title', 'The NPC');
@@ -129,7 +137,7 @@ function setDashboardStats() {
     setElementInnerHTML('tournamentsplayed', 'tournamentsplayed');
     setElementInnerHTML('tournamentswon', 'tournamentswon');
     setElementInnerHTML('tournamentslost', 'tournamentslost');
-    setElementInnerHTML('desc', 'desc');
+    setElementInnerHTML('desc', 'desc', "No description provided");
     setElementInnerHTML('matches', 'matchesplayed');
     setElementInnerHTML('matches_won', 'matcheswon');
     setElementInnerHTML('matches_lost', 'matcheslost');
@@ -141,4 +149,5 @@ function setDashboardStats() {
     let first_name = sessionStorage.getItem('fname');
     let last_name = sessionStorage.getItem('lname');
     full_name.innerHTML = first_name + " " + last_name;
+    setPlayerRank();
 }
