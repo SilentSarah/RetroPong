@@ -13,7 +13,7 @@ class User(models.Model):
     id = models.AutoField(primary_key=True)
     uusername = models.CharField(db_column='uUsername', unique=True, max_length=50)
     upassword = models.CharField(db_column='uPassword', max_length=128)
-    uemail = models.CharField(db_column='uEmail', max_length=64, unique=True, default="")
+    uemail = models.CharField(db_column='uEmail', max_length=64, unique=True)
     ufname = models.CharField(db_column='uFName', max_length=64, default="")
     ulname = models.CharField(db_column='uLName', max_length=64, default="")
     uregdate = models.DateTimeField(db_column='uRegDate', default="")
@@ -28,6 +28,13 @@ class User(models.Model):
     matcheslost = models.IntegerField(db_column='MatchesLost', default=0)  
     xp = models.IntegerField(db_column='XP', default=0) 
     rank = models.IntegerField(db_column='Level', default=0)
+    level = models.IntegerField(db_column='Level', default=0)
+    utitle = models.CharField(db_column='uTitle', max_length=32, default="")
+    udiscordid = models.CharField(db_column='uDiscordID', max_length=24, default="")
+    utournamentsplayed = models.IntegerField(db_column='uTournamentsPlayed', default=0)
+    utournamentswon = models.IntegerField(db_column='uTournamentsWon', default=0)
+    utournamentslost = models.IntegerField(db_column='uTournamentsLost', default=0)
+    
 
 class UsersAdmin(ModelAdmin):
     list_display = ['uusername', 'upassword', 'uemail', 'ufname', 'ulname' ,'uregdate', 'uprofilepic', 'uprofilebgpic', 'udesc', 'uip', 'ucids', 'uIs42', 'matchesplayed', 'matcheswon', 'matcheslost', 'xp', 'rank']
