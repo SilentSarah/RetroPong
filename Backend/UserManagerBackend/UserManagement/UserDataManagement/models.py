@@ -27,7 +27,7 @@ class User(models.Model):
     matcheswon = models.IntegerField(db_column='MatchesWon', default=0)  
     matcheslost = models.IntegerField(db_column='MatchesLost', default=0)  
     xp = models.IntegerField(db_column='XP', default=0) 
-    rank = models.IntegerField(db_column='Rank', default=0)
+    rank = models.IntegerField(db_column='Rank', default=1)
     level = models.IntegerField(db_column='level', default=0)
     utitle = models.CharField(db_column='uTitle', max_length=32, default="")
     udiscordid = models.CharField(db_column='uDiscordID', max_length=24, default="")
