@@ -162,7 +162,8 @@ class ViewAssist:
     @staticmethod
     def create_user_and_setup_login_creds(request: HttpRequest) -> dict:
         registarion_data = json.loads(request.body.decode('utf-8')) 
-        DbOps.create_user(registarion_data)
+        if (DbOps.create_user(registarion_data) == False):
+            return None
         user_login_data = {
             "username": registarion_data.get('uUsername'),
             "password": registarion_data.get('uPassword')
