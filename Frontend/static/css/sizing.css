@@ -118,7 +118,7 @@
     }
 }
 
-@media screen and (min-width: 577px) and (max-width: 768px){
+@media screen and (max-width: 768px){
     .dynamic-fill {
         width: 100%;
     }
@@ -182,7 +182,7 @@
         justify-content: center;
     }
     .main-stats-container {
-        width: 370px;
+        width: 100%;
     }
 }
 
@@ -239,6 +239,9 @@
     .info-card:nth-child(3) {
         margin-top: 1.5rem;
     }
+    .main-stats-container {
+        width: 100%;
+    }
 }
 
 @media screen and (min-width: 1025px){
@@ -287,7 +290,7 @@
         justify-content: center;
     }
     .main-stats-container {
-        width: 370px;
+        width: 100%;
     }
 }
 
@@ -333,5 +336,11 @@
     }
     #RacketLogin {
         display: block;
+    }
+    #ChartMark {
+        width: 370px !important;
+    }
+    .main-stats-container {
+        width: 370px;
     }
 }
