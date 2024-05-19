@@ -41,7 +41,14 @@ class DbOps:
                 "matcheswon": user.matcheswon,
                 "matcheslost": user.matcheslost,
                 "xp": user.xp,
-                "rank": user.rank
+                "rank": user.rank,
+                "level": user.level,
+                "title": user.utitle,
+                "discordid": user.udiscordid,
+                "tournamentsplayed": user.utournamentsplayed,
+                "tournamentswon": user.utournamentswon,
+                "tournamentslost": user.utournamentslost
+                
             }
             end = datetime.datetime.now()
             print("Time taken:", end - start)
@@ -89,7 +96,7 @@ class DbOps:
             return False
         
     @staticmethod 
-    def create_user(user_data: dict) -> bool:
+    def create_user(user_data: dict, is42: int = 0) -> bool:
         """Creates a new user in the database
 
         Args:
@@ -119,6 +126,6 @@ class DbOps:
             udesc=user_data_copy.get('uDesc'),
             uip=user_data_copy.get('uIp'),
             ucids=user_data_copy.get('ucIDs'),
-            uIs42=user_data_copy.get('uIs42')
+            uIs42=False if is42 == 0 else True
         )
         return True

@@ -109,7 +109,7 @@ class ViewAssist:
         """
         user_data = DbOps.get_user(username=required_data.get('uUsername'))
         if (user_data is None):
-            if (DbOps.create_user(required_data) == False):
+            if (DbOps.create_user(required_data, 1) == False):
                 return None
             user_data = DbOps.get_user(username=required_data.get('uUsername'))
         
