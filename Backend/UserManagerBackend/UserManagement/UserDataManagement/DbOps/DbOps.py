@@ -2,6 +2,7 @@ from ..models import *
 import bcrypt
 from django.utils import timezone
 import datetime
+import re
 
 class DbOps:
     def __init__(self):
@@ -98,7 +99,9 @@ class DbOps:
             bool: True if user is created, False if creation fails
         """
         user_data_copy = user_data.copy()
-        unhashed_password = user_data_copy.get("uPassword")
+        unhashed_password = str(user_data_copy.get("uPassword"))
+        if (re.match(r'[A-Za-z0-9]{8,}', unhashed_password) is None):
+            return False
         hashed_password = str(bcrypt.hashpw(unhashed_password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8'))
         user_data_copy.update(
             {

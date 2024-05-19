@@ -30,6 +30,8 @@ def user_data(request: HttpRequest):
 def create_user(request: HttpRequest):
     try:
         user_login_data = ViewAssist.create_user_and_setup_login_creds(request)
+        if (user_login_data is None):
+            return JsonResponse({"error":"Bad Request"}, status=400)
         user = DbOps.get_user(username=user_login_data.get('username'))
         jwt = ViewAssist.request_jwt_from_auth_server(user_login_data, "http://127.0.0.1:8000/auth/")
         if (jwt is not None):
