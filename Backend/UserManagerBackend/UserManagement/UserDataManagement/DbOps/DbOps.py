@@ -1,12 +1,39 @@
 from ..models import *
 import bcrypt
 from django.utils import timezone
+from django.db.models import Q
 import datetime
 import re
 
 class DbOps:
     def __init__(self):
         pass
+
+    @staticmethod
+    def generate_match_history(id: int) -> dict:
+        try:
+            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
+            if (matches is None):
+                return {}
+            match_history = {}
+            for round in matches:
+                opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 else round.sOpponent
+                opponent = User.objects.get(id=opponent)
+                match_history[round.id] = {
+                    "OpponentData": {
+                        "id": opponent.id,
+                        "pfp": opponent.uprofilepic,
+                        "username": opponent.uusername,
+                        "score": round.Score,
+                        "result": "DRAW" if opponent.id in round.Winners and id in round.Winners 
+                                else "WIN" if id in round.Winners else "LOSS",
+                    }
+                }
+            print(match_history)
+            return match_history
+        except Exception as e:
+            print("DbOps: ", e)
+            return None
 
     @staticmethod
     def get_user(user_id: int = -1, username: str = None) -> dict:
@@ -19,7 +46,6 @@ class DbOps:
             User: Database User Object
         """
         try:
-            start = datetime.datetime.now()
             if (username is not None):
                 user = User.objects.get(uusername=username)
             else:
@@ -47,11 +73,10 @@ class DbOps:
                 "discordid": user.udiscordid,
                 "tournamentsplayed": user.utournamentsplayed,
                 "tournamentswon": user.utournamentswon,
-                "tournamentslost": user.utournamentslost
+                "tournamentslost": user.utournamentslost,
+                "matchhistory": DbOps.generate_match_history(user.id),
                 
             }
-            end = datetime.datetime.now()
-            print("Time taken:", end - start)
             return user
         except User.DoesNotExist:
             user = None
@@ -114,6 +139,8 @@ class DbOps:
             {
                 "uPassword": hashed_password
             })
+        pfp = user_data_copy.get('uProfilepic')
+        bg = user_data_copy.get('uProfilebgpic')
         User.objects.create(
             uusername=user_data_copy.get('uUsername'),
             upassword=user_data_copy.get('uPassword'),
@@ -121,11 +148,8 @@ class DbOps:
             ufname=user_data_copy.get('uFname'),
             ulname=user_data_copy.get('uLname'),
             uregdate=timezone.now(),
-            uprofilepic=user_data_copy.get('uProfilepic'),
-            uprofilebgpic=user_data_copy.get('uProfilebgpic'),
-            udesc=user_data_copy.get('uDesc'),
-            uip=user_data_copy.get('uIp'),
-            ucids=user_data_copy.get('ucIDs'),
+            uprofilepic=pfp if pfp is not None else "",
+            uprofilebgpic=bg if bg is not None else "",
             uIs42=False if is42 == 0 else True
         )
         return True

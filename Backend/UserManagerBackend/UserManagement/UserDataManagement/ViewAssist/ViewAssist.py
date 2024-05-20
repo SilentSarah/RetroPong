@@ -131,7 +131,6 @@ class ViewAssist:
             "username": user_data.get('username'),
             "password": user_data.get('password')
         }
-        print(user_login_data)
         user_login_data = json.dumps(user_login_data)
         response = WebOps.request_endpoint(endpoint, 'POST', {'Content-Type': 'application/json'}, user_login_data)
         if (response.status_code == 201):

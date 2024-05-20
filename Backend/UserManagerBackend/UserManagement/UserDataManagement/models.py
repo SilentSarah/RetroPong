@@ -11,17 +11,17 @@ from django.contrib.postgres.fields import ArrayField
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
-    uusername = models.CharField(db_column='uUsername', unique=True, max_length=50)
+    uusername = models.CharField(db_column='uUsername', unique=True, max_length=24)
     upassword = models.CharField(db_column='uPassword', max_length=128)
-    uemail = models.CharField(db_column='uEmail', max_length=64, unique=True)
-    ufname = models.CharField(db_column='uFName', max_length=64, default="")
-    ulname = models.CharField(db_column='uLName', max_length=64, default="")
+    uemail = models.CharField(db_column='uEmail', max_length=32, unique=True)
+    ufname = models.CharField(db_column='uFName', max_length=16, default="")
+    ulname = models.CharField(db_column='uLName', max_length=16, default="")
     uregdate = models.DateTimeField(db_column='uRegDate', default="")
     uprofilepic = models.CharField(db_column='uProfilePic', max_length=100, default="")
     uprofilebgpic = models.CharField(db_column='uProfileBgPic', max_length=100, default="")
     udesc = models.CharField(db_column='uDesc', max_length=100, default="") 
-    uip = models.CharField(db_column='uIp', max_length=100, default="") 
-    ucids = ArrayField(models.IntegerField(), db_column='ucIDs') 
+    uip = models.CharField(db_column='uIp', max_length=16, default="") 
+    ucids = ArrayField(models.IntegerField(), db_column='ucIDs', default=list) 
     uIs42 = models.BooleanField(db_column='uIs42', default=False)
     matchesplayed = models.IntegerField(db_column='MatchesPlayed', default=0)
     matcheswon = models.IntegerField(db_column='MatchesWon', default=0)  
@@ -29,13 +29,29 @@ class User(models.Model):
     xp = models.IntegerField(db_column='XP', default=0) 
     rank = models.IntegerField(db_column='Rank', default=1)
     level = models.IntegerField(db_column='level', default=0)
-    utitle = models.CharField(db_column='uTitle', max_length=32, default="")
-    udiscordid = models.CharField(db_column='uDiscordID', max_length=24, default="")
+    utitle = models.CharField(db_column='uTitle', max_length=16, default="")
+    udiscordid = models.CharField(db_column='uDiscordID', max_length=16, default="")
     utournamentsplayed = models.IntegerField(db_column='uTournamentsPlayed', default=0)
     utournamentswon = models.IntegerField(db_column='uTournamentsWon', default=0)
     utournamentslost = models.IntegerField(db_column='uTournamentsLost', default=0)
-    
 
 class UsersAdmin(ModelAdmin):
     list_display = ['uusername', 'upassword', 'uemail', 'ufname', 'ulname' ,'uregdate', 'uprofilepic', 'uprofilebgpic', 'udesc', 'uip', 'ucids', 'uIs42', 'matchesplayed', 'matcheswon', 'matcheslost', 'xp', 'rank']
     search_fields = ['uusername', 'upassword', 'uemail', 'ufname', 'ulname' ,'uregdate', 'uprofilepic', 'uprofilebgpic', 'udesc', 'uip', 'ucids', 'uIs42', 'matchesplayed', 'matcheswon', 'matcheslost', 'xp', 'rank']
+    
+    
+class MatchHistory(models.Model):
+    id = models.AutoField(primary_key=True)
+    matchtype = models.CharField(db_column='MatchType', max_length=8, default="")
+    fOpponent = models.IntegerField(db_column='fOpponent', default=-1)
+    sOpponent = models.IntegerField(db_column='sOpponent', default=-1)
+    tOpponent = models.IntegerField(db_column='tOpponent', default=-1)
+    lOpponent = models.IntegerField(db_column='lOpponent', default=-1)
+    mStartDate = models.DateTimeField(db_column='mStartDate', default="")
+    Score = ArrayField(models.IntegerField(), db_column='Score')
+    Winners = ArrayField(models.IntegerField(), db_column='Winners')
+    
+class MatchHistoryAdmin(ModelAdmin):
+    list_display = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent', 'mStartDate', 'Score', 'Winners']
+    search_fields = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent', 'mStartDate', 'Score', 'Winners']
+    
