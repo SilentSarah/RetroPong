@@ -3,7 +3,6 @@ let c  = true
 const open =(sidebar ,items) => {
     sidebar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     sidebar.style.width = '50%';
-    sidebar.style.zIndex = '1';
     items.forEach(item => {
         item.style.display = 'flex';
     })
@@ -14,7 +13,6 @@ const close = (sidebar, items) => {
     sidebar.style.background = '';
     sidebar.style.backgroundColor = 'rgba(0, 0, 0, 0)';
     sidebar.style.width = '80px';
-    sidebar.style.zIndex = '0';
     items.forEach(item => {
         item.style.display = 'none';
     })
@@ -24,7 +22,6 @@ const close = (sidebar, items) => {
 const resetsettings = (sidebar, items) => {
     sidebar.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%)';
     sidebar.style.width = '80px';
-    sidebar.style.zIndex = '0';
     items.forEach(item => {
         item.style.display = 'flex';
     })
@@ -33,7 +30,7 @@ const resetsettings = (sidebar, items) => {
 function openMenu() {
     const sidebar = document.getElementById('sidebar');
     const items = document.querySelectorAll('.items');
-    
+     
     if(c)
         open(sidebar, items)
     else if(!c)

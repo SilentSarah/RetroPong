@@ -348,6 +348,7 @@ display: none;
     .menu{
         display: flex;
         margin-bottom: 10px;
+        z-index: 99 !important; 
     }
     .items{
         display: none;
@@ -363,6 +364,7 @@ display: none;
         background: transparent;
         position: absolute;
         left: 0px;
+        z-index: 99;
     }
 
     .navFriend{
