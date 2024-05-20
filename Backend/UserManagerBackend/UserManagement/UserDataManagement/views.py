@@ -41,13 +41,14 @@ def create_user(request: HttpRequest):
                     "user_id": user.get('id'),
                     "access": jwt
                 }, status=201)
-            new_response.set_cookie('user_id', user.get('id'), max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False)
-            new_response.set_cookie('access', jwt, max_age=datetime.timedelta(days=MAX_DURATION), samesite='none', secure=False)
+            new_response.set_cookie('user_id', user.get('id'), samesite='none', secure=True)
+            new_response.set_cookie('access', jwt, samesite='none', secure=True)
             return new_response
         else:
             return JsonResponse({"error":"JWT wasn't acquired please sign in manually"}, status=404)
     except IntegrityError as e:
-        return JsonResponse({"error":"Username already exists"}, status=409)
+        print("error:", e)
+        return JsonResponse({"error":"Missing/Exisitng Data"}, status=409)
     except Exception as e:
         print("error:", e)
         return JsonResponse({"error":"Bad Request"}, status=400)
