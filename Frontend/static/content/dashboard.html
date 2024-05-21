@@ -3,7 +3,7 @@
     <div class="d-flex flex-column position-relative">
         <div class="user-bg-picture"></div>
         <div class="d-flex justify-content-center aesthetic-placement">
-            <div class="user-profile-picture border-pink"></div>
+            <div id="profile_pic" class="user-profile-picture border-pink"></div>
             <div class="d-flex flex-column justify-content-end ms-2">
                 <h4 id="username" class="text-pink-gradient taprom text-glow mb-0 text-turncate">
                     <span class="text-shadow-drop-center">Loading...</span>
@@ -24,20 +24,20 @@
             <!-- Social Media Handle -->
             <div class="d-flex flex-column gap-2 flex-fill order-lg-1" style="width: 350px;">
                 <div class="d-flex align-items-center p-2 bg-black-transparent-0-05 border-transparent-0-5 rounded-3">
-                    <img src="/static/img/dashboard_utils/mail.png" width="45px" height="45px">
+                    <img src="/static/img/dashboard_utils/mail.png" width="45px" height="45px" class="pe-none">
                     <p id="email" class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">
                         <span class="text-shadow-drop-center">Loading...</span>
                     </p>
                 </div>
                 <div class="d-flex align-items-center p-2 bg-black-transparent-0-05 border-transparent-0-5 rounded-3">
-                    <img src="/static/img/dashboard_utils/dc.png" width="45px" height="45px">
+                    <img src="/static/img/dashboard_utils/dc.png" width="45px" height="45px" class="pe-none">
                     <p id="discordid" class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">
                         <span class="text-shadow-drop-center">Loading...</span>
                     </p>
                 </div>
             </div>
             <!-- Ranking -->
-            <img id="tier" src="/static/img/rank/1.png" width="140px" height="140px" class="box-shadow order-2 order-md-4 order-xxl-2">
+            <img id="tier" src="/static/img/rank/1.png" width="140px" height="140px" class="box-shadow order-2 order-md-4 order-xxl-2 pe-none">
             <!-- Full Name and Title -->
             <div id="name_title" class="d-flex flex-column align-items-center bg-black-transparent-0-05 border-transparent-0-5 rounded-4 order-1 flex-fill flex-sm-fill order-md-3 order-lg-3" style="width: 400px; height:140px">
                 <h4 id="title" class="text-pink-gradient taprom line-height-1 text-glow">
@@ -107,44 +107,21 @@
                 </div>
             </div>
             <!-- Match History -->
-            <div class="d-flex flex-column align-items-center justify-content-evenly bg-black-transparent-0-05 border-transparent-0-5 p-3 rounded-4 flex-fill row-gap-3" style="width:300px">
-                <div class="d-flex bg-loss border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
-                    <img src="/static/img/pfp/me.gif" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-                    <div class="d-flex flex-column align-items-center mx-3">
-                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-danger text-shadow">
-                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
-                        </p>
-                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
-                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
-                        </p>
-                    </div>
-                    <img src="/static/img/pfp/asekkak.jpeg" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-                </div>
-                <div class="d-flex bg-win border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
-                    <img src="/static/img/pfp/me.gif" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-                    <div class="d-flex flex-column align-items-center mx-3">
-                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-success text-shadow">
-                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
-                        </p>
-                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
-                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
-                        </p>
-                    </div>
-                    <img src="/static/img/pfp/asekkak.jpeg" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-                </div>
-                <div class="d-flex bg-loss border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
-                    <img src="/static/img/pfp/me.gif" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-                    <div class="d-flex flex-column align-items-center mx-3">
-                        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-danger text-shadow">
-                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
-                        </p>
-                        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
-                            <span class="text-shadow-drop-center" style="font-size: 16px;">Loading...</span>
-                        </p>
-                    </div>
-                    <img src="/static/img/pfp/asekkak.jpeg" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
+            <div id="matchHistory" class="d-flex flex-column align-items-center justify-content-evenly bg-black-transparent-0-05 border-transparent-0-5 p-3 rounded-4 flex-fill row-gap-3" style="width:300px">
+                <div class="spinner-border text-white" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- 
+    1: {
+        OpponentData: {
+            id: 1,
+            pfp: "https://cdn.discordapp.com/avatars/1/1.png",
+            username: "Opponent",
+        }
+    }
+ -->

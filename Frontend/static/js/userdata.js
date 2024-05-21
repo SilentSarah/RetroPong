@@ -70,6 +70,10 @@ function getCookie(cname) {
     return "";
 }
 
+function deleteCookie(name) {
+    document.cookie = name + '=; Max-Age=-99999999;';
+}
+
 function fetchUserData() {
     if (getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
@@ -97,8 +101,13 @@ function fetchUserData() {
         })
         .then(data => {
             for (const [key, value] of Object.entries(data)) {
+                // if (key === 'matchhistory') {
+                //     const matches = value; // first key is the match id
+                //     for (const [key, value] of Object.entries(matches)) {
+                //         // setMatchHistory(key, value);
+                //     }
+                // }
                 sessionStorage.setItem(key, value);
-                console.log(`${key}: ${value}`)
             }
             if (window.location.pathname === "/dashboard")
                 setDashboardStats();
@@ -127,6 +136,40 @@ function setPlayerRank() {
         tier.src=`/static/img/rank/${rank}.png`;
 }
 
+function setDashboardPlayerPfpAndBg() {
+    let pfp = document.getElementById("profile_pic")
+    let pfp_path = sessionStorage.getItem('profilepic');
+    if (pfp_path === null || pfp_path === "") {
+        pfp.style.backgroundImage = 'url("/static/img/pfp/Default.png")';
+    } else {
+        pfp.style.backgroundImage = `url(${pfp_path})`;
+    }
+}
+function setMatchHistory() {
+    let matchHistory = document.getElementById("matchHistory");
+    matchHistory.innerHTML = "";
+    for (let i = 0; i < 3; i++) {
+        createMatchHistoryElement(matchHistory);
+    }
+    const div = createElement("div")
+    div.outerHTML = `
+    <div class="d-flex bg-win border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
+    <img src="${"PATH TO P IMG"}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
+    <div class="d-flex flex-column align-items-center mx-3">
+        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-success text-shadow">
+            <span class="text-shadow-drop-center" style="font-size: 16px;">${"WIN OR LOSE"}</span>
+        </p>
+        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
+            <span class="text-shadow-drop-center" style="font-size: 16px;">${"SCORE"}</span>
+        </p>
+    </div>
+    <a href="/profile/">
+        <img src="${"PATH TO OPPONENT IMG"}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
+    </a>
+    </div>`
+
+}
+
 function setDashboardStats() {
     setElementInnerHTML('username', 'username');
     setElementInnerHTML('title', 'title', 'The NPC');
@@ -141,6 +184,8 @@ function setDashboardStats() {
     setElementInnerHTML('matches', 'matchesplayed');
     setElementInnerHTML('matches_won', 'matcheswon');
     setElementInnerHTML('matches_lost', 'matcheslost');
+    setDashboardPlayerPfpAndBg();
+    // setMatchHistory();
 
     let player_id = document.getElementById("player_id");
     player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;

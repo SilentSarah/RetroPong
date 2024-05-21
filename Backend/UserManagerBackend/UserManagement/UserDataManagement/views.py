@@ -4,9 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.utils import *
 from .DbOps.DbOps import *
 from .WebOps.WebOps import *
-from django.shortcuts import redirect
 from .ViewAssist.ViewAssist import *
-import datetime
 import json
 
 
@@ -48,7 +46,7 @@ def create_user(request: HttpRequest):
             return JsonResponse({"error":"JWT wasn't acquired please sign in manually"}, status=404)
     except IntegrityError as e:
         print("error:", e)
-        return JsonResponse({"error":"Missing/Exisitng Data"}, status=409)
+        return JsonResponse({"error":"User Account Creation Failed"}, status=400)
     except Exception as e:
         print("error:", e)
         return JsonResponse({"error":"Bad Request"}, status=400)
