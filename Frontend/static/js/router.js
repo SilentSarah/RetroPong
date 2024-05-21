@@ -1,3 +1,18 @@
+/****************************************************
+*     ██████  ▄▄▄       ██▀███   ▄▄▄       ██░ ██   *
+*   ▒██    ▒ ▒████▄    ▓██ ▒ ██▒▒████▄    ▓██░ ██▒  *
+*   ░ ▓██▄   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██▀▀██░  *
+*     ▒   ██▒░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█ ░██   *
+*   ▒██████▒▒ ▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▓█▒░██▓  *
+*   ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ▒ ░░▒░▒  *
+*   ░ ░▒  ░ ░  ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░ ▒ ░▒░ ░  *
+*   ░  ░  ░    ░   ▒     ░░   ░   ░   ▒    ░  ░░ ░  *
+*         ░        ░  ░   ░           ░  ░ ░  ░  ░  *
+*                All Rights Reserved                *
+*                        1337                       *
+*****************************************************/
+
+let fetchID;
 const routes = [
     {   path: '/404', 
         on: false,
@@ -5,7 +20,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/settings.html')
+        component: () => grabContent('/static/content/home.html')
     },
     {
         path: '/login',
@@ -21,6 +36,16 @@ const routes = [
         path: '/dashboard',
         on: false,
         component: () => grabContent('/static/content/dashboard.html')
+    },
+    {
+        path: '/game',
+        on: false,
+        component: () => grabContent('/static/content/game.html')
+    },
+    {
+        path: '/chat',
+        on: false,
+        component: () => grabContent('/static/content/chatv2.html')
     },
 ]
 
@@ -43,11 +68,14 @@ async function grabContent(path) {
 
 function router() {
     const path = window.location.pathname;
+	// below is temp to go directly to game page :)
     const route = routes.find(route => route.path === path);
+	// const route = routes.find(route => route.path === '/game'); // to load game directly
     let mainContent = document.getElementById('mainContent');
     StartLoading(route);
     setTimeout(() => {
     if (route) {
+        console.log(route);
         if (route.on === true)
             return;
         route.component().then(html => {
@@ -65,11 +93,18 @@ function router() {
             return;
         routes[0].component().then(html => {
             mainContent.innerHTML = html;
-            loadEvents();
             routes[0].on = true;
+            for (let i = 1; i < routes.length; i++) {
+                if (routes[i].on) {
+                    routes[i].on = false;
+                }
+            }
+            loadEvents();
         });
     }}, 750);
     console.log('Router called')
 }
 
 router();
+fetchUserData();
+fetchID = setInterval(fetchUserData, 1500);

@@ -1,3 +1,17 @@
+/****************************************************
+*     ██████  ▄▄▄       ██▀███   ▄▄▄       ██░ ██   *
+*   ▒██    ▒ ▒████▄    ▓██ ▒ ██▒▒████▄    ▓██░ ██▒  *
+*   ░ ▓██▄   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██▀▀██░  *
+*     ▒   ██▒░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█ ░██   *
+*   ▒██████▒▒ ▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▓█▒░██▓  *
+*   ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ▒ ░░▒░▒  *
+*   ░ ░▒  ░ ░  ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░ ▒ ░▒░ ░  *
+*   ░  ░  ░    ░   ▒     ░░   ░   ░   ▒    ░  ░░ ░  *
+*         ░        ░  ░   ░           ░  ░ ░  ░  ░  *
+*                All Rights Reserved                *
+*                        1337                       *
+*****************************************************/
+
 /**
  * @class SSChart
  * @description - Class for creating a simple bar chart with popOvers
@@ -58,9 +72,9 @@ class SSChart {
         bar.addEventListener('click', () => {
             if (bar.getAttribute('ClickedOn') === 'false') {
                 let popOver = document.createElement('div');
-                popOver.classList.add('position-absolute', "p-2", "text-white", "text-center" , "nokora", "fw-light", "rounded-2", "fade_in");
+                popOver.classList.add('position-absolute', "p-2", "text-white", "text-center" , "nokora", "fw-light", "rounded-2", "fade_in", "border", "rounded", "bg-dark");
                 popOver.style.width = "60px";
-                popOver.style.top = `${bar.offsetTop - 40}px`;
+                popOver.style.top = `${bar.offsetTop - 50}px`;
                 popOver.style.left = `${bar.offsetLeft -17}px`;
                 popOver.innerHTML = this.HandleConversion(bar.getAttribute('Matches'));
                 bar.parentElement.appendChild(popOver);
