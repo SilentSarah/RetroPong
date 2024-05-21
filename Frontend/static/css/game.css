@@ -69,6 +69,10 @@
 	background: linear-gradient(#32398d, #9a5ba4, #d3ce88);
 }
 
+#game > canvas {
+	max-width: 100%;
+}
+
 #gameInfo {
 	flex: 1 1 100%;
 	grid-area: specs;
