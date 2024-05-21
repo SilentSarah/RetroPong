@@ -217,10 +217,10 @@ function findHighiestGrade(matches) {
 
 let ChartData = {
     'Matches Played': {
-        "24/07": 15777,
+        "24/07": 1500777,
         "25/07": 150,
         "26/07": 100,
-        "27/07": 0,
+        "27/07": 85,
     }
 };
 

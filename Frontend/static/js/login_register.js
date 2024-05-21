@@ -60,7 +60,7 @@ function destroytoast(toasty) {
 function passUserToDashboard() {
     setTimeout(() => {
     window.location.href = '/dashboard';
-    }, 1200);
+    }, 2000);
 }
 
 function loginWith42() {
@@ -191,16 +191,11 @@ function register_user() {
         "uEmail": uEmail,
         "uFname": uFname,
         "uLname": uLname,
-        "uProfilepic": "",
-        "uProfilebgpic": "",
-        "uDesc":"",
-        "uIp": "",
-        "ucIDs":[],
-        "uIs42": false,
     }
 
     fetch('http://127.0.0.1:8001/userdata/create', {
         method: 'POST',
+        credentials: 'include',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -215,9 +210,10 @@ function register_user() {
             toast('Username/Email already exists', 'bg-danger');
         else if (response.status >= 400 && response.status < 500)
             toast('Invalid credentials', 'bg-danger');
-        if (response.status > 201)
+        if (response.status > 201) {
             unblock_inputs(inputs);
             btn.disabled = false;
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
