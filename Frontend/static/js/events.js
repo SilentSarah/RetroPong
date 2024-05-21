@@ -97,6 +97,8 @@ function confirmOperartion(type, parent) {
     }
 }
 
+ 
+
 function scanInput() {
     let items = document.querySelectorAll('input');
 
@@ -206,7 +208,7 @@ function TwoFactorAuthHandler() {
 
 function findHighiestGrade(matches) {
     let highiest = 0;
-    for([key, value] of Object.entries(matches)) {
+    for ([key, value] of Object.entries(matches)) {
         if (value['won'] > highiest) {
             highiest = value['won'];
         }
@@ -223,6 +225,7 @@ let ChartData = {
         "27/07": 85,
     }
 };
+
 
 function loadEvents() {
     scanLinks();
