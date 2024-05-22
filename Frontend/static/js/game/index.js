@@ -113,12 +113,13 @@ function initGame()
 		const {type, x, y, p1X, p1Y, p2X, p2Y} = data;
 		if (type == 'update')
 		{
-			canvas.ball.x = x;
-			canvas.ball.y = y;
-			canvas.user.x = p1X;
-			canvas.user.y = p1Y;
-			canvas.com.x = p2X;
-			canvas.com.y = p2Y;
+			console.log("the data from the update is: ", data);
+			// canvas.ball.x = x;
+			// canvas.ball.y = y;
+			// canvas.user.x = p1X;
+			// canvas.user.y = p1Y;
+			// canvas.com.x = p2X;
+			// canvas.com.y = p2Y;
 		}
 		else if (type == 'log')
 		{
@@ -128,9 +129,9 @@ function initGame()
 		{
 			document.getElementById('waitStatus').textContent = 'Waiting for people to join...';
 			console.log("players fetched: ", data.players);
-			data.players.forEach(player => {
+			data.players.forEach((player, i) => {
 				const options = {
-					sideId: player.side == 'left' ? 'leftWaiters' : 'rightWaiters',
+					sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',
 					pfpSrc: player.pfpSrc,
 					pfpAlt: player.pfpAlt,
 					pName: player.pName,
@@ -143,9 +144,9 @@ function initGame()
 		{
 			// console.log("Ready >>>>>>>>>");
 			// console.log("players fetched: ", data.players);
-			data.players.forEach(player => {
+			data.players.forEach((player, i) => {
 				const options = {
-					sideId: player.side == 'left' ? 'leftWaiters' : 'rightWaiters',
+					sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',
 					pfpSrc: player.pfpSrc,
 					pfpAlt: player.pfpAlt,
 					pName: player.pName,
