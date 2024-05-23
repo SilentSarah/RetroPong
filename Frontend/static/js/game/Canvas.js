@@ -58,9 +58,7 @@ class Canvas
 			velocityY : 0.007 * 1,
 			color : "#eee"
 		}
-		// this Object, side, gradient colors
-		this.user.setup( this, 'l', ['#feec63', '#ff0100'] );
-		this.com.setup( this, 'r', ['#68ebff', '#013afe'] );
+		this.paddles.forEach((paddle, i) => paddle.setup(this, i));
 	}
 
 	// draw the ball
