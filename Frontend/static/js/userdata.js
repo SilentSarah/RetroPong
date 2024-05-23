@@ -101,12 +101,10 @@ function fetchUserData() {
         })
         .then(data => {
             for (const [key, value] of Object.entries(data)) {
-                // if (key === 'matchhistory') {
-                //     const matches = value; // first key is the match id
-                //     for (const [key, value] of Object.entries(matches)) {
-                //         // setMatchHistory(key, value);
-                //     }
-                // }
+                if (key === 'matchhistory') {
+                    sessionStorage.setItem(key, JSON.stringify(value));
+                    continue;
+                }
                 sessionStorage.setItem(key, value);
             }
             if (window.location.pathname === "/dashboard")
@@ -145,29 +143,54 @@ function setDashboardPlayerPfpAndBg() {
         pfp.style.backgroundImage = `url(${pfp_path})`;
     }
 }
+
+
+function createMatchHistoryElement(matchHistory, match) {
+    const match_data = {
+        player_id: sessionStorage.getItem('id'),
+        player_username: sessionStorage.getItem('username'),
+        player_pfp: sessionStorage.getItem('profilepic'),
+        opponent_id: match.OpponentData.id,
+        opponent_username: match.OpponentData.username,
+        score: match.OpponentData.score,
+        result: match.OpponentData.result,
+        opponent_pfp: match.OpponentData.pfp,
+
+    }
+    let div = document.createElement("div");
+    const match_color = match_data.result == "WIN" ? "bg-win" : match_data.result == "LOSS" ? "bg-loss" : match_data.result == "DRAW" ? "bg-draw" : "text-white";
+    const match_text_color = match_data.result == "WIN" ? "text-success" : match_data.result == "LOSS" ? "text-danger" : match_data.result == "DRAW" ? "ext-white-fade" : "text-white";
+    const match_score = match_data.result == "WIN" ? `${match_data.score[0]} - ${match_data.score[1]}` : `${match_data.score[1]} - ${match_data.score[0]}`;
+    div.classList.add("d-flex", "border-transparent-0-5", "rounded-3", "align-items-center", "justify-content-evenly", "p-2", "dynamic-fill");
+    div.classList.add(match_color);
+    div.innerHTML = `
+    <img src=${match_data.player_pfp == "" ? '/static/img/pfp/Default.png': match_data.player_pfp} width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover" />
+    <div class="d-flex flex-column align-items-center mx-3">
+    <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 ${match_text_color} text-shadow">
+        ${match_data.result}
+    </p>
+    <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
+            ${match_score}
+    </p>
+    </div>
+    <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
+    `;
+    matchHistory.appendChild(div);
+    console.log(match_data);
+    
+}
+
 function setMatchHistory() {
     let matchHistory = document.getElementById("matchHistory");
     matchHistory.innerHTML = "";
-    for (let i = 0; i < 3; i++) {
-        createMatchHistoryElement(matchHistory);
+    const matches = JSON.parse(sessionStorage.getItem('matchhistory'));
+    if (matches === null || matches === undefined || matches.length === 0) {
+        matchHistory.innerHTML = "No matches played yet";
+    } else {
+        for (const [key, value] of Object.entries(matches)) {
+            createMatchHistoryElement(matchHistory, value);
+        }
     }
-    const div = createElement("div")
-    div.outerHTML = `
-    <div class="d-flex bg-win border-transparent-0-5 rounded-3 align-items-center justify-content-evenly p-2 dynamic-fill">
-    <img src="${"PATH TO P IMG"}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-    <div class="d-flex flex-column align-items-center mx-3">
-        <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 text-success text-shadow">
-            <span class="text-shadow-drop-center" style="font-size: 16px;">${"WIN OR LOSE"}</span>
-        </p>
-        <p class="mx-2 text-white-fade nokora fw-light mb-0 text-white text-shadow">
-            <span class="text-shadow-drop-center" style="font-size: 16px;">${"SCORE"}</span>
-        </p>
-    </div>
-    <a href="/profile/">
-        <img src="${"PATH TO OPPONENT IMG"}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
-    </a>
-    </div>`
-
 }
 
 function setDashboardStats() {
@@ -185,7 +208,7 @@ function setDashboardStats() {
     setElementInnerHTML('matches_won', 'matcheswon');
     setElementInnerHTML('matches_lost', 'matcheslost');
     setDashboardPlayerPfpAndBg();
-    // setMatchHistory();
+    setMatchHistory();
 
     let player_id = document.getElementById("player_id");
     player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;

@@ -16,7 +16,7 @@ let fetchID;
 const routes = [
     {   path: '/404', 
         on: false,
-        component: () => grabContent('/static/content/404.html')
+        component: () => grabContent('/404.html')
     },
     {   path: '/',
         on: false,
@@ -43,6 +43,11 @@ const routes = [
         component: () => grabContent('/static/content/game.html')
     },
     {
+        path: '/settings',
+        on: false,
+        component: () => grabContent('/static/content/settings.html')
+    },
+    {
         path: '/chat',
         on: false,
         component: () => grabContent('/static/content/chatv2.html')
@@ -50,7 +55,7 @@ const routes = [
 ]
 
 async function StartLoading(route) {
-    if (route.on === true) {
+    if (route != undefined && route != null && route.on === true) {
         return;
     }
     const loading = await fetch('/static/content/loadingStatus.html').then(response => response.text());
@@ -68,9 +73,7 @@ async function grabContent(path) {
 
 function router() {
     const path = window.location.pathname;
-	// below is temp to go directly to game page :)
-    const route = routes.find(route => route.path === path);
-	// const route = routes.find(route => route.path === '/game'); // to load game directly
+    let route = routes.find(route => route.path === path);
     let mainContent = document.getElementById('mainContent');
     StartLoading(route);
     setTimeout(() => {
@@ -89,9 +92,8 @@ function router() {
             }
         }
     } else {
-        if (route.on === true)
-            return;
         routes[0].component().then(html => {
+            console.log("404");
             mainContent.innerHTML = html;
             routes[0].on = true;
             for (let i = 1; i < routes.length; i++) {
@@ -102,7 +104,6 @@ function router() {
             loadEvents();
         });
     }}, 750);
-    console.log('Router called')
 }
 
 router();
