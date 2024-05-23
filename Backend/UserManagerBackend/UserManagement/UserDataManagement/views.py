@@ -22,6 +22,19 @@ def user_data(request: HttpRequest):
         return JsonResponse(user_data, status=200)
     except Exception as e:
         return JsonResponse({"error":"Bad Request"}, status=401)
+    
+@csrf_exempt
+@require_http_methods(["GET"])
+def user_id_data(request: HttpRequest, id: int):
+    try:
+        token, user_id = ViewAssist.verify_token(request)
+        if (token is None or user_id is None):
+            return HttpResponse(status=401)
+        user_data = DbOps.get_user(user_id=id)
+        user_data.pop('password')
+        return JsonResponse(user_data, status=200)
+    except Exception as e:
+        return JsonResponse({"error":"Bad Request"}, status=401)
 
 @csrf_exempt
 @require_http_methods(["POST"])

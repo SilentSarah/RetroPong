@@ -84,10 +84,10 @@ class ViewAssist:
                 "uFname": response.get('first_name'),
                 "uLname": response.get('last_name'),
                 "uRegdate": timezone.now(),
-                "uProfilepic": image.get('link') if image is not None else "null",
-                "uProfilebgpic": "null",
-                "uDesc": "null",
-                "uIp": "null",
+                "uProfilepic": image.get('link') if image is not None else "",
+                "uProfilebgpic": "",
+                "uDesc": "",
+                "uIp": "",
                 "ucIDs": [],
                 "uIs42": True
             }
