@@ -16,7 +16,7 @@ function addWaiter(options)
 							</div>
 						</div>`
 	console.log('the sideId is: ', sideId);
-	document.getElementById(sideId).innerHTML = component;
+	document.getElementById(sideId).innerHTML += component;
 	if (document.getElementById('waitMenu').classList.contains('hidden'))
 		document.getElementById('waitMenu').classList.toggle('hidden');
 }
@@ -36,6 +36,7 @@ function readyToPlayCounter() {
 	}, 1000)
 }
 
+
 function initGame()
 {
 	console.log("initGame got called!");
@@ -43,18 +44,10 @@ function initGame()
 
 	// const gameEl = document.getElementById("game");
 	const canvas = new Canvas(document.getElementById("gameCanvas"));
-	// The paddles will be created dependent on the button clicked
-	canvas.paddles = [new Paddle(), new Paddle()]
-	// canvas.user = new Paddle();
-	// canvas.com = new Paddle();
-	canvas.setup();
 	window.addEventListener('resize', canvas.setup.bind(canvas));
 
 	console.log("I init the game>>");
-	// gameEl.focus();
-	window.addEventListener('click', ()=> {
-		console.log("I received the click however");
-	})
+
 	window.addEventListener("keydown", (e) => {
 		// maybe I'll do a global state here for optimization
 		console.log("The keydown is detected!!!");
@@ -80,6 +73,16 @@ function initGame()
 		}));
 	});
 
+	// render function, the function that does all the drawing
+	function render({x, y, r, paddles}){
+		// clear the canvas
+		canvas.clear();
+		// update and draw user's paddle
+		paddles.forEach((paddle) => draw_paddle(canvas, paddle));
+		// draw the ball
+		canvas.drawBall(x, y, r);
+	}
+
 	// update function, the function sends update request to the server
 	function update()
 	{
@@ -89,43 +92,23 @@ function initGame()
 			}));
 	}
 
-	// render function, the function that does all the drawing
-	function render(){
-		// clear the canvas
-		canvas.clear();
-		// update and draw user's paddle
-		canvas.paddles.forEach((paddle) => paddle.draw(canvas));
-		// draw the ball
-		canvas.drawBall();
-	}
-
-	function game(){
-		update();
-		render();
-	}
-
-	setInterval(game, 1/60) // doing a 60 fps
+	setInterval(update, 1000/60) // doing a 60 fps
 
 	// Socket code below
 	gameSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 
-		const {type, x, y, paddles} = data;
-		if (type == 'update')
+		
+		if (data.type == 'update')
 		{
 			// console.log("the data from the update is: ", data);
-			canvas.ball.x = x;
-			canvas.ball.y = y;
-			canvas.paddles.forEach((paddle, i) => {
-				paddle.x = paddles[i][0];
-				paddle.y = paddles[i][1];
-			});
+			render(data);
 		}
-		else if (type == 'log')
+		else if (data.type == 'log')
 		{
 			console.log("Log: ", data.log);
 		}
-		else if (type == 'standby')
+		else if (data.type == 'standby')
 		{
 			document.getElementById('waitStatus').textContent = 'Waiting for people to join...';
 			console.log("players fetched: ", data.players);
@@ -140,7 +123,7 @@ function initGame()
 				addWaiter(options);
 			});
 		}
-		else if (type == 'ready')
+		else if (data.type == 'ready')
 		{
 			// console.log("Ready >>>>>>>>>");
 			// console.log("players fetched: ", data.players);
@@ -156,8 +139,8 @@ function initGame()
 			});
 			readyToPlayCounter();
 		}
-		if (type != 'update')
-			console.log(`The Type is: ${type}, type==ready: ${type == 'ready'}`)
+		if (data.type != 'update')
+			console.log(`The Type is: ${data.type}, type==ready: ${data.type == 'ready'}`)
 	};
 	// So that canvas can be accessible to other outside functions
 	window.canvasObj = canvas;
