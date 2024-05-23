@@ -1,7 +1,5 @@
 "use strict"
 
-
-// make sure to do a `git mv`
 function draw_paddle(canvas, props)
 {
 	let drawX, drawY, drawW, drawH, drawR, drawLineWidth;
