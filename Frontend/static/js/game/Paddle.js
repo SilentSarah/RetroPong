@@ -1,47 +1,33 @@
 "use strict"
 
-class Paddle
+
+// make sure to do a `git mv`
+function draw_paddle(canvas, props)
 {
-	setup(canvas, order)
-	{
-		this.width = 1 / 28; // width
-		this.height = this.width * 3; // height
-		this.radius = 1 / 80; // radius
-		this.lineWidth = 1 / 400; // line width
-		this.offset = 1 / 50;
-		this.x = order % 2 == 0 ? 0 + (this.lineWidth + this.offset) : (1 - this.width) - (this.lineWidth + this.offset);
-		this.y = -1;
-		this.fillColor = '#000';
-		this.strokeGradColors = order % 2 == 0 ? ['#feec63', '#ff0100'] : ['#68ebff', '#013afe'];
-	}
+	let drawX, drawY, drawW, drawH, drawR, drawLineWidth;
+	const { x, y, w, h, r, lineWidth, strokeColors } = props;
 
-	draw(canvas)
-	{
-		let drawX, drawY, drawW, drawH, drawR, drawLineWidth;
+	drawX = x * canvas.el.width;
+	drawY = y * canvas.el.height;
+	drawW = w * canvas.el.width;
+	drawH = h * canvas.el.height;
+	drawR = r * canvas.el.width;
+	drawLineWidth = lineWidth * canvas.el.width;
 
-		drawX = this.x * canvas.el.width;
-		drawY = this.y * canvas.el.height;
-		drawW = this.width * canvas.el.width;
-		drawH = this.height * canvas.el.height;
-		drawR = this.radius * canvas.el.width;
-		drawLineWidth = this.lineWidth * canvas.el.width;
-
-		setShadow(canvas);
-		canvas.ctx.lineJoin = 'round';
-		canvas.ctx.beginPath();
-		canvas.ctx.moveTo(drawX + drawR, drawY);
-		canvas.ctx.arcTo(drawX + drawW, drawY, drawX + drawW, drawY + drawH, drawR);
-		canvas.ctx.arcTo(drawX + drawW, drawY + drawH, drawX, drawY + drawH, drawR);
-		canvas.ctx.arcTo(drawX, drawY + drawH, drawX, drawY, drawR);
-		canvas.ctx.arcTo(drawX, drawY, drawX + drawW, drawY, drawR);
-		canvas.ctx.fillStyle = this.fillColor;
-		canvas.ctx.strokeStyle = mkGradient(canvas, drawX, drawY, drawX, drawY + drawH, this.strokeGradColors[0], this.strokeGradColors[1]);
-		canvas.ctx.lineWidth = drawLineWidth;
-		canvas.ctx.fill();  // Fill the path with the specified color
-		canvas.ctx.stroke();  // Stroke the path (border)
-		canvas.ctx.closePath();
-		// RESET
-		clearShadow(canvas);
-	}
-
+	setShadow(canvas);
+	canvas.ctx.lineJoin = 'round';
+	canvas.ctx.beginPath();
+	canvas.ctx.moveTo(drawX + drawR, drawY);
+	canvas.ctx.arcTo(drawX + drawW, drawY, drawX + drawW, drawY + drawH, drawR);
+	canvas.ctx.arcTo(drawX + drawW, drawY + drawH, drawX, drawY + drawH, drawR);
+	canvas.ctx.arcTo(drawX, drawY + drawH, drawX, drawY, drawR);
+	canvas.ctx.arcTo(drawX, drawY, drawX + drawW, drawY, drawR);
+	canvas.ctx.fillStyle = '#000';
+	canvas.ctx.strokeStyle = mkGradient(canvas, drawX, drawY, drawX, drawY + drawH, strokeColors[0], strokeColors[1]);
+	canvas.ctx.lineWidth = drawLineWidth;
+	canvas.ctx.fill();  // Fill the path with the specified color
+	canvas.ctx.stroke();  // Stroke the path (border)
+	canvas.ctx.closePath();
+	// RESET
+	clearShadow(canvas);
 }
