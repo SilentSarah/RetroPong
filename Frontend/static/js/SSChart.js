@@ -24,6 +24,7 @@ class SSChart {
      * @param {Object} Data - Dictionary Containing Data to be used for the chart
      * @param {String} Title - Title Of The Chart
      * @param {String} Path - Path to the HTML file containing the chart
+     * 
      * Data Dictionary should be Structered as follows:
      * {
      *     Title: {
@@ -57,9 +58,9 @@ class SSChart {
      * @param {Number} Value 
      */
     HandleConversion(value) {
-        if (value > 1000000)
+        if (value >= 1000000)
             return `${parseFloat(value / 1000000).toFixed(1)}M`;
-        else if (value > 1000)
+        else if (value >= 1000)
             return `${(value / 1000).toFixed(1)}K`;
         else
             return value;

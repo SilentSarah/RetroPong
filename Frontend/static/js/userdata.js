@@ -101,7 +101,7 @@ function fetchUserData() {
         })
         .then(data => {
             for (const [key, value] of Object.entries(data)) {
-                if (key === 'matchhistory') {
+                if (key === 'matchhistory' || key === 'matchstatistics') {
                     sessionStorage.setItem(key, JSON.stringify(value));
                     continue;
                 }
@@ -176,7 +176,6 @@ function createMatchHistoryElement(matchHistory, match) {
     <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
     `;
     matchHistory.appendChild(div);
-    console.log(match_data);
     
 }
 
@@ -191,6 +190,28 @@ function setMatchHistory() {
             createMatchHistoryElement(matchHistory, value);
         }
     }
+}
+
+function setMatchStatistics() {
+    let match_statistics = sessionStorage.getItem('matchstatistics');
+    if (match_statistics === null || match_statistics === undefined) {
+        return ;
+    }
+    match_statistics = JSON.parse(match_statistics);
+    if (match_statistics === null || match_statistics === undefined) {
+        console.log("FUK")
+        return ;
+    }
+    const Chart = new SSChart(match_statistics, 'Matches Played', '/static/content/components/chart.html');
+    // console.log("HELP");
+    Chart.Component.then(html => {
+        document.getElementById('ChartMark').innerHTML = html;
+        Chart.setChartTitle();
+        Chart.setGrades();
+        Chart.setDates();
+        Chart.setBarValues();
+    });
+
 }
 
 function setDashboardStats() {
@@ -209,6 +230,7 @@ function setDashboardStats() {
     setElementInnerHTML('matches_lost', 'matcheslost');
     setDashboardPlayerPfpAndBg();
     setMatchHistory();
+    setMatchStatistics();
 
     let player_id = document.getElementById("player_id");
     player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;

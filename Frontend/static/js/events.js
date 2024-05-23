@@ -217,16 +217,6 @@ function findHighiestGrade(matches) {
 
 }
 
-let ChartData = {
-    'Matches Played': {
-        "24/07": 1500777,
-        "25/07": 150,
-        "26/07": 100,
-        "27/07": 85,
-    }
-};
-
-
 function loadEvents() {
     scanLinks();
     if (window.location.pathname === '/') {
@@ -235,14 +225,6 @@ function loadEvents() {
         scanInput();
     else if (window.location.pathname == '/dashboard' ) {
         copyIDListener();
-        const Chart = new SSChart(ChartData, 'Matches Played', '/static/content/components/chart.html');
-            Chart.Component.then(html => {
-                document.getElementById('ChartMark').innerHTML = html;
-                Chart.setChartTitle();
-                Chart.setGrades();
-                Chart.setDates();
-                Chart.setBarValues();
-        });
     }
     else if (window.location.pathname === '/settings') {
         handlePictureUploads();

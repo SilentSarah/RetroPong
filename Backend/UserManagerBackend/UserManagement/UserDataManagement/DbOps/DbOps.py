@@ -19,7 +19,6 @@ class DbOps:
             for round in matches:
                 opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 else round.sOpponent
                 opponent = User.objects.get(id=opponent)
-                print(opponent.id, opponent.uusername, round.Score, round.Winners)
                 match_history[round.id] = {
                     "OpponentData": {
                         "id": opponent.id,
@@ -30,6 +29,30 @@ class DbOps:
                     }
                 }
             return match_history
+        except Exception as e:
+            print("DbOps: ", e)
+            return None
+        
+    @staticmethod
+    def generate_match_statistics(id: int) -> dict:
+        try:
+            today = datetime.datetime.now(tz=timezone.utc)
+            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
+            if (matches is None):
+                return {}
+            four_day_matches = []
+            for i in range(4):
+                four_day_matches.append(matches.filter(mStartDate__range=[today - datetime.timedelta(days=i), today - datetime.timedelta(days=i-1)]))
+            matches_played = {
+                "Matches Played": {},
+            }
+            i = 0
+            for day_matches in four_day_matches:
+                date = (today - datetime.timedelta(days=i)).strftime('%d/%m')
+                match_count = day_matches.count()
+                matches_played["Matches Played"][date] = match_count
+                i += 1;
+            return matches_played
         except Exception as e:
             print("DbOps: ", e)
             return None
@@ -74,6 +97,7 @@ class DbOps:
                 "tournamentswon": user.utournamentswon,
                 "tournamentslost": user.utournamentslost,
                 "matchhistory": DbOps.generate_match_history(user.id),
+                "matchstatistics": DbOps.generate_match_statistics(user.id)
                 
             }
             return user
