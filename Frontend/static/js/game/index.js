@@ -43,8 +43,10 @@ function initGame()
 
 	// const gameEl = document.getElementById("game");
 	const canvas = new Canvas(document.getElementById("gameCanvas"));
-	canvas.user = new Paddle();
-	canvas.com = new Paddle();
+	// The paddles will be created dependent on the button clicked
+	canvas.paddles = [new Paddle(), new Paddle()]
+	// canvas.user = new Paddle();
+	// canvas.com = new Paddle();
 	canvas.setup();
 	window.addEventListener('resize', canvas.setup.bind(canvas));
 
@@ -92,9 +94,7 @@ function initGame()
 		// clear the canvas
 		canvas.clear();
 		// update and draw user's paddle
-		canvas.user.draw(canvas, 'player');
-		// draw the COM's paddle
-		canvas.com.draw(canvas);
+		canvas.paddles.forEach((paddle) => paddle.draw(canvas));
 		// draw the ball
 		canvas.drawBall();
 	}
@@ -110,16 +110,16 @@ function initGame()
 	gameSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 
-		const {type, x, y, p1X, p1Y, p2X, p2Y} = data;
+		const {type, x, y, paddles} = data;
 		if (type == 'update')
 		{
-			console.log("the data from the update is: ", data);
-			// canvas.ball.x = x;
-			// canvas.ball.y = y;
-			// canvas.user.x = p1X;
-			// canvas.user.y = p1Y;
-			// canvas.com.x = p2X;
-			// canvas.com.y = p2Y;
+			// console.log("the data from the update is: ", data);
+			canvas.ball.x = x;
+			canvas.ball.y = y;
+			canvas.paddles.forEach((paddle, i) => {
+				paddle.x = paddles[i][0];
+				paddle.y = paddles[i][1];
+			});
 		}
 		else if (type == 'log')
 		{

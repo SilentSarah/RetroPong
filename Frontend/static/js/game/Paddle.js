@@ -2,17 +2,17 @@
 
 class Paddle
 {
-	setup(canvas, side, strokeGradColors)
+	setup(canvas, order)
 	{
 		this.width = 1 / 28; // width
 		this.height = this.width * 3; // height
 		this.radius = 1 / 80; // radius
 		this.lineWidth = 1 / 400; // line width
 		this.offset = 1 / 50;
-		this.x = side == 'r' ? (1 - this.width) - (this.lineWidth + this.offset) : 0 + (this.lineWidth + this.offset);
+		this.x = order % 2 == 0 ? 0 + (this.lineWidth + this.offset) : (1 - this.width) - (this.lineWidth + this.offset);
 		this.y = -1;
 		this.fillColor = '#000';
-		this.strokeGradColors = strokeGradColors || this.strokeGradColors;
+		this.strokeGradColors = order % 2 == 0 ? ['#feec63', '#ff0100'] : ['#68ebff', '#013afe'];
 	}
 
 	draw(canvas)
