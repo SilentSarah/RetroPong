@@ -58,9 +58,11 @@ function destroytoast(toasty) {
 }
 
 function passUserToDashboard() {
-    setTimeout(() => {
-    window.location.href = '/dashboard';
-    }, 2000);
+    const dashboard = document.createElement('a');
+    dashboard.href = '/dashboard';
+    document.body.appendChild(dashboard);
+    scanLinks();
+    dashboard.click();
 }
 
 function loginWith42() {

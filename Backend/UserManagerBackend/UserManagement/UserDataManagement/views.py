@@ -68,7 +68,7 @@ def create_user(request: HttpRequest):
 def login_42_user(request: HttpRequest):
     final_url = ViewAssist.generate_42_auth_link(
         "https://api.intra.42.fr/oauth/authorize", 
-        "http://localhost:8001/userdata/42login/callback/",
+        "http://127.0.0.1:8001/userdata/42login/callback/",
         "public", 
         "code")
     return HttpResponse(final_url, status=200)
@@ -80,7 +80,7 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
         return HttpResponse(status=400)
     elif (code is not None):
         try:
-            token = ViewAssist.generate_42_request_token(code, "http://localhost:8001/userdata/42login/callback/")
+            token = ViewAssist.generate_42_request_token(code, "http://127.0.0.1:8001/userdata/42login/callback/")
             if (token is None):
                 return JsonResponse({"Error":"Couldn't acquire access token"}, status=400)
             required_data = ViewAssist.generate_42_user_data(token)
@@ -93,7 +93,7 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             if (jwt_token is None):
                 return JsonResponse({"error":"JWT couldn't be acquired, please log in manually"}, status=400)
             else:
-                res = HttpResponseRedirect("http://localhost:5500/dashboard")
+                res = HttpResponseRedirect("http://127.0.0.1:5500/dashboard")
                 res.set_cookie('user_id', user_data.get('id'), samesite="None", secure=True)
                 res.set_cookie('access', jwt_token, samesite="None", secure=True)
                 print("token:", jwt_token)

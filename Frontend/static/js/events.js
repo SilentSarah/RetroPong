@@ -217,22 +217,18 @@ function findHighiestGrade(matches) {
 
 }
 
-let ChartData = {
-    'Matches Played': {
-        "24/07": 1500777,
-        "25/07": 150,
-        "26/07": 100,
-        "27/07": 85,
-    }
-};
-
-
 function loadEvents() {
     scanLinks();
     if (window.location.pathname === '/') {
     }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register') {
+    if (window.location.pathname === '/login' || window.location.pathname === '/register')
         scanInput();
+    else if (window.location.pathname == '/dashboard' ) {
+        copyIDListener();
+    }
+    else if (window.location.pathname === '/settings') {
+        handlePictureUploads();
+        TwoFactorAuthHandler();
     }
     else if (window.location.pathname === '/dashboard') {
         copyIDListener();

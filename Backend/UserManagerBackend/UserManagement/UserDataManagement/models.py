@@ -51,6 +51,16 @@ class MatchHistory(models.Model):
     Score = ArrayField(models.IntegerField(), db_column='Score')
     Winners = ArrayField(models.IntegerField(), db_column='Winners')
     
+    def __str__(self):
+        return ("Match ID" + str(self.id) + 
+                "\nFirst OP" + str(self.fOpponent) + 
+                "\nSecond OP" + str(self.sOpponent) + 
+                "\nThird OP" + str(self.tOpponent) + 
+                "\nFourth OP" + str(self.lOpponent) + 
+                "\nMatch Date" + str(self.mStartDate) + 
+                "\nScore " + str(self.Score) + 
+                "\nWinner IDs " + str(self.Winners) + "\n-----------------------------------")
+    
 class MatchHistoryAdmin(ModelAdmin):
     list_display = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent', 'mStartDate', 'Score', 'Winners']
     search_fields = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent', 'mStartDate', 'Score', 'Winners']
