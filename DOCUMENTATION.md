@@ -29,7 +29,7 @@ cd Backend/RetroPong
 ./manage.py runserver
 ```
 
-## 2 - PostgreSQL Connection to the Database:
+## 2 - PostgreSQL Connection to the Database
 
 Since iMacs in 1337 have a malfunctioning version of docker a vps had to be used to host the database
 
@@ -79,3 +79,47 @@ Below you'll find some diagrams showing communication between The Microservices 
 ![img](https://i.imgur.com/tMXO45L.png)
 
 ![img](https://i.imgur.com/DgooOcK.png)
+
+## 5 - Connecting to the Database between multiple microservices
+
+RetroPong's Infrastructure is based on microservices which run django inside to provide compatibility and ease of use/debug, one of the many features provided by Django's ORM is the ability for two Microservices to connect to an existing table without the need to configure anything:
+
+To start connecting your django instance (Microservice) to the database you need to do the following:
+
+**(Assuming you already configured Database Connection inside settings.py)**
+
+1. Run Django's inspectdb command to retrieve the database layout from postgres server:
+
+   ```shell
+   $ ./manage inspectdb > models.py
+   ```
+
+   1. What inspectdb does is to inspect the database for any existing tables and then make classes for them and their columns with appropriate types for each column.
+2. After you get the models.py file from the command without errors, copy the newly created models.py file to the desired **APP** inside your **Microservice**.
+3. You should have this class inside any of the tables in your **models.py** that class is the one responsible for providing metadata about the table:
+
+   ```python
+       class Meta:
+           db_table = 'YOUR DESIRED TABLE'
+   	managed = False
+   ```
+
+   1. `db_table` is an identifier that links your **Class** to your **Table** using the name of your table in the database to find it and link it.
+   2. `managed` is a trigger that controls whether **Django's ORM** should preform any Creation/Deletion Operation on your existing table, `False` means **Django's ORM**  will not preform the previously mentioned operations on that db and will treat it as an existing table. I prefer not to mess with this option and do it the classic way.
+   3. It's recommended to delete the `managed` option inside the `Meta` class.
+4. Delete any Tables that are not related to your **Microservice**
+5. Since Django thinks that the Tables generated inside models.py are new and with no migrations before, It will try to create it again and you will certainly get an error. To fix this issue just run the following command:
+
+   ```shell
+   $ ./manage.py makemigrations
+   $ ./manage.py migrate --fake
+   ```
+
+   1. The above commands will make the migrations for the tables, so django identifies which tables to interact with and the second to commit those tables. `--fake` parameter insures that the migration to the db is faked and no data inside the db is affected and also to stop django from trying to create an already existing table.
+6. Correct any missing information inside each of tables properties, `default` argument will be very useful when you use it to tweak the default value for each property (use `-1` for integer values and `""` for strings, Lastly use  `False` for booleans)
+7. Once all is done, check if the connection is successful with the command:
+
+   ```shell
+   $ ./manage.py runserver
+   ```
+8. If no errors happen, you have successfully connected the **Microservice** to the existing **Table.**
