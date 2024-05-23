@@ -18,7 +18,7 @@ function delete_cookie(name) {
 
 function DisplayNavBar() {
     let navbar_logged_in = `
-    <div id="retro_menu" class="nav_btn ms-2 position-relative">
+    <div id="retro_menu" class="nav_btn ms-3 position-relative">
             <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
             <div id="menu_content" class="flex-column justify-content-center align-items-center gap-2 position-absolute">
                 <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
