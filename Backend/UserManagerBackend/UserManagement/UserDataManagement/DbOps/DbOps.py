@@ -12,24 +12,23 @@ class DbOps:
     @staticmethod
     def generate_match_history(id: int) -> dict:
         try:
-            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
+            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')[:3]
             if (matches is None):
                 return {}
             match_history = {}
             for round in matches:
                 opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 else round.sOpponent
                 opponent = User.objects.get(id=opponent)
+                print(opponent.id, opponent.uusername, round.Score, round.Winners)
                 match_history[round.id] = {
                     "OpponentData": {
                         "id": opponent.id,
                         "pfp": opponent.uprofilepic,
                         "username": opponent.uusername,
                         "score": round.Score,
-                        "result": "DRAW" if opponent.id in round.Winners and id in round.Winners 
-                                else "WIN" if id in round.Winners else "LOSS",
+                        "result": "WIN" if id in round.Winners else "LOSS" if opponent.id in round.Winners else "DRAW" if opponent.id in round.Winners and id in round.Winners else "DRAW",
                     }
                 }
-            print(match_history)
             return match_history
         except Exception as e:
             print("DbOps: ", e)
