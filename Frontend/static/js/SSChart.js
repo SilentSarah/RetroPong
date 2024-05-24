@@ -1,3 +1,17 @@
+/****************************************************
+*     ██████  ▄▄▄       ██▀███   ▄▄▄       ██░ ██   *
+*   ▒██    ▒ ▒████▄    ▓██ ▒ ██▒▒████▄    ▓██░ ██▒  *
+*   ░ ▓██▄   ▒██  ▀█▄  ▓██ ░▄█ ▒▒██  ▀█▄  ▒██▀▀██░  *
+*     ▒   ██▒░██▄▄▄▄██ ▒██▀▀█▄  ░██▄▄▄▄██ ░▓█ ░██   *
+*   ▒██████▒▒ ▓█   ▓██▒░██▓ ▒██▒ ▓█   ▓██▒░▓█▒░██▓  *
+*   ▒ ▒▓▒ ▒ ░ ▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒   ▓▒█░ ▒ ░░▒░▒  *
+*   ░ ░▒  ░ ░  ▒   ▒▒ ░  ░▒ ░ ▒░  ▒   ▒▒ ░ ▒ ░▒░ ░  *
+*   ░  ░  ░    ░   ▒     ░░   ░   ░   ▒    ░  ░░ ░  *
+*         ░        ░  ░   ░           ░  ░ ░  ░  ░  *
+*                All Rights Reserved                *
+*                        1337                       *
+*****************************************************/
+
 /**
  * @class SSChart
  * @description - Class for creating a simple bar chart with popOvers
@@ -10,6 +24,7 @@ class SSChart {
      * @param {Object} Data - Dictionary Containing Data to be used for the chart
      * @param {String} Title - Title Of The Chart
      * @param {String} Path - Path to the HTML file containing the chart
+     * 
      * Data Dictionary should be Structered as follows:
      * {
      *     Title: {
@@ -43,9 +58,9 @@ class SSChart {
      * @param {Number} Value 
      */
     HandleConversion(value) {
-        if (value > 1000000)
+        if (value >= 1000000)
             return `${parseFloat(value / 1000000).toFixed(1)}M`;
-        else if (value > 1000)
+        else if (value >= 1000)
             return `${(value / 1000).toFixed(1)}K`;
         else
             return value;
@@ -58,9 +73,9 @@ class SSChart {
         bar.addEventListener('click', () => {
             if (bar.getAttribute('ClickedOn') === 'false') {
                 let popOver = document.createElement('div');
-                popOver.classList.add('position-absolute', "p-2", "text-white", "text-center" , "nokora", "fw-light", "rounded-2", "fade_in");
+                popOver.classList.add('position-absolute', "p-2", "text-white", "text-center" , "nokora", "fw-light", "rounded-2", "fade_in", "border", "rounded", "bg-dark");
                 popOver.style.width = "60px";
-                popOver.style.top = `${bar.offsetTop - 40}px`;
+                popOver.style.top = `${bar.offsetTop - 50}px`;
                 popOver.style.left = `${bar.offsetLeft -17}px`;
                 popOver.innerHTML = this.HandleConversion(bar.getAttribute('Matches'));
                 bar.parentElement.appendChild(popOver);

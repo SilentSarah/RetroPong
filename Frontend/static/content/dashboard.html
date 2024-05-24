@@ -1,71 +1,118 @@
-<div class="container-fluid px-5 d-flex justify-content-center">
-    <div class="h-100 d-flex flex-column border-4 rounded-4 border-pink bg-black overflow-hidden position-relative info-container" style="background: linear-gradient(135.6deg, rgba(0, 0, 0, 0.5) 52.02%, rgba(240, 128, 242, 0.2) 78.29%); width: 1500px;">
+<div class="container px-0 border-pink h-100 rounded-3">
+    <!-- Background and Profile pic -->
+    <div class="d-flex flex-column position-relative">
         <div class="user-bg-picture"></div>
-        <div class="d-flex flex-wrap justify-content-evenly position-absolute ms-5" style="top: 350px">
-                <div class="user-profile-picture border-pink border-2"></div>
-                <div class="d-flex flex-column-reverse justify-content-center ms-4">
-                    <div class="d-flex align-items-center">
-                        <p id="player_id" class="text-secondary nokora m-0" style="font-size:x-small;">RP-ID-01</p>
-                        <img id="cpyID" src="/static/img/dashboard_utils/cpy.png" width="15px">
-                    </div>
-                    <p class="text-pink-gradient taprom m-0 text-truncate mt-3" style="line-height: 2rem; font-size:xx-large; max-width:150px">SSarah</p>
+        <div class="d-flex justify-content-center aesthetic-placement">
+            <div id="profile_pic" class="user-profile-picture border-pink"></div>
+            <div class="d-flex flex-column justify-content-end ms-2">
+                <h4 id="username" class="text-pink-gradient taprom text-glow mb-0 text-turncate">
+                    <span class="text-shadow-drop-center">Loading...</span>
+                </h4>
+                <div class="d-flex align-items-center">
+                    <p id="player_id" class="text-secondary nokora text-glow mb-0 d-flex align-items-center" style="font-size: 12px;">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                    <img id="cpyID" src="/static/img/dashboard_utils/cpy.png" width="16px">
                 </div>
+            </div>
         </div>
-        <div class="d-flex flex-wrap align-items-center justify-content-evenly w-100" style="margin-top: 100px;">
-                <!-- info-card group -->
-                <div class="h-100 w-90 acc_stats_holder pb-4">
-                        <div class="info-card d-flex flex-column justify-content-center">
-                            <h5 class="text-pink-gradient taprom fs-3 text-glow line-height-2 ps-3 m-0">Full Name</h5>
-                            <p class="text-white nokora fs-4 fw-lighter text-glow ps-3 line-height-3 m-0">Sarah Meftah</p>
-                        </div>
-                        <div class="info-card d-flex flex-column justify-content-center">
-                            <h5 class="text-pink-gradient taprom fs-3 text-glow line-height-2 ps-3 m-0">Email</h5>
-                            <p class="text-white nokora fs-4 fw-lighter text-glow ps-3 line-height-3 m-0">ssarah@1337.ma</p>
-                        </div>
-                        <div class="info-card d-flex flex-column justify-content-center">
-                            <h5 class="text-pink-gradient taprom fs-3 text-glow line-height-2 ps-3 m-0">Full Name</h5>
-                            <p class="text-white nokora fs-4 fw-lighter text-glow ps-3 line-height-3 m-0">Sarah Meftah</p>
-                        </div>
+    </div>
+    <!-- User info -->
+    <div class="d-flex flex-column p-3 bg-retropong-color">
+        <!-- Upper Part -->
+        <div class="d-flex flex-row-reverse flex-wrap-reverse align-items-center justify-content-start justify-content-center gap-2 mt-5 mt-xxl-0">
+            <!-- Social Media Handle -->
+            <div class="d-flex flex-column gap-2 flex-fill order-lg-1" style="width: 350px;">
+                <div class="d-flex align-items-center p-2 bg-black-transparent-0-05 border-transparent-0-5 rounded-3">
+                    <img src="/static/img/dashboard_utils/mail.png" width="45px" height="45px" class="pe-none">
+                    <p id="email" class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
                 </div>
-                <!-- account statistics group -->
-                <div class="d-flex flex-wrap align-items-start w-90 p-5 gap-5 resize_mid">
-                    <div id="ChartMark"></div>
-                    <div class="d-flex flex-shrink-1 flex-column flex-grow-1 border-transparent-2 rounded-4 acc-stats">
-                        <h5 class="text-pink-gradient taprom fs-3 text-glow text-center line-height-2 m-0 px-auto">Account Statistics</h5>
-                        <hr class="border border-1 border-pink m-0">
-                        <div class="d-flex justify-content-evenly flex-wrap h-100 overflow-y-auto">
-                            <div class="d-flex flex-column justify-content-evenly align-items-center py-2 h-100">
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                            </div>
-                            <div class="d-flex flex-column justify-content-evenly align-items-center py-2 h-100">
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                                    <div class="statItem">
-                                        <p class="m-0 nokora fw-lighter text-pink-chrome" style="font-size: x-large;">Experience: <span class="taprom text-pink-gradient pe-1">5000 XP</span></p>
-                                    </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="d-flex align-items-center p-2 bg-black-transparent-0-05 border-transparent-0-5 rounded-3">
+                    <img src="/static/img/dashboard_utils/dc.png" width="45px" height="45px" class="pe-none">
+                    <p id="discordid" class="mx-auto text-white-fade nokora fw-lighter mb-0 fs-5">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+            </div>
+            <!-- Ranking -->
+            <img id="tier" src="/static/img/rank/1.png" width="140px" height="140px" class="box-shadow order-2 order-md-4 order-xxl-2 pe-none">
+            <!-- Full Name and Title -->
+            <div id="name_title" class="d-flex flex-column align-items-center bg-black-transparent-0-05 border-transparent-0-5 rounded-4 order-1 flex-fill flex-sm-fill order-md-3 order-lg-3" style="width: 400px; height:140px">
+                <h4 id="title" class="text-pink-gradient taprom line-height-1 text-glow">
+                    <span class="text-shadow-drop-center">Loading...</span>
+                </h4>
+                <h1 id="full_name" class="text-chrome taprom line-height-1 text-glow">
+                    <span class="text-shadow-drop-center">Loading...</span>
+                </h1>
+            </div>
+            <!-- Description -->
+            <p id="desc" class="border-transparent-0-5 bg-black-transparent-0-05 nokora text-white fw-light rounded-4 align-self-start flex-fill m-0 p-3 text-center text-xxl-start order-xxl-5 order-xl-5 order-lg-4 flex-lg-grow" style="width:350px; height:80px">
+                <span class="text-shadow-drop-center">Loading...</span>
+            </p>
+        </div>
+        <!-- Lower Part -->
+        <div class="d-flex flex-wrap mt-3 gap-3 justify-content-center">
+            <div id="ChartMark" class="w-100"></div>
+            <!-- General Stats -->
+            <div class="d-flex flex-wrap bg-black-transparent-0-05 border-transparent-0-5 rounded-4 justify-content-evenly align-items-center gap-3 p-3 p-md-3 gap-md-2 flex-md-fill" style="width: 550px; height:auto">
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/XP.png" width="45px" height="45px">
+                    <p id="Experience" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/Tournaments.png" width="45px" height="45px">
+                    <p id="tournamentsplayed" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/LVL.png" width="45px" height="45px">
+                    <p id="level" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/TWins.png" width="45px" height="45px">
+                    <p id="tournamentswon" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/VS.png" width="45px" height="45px">
+                    <p id="matches" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/TLoss.png" width="45px" height="45px">
+                    <p id="tournamentslost" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/Wins.png" width="45px" height="45px">
+                    <p id="matches_won" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+                <div class="d-flex align-items-center px-2 bg-grey-transparent-0-05 border-transparent-0-5 rounded-3 flex-fill" style="width:250px; height: 65px;">
+                    <img src="/static/img/dashboard_utils/Losses.png" width="45px" height="45px">
+                    <p id="matches_lost" class="mx-auto text-white-fade nokora fw-bold mb-0 fs-3">
+                        <span class="text-shadow-drop-center">Loading...</span>
+                    </p>
+                </div>
+            </div>
+            <!-- Match History -->
+            <div id="matchHistory" class="d-flex flex-column align-items-center justify-content-evenly bg-black-transparent-0-05 border-transparent-0-5 p-3 rounded-4 flex-fill row-gap-3" style="width:300px">
+                <div class="spinner-border text-white" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
         </div>
     </div>
 </div>
+

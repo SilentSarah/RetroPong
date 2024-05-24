@@ -1,0 +1,183 @@
+<div class="container-fluid px-5 d-flex justify-content-center">
+	<div id="game-container">
+		<div id="game">
+			<canvas id="gameCanvas" tabindex="0"></canvas>
+			<div class="menu-container">
+				<!-- Main Menu -->
+				<div id="mainMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<button class="game-mode-btn" onclick="startMode(1)"><i class="lni lni-user"></i> Solo Mode</button>
+						<button class="game-mode-btn" onclick="startMode(2)"><i class="lni lni-users"></i> Duo Mode</button>
+						<button class="game-mode-btn" onclick="startMode('tournament')"><i class="lni lni-cup"></i> Tournament</button>
+					</div>
+				</div>
+				<!-- Options Menu -->
+				<div class="fade-in hidden" id="optionsMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<button onclick="toggleMenu('optionsMenu')" class="icon-btn">
+							<i class="lni lni-arrow-left"></i>
+						</button>
+						<h1>Pause</h1>
+						<button onclick="toggleMenu('optionsMenu', 'backgroundsMenu')">Background Colors</button>
+						<button onclick="window.location.replace('/')">Leave Match</button>
+					</div>
+				</div>
+				<!-- Background Menu -->
+				<div class="fade-in hidden" id="backgroundsMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<button onclick="toggleMenu('backgroundsMenu', 'optionsMenu')" class="icon-btn">
+							<i class="lni lni-arrow-left"></i>
+						</button>
+						<h1>BG Colors</h1>
+						<!-- #1 palette -->
+						<div onclick="setCanvasColor(0)" class="palette">
+							<img src="static/img/general/bg1.png" alt="retro">
+							<span>RetroPong</span>
+						</div>
+						<!-- #2 palette -->
+						<div onclick="setCanvasColor(1)" class="palette">
+							<img src="static/img/general/bg2.png" alt="sunrise">
+							<span>Sunrise</span>
+						</div>
+						<!-- #3 palette -->
+						<div onclick="setCanvasColor(2)" class="palette">
+							<img src="static/img/general/bg3.png" alt="pastel">
+							<span>Pastel</span>
+						</div>
+						<!-- #4 palette -->
+						<div onclick="setCanvasColor(3)" class="palette">
+							<img src="static/img/general/bg4.png" alt="classic">
+							<span>Classic</span>
+						</div>
+					</div>
+				</div>
+				<!-- Wait Menu -->
+				<div class="fade-in hidden" id="waitMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div id="waitStatus"></div>
+					<div class="players-grid">
+						<div id="leftWaiters">
+							<!--  -->
+							<!-- <div class="media">
+								<img class="pfp" src="static/img/pfp/L7afouzli9.jpg" alt="L7afouzli9">
+								<div class="details">
+									<p class="taprom text-pink-gradient">L7afouzli9</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div> -->
+							<!-- <div class="media">
+								<img class="pfp" src="static/img/general/gmc.webp" alt="gmc">
+								<div class="details">
+									<p class="taprom text-pink-gradient">player</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div> -->
+						</div>
+						<p class="taprom text-pink-gradient">VS</p>
+						<div id="rightWaiters">
+							<!-- <div class="media">
+								<img class="pfp" src="static/img/pfp/me.gif" alt="gmc">
+								<div class="details">
+									<p class="taprom text-pink-gradient">SSarah</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div> -->
+							<!-- <div class="media">
+								<img class="pfp" src="static/img/general/gmc.webp" alt="gmc">
+								<div class="details">
+									<p class="taprom text-pink-gradient">Player</p>
+									<div class="level">
+										<img src="static/img/icons/explosion.svg" alt="">
+										<span class="bold">75</span>
+									</div>
+								</div>
+							</div> -->
+						</div>
+					</div>
+				</div>
+				<!-- WinLose Menu -->
+				<div class="fade-in hidden" id="winLoseMenu">
+					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
+					<div class="btns-wrapper">
+						<h1 class="taprom">Win</h1>
+						<div id="xp">
+							<p>XP Earned</p>
+							<p class="taprom text-pink-gradient">755 XP</p>
+						</div>
+						<button>Exit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="hidden" id="gameInfo"> <!--class="hidden"-->
+			<div class="player-info">
+				<h1 class="taprom txt-orange">SSarah</h1>
+				<h1 class="score">7</h1>
+			</div>
+			<div>
+				<h1 class="taprom txt-glow-fff">VS</h1>
+				<div class="specs-wrapper">
+					<button onclick="toggleMenu('optionsMenu')" class="spec">
+						<img src="static/img/icons/pause.svg" alt="pause">
+					</button>
+					<button class="spec">
+						<img src="static/img/icons/explosion.svg" alt="explosion">
+					</button>
+					<button class="spec">
+						<img src="static/img/icons/defence.svg" alt="defence">
+					</button>
+					<button class="spec disabled">
+						<img src="static/img/icons/speed.svg" alt="speed">
+					</button>
+				</div>
+				<!-- <h2 class="taprom">Score</h2>
+				<p>7-7</p>
+				<button id="leave">
+					<img src="static/img/icons/leave.svg" alt="leave">
+				</button> -->
+			</div>
+			<div class="player-info">
+				<h1 class="taprom txt-blue">SSarah</h1>
+				<h1 class="score">7</h1>
+			</div>
+		</div>
+		<!-- <form id="special-abilities">
+			<button type="button" class="ability" value="rail">
+				<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 863 863" width="64" height="64">
+					<path d="m277.7 145.6c-0.4 0.4-0.7 32.8-0.7 72 0 67-0.1 71.3-1.7 71.8-1 0.2-4.4 0.7-7.5 1.1-5.4 0.6-5.8 0.5-6.8-1.7-0.6-1.3-5.1-17.3-10-35.7-4.9-18.3-9-33.5-9.2-33.7-0.9-0.8-19.8 5.1-19.8 6.1 0 0.7 4.1 16.3 9 34.7 5 18.4 9 34.2 9 35.2 0 1.7-6.8 5.2-12.1 6.3-2.4 0.5-4-2-38-61.1-19.5-33.8-36-61.5-36.7-61.6-1.7 0-17.2 9.1-17.2 10.1 0 0.5 16 28.6 35.5 62.4 19.5 33.8 35.5 61.7 35.5 61.9 0 0.3-2.7 2.6-6.1 5.2l-6.1 4.7-26.4-26.4-26.4-26.4-7.7 7.7-7.7 7.8 26.3 26.4 26.4 26.4-4.7 6.1c-2.6 3.4-4.9 6.1-5.2 6.1-0.2 0-28.1-16-61.9-35.5-33.7-19.5-61.8-35.5-62.3-35.5-1.4 0-10.4 16-9.9 17.5 0.3 0.6 28.1 17.1 61.7 36.5 58.9 34 61.2 35.4 60.7 37.9-1.1 5.2-4.6 12.1-6.2 12.1-0.9 0-16.7-4.1-35.2-9-18.4-5-34-9-34.7-9-1.1 0-6.9 18.9-6.1 19.8 0.1 0.2 15.3 4.3 33.6 9.2 18.4 4.9 34.4 9.4 35.7 10 2.2 1 2.3 1.4 1.7 6.8-0.4 3.1-0.9 6.5-1.1 7.4-0.5 1.7-5 1.8-72.2 2l-71.7 0.3v10.5 10.5l71.7 0.3c67.2 0.2 71.7 0.3 72.2 2 0.2 0.9 0.7 4.3 1.1 7.4 0.6 5.4 0.5 5.8-1.7 6.8-1.3 0.6-17.3 5.1-35.7 10-18.3 4.9-33.5 9-33.6 9.2-0.8 0.9 5 19.8 6.1 19.8 0.7 0 16.3-4.1 34.7-9 18.5-5 34.3-9 35.2-9 1.6 0 5.1 6.9 6.2 12.1 0.5 2.5-1.8 3.9-60.7 37.9-33.6 19.4-61.4 35.9-61.7 36.5-0.5 1.5 8.5 17.5 9.9 17.5 0.5 0 28.5-16 62.3-35.5 33.8-19.5 61.7-35.5 61.9-35.5 0.3 0 2.6 2.7 5.2 6.1l4.7 6.1-26.4 26.4-26.3 26.4 7.7 7.8 7.7 7.7 26.4-26.4 26.4-26.4 6.1 4.7c3.4 2.6 6.1 4.9 6.1 5.2 0 0.2-16 28.1-35.5 61.9-19.5 33.8-35.5 61.9-35.5 62.4 0 1 15.5 10.1 17.2 10.1 0.7-0.1 17.2-27.8 36.7-61.6 34-59.1 35.6-61.6 38-61.1 5.3 1.1 12.1 4.6 12.1 6.3 0 1-4 16.8-9 35.2-4.9 18.4-9 34-9 34.7 0 1 18.9 6.9 19.8 6.1 0.2-0.2 4.3-15.4 9.2-33.7 4.9-18.4 9.4-34.4 10-35.7 1-2.2 1.4-2.3 6.8-1.7 3.1 0.4 6.5 0.9 7.4 1.1 1.7 0.5 1.8 5 2 72.2l0.3 71.7h10.5 10.5l0.3-71.7c0.2-67.2 0.3-71.7 2-72.2 0.9-0.2 4.3-0.7 7.4-1.1 5.4-0.6 5.9-0.5 6.8 1.7 0.6 1.3 5.1 17.3 10 35.7 4.9 18.3 9 33.5 9.2 33.6 0.9 0.9 19.8-5 19.8-6.1 0-0.7-4-16.4-9-34.8-4.9-18.4-9-34.2-9-35.1 0-1.6 7-5.1 12.1-6.2 2.5-0.5 3.9 1.8 37.9 60.7 19.4 33.6 35.9 61.4 36.5 61.7 0.7 0.2 5-1.7 9.5-4.3 5.7-3.4 8-5.2 7.7-6.3-0.2-0.9-16-28.4-34.9-61.2-19-32.9-34.8-60.4-35.1-61.3-0.4-1.1 1.2-2.9 5.4-6.2l6.1-4.7 26.4 26.4 26.4 26.3 7.5-7.4c4.1-4.1 7.5-7.7 7.5-7.9 0-0.3-11.7-12.3-26-26.6l-26.1-26.1 4.5-6.2c2.5-3.4 4.8-6.2 5.1-6.2 0.4 0 28.2 16 62 35.5 33.8 19.5 61.9 35.5 62.4 35.5 1.4 0 10.3-16 9.8-17.4-0.3-0.7-28.1-17.2-61.7-36.6-58.8-34-61.2-35.4-60.7-37.9 1.1-5.3 4.6-12.1 6.3-12.1 1 0 16.8 4 35.2 9 18.4 4.9 34 9 34.7 9 1 0 6.9-18.9 6.1-19.8-0.2-0.2-15.4-4.3-33.7-9.2-18.4-4.9-34.4-9.4-35.7-10-2.2-1-2.3-1.4-1.7-6.8 0.4-3.1 0.9-6.5 1.1-7.4 0.5-1.7 11.9-1.8 216.2-2l215.7-0.3v-10.5-10.5l-215.7-0.3c-204.3-0.2-215.7-0.3-216.2-2-0.2-0.9-0.7-4.3-1.1-7.4-0.6-5.4-0.5-5.8 1.7-6.8 1.3-0.6 17.3-5.1 35.7-10 18.3-4.9 33.5-9 33.7-9.2 0.8-0.9-5.1-19.8-6.1-19.8-0.7 0-16.3 4.1-34.7 9-18.4 5-34.2 9-35.2 9-1.7 0-5.2-6.8-6.3-12.1-0.5-2.5 1.9-3.9 60.7-37.9 33.6-19.4 61.4-35.9 61.7-36.6 0.5-1.4-8.4-17.4-9.8-17.4-0.5 0-28.6 16-62.4 35.5-33.8 19.5-61.6 35.5-62 35.5-0.3 0-2.6-2.8-5.1-6.2l-4.5-6.2 26.3-26.3 26.2-26.3-7.4-7.5c-4.1-4.1-7.7-7.5-7.9-7.5-0.3 0-12.3 11.7-26.6 26l-26.1 26.1-6.2-4.5c-4.5-3.3-6-5-5.5-6.2 0.3-0.9 16.1-28.4 35.1-61.3 18.9-32.8 34.7-60.3 34.9-61.2 0.3-1.1-2-2.9-7.7-6.3-4.5-2.6-8.8-4.5-9.5-4.3-0.6 0.3-17.1 28.1-36.5 61.7-34 58.9-35.4 61.2-37.9 60.7-5.1-1.1-12.1-4.6-12.1-6.2 0-0.9 4.1-16.7 9-35.1 5-18.4 9-34.1 9-34.8 0-1.1-18.9-7-19.8-6.1-0.2 0.1-4.3 15.3-9.2 33.6-4.9 18.4-9.4 34.4-10 35.7-0.9 2.2-1.4 2.3-6.8 1.7-3.1-0.4-6.5-0.9-7.4-1.1-1.7-0.5-1.8-5-2-72.2l-0.3-71.7-10.1-0.3c-5.5-0.1-10.3 0-10.7 0.4z"></path>
+				</svg>
+			</button>
+			<button type="button" class="ability" value="shield">
+				<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70" width="64" height="64">
+					<path d="m35.5 68.5c-0.4 0.4-0.6 0.3-1.1 0-19.7-13.4-30.6-35.6-28.6-63.3 21.5-5.9 38-6.1 58.4-0.1v0.1c2 27.7-8.9 49.9-28.7 63.3zm23.9-59.5c-5-1.8-13.5-3.9-24.4-3.8 4.4 18.4 1.7 44.9-1 59.1 9.5-2.2 29.9-29 25.4-55.3z"></path>
+				</svg>
+			</button>
+			<button type="button" class="ability" value="fast">
+				<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" width="64" height="64">
+					<path d="m5.1 11.1l9.4 9.5c-1.1 0-2.3-0.3-3.4-0.7-0.4-0.1-2.2-0.4-2.9 0.3-1.5 1.6-2.9 3.6-3.7 4.4-0.8 0.8-1.9 0.5-2.8-0.6-1.1-1-1.4-2.1-0.6-2.8 0.8-0.8 2.8-2.2 4.4-3.8 0.7-0.7 0.3-2.6 0.3-2.9-0.5-1.1-0.7-2.2-0.7-3.4zm16.3 6.6c-1.4 1.5-3 2.3-4.8 2.7l-11.3-11.3c0.4-1.8 1.2-3.5 2.6-4.8 3.7-3.8 9.8-5.5 14.3-0.8 4.6 4.5 3 10.5-0.8 14.2zm-9.3-9.4c0.1 0.3 0.3 0.6 0.7 0.6 0.3-0.1 0.5-0.3 0.7-0.5 1.3-1.3 2.7-2.7 4-3.9 1.2 1.2 2.5 2.6 3.9 3.9 0.2 0.2 0.4 0.4 0.6 0.5 0.5 0 0.8-0.4 0.8-0.8 0-0.3-0.3-0.5-0.6-0.7-1.3-1.4-2.5-2.7-4-4-0.2-0.2-0.4-0.6-0.9-0.5-0.3 0.1-0.5 0.4-0.8 0.6-0.6 0.6-1.2 1.2-1.8 1.8-0.7 0.7-1.2 1.2-1.9 1.9-0.3 0.3-0.6 0.5-0.7 0.9zm10.7 4.6c0-0.3-0.3-0.6-0.5-0.8-1.4-1.3-2.7-2.6-4-4-0.3-0.2-0.5-0.6-1-0.5-0.2 0-0.5 0.3-0.7 0.5-1.3 1.3-2.5 2.5-3.8 3.8-0.3 0.2-0.6 0.5-0.7 0.9v0.2c0.1 0.3 0.3 0.6 0.6 0.5 0.3 0 0.5-0.2 0.7-0.4 1.3-1.3 2.8-2.6 4-3.9 1.3 1.2 2.7 2.6 4 3.9 0.2 0.2 0.4 0.4 0.7 0.4 0.4 0.1 0.7-0.3 0.7-0.6z"></path>
+				</svg>
+			</button>
+		</form> -->
+		<!-- <div id="scorePannel">
+			<h2 class="taprom">Score</h2>
+			<div>
+				<p>You:</p>
+				<p>Other:</p>
+				<p class="score">00</p>
+				<p class="score">00</p>
+			</div>
+		</div> -->
+	</div>
+</div>
