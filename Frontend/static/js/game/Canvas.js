@@ -49,30 +49,18 @@ class Canvas
 	setup()
 	{
 		this.dprAdjust();
-		this.ball = {
-			x : -1,
-			y : -1,
-			r : 1 / 150,
-			speed : 0.007 * 1,
-			velocityX : 0.007 * 1,
-			velocityY : 0.007 * 1,
-			color : "#eee"
-		}
-		// this Object, side, gradient colors
-		this.user.setup( this, 'l', ['#feec63', '#ff0100'] );
-		this.com.setup( this, 'r', ['#68ebff', '#013afe'] );
 	}
 
 	// draw the ball
-	drawBall()
+	drawBall(x, y, r)
 	{
 		setShadow(this);
-		this.ctx.fillStyle = this.ball.color;
+		this.ctx.fillStyle = '#fff';
 		this.ctx.beginPath();
 		this.ctx.arc(
-			this.ball.x * this.el.width,
-			this.ball.y * this.el.height,
-			this.ball.r * this.el.width,
+			x * this.el.width,
+			y * this.el.height,
+			r * this.el.width,
 			0,
 			Math.PI*2,
 			true

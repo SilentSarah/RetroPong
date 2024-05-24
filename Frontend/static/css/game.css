@@ -93,6 +93,10 @@
 	background: linear-gradient(#32398d, #9a5ba4, #d3ce88);
 }
 
+#game > canvas {
+	max-width: 100%;
+}
+
 #gameInfo {
 	flex: 1 1 100%;
 	grid-area: specs;
@@ -353,7 +357,7 @@
 
 #waitMenu .players-grid {
 	display: grid;
-	/* grid-template-columns: 1fr 1fr; Define the width of columns */
+	grid-template-columns: 2fr 1fr 2fr; /* Define the width of columns */
 	/* grid-template-rows: minmax(auto, max-content) minmax(auto, max-content); Define the width of columns */
 	grid-template-areas:
 		"left	vs	right";
@@ -369,7 +373,7 @@
 	color: #fff;
 }
 
-#waitMenu .players-grid .left {
+#waitMenu .players-grid #leftWaiters {
 	grid-area: left;
 }
 
@@ -377,7 +381,7 @@
 	grid-area: vs;
 }
 
-#waitMenu .players-grid .right {
+#waitMenu .players-grid #rightWaiters {
 	grid-area: right;
 }
 
@@ -397,13 +401,21 @@
 	margin-top: 2em;
 }
 
-#waitMenu .players-grid .right .media {
+#waitMenu .players-grid #rightWaiters .media {
 	flex-direction: row-reverse;
 }
 
-
 #waitMenu .players-grid .media img {
 	max-width: 1em;
+}
+
+#waitMenu .players-grid .media .details {
+	display: flex;
+	flex-direction: column;
+}
+
+#waitMenu .players-grid #rightWaiters .media .details {
+	align-items: end;
 }
 
 #waitMenu .players-grid .media .details p {
