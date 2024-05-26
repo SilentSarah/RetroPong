@@ -48,6 +48,8 @@ CORS_ALLOW_CREDENTIALS = True
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     "corsheaders",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -59,6 +61,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django_grip.GripMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     "corsheaders.middleware.CorsMiddleware",
@@ -88,7 +91,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'UserManagement.wsgi.application'
-
+ASGI_APPLICATION = "UserManagement.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
@@ -105,6 +108,15 @@ DATABASES = {
         'HOST': env.get('DB_HOST'),
         'PORT': env.get('DB_PORT'),
     }
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('redis://' + env.get('REDIS_USER') + ':' + env.get('REDIS_PASSWORD') + '@localhost:55000')],
+        },
+    },
 }
 
 # Password validation

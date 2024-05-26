@@ -20,7 +20,7 @@
 <body class="d-flex flex-column justify-content-between">
     <!-- Navbar -->
     <div id="navbar" class="rnavbar d-flex align-items-center justify-content-between">
-        <a href="/" class="ms-3">
+        <!-- <a href="/" class="ms-3">
             <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
         </a>
         <div class="d-flex gap-2 me-3">
@@ -30,6 +30,55 @@
             <a id="login_btn" href="/login" class="nav_btn">
                 <img src="/static/img/login_register_utils/Login.png" width="40px">
             </a>
+        </div> -->
+        <div id="retro_menu" class="nav_btn ms-3 position-relative">
+            <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
+            <div id="menu_content" class="flex-column justify-content-center align-items-center gap-2 position-absolute">
+                <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
+                    <img src="/static/img/general/Account.png" width="30px">
+                </a>
+                <a href="/chat" class="nav_btn selected">
+                    <img src="/static/img/general/Chat.png" width="30px">
+                </a>
+                <a href="/game" class="nav_btn selected">
+                    <img src="/static/img/general/Game.png" width="30px">
+                </a>
+                <a href="/tournament" class="nav_btn selected">
+                    <img src="/static/img/general/Tournament.png" width="30px">
+                </a>
+                <a href="/settings" class="nav_btn selected">
+                    <img src="/static/img/general/Settings.png" width="30px">
+                </a>
+            </div>
+        </div>
+        <a href="/" class="ms-3">
+            <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
+        </a>
+        <div class="d-flex gap-2 me-3">
+            <div id="notification" href="" class="nav_btn position-relative">
+                <img src="/static/img/general/Notfication.png" width="40px" class="position-relative" style="z-index: 12;">
+                <div id="notification_light" class="d-none"></div>
+                <div id="notification_menu" class="d-flex flex-column justify-content-between align-items-center gap-2 position-absolute">
+                    <h3 class="text-white fs-5 taprom text-pink-gradient text-glow m-0 py-2">Notifications</h3>
+                    <div class="d-flex flex-column justify-content-evenly align-items-center px-2 h-100">
+                        <div id="notification_content" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0" style="width:280px; height:100px;">
+                            <div id="noti_type" class="d-flex align-items-center gap-1 opacity-75">
+                                <img src="/static/img/general/Chat.png" width="20px">
+                                <p class="text-white nokora fw-bold m-0" style="font-size: 15px;">Account</p>
+                                <p class="ms-auto m-0 nokora fw-light text-white" style="font-size: 12px;">24/05/2020</p>
+                            </div>
+                            <p id="noti_content" class="text-white fw-bold" style="font-size: 0.85rem">
+
+                            </p>
+                        </div>
+                        <div class="rounded-3 bg-white-transparent-0-15" style="width:280px; height:100px;"></div>
+                        <div class="rounded-3 bg-white-transparent-0-15" style="width:280px; height:100px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="logout" href="" class="nav_btn">
+                <img src="/static/img/general/Logout.png" width="40px">
+            </div>
         </div>
     </div>
     <!-- Main Content -->
@@ -58,6 +107,7 @@
      <!-- Fin chat -->
     <script src="./static/js/router.js"></script>
     <script src="./static/js/animation.js"></script>
+    <script src="./static/js/notification.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
    

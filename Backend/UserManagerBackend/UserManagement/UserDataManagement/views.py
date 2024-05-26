@@ -1,11 +1,12 @@
-from django.http import *
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
-from django.db.utils import *
-from .DbOps.DbOps import *
-from .WebOps.WebOps import *
+from django_eventstream import send_event
 from .ViewAssist.ViewAssist import *
-import json
+from django.db.utils import *
+from .WebOps.WebOps import *
+from .DbOps.DbOps import *
+from django.http import *
+import json, asyncio
 
 
 MAX_DURATION = 7
@@ -82,7 +83,7 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
         try:
             token = ViewAssist.generate_42_request_token(code, "http://127.0.0.1:8001/userdata/42login/callback/")
             if (token is None):
-                return JsonResponse({"Error":"Couldn't acquire access token"}, status=400)
+                return HttpResponseRedirect("http://127.0.0.1:5500/")
             required_data = ViewAssist.generate_42_user_data(token)
             if (required_data is None):
                 return JsonResponse({"Error":"Missing Values"}, status=400)

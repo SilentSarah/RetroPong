@@ -51,7 +51,7 @@ class DbOps:
                 date = (today - datetime.timedelta(days=i)).strftime('%d/%m')
                 match_count = day_matches.count()
                 matches_played["Matches Played"][date] = match_count
-                i += 1;
+                i += 1
             return matches_played
         except Exception as e:
             print("DbOps: ", e)
@@ -176,3 +176,29 @@ class DbOps:
             uIs42=False if is42 == 0 else True
         )
         return True
+    @staticmethod
+    def get_notifications(user_id: int) -> dict[str]:
+        """Retrieves notifications from the database
+
+        Args:
+            user_id (int): user id of the user to be retrieved
+
+        Returns:
+            dict: Notifications in dictionary format
+        """
+        try:
+            notifications = Notification.objects.filter(nReciever=user_id).order_by('-nDate')
+            notifications_list = {}
+            for notification in notifications:
+                notifications_list[notification.id] = {
+                    "id": notification.id,
+                    "type": notification.nType,
+                    "content": notification.nContent,
+                    "date": datetime.datetime.strftime(notification.nDate, "%d/%m/%Y %H:%M:%S"),
+                    "reciever": notification.nReciever,
+                    "sender": notification.nSender   
+                }
+            return notifications_list
+        except Exception as e:
+            print("DbOps: ", e)
+            return None

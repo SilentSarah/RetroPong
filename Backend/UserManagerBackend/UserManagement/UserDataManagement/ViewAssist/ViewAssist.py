@@ -50,6 +50,7 @@ class ViewAssist:
             "redirect_uri": redirect_uri
         }
         access_token = requests.post(token_url, params=params)
+        print(access_token.status_code)
         access_token = access_token.json()
         
         token = access_token.get('access_token')
@@ -140,14 +141,14 @@ class ViewAssist:
             return None
     
     @staticmethod
-    def verify_token(request: HttpRequest) -> str:
-        auth_token = request.headers.get('Authorization')
+    def verify_token(request: HttpRequest = None, token_from_ws = None) -> str:
+        auth_token = request.headers.get('Authorization') if request is not None else token_from_ws
         if auth_token is None:
             print("hermosa you forgot the jwt")
-            return None
+            return None, None
         else:
             request = requests.Session()
-            request.headers['Authorization'] = f"{auth_token}"
+            request.headers['Authorization'] =  f"{auth_token}"
             response = request.get('http://127.0.0.1:8000/auth/')
             if response.status_code == 200:
                 body = response.json()
@@ -156,7 +157,7 @@ class ViewAssist:
                 return token, user_id
             else:
                 print("Auth server said sike")
-                return None
+                return None, None
             
     @staticmethod
     def create_user_and_setup_login_creds(request: HttpRequest) -> dict:
