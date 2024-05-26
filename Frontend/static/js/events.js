@@ -227,6 +227,8 @@ function loadEvents() {
         handlePictureUploads();
         TwoFactorAuthHandler();
     }
+	else if (window.location.pathname === '/game')
+		initGame();
     else if (window.location.pathname === '/dashboard') {
         copyIDListener();
         setDashboardStats();

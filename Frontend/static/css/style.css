@@ -480,6 +480,10 @@ border-radius: 25px;
     width:250px; 
     height:180px
 }
+
+.top-20 {
+    top: 20px;
+}
 .slide-in-blurred-top {
 	animation: slide-in-blurred-top 1s cubic-bezier(0.230, 1.000, 0.320, 1.000) 0.25s both;
 }
