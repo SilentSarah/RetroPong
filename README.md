@@ -1,6 +1,3 @@
-# Ui for the App
-
-=======
 
 # This will highlight the overall working on this branch
 
@@ -38,3 +35,7 @@ All messages broadcasted to the channel_group will be intercepted by this method
 ### receive_json
 
 This method is like the portal for the client to the server, where messages sent using websocket are received
+=======
+# RetroPong
+
+Coming soon!

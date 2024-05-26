@@ -1,7 +1,6 @@
-AuthLib
+Authlib
 UserLibs
-.env
 __pycache__
+.env
 .DS_Store
-.pyc
 .vscode
