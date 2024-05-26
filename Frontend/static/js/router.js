@@ -20,7 +20,7 @@ const routes = [
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/chat.html')
+        component: () => grabContent('/static/content/chatv2.html')
     },
     {
         path: '/login',
