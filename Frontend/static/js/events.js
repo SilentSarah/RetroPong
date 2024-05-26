@@ -53,10 +53,10 @@ function DisplayNavBar() {
 
     let navbar = document.getElementById('navbar');
     let open = false;
-    if (document.getElementById("retro_menu") === null 
-        || document.getElementById("notification") === null 
-        || document.getElementById("logout") === null) {
-        navbar.innerHTML = navbar_logged_in;
+    // if (document.getElementById("retro_menu") === null 
+    //     || document.getElementById("notification") === null 
+    //     || document.getElementById("logout") === null) {
+        // navbar.innerHTML = navbar_logged_in;
         document.getElementById('notification').addEventListener('click', function () {
             console.log('Notification');
         });
@@ -79,7 +79,7 @@ function DisplayNavBar() {
             }
         });
         scanLinks();
-    }
+    // }
 }
 
 function confirmOperartion(type, parent) {
@@ -223,9 +223,6 @@ function loadEvents() {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
         scanInput();
-    else if (window.location.pathname == '/dashboard' ) {
-        copyIDListener();
-    }
     else if (window.location.pathname === '/settings') {
         handlePictureUploads();
         TwoFactorAuthHandler();

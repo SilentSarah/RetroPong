@@ -108,4 +108,4 @@ function router() {
 
 router();
 fetchUserData();
-fetchID = setInterval(fetchUserData, 1500);
+fetchID = setInterval(fetchUserData, 10000);

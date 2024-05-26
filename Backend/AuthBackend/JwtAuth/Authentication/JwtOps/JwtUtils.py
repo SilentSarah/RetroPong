@@ -103,9 +103,6 @@ class JwtOps:
             'exp': int(time.time() + datetime.timedelta(days=3).total_seconds())
         }
         try:
-            print(
-                SECRET_KEY
-            )
             token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
             return token
         except Exception as e:

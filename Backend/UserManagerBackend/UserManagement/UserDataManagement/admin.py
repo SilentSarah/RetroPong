@@ -5,3 +5,4 @@ from .models import *
 
 admin.site.register(User, UsersAdmin)
 admin.site.register(MatchHistory, MatchHistoryAdmin)
+admin.site.register(Notification, NotificationAdmin)

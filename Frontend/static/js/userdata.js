@@ -203,7 +203,6 @@ function setMatchStatistics() {
         return ;
     }
     const Chart = new SSChart(match_statistics, 'Matches Played', '/static/content/components/chart.html');
-    // console.log("HELP");
     Chart.Component.then(html => {
         document.getElementById('ChartMark').innerHTML = html;
         Chart.setChartTitle();

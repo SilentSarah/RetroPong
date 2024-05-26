@@ -113,7 +113,6 @@ function log_user_in() {
         }
     })
     .then(data => {
-        console.log('Success:', data);
         localStorage.setItem('user_id', data.user_id);
         settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
         DisplayNavBar();
