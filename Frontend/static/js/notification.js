@@ -6,24 +6,21 @@ const img_paths = {
     'FRIEND': '/static/img/general/Chat.png',
 }
 
+const notifications_array = []
+
 function convertDateFormat(dateStr) {
     let [date, time] = dateStr.split(' ');
-
     date = date.split('/').reverse().join('/');
-
     return new Date(`${date} ${time}`);
 }
 
-
 function scaleMessageDateSent(date) {
     const date_sent = new Date(convertDateFormat(date));
-    console.log(date_sent);
     const current_date = new Date();
     if (current_date.getFullYear() > date_sent.getFullYear())
         return `${current_date.getFullYear() - date_sent.getFullYear()} years ago`;
     if (current_date.getMonth() > date_sent.getMonth())
         return `${current_date.getMonth() - date_sent.getMonth()} ${current_date.getMonth() - date_sent.getMonth() > 1 ? "years":"year"} ago`;
-    console.log(current_date.getDate(), date_sent.getDate(), current_date.getDate() - date_sent.getDate());
     if (current_date.getDate() > date_sent.getDate())
         return `${current_date.getDate() - date_sent.getDate()} ${current_date.getDate() - date_sent.getDate() > 1 ? "days":"day"} ago`;
     if (current_date.getHours() > date_sent.getHours())
@@ -66,7 +63,7 @@ function constructNotification(each_notification) {
     setTimeout(() => {
         notifications_container.appendChild(notification);
         notification.outerHTML = `
-        <div id="notification_content" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0 fade_in" style="width:280px; height:100px;">
+        <div id="notification_content" back-link="${notification_Data.type}" notification_id="${notification_Data.id}" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0 fade_in" style="width:280px; height:100px;">
             <div id="noti_header" class="d-flex align-items-center gap-1 opacity-75">
                 <img src="${img_paths[notification_Data.type]}" width="20px">
                 <p class="text-white nokora fw-bold m-0" style="font-size: 15px;">${notification_Data.type}</p>
@@ -78,14 +75,51 @@ function constructNotification(each_notification) {
                     <span class="nokora text-pink text-turncate">${notification_Data.sender_username}</span>
                     ${notification_Data.content}
                 </p>
-                <button class="border-pink goto ms-auto" back-link="${notification_Data.type}" notification_id="${notification_Data.id}">
+                <button class="border-pink goto ms-auto" onclick="invokeActivity(${notification_Data.id})">
                     <img src="/static/img/general/shortcut.png" width="25px" height="25px">
                 </button>
             </div>
         </div>`;
     }, delay); 
     delay += 250;
-    return 
+    notifications_array.push(notification);
+}
+
+function invokeAction(notification_data, selected_notification) {
+    const anchor = document.createElement('a');
+    switch (notification_data.type) {
+        case 'MESSAGE':
+        case 'FRIEND':
+            anchor.href = '/chat';
+            localStorage.setItem('sender_id', notification_data.sender);
+            selected_notification.appendChild(anchor);
+            scanLinks();
+            anchor.click();
+            anchor.remove();
+            break;
+        case 'ACCOUNT':
+            //  TO BE IMPLEMENTED
+            break;
+        case 'GAME':
+            anchor.href = '/game';
+            localStorage.setItem('sender_id', notification_data.sender);
+            break;
+    }
+}
+
+function invokeActivity(notificationID) {
+    const notification = JSON.parse(localStorage.getItem(notificationID));
+    const notification_data = constructNotificationData(notification);
+    const selected_notification = document.querySelector(`#notification_content[notification_id="${notificationID}"]`);
+    if (selected_notification != null) {
+        invokeAction(notification_data, selected_notification);
+    }
+}
+
+function saveNotificationData(data) {
+    for (const [key, value] of Object.entries(data['Notifications'])) {
+        localStorage.setItem(key, JSON.stringify(value));
+    }
 }
 
 class notifications {
@@ -101,6 +135,7 @@ class notifications {
             const notifications_container = document.getElementById('notifications_container');
             if (controlNotificationFlow(data, notifications_container) == 1)
                 return;
+            saveNotificationData(data);
             for (const [key, value] of Object.entries(data['Notifications']))
                 constructNotification(value);
             

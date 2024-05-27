@@ -78,7 +78,6 @@ function router() {
     StartLoading(route);
     setTimeout(() => {
     if (route) {
-        console.log(route);
         if (route.on === true)
             return;
         route.component().then(html => {
@@ -93,7 +92,6 @@ function router() {
         }
     } else {
         routes[0].component().then(html => {
-            console.log("404");
             mainContent.innerHTML = html;
             routes[0].on = true;
             for (let i = 1; i < routes.length; i++) {
