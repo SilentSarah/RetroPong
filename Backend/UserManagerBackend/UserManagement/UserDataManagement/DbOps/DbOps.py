@@ -187,17 +187,28 @@ class DbOps:
             dict: Notifications in dictionary format
         """
         try:
-            notifications = Notification.objects.filter(nReciever=user_id).order_by('-nDate')
-            notifications_list = {}
+            i: int = 1
+            notifications = Notification.objects.filter(nReciever=user_id).order_by('-id')
+            notifications_list = {
+                "Notifications": {},
+            }
             for notification in notifications:
-                notifications_list[notification.id] = {
+                sender = User.objects.get(id=notification.nSender)
+                if (sender is not None):
+                    sender_pfp = sender.uprofilepic
+                    sender_username = sender.uusername
+                notifications_list["Notifications"][notification.id] = {
                     "id": notification.id,
                     "type": notification.nType,
                     "content": notification.nContent,
                     "date": datetime.datetime.strftime(notification.nDate, "%d/%m/%Y %H:%M:%S"),
                     "reciever": notification.nReciever,
-                    "sender": notification.nSender   
+                    "sender": notification.nSender,
+                    "sender_username": sender_username,
+                    "sender_pfp": sender_pfp,
                 }
+                print(notifications_list)
+                i += 1
             return notifications_list
         except Exception as e:
             print("DbOps: ", e)
