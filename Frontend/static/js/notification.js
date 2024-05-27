@@ -116,5 +116,3 @@ class notifications {
     }
 
 }
-
-const notification = new notifications();

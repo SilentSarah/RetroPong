@@ -12,6 +12,8 @@
 *                        1337                       *
 *****************************************************/
 
+const notificationHandler = null;
+
 function delete_cookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
@@ -96,8 +98,6 @@ function confirmOperartion(type, parent) {
         }, 1000);
     }
 }
-
- 
 
 function scanInput() {
     let items = document.querySelectorAll('input');
@@ -206,18 +206,10 @@ function TwoFactorAuthHandler() {
     }
 }
 
-function findHighiestGrade(matches) {
-    let highiest = 0;
-    for ([key, value] of Object.entries(matches)) {
-        if (value['won'] > highiest) {
-            highiest = value['won'];
-        }
-    }
-    return highiest;
-
-}
-
 function loadEvents() {
+    if (notificationHandler === null && getCookie('access') != '') {
+        notificationHandler = new notifications();
+    }
     scanLinks();
     if (window.location.pathname === '/') {
     }
