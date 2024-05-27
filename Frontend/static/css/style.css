@@ -509,32 +509,20 @@ border-radius: 25px;
 
 .nav_btn {
     z-index: 10;
+    transition: all 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    transform: scale(1);
+    filter: brightness(1);
 }
 
 .nav_btn:hover {
-    animation: soft_light_up 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940);
-    animation-fill-mode: forwards;
-    -webkit-animation-fill-mode: forwards;
-    animation-iteration-count: 1;
-    -webkit-animation-iteration-count: 1;
-    transition: transform 0.5s;
     cursor: pointer;
+    transform: scale(1.1);
+    filter: brightness(1.5);
 }
 
 .selected:hover {
     background-color: rgb(255, 255, 255, 0.1);
     border-radius: 25%;
-}
-
-@keyframes soft_light_up {
-    0% {
-        transform: scale(1);
-        filter: brightness(1);
-    }
-    100% {
-        transform: scale(1.1);
-        filter: brightness(1.5);
-    }
 }
 
 #notification_light {
@@ -594,4 +582,19 @@ background: linear-gradient(150.02deg, rgba(0, 0, 0, 0.7) 70%, rgba(240, 128, 24
     /* border-top-right-radius: 0px; */
     background-color: rgb(0, 0, 0, 0.33);
     backdrop-filter: blur(1px);
+}
+
+.goto {
+    background: 0;
+    border-radius: 0.35rem;
+    border-width: 1.5px;
+    padding: 0.25rem;
+    transition: all 0.25s ease-in-out;
+}
+
+.goto:hover {
+    background: rgba(240, 128, 242, 0.35);
+    border-radius: 0.35rem;
+    border-width: 1.5px;
+    padding: 0.25rem;
 }

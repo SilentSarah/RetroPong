@@ -124,11 +124,15 @@ function fetchUserData() {
 function setElementInnerHTML(id, sessionKey, defaultValue = "") {
     let element = document.getElementById(id);
     let value = sessionStorage.getItem(sessionKey);
+    if (value === null || value === undefined)
+        return ;
     element.innerHTML = value === "" ? defaultValue : value;
 }
 
 function setPlayerRank() {
     let rank = sessionStorage.getItem('rank');
+    if (rank === null || rank === undefined)
+        return ;
     let tier = document.getElementById('tier');
     if (tier)
         tier.src=`/static/img/rank/${rank}.png`;
@@ -232,11 +236,14 @@ function setDashboardStats() {
     setMatchStatistics();
 
     let player_id = document.getElementById("player_id");
-    player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;
+    let player_id_value = sessionStorage.getItem('id');
+    if (player_id_value)
+        player_id.innerHTML = `RP-ID-${player_id_value}`;
 
     let full_name = document.getElementById("full_name");
     let first_name = sessionStorage.getItem('fname');
     let last_name = sessionStorage.getItem('lname');
-    full_name.innerHTML = first_name + " " + last_name;
+    if (first_name && last_name)
+        full_name.innerHTML = first_name + " " + last_name;
     setPlayerRank();
 }
