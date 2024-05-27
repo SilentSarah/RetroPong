@@ -60,26 +60,10 @@
                 <div id="notification_light" class="d-none"></div>
                 <div id="notification_menu" class="d-flex flex-column justify-content-between align-items-center gap-2 position-absolute">
                     <h3 class="text-white fs-5 taprom text-pink-gradient text-glow m-0 py-2">Notifications</h3>
-                    <div class="d-flex flex-column justify-content-evenly align-items-center px-2 h-100">
-                        <div id="notification_content" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0" style="width:280px; height:100px;">
-                            <div id="noti_type" class="d-flex align-items-center gap-1 opacity-75">
-                                <img src="/static/img/general/Chat.png" width="20px">
-                                <p class="text-white nokora fw-bold m-0" style="font-size: 15px;">Account</p>
-                                <p class="ms-auto m-0 nokora fw-light text-white" style="font-size: 12px;">24/05/2020</p>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-start gap-2">
-                                <img src="/static/img/pfp/Default.png" width="40px" height="40px" class="object-fit-cover border-pink rounded-3">
-                                <p class="text-white m-0 fw-light" style="font-size: 0.85rem;">
-                                    <span class="nokora text-pink">SSarah</span>
-                                    has invited you for a match
-                                </p>
-                                <button class="border-pink goto" back-link="Messages" notification_id="2001">
-                                    <img src="/static/img/general/shortcut.png" width="25px" height="25px">
-                                </button>
-                            </div>
+                    <div id="notifications_container" class="d-flex flex-column justify-content-start align-items-center px-2 h-100 overflow-y-auto overflow-x-hidden gap-2">
+                        <div class="spinner-border text-white my-auto" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div class="rounded-3 bg-white-transparent-0-15" style="width:280px; height:100px;"></div>
-                        <div class="rounded-3 bg-white-transparent-0-15" style="width:280px; height:100px;"></div>
                     </div>
                 </div>
             </div>

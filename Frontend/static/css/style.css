@@ -598,3 +598,13 @@ background: linear-gradient(150.02deg, rgba(0, 0, 0, 0.7) 70%, rgba(240, 128, 24
     border-width: 1.5px;
     padding: 0.25rem;
 }
+
+#notification_content {
+    transform: scale3d(1,1,1);
+    transition: all 0.25s ease-in-out;
+    
+}
+
+#notification_content:hover {
+    transform: scale3d(1.015,1.015,1.015);
+}
