@@ -511,13 +511,11 @@ border-radius: 25px;
     z-index: 10;
     transition: all 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940);
     transform: scale(1);
-    filter: brightness(1);
 }
 
 .nav_btn:hover {
     cursor: pointer;
     transform: scale(1.1);
-    filter: brightness(1.5);
 }
 
 .selected:hover {
@@ -606,5 +604,5 @@ background: linear-gradient(150.02deg, rgba(0, 0, 0, 0.7) 70%, rgba(240, 128, 24
 }
 
 #notification_content:hover {
-    transform: scale3d(1.015,1.015,1.015);
+    transform: scale3d(1.02,1.02,1.02);
 }
