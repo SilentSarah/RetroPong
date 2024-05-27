@@ -193,11 +193,12 @@ class DbOps:
                 "Notifications": {},
             }
             for notification in notifications:
+                print(notification.nSender)
                 sender = User.objects.get(id=notification.nSender)
                 if (sender is not None):
                     sender_pfp = sender.uprofilepic
                     sender_username = sender.uusername
-                notifications_list["Notifications"][notification.id] = {
+                notifications_list["Notifications"][i] = {
                     "id": notification.id,
                     "type": notification.nType,
                     "content": notification.nContent,
@@ -207,7 +208,6 @@ class DbOps:
                     "sender_username": sender_username,
                     "sender_pfp": sender_pfp,
                 }
-                print(notifications_list)
                 i += 1
             return notifications_list
         except Exception as e:
