@@ -1,6 +1,13 @@
 "use strict"
 
 // Test Start
+function clearWaiters()
+{
+	document.getElementById('leftWaiters').innerHTML = '';
+	document.getElementById('rightWaiters').innerHTML = '';
+}
+
+// Test Start
 function addWaiter(options)
 {
 	console.log("the options are: ", options);
@@ -111,6 +118,7 @@ function initGame()
 		{
 			document.getElementById('waitStatus').textContent = 'Waiting for people to join...';
 			console.log("players fetched: ", data.players);
+			clearWaiters();
 			data.players.forEach((player, i) => {
 				const options = {
 					sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',
@@ -126,6 +134,7 @@ function initGame()
 		{
 			// console.log("Ready >>>>>>>>>");
 			// console.log("players fetched: ", data.players);
+			clearWaiters();
 			data.players.forEach((player, i) => {
 				const options = {
 					sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',

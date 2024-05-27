@@ -9,9 +9,10 @@ import time
 class Game:
 	game_number = 0
 	def __init__(self, consumer):
-		self.consumer = consumer
+		self.ready = self.finished = False
+		# self.consumer = consumer
 		self.players = [consumer.channel_name]
-		self.paddles = [Paddle("left")]
+		self.paddles = {consumer.channel_name: Paddle()}
 		self.details = {
 			'creator': consumer.channel_name,
 			'name': f"room_{Game.game_number}"
@@ -19,9 +20,11 @@ class Game:
 		Game.game_number += 1
 		self.ball = {'r': 1 / 150}
 		self.reset_ball()
-	
-	def add_paddle(self, paddle):
-		self.paddles.append(paddle)
+
+	def add_paddle(self, id):
+		self.paddles[id] = Paddle()
+		if (len(self.paddles) % 2 == 0):
+			self.paddles[id].switchSide()
 
 	# def broadcast(self):
 		# async_to_sync(self.consumer.channel_layer.group_send)(
@@ -32,24 +35,23 @@ class Game:
 		# async_to_sync(self.consumer.send_json)(content={"type": "log", "log": "Broadcasting..."},)
 
 	def move_paddles(self):
-		for paddle in self.paddles:
+		for paddle in self.paddles.values():
 			paddle.move()
 	# move & stop will be optimized later when the auth will be set
-	def move(self, side, direction):
-		if (side == 'left'):
-			self.paddles[0].moving_direction =  direction
-		elif (side == 'right'):
-			self.paddles[1].moving_direction =  direction
-	def stop(self, side):
-		if (side == 'left'):
-			self.paddles[0].stop()
-		elif (side == 'right'):
-			self.paddles[1].stop()
+	# old: move
+	def move_paddle(self, id, direction):
+			self.paddles[id].moving_direction =  direction
+
+	# old: stop
+	def stop_paddle(self, id):
+		self.paddles[id].moving_direction =  ''
 
 	def start(self):
 		# testing
+		print("THE GAME HAS STARTED>>>>>>>>>>>")
 		# 1/60 for 60 fps
-		self.game_loop_interval = set_interval(1/60, self.update)
+		if (not self.finished):
+			self.game_loop_interval = set_interval(1/60, self.update)
 
 		# will stop interval in 5s
 		# t = threading.Timer(5, interval.cancel)
@@ -58,7 +60,9 @@ class Game:
 		# print("The start function was called however!", file=sys.stderr)
 	
 	def finish(self):
-		self.game_loop_interval.cancel()
+		if (not self.finished and self.players_count() >= 2):
+			self.game_loop_interval.cancel()
+		self.finished = True
 
 	def name(self):
 		return (self.details['name'])
@@ -102,10 +106,11 @@ class Game:
 	
 	def collision(self, b, p):
 		# b->ball, p->player
-		p.top = p.y - p.lineWidth
-		p.bottom = p.y + p.height + p.lineWidth
-		p.left = p.x - p.lineWidth
-		p.right = p.x + p.width + p.lineWidth
+		# print(f'The player is: {p}')
+		p.top = p.y - p.line_width
+		p.bottom = p.y + p.height + p.line_width
+		p.left = p.x - p.line_width
+		p.right = p.x + p.width + p.line_width
 		
 		b['top'] = b['y'] - b['r']
 		b['bottom'] = b['y'] + b['r']
@@ -128,27 +133,34 @@ class Game:
 			else:
 				self.ball['y'] = min(self.ball['y'], 1 - self.ball['r'])
 
+	def check_collective_collision(self, oddness):
+		# The following need debugging!!!
+		# print(f'enumerate(self.paddles): {list(enumerate(self.paddles.items()))}')
+		blockers = {k: v for i, (k, v) in enumerate(self.paddles.items()) if i % 2 == oddness}
+		for blocker in blockers.values():
+			if self.collision(self.ball, blocker):
+				# we check where the ball hits the paddle
+				collide_point = (self.ball['y'] - (blocker.y + blocker.height/2))
+				# normalize the value of collide_point, we need to get numbers between -1 and 1.
+				# -blocker.height/2 < collide Point < blocker.height/2
+				collide_point = collide_point / (blocker.height/2)
+				
+				# when the ball hits the top of a paddle we want the ball, to take a -45degees angle
+				# when the ball hits the center of the paddle we want the ball to take a 0degrees angle
+				# when the ball hits the bottom of the paddle we want the ball to take a 45degrees
+				# Math.PI/4 = 45degrees
+				angle_rad = (math.pi/4) * collide_point
+				
+				# change the X and Y velocity direction
+				direction = 1 if (self.ball['x'] + self.ball['r'] < 1 / 2) else -1
+				self.ball['velocityX'] = direction * self.ball['speed'] * math.cos(angle_rad)
+				self.ball['velocityY'] = self.ball['speed'] * math.sin(angle_rad)
+				
+				# speed up the ball everytime a paddle hits it.
+				self.ball['speed'] += self.ball['speed'] * 0.1
+				break
+
 	def check_paddle_collision(self):
-		# we check if the paddle hit the user or the com paddle
-		player = self.paddles[0] if (self.ball['x'] + self.ball['r'] < 1 / 2) else self.paddles[1]
 		# if the ball hits a paddle
-		if self.collision(self.ball, player):
-			# we check where the ball hits the paddle
-			collide_point = (self.ball['y'] - (player.y + player.height/2))
-			# normalize the value of collide_point, we need to get numbers between -1 and 1.
-			# -player.height/2 < collide Point < player.height/2
-			collide_point = collide_point / (player.height/2)
-			
-			# when the ball hits the top of a paddle we want the ball, to take a -45degees angle
-			# when the ball hits the center of the paddle we want the ball to take a 0degrees angle
-			# when the ball hits the bottom of the paddle we want the ball to take a 45degrees
-			# Math.PI/4 = 45degrees
-			angle_rad = (math.pi/4) * collide_point
-			
-			# change the X and Y velocity direction
-			direction = 1 if (self.ball['x'] + self.ball['r'] < 1 /2) else -1
-			self.ball['velocityX'] = direction * self.ball['speed'] * math.cos(angle_rad)
-			self.ball['velocityY'] = self.ball['speed'] * math.sin(angle_rad)
-			
-			# speed up the ball everytime a paddle hits it.
-			self.ball['speed'] += self.ball['speed'] * 0.1
+		# 'not' below so we the left would be 0
+		self.check_collective_collision(not (self.ball['x'] + self.ball['r'] < 1 / 2))
