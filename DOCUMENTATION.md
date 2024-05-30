@@ -123,3 +123,22 @@ To start connecting your django instance (Microservice) to the database you need
    $ ./manage.py runserver
    ```
 8. If no errors happen, you have successfully connected the **Microservice** to the existing **Table.**
+
+## 6 - Requesting Authorization from the Auth Microservice
+- By default all microservices should request authorization whenever a client tries to access a service or connects through websockets.
+- RetroPong's **Auth Microservice** support authorization through one of it's endpoints.
+- When a user signs in the Auth Microservice generates a **JWT** and assigns it to that user, this operation is stateless which means the auth microservice will not store any information regarding the connection/session. The lifetime of the token is about 7 days.
+### Authorizing the service in Backend:
+- To request authorization you'll need **requests** python module.
+- Send a request to this endpoint:
+	- `http://127.0.0.1:8000/auth`
+	-  Make sure to include `Authorization` header in the request.
+	- The Full header should look like: `Authorization: Bearer JWT-TOKEN-HERE`
+	- you'll recieve a response with one of 3 status codes:
+		- 200 - OK, this means that the jwt token is valid, you'll recieve in the body of the response the jwt token alongside the id associated with it.
+		- 400 - Bad Request, this means that you forgot to include Authorization header inside the request headers or it's value.
+		- 401 - Unauthorized, this means that the token is invalid or has expired, return 401 to the user.
+### Acquiring JWT from Cookies:
+- RetroPong's JWT is stored as a cookie with the name `access`, you should implement a js function that returns the value of the cookie. 
+- In the latest commit of the Prod branch you're gonna find a function called `getCookie` already implemented, just use it to get the JWT.
+- Once you've acquired the JWT, send it with any fetch request or Websocket connection. (in fetch requests make sure to include `Authorization` the headers).
