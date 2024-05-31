@@ -1,6 +1,6 @@
 let gameSocket;
 
-function initSocket() {
+function initSocket(initGame) {
 	gameSocket = new WebSocket(
 		'ws://'
 		+ window.location.hostname + ':8000'
@@ -13,6 +13,7 @@ function initSocket() {
 		console.error('Game socket closed unexpectedly');
 		
 	};
+	gameSocket.addEventListener('open', () => initGame())
 }
 
 // document.getElementById('join-game').onclick = function(e) {

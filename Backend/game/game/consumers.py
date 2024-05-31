@@ -32,7 +32,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				game.add_paddle(self.channel_name) # this will add a paddle in the game and return the id/no
 				game.ready = game.players_count() == 2
 				return game
-		new_game = Game(self)
+		new_game = Game(self, 1)
 		GameConsumer.solos.append(new_game)
 		return GameConsumer.solos[-1]
 
@@ -45,7 +45,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				print(f'game.ready: {game.ready}, game.players_count(): {game.players_count()}')
 				return game
 		print('I got inside duo')
-		new_game = Game(self)
+		new_game = Game(self, 2)
 		GameConsumer.duos.append(new_game)
 		return GameConsumer.duos[-1]
 	
@@ -178,7 +178,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				"x": self.game.ball['x'],
 				"y": self.game.ball['y'],
 				"r": self.game.ball['r'],
-				"paddles": [paddle.getProps() for paddle in self.game.paddles.values()]
+				"paddles": [paddle.getProps() for paddle in self.game.paddles.values()],
+				"score": self.game.score
 			})
 		# stopped here
 		elif (self.game and type == "move"):

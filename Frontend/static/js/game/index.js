@@ -43,12 +43,16 @@ function readyToPlayCounter() {
 	}, 1000)
 }
 
+function setScore(score) {
+	const leftScore = document.getElementById('leftScore');
+	const rightScore = document.getElementById('rightScore');
+
+	leftScore.textContent = score[0];
+	rightScore.textContent = score[1];
+}
 
 function initGame()
 {
-	console.log("initGame got called!");
-	initSocket();
-
 	// const gameEl = document.getElementById("game");
 	const canvas = new Canvas(document.getElementById("gameCanvas"));
 	window.addEventListener('resize', canvas.setup.bind(canvas));
@@ -109,6 +113,7 @@ function initGame()
 		{
 			// console.log("the data from the update is: ", data);
 			render(data);
+			setScore(data.score);
 		}
 		else if (data.type == 'log')
 		{
@@ -153,3 +158,6 @@ function initGame()
 	// So that canvas can be accessible to other outside functions
 	window.canvasObj = canvas;
 }
+
+// execution
+initSocket(initGame);

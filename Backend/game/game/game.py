@@ -5,10 +5,12 @@ from game.set_interval import set_interval
 # from asgiref.sync import async_to_sync
 from game.paddle import Paddle
 import time
+# from game.models import MatchHistory
 
 class Game:
 	game_number = 0
-	def __init__(self, consumer):
+	def __init__(self, consumer, mode):
+		self.mode = mode
 		self.ready = self.finished = False
 		# self.consumer = consumer
 		self.players = [consumer.channel_name]
@@ -20,6 +22,7 @@ class Game:
 		Game.game_number += 1
 		self.ball = {'r': 1 / 150}
 		self.reset_ball()
+		self.score = [0, 0]
 
 	def add_paddle(self, id):
 		self.paddles[id] = Paddle()
@@ -46,9 +49,16 @@ class Game:
 	def stop_paddle(self, id):
 		self.paddles[id].moving_direction =  ''
 
+	# def init_match_history(self):
+	# 	self.match_history = MatchHistory.objects.create()
+	# 	self.match_history.mode = self.mode
+		
+
 	def start(self):
 		# testing
 		print("THE GAME HAS STARTED>>>>>>>>>>>")
+
+		# self.init_match_history()
 		# 1/60 for 60 fps
 		if (not self.finished):
 			self.game_loop_interval = set_interval(1/60, self.update)
@@ -59,9 +69,16 @@ class Game:
 		
 		# print("The start function was called however!", file=sys.stderr)
 	
+	def calc_xp(self):
+		pass # this one needs auth working
+		# oddness = 0 if self.score[0] > self.score[1] else 1
+		# for player in self.players
+		
+
 	def finish(self):
-		if (not self.finished and self.players_count() >= 2):
+		if (not self.finished and self.players_count() > 1):
 			self.game_loop_interval.cancel()
+		self.calc_xp()
 		self.finished = True
 
 	def name(self):
@@ -76,14 +93,14 @@ class Game:
 	# async def broadcast():
 
 	def check_score(self):
-		if( self.ball['x'] - self.ball['r'] < 0 ):
-			# self.com.score += 1 # will check this later
-			pass
-		elif( self.ball['x'] + self.ball['r'] > 1 ):
-			# self.user.score += 1 # will check this later
-			pass
+		if( self.ball['x'] + self.ball['r'] > 1 ):
+			self.score[0] += 1
+		elif( self.ball['x'] - self.ball['r'] < 0 ):
+			self.score[1] += 1
 		else: return
 		self.reset_ball()
+		if (self.score[0] == 7 or self.score[1] == 7):
+			self.finish()
 
 	def update(self):
 		self.check_score() # will see this later
