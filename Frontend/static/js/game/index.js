@@ -47,6 +47,9 @@ function setScore(score) {
 	const leftScore = document.getElementById('leftScore');
 	const rightScore = document.getElementById('rightScore');
 
+	if (score[0] > leftScore.textContent
+		|| score[1] > rightScore.textContent)
+		soundFx[1].play();
 	leftScore.textContent = score[0];
 	rightScore.textContent = score[1];
 }
@@ -91,6 +94,10 @@ function initGame()
 		paddles.forEach((paddle) => draw_paddle(canvas, paddle));
 		// draw the ball
 		canvas.drawBall(x, y, r);
+		// Test Below
+		// const hit = canvas.ballHit(x, y);
+		// hit && console.log("hit is:", hit);
+		// hit && soundFx[0].play() && console.log("Hit >>>>>>>>>>>>");
 	}
 
 	// update function, the function sends update request to the server
@@ -114,6 +121,7 @@ function initGame()
 			// console.log("the data from the update is: ", data);
 			render(data);
 			setScore(data.score);
+			data.hit && soundFx[0].play();
 		}
 		else if (data.type == 'log')
 		{
@@ -160,4 +168,5 @@ function initGame()
 }
 
 // execution
+let soundFx = [new Audio('/static/sounds/hit.mp3'), new Audio('/static/sounds/score.mp3')]
 initSocket(initGame);

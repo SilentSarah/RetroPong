@@ -21,6 +21,7 @@ class Game:
 		}
 		Game.game_number += 1
 		self.ball = {'r': 1 / 150}
+		self.hit = [False, 5]
 		self.reset_ball()
 		self.score = [0, 0]
 
@@ -100,15 +101,20 @@ class Game:
 		else: return
 		self.reset_ball()
 		if (self.score[0] == 7 or self.score[1] == 7):
-			self.finish()
+			# self.finish()
+			pass
 
 	def update(self):
 		self.check_score() # will see this later
 		# the ball has a velocity
 		self.ball["x"] += self.ball["velocityX"]
 		self.ball["y"] += self.ball["velocityY"]
-		self.check_wall_collision()
-		self.check_paddle_collision()
+		if (self.check_wall_collision() or self.check_paddle_collision()):
+			self.hit = [True, 5]
+		elif (self.hit[1]):
+			self.hit[1] -= 1
+		else:
+			self.hit[0] = False
 		self.move_paddles()
 		# self.broadcast()
 		# print(f"-{time.time()}-", file=sys.stderr)
@@ -149,6 +155,8 @@ class Game:
 				self.ball['y'] = max(self.ball['y'], self.ball['r'])  # Prevent going below zero
 			else:
 				self.ball['y'] = min(self.ball['y'], 1 - self.ball['r'])
+			return True
+		return False
 
 	def check_collective_collision(self, oddness):
 		# The following need debugging!!!
@@ -175,9 +183,10 @@ class Game:
 				
 				# speed up the ball everytime a paddle hits it.
 				self.ball['speed'] += self.ball['speed'] * 0.1
-				break
+				return True
+		return False
 
 	def check_paddle_collision(self):
 		# if the ball hits a paddle
 		# 'not' below so we the left would be 0
-		self.check_collective_collision(not (self.ball['x'] + self.ball['r'] < 1 / 2))
+		return self.check_collective_collision(not (self.ball['x'] + self.ball['r'] < 1 / 2))

@@ -179,7 +179,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				"y": self.game.ball['y'],
 				"r": self.game.ball['r'],
 				"paddles": [paddle.getProps() for paddle in self.game.paddles.values()],
-				"score": self.game.score
+				"score": self.game.score,
+				"hit": self.game.hit[0]
 			})
 		# stopped here
 		elif (self.game and type == "move"):

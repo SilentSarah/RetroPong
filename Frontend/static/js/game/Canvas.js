@@ -2,12 +2,14 @@
 
 class Canvas
 {
-	state = {
-		keyDown: ''
-	}
-
 	constructor (el)
 	{
+		// this.state = {
+		// 	oldBallX: 0,
+		// 	oldBallY: 0,
+		// 	oldXDirection: true, // forward
+		// 	oldYDirection: true, // forward
+		// }
 		this.canvasColors = ['#262f81', '#c773ca', '#878387']
 		this.el = el;
 		this.ctx = el.getContext("2d");
@@ -50,6 +52,21 @@ class Canvas
 	{
 		this.dprAdjust();
 	}
+
+	// ballHit(newX, newY)
+	// {
+	// 	let ballHit = false;
+	// 	const newXDirection = newX - this.state.oldBallX >= 0;
+	// 	const newYDirection = newY - this.state.oldBallY >= 0;
+	// 	if (newXDirection != this.state.oldXDirection
+	// 		|| newYDirection != this.state.oldYDirection)
+	// 		ballHit = true;
+	// 	this.state.oldBallX = newX;
+	// 	this.state.oldBallY = newY;
+	// 	this.state.oldXDirection = newXDirection;
+	// 	this.state.oldYDirection = newYDirection;
+	// 	return (ballHit);
+	// }
 
 	// draw the ball
 	drawBall(x, y, r)
