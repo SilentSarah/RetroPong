@@ -1,6 +1,8 @@
-let c  = true
+let c = true
+let isRequest = false 
 
-const open =(sidebar ,items) => {
+
+const openSidebar = (sidebar, items) => {
     sidebar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     sidebar.style.width = '50%';
     items.forEach(item => {
@@ -9,7 +11,7 @@ const open =(sidebar ,items) => {
     c = false
 }
 
-const close = (sidebar, items) => {
+const closeSidebar = (sidebar, items) => {
     sidebar.style.background = '';
     sidebar.style.backgroundColor = 'rgba(0, 0, 0, 0)';
     sidebar.style.width = '80px';
@@ -30,61 +32,66 @@ const resetsettings = (sidebar, items) => {
 function openMenu() {
     const sidebar = document.getElementById('sidebar');
     const items = document.querySelectorAll('.items');
-     
-    if(c)
-        open(sidebar, items)
-    else if(!c)
-        close(sidebar, items)
+
+    if (c)
+        openSidebar(sidebar, items)
+    else if (!c)
+        closeSidebar(sidebar, items)
     window.addEventListener('keyup', (e) => {
-        if(e.key == 'q')
-            close()
+        if (e.key == 'q')
+            closeSidebar(sidebar, items)
     })
     window.addEventListener('resize', () => {
-        if(window.innerWidth >= 768)
+        if (window.innerWidth >= 768)
             resetsettings(sidebar, items)
-        else 
-            close(sidebar, items)})
+        else
+            closeSidebar(sidebar, items)
+    })
 }
 
-function appearInfoFriend()
-{
+function appearInfoFriend() {
     const divInfo = document.getElementById('CinfoUser');
-    if(divInfo.style.left == '0px')
+    if (divInfo.style.left == '0px')
         divInfo.style.left = '-1000px';
     else
         divInfo.style.left = '0px';
-    window.addEventListener('resize', ()=> divInfo.style.left = '-1000px');
+    window.addEventListener('resize', () => divInfo.style.left = '-1000px');
 }
- 
 
-function transition(destination)
-{
+
+function transition(destination) {
     const page_chat = document.getElementById('page_chat'); // page chat
     const page_discover = document.getElementById('page_discover'); // page discover
     const page_discussion = document.getElementById('page_discussion');
+    const resUsers = document.getElementById('resUsers');
 
-    if(destination == 'chat')
-    {
+    if (destination == 'chat') {
         page_chat.classList.remove('d-none');
         page_discover.classList.add('d-none');
         page_discussion.classList.add('d-none');
+        filterFriends('online')
+        resUsers.innerHTML = ""
+        for (let i = 0; i < 7; i++) {
+            resUsers.innerHTML += FriendsSkeleton();
+        }
+        UserContactFetching()
     }
-    else if(destination == 'discover')
-    {
+    else if (destination == 'discover') {
         page_discover.classList.remove('d-none');
         page_chat.classList.add('d-none');
         page_discussion.classList.add('d-none');
+        filterFriends('online')
     }
- 
+
 }
 
-function changeColor(type)
-{
+function changeColor(type) {
     const element = document.getElementById(type);
     const all = document.getElementById('all');
     const online = document.getElementById('online');
     const pending = document.getElementById('pending');
     const blocked = document.getElementById('blocked');
+    
     all.classList.remove('text-pink')
     online.classList.remove('text-pink')
     pending.classList.remove('text-pink')
@@ -93,60 +100,73 @@ function changeColor(type)
 }
 
 
-function filterFriends(type){
+function filterFriends(type) {
     const typeOf = document.getElementById('typeOf');
-    const rb_0 = document.getElementById('rb-0');
+    const rb_0 = document.querySelectorAll('rb-0');
     const rb_1 = document.getElementById('rb-1');
     const rb_2 = document.getElementById('rb-2');
     const rb_3 = document.getElementById('rb-3');
-    if(type == 'online')
-    {
-        typeOf.innerHTML = 'Online Friends: ';
-        rb_1.style.display = 'none';
-        rb_2.style.display = 'none';
-        rb_3.style.display = 'none';
-        rb_0.style.display = 'flex';
+
+    if (type == 'online') {
         changeColor('online');
+        LoadDataFriend('online')
     }
-    else if(type == 'all')
-    {
-        typeOf.innerHTML = 'All Friends: ';
-        rb_1.style.display = 'none';
-        rb_2.style.display = 'none';
-        rb_3.style.display = 'none';
-        rb_0.style.display = 'flex'
+    else if (type == 'all') {
         changeColor('all');
+        LoadDataFriend('all')
     }
-    else if(type == 'pending')
-    {
-        typeOf.innerHTML = 'Pending Friends: ';
-        rb_0.style.display = 'none'
-        rb_1.style.display = 'flex';
-        rb_2.style.display = 'flex';
-        rb_3.style.display = 'none';
+    else if (type == 'pending') {
         changeColor('pending');
+        LoadDataFriend('pending')
     }
-    else if(type == 'blocked')
-    {
-        typeOf.innerHTML = 'Blocked Friends: ';
-        rb_0.style.display = 'none'
-        rb_1.style.display = 'none';
-        rb_2.style.display = 'none';
-        rb_3.style.display = 'flex';
+    else if (type == 'blocked') {
         changeColor('blocked');
+        LoadDataFriend('blocked')
     }
 }
 
-function implementBtns(target){
+
+async function implementBtns(target, target_user_id) {
     const page_discussion = document.getElementById('page_discussion');
     const page_chat = document.getElementById('page_chat');
     const page_discover = document.getElementById('page_discover');
-    if(target ===  'toChat')
-    {
-        console.log('object')
+    const CcontentConver = document.getElementById('CcontentConver');
+    const CinfoUser = document.getElementById('CinfoUser');
+    const Cback = document.getElementById('contact_user');
+    const  {userId, token} = GetUserIdToken();
+
+    if (target === 'toChat' && isRequest === false) {
         page_chat.classList.add('d-none');
         page_discussion.classList.remove('d-none');
         page_discover.classList.add('d-none');
+        Cback.src = "/static/img/general/Account.png"
+        CinfoUser.innerHTML = chatFriendSkeleton(); // skeleton
+        CcontentConver.innerHTML = ""
+        for(let i = 0; i < 7; i++)
+        CcontentConver.innerHTML += contentMessageSkeleton(); // skeleton
+        target_id = target_user_id
+        const data = await DataChatFetching(target_user_id)
+        console.log(data.data.conversation_id)
+        localStorage.setItem('coversation_id', data.data.conversation_id)
+        loadDataChat(data?.data, target_user_id)
     }
-
+    else if (target === 'accept' && isRequest === false){
+        isRequest = true
+        const data = await fetchData(`http://127.0.0.1:8002/chat/accept/${userId}/${target_user_id}`, 'GET', token)
+        ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
+        UserContactFetching()
+    }
+    else if (target === 'decline' && isRequest === false){
+        isRequest = true
+        const data = await fetchData(`http://127.0.0.1:8002/chat/decline/${userId}/${target_user_id}`, 'GET', token)
+        ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
+        UserContactFetching()
+    }
+    else if (target === 'unblock' && isRequest === false){
+        isRequest = true
+        const data = await fetchData(`http://127.0.0.1:8002/chat/unblock/${userId}/${target_user_id}`, 'GET', token)
+        ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
+        UserContactFetching()
+    }
 }
+

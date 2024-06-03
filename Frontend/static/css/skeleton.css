@@ -1,0 +1,142 @@
+/* friend chat */
+.RimgSK{
+    background-color: rgba(188, 188, 188, 0.741);
+    animation: skeleton-loading 3s infinite linear 0.2s;
+}
+
+.onlineSK{
+    background-color: rgba(193, 193, 193, 0.714);
+    animation: skeleton-loading 3s infinite linear 0.5s;
+}
+
+.CinformationSK{
+    background-color: rgba(105, 105, 105, 0.696);
+    animation: skeleton-loading 3s infinite linear 0.8s;
+}
+
+
+/* message */
+.CcontentMessageSK{
+    overflow-x: hidden ;
+}
+
+.CcimgSK{
+    background-color: rgba(188, 188, 188, 0.741);
+    animation: skeleton-loading 3s infinite linear 0.2s;
+    box-shadow: none;
+}
+
+.infoSK{
+    background-color: rgba(188, 188, 188, 0.891);
+    width: 20%;
+    animation: skeleton-loading 3s infinite linear 0.5s;
+}
+
+.CmessageSK{
+    background-color: rgba(152, 152, 152, 0.722);
+    animation: skeleton-loading 3s infinite linear 0.5s;
+    height: 30px;
+}
+
+/* friends */ 
+.RuserSK{
+    background-color: rgba(212, 212, 212, 0.295);
+    animation: skeleton-loading 3s infinite linear 0.5s;
+    border-radius: 10px;
+}
+
+.RimageSK{
+    background-color: rgba(244, 244, 244, 0.823);
+    animation: skeleton-loading 1s infinite linear 0.1s;
+}
+
+.RbtnsSK{
+    background-color: rgba(244, 244, 244, 0.823);
+    animation: skeleton-loading 4s infinite linear 0.3s;
+    border-radius: 50%;
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.nameSK{
+    background-color: rgba(186, 185, 185, 0.712);
+    animation: skeleton-loading 3s infinite linear 0.3s;
+    width: 200px;
+    height: 25px;
+    border-radius: 10px;
+}
+.descriptionSK{
+    background-color: rgba(209, 209, 209, 0.835);
+    animation: skeleton-loading 3s infinite linear 0.5s;
+    width: 100px;
+    height: 18px;
+    border-radius: 10px;
+}
+
+/* Cards */
+
+.RcardSK{
+    background: transparent;
+    background-color: rgba(222, 218, 218, 0.35);
+    animation: skeleton 4s infinite linear 0.2s;
+}
+
+.btn_inviteSK{
+    box-shadow: none;
+    filter: none;
+    background: transparent;
+    background-color: rgba(255, 255, 255, 0.795);
+    animation: skeleton-loading 3s infinite linear 0.5s;
+}
+.RcardImgSK{
+    background-color: rgba(251, 251, 251, 0.848);
+    animation: skeleton-loading 3s infinite linear 0.7s;
+    height: 100px;
+    width: 100px;
+}
+
+@keyframes skeleton {
+    0% {
+        background-position: -200%;
+        opacity: 0.8;
+    }
+    40% {
+        background-position: 200%;
+        opacity: 0.5;
+    }
+    60% {
+        background-position: 200%;
+        opacity: 0.4;
+    }
+    80% {
+        background-position: 200%;
+        opacity: 0.5;
+    }
+    100% {
+        background-position: 200%;
+        opacity: 0.8;
+    }
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: -200%;
+        opacity: 0.8;
+    }
+    40% {
+        background-position: 200%;
+        opacity: 0.5;
+    }
+    60% {
+        background-position: 200%;
+        opacity: 0.2;
+    }
+    80% {
+        background-position: 200%;
+        opacity: 0.5;
+    }
+    100% {
+        background-position: 200%;
+        opacity: 0.8;
+    }
+}

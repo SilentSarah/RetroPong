@@ -219,6 +219,7 @@ function findHighiestGrade(matches) {
 
 function loadEvents() {
     scanLinks();
+
     if (window.location.pathname === '/') {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
@@ -239,6 +240,9 @@ function loadEvents() {
     else if (window.location.pathname === '/settings') {
         handlePictureUploads();
         TwoFactorAuthHandler();
+    }
+    else if (window.location.pathname === '/chat') {
+        UserContactFetching();
     }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();
