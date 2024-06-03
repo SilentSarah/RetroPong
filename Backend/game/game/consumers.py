@@ -169,6 +169,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
 				self.game.ready and	threading.Timer(3, self.game.start).start()
 
+		elif (type == 'spec'):
+			strs = ['explosion', 'defence', 'speed']
+			print(f"I received a spec of type: {strs[content['mode']]}")
 		elif (type == "update" and self.game and self.game.ready): # to adapt this condition later
 			# p1 = self.game.paddles[0]
 			# p2 = self.game.paddles[1]
@@ -187,7 +190,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			self.game.move_paddle(self.channel_name, content['direction'])
 		elif (self.game and type == 'stop'):
 			self.game.stop_paddle(self.channel_name)
-			
 
 			# await self.send_json(content={"type": "log", "log": log})
 		# type = content["type"]

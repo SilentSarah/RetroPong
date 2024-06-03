@@ -40,3 +40,8 @@ function startMode(mode)
 	document.getElementById('gameInfo').classList.toggle('hidden');
 	gameSocket.send(JSON.stringify({ 'type': 'start', mode }));
 }
+
+function spec(mode)
+{
+	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));
+}
