@@ -34,6 +34,11 @@ class User(models.Model):
     utournamentsplayed = models.IntegerField(db_column='uTournamentsPlayed', default=0)
     utournamentswon = models.IntegerField(db_column='uTournamentsWon', default=0)
     utournamentslost = models.IntegerField(db_column='uTournamentsLost', default=0)
+    AFriends = ArrayField(models.IntegerField(), db_column='AFriends', default=list)
+    ARequests = ArrayField(models.IntegerField(), db_column='ARequests', default=list)
+    ABlocked = ArrayField(models.IntegerField(), db_column='ABlocked', default=list)
+    ABlockedBy = ArrayField(models.IntegerField(), db_column='ABlockedBy', default=list)
+    TwoFactor = models.BooleanField(db_column='TwoFactor', default=False)
 
 class UsersAdmin(ModelAdmin):
     list_display = ['uusername', 'upassword', 'uemail', 'ufname', 'ulname' ,'uregdate', 'uprofilepic', 'uprofilebgpic', 'udesc', 'uip', 'ucids', 'uIs42', 'matchesplayed', 'matcheswon', 'matcheslost', 'xp', 'rank']

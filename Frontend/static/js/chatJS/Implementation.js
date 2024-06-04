@@ -7,15 +7,19 @@ let conversation = ""
 function Websocket() {
     const userId = document.cookie.split(';')[0].split('=')[1]
     if (!ws)
-        ws = new WebSocket('ws://localhost:8002/ws/chat/')
+        ws = new WebSocket(`ws://localhost:8002/ws/chat/${userId}`)
     ws.onopen = (event) => console.log('Connected to chat server')
-    ws.onerror = (event) => console.log('Error in connection to chat server', event)
+    ws.onclose = (event) => {
+        console.log('closing socket!', event)
+        ws = null
+        Websocket()
+    }
     ws.onmessage = function (event) {
         console.log("you",JSON.parse(event.data).contact_id, "userId", userId, "from", JSON.parse(event.data).id, "coversation",JSON.parse(event.data).conversation_id, "cov",conversation)
         if (JSON.parse(event.data).contact_id === parseInt(userId) && JSON.parse(event.data).conversation_id === conversation) {  
             if (JSON.parse(event.data).message !== "refresh" && JSON.parse(event.data).message !== "invite") {
                 const contact_user = dataUser.friends.filter(friend => friend.id === parseInt(JSON.parse(event.data).id))[0]
-                LoadMessageRealTime(JSON.parse(event.data).message, contact_user.uprofilepic, contact_user.uUsername)
+                LoadMessageRealTime(JSON.parse(event.data).message, contact_user?.uprofilepic, contact_user?.uUsername)
             }
         }
         UserContactFetching()
@@ -23,20 +27,24 @@ function Websocket() {
 }
 
 async function UserContactFetching() {
-    Websocket()
     const { userId, token } = GetUserIdToken()
     
     if(dataUser.length === 0)
+    {
         SkeletonCards() // skeleton cards
+        SkeletonFriends() // skeleton friends
+    }
     const data = await fetchData(`http://127.0.0.1:8002/chat/contact/${userId}`, 'GET', token) // fetch data
     dataUser = data.data // store data to value dataUser
-
+    // ws.close()
     if (data.status === "200") {
         LoadDataSuggestion(data.data)
         type = localStorage.getItem('type')
         LoadDataFriend(type ? type : 'online')
     }
-    isRequest = false
+    else 
+        handleError()
+    isRequest = false // to handle request by request to avoid many requests
 }
 
 // fetch conversation
@@ -57,7 +65,6 @@ function LoadDataSuggestion(data, target_user_id) {
     if (data.otherUser.length === 0)
         Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
     else if (target_user_id) {
-        console.log("im hre")
         const id = document.getElementById(`${target_user_id + 'id'}`)
         if (id)
             id.innerHTML = "Pending"
@@ -90,8 +97,9 @@ async function LoadDataFriend(type) {
         resUsers.innerHTML = `<h4 class="text-white d-flex justify-content-center">No friends yet</h4>`
     else {
         resUsers.innerHTML = `<span id="typeOf" class="typeOf mb-4">${typeLower}: ${typeData?.length}</span>`
+        console.log(dataUser.blockedby, typeData)
         typeData?.forEach(friend => {
-            resUsers.innerHTML += Friends(friend, type)
+            resUsers.innerHTML += Friends(friend, type, dataUser.blockedby)
         });
     }
 }
@@ -105,28 +113,35 @@ async function SendInvite(target_user_id) {
     ws.send(JSON.stringify({ "message": "invite", "id": userId, "contact_id": target_user_id, "conversation_id": ""}))
 }
 
-
 //send message
-async function SendMessage(target_user_id) {
-    const { userId, token } = GetUserIdToken();
-    let value = ""
-    let data = []
-    target_id = target_user_id
+const ClickSend = async (value, target_user_id) => {
     const Cinput = document.getElementById('Cinput');
     const CsendBtn = document.getElementById('CsendBtn');
+    const { userId, token } = GetUserIdToken();
+    let data = []
     
+    if (value === "")
+    return
+    Cinput.value = ""
+    Cinput.focus()
+    LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'))
+    ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation}))
+    data = await fetchData(`http://127.0.0.1:8002/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })
+}
+
+
+
+async function SendMessage(target_user_id) {
+    const Cinput = document.getElementById('Cinput');
+    const CsendBtn = document.getElementById('CsendBtn');
+    target_id = target_user_id
+    
+    Cinput.addEventListener('keypress', async (e) => {
+        if(e.key === 'Enter')
+            ClickSend(Cinput.value, target_id)
+    })
     if (listenToSend === false)
-    CsendBtn.addEventListener('click', async () => {
-            console.log(token)
-            if (Cinput.value === "")
-                return
-            value = Cinput.value
-            Cinput.value = ""
-            Cinput.focus()
-            LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'))
-            ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation}))
-            data = await fetchData(`http://127.0.0.1:8002/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })
-        })
+        CsendBtn.addEventListener('click', async () => ClickSend(Cinput.value, target_id))
     listenToSend = true
 }
 
@@ -138,11 +153,12 @@ loadDataChat = (data, target_user_id) => {
     const Cinput = document.getElementById('Cinput');
 
     conversation = data?.conversation_id
-    SendMessage(target_user_id)
-    Cinput.focus()
     CinfoUser.innerHTML = data && chatFriend(data?.users[0])
     CcontentConver.innerHTML = data?.messages?.map(msg => message(msg, target_user_id)).join('') || ""
     CcontentConver.scrollTop = CcontentConver.scrollHeight
     contact_id = target_user_id
+    setTimeout(() => {
+    SendMessage(target_user_id)}, 1000)
+    Cinput.focus()
 }
 

@@ -15,7 +15,7 @@ const Cards = (otherUser, invitation) => {
 }
 
 
-const Friends = (friend, type) => {
+const Friends = (friend, type, blockedby) => {
     return `<div class="Ruser w-100 py-2 px-2 mb-2 d-flex align-items-center justify-content-between">
                 <div class="Rcontent d-flex align-items-center gap-2">
                     <img class="Rimg img-fr rounded-circle" src=${friend.uprofilepic ? friend?.uprofilepic : "https://i.pinimg.com/736x/fe/26/83/fe2683f11283ef9fe4211894d9147652.jpg"} alt="avatar">   
@@ -24,11 +24,14 @@ const Friends = (friend, type) => {
                         <span class="description text-secondary">${friend?.udesc === null ? friend?.udesc : "No description"}</span> 
                     </div>
                 </div> 
-                <div class="d-flex align-items-center gap-2">
+                <div class="align-items-center gap-2 ${blockedby.some(block=>block.id === friend.id) ? 'd-none' : 'd-flex'}">
                     <img id="rb-0" onclick="implementBtns('toChat',${friend?.id})" src="/static/img/chat/messages.png" alt="icon" class="Rbtns ${type === 'online' || type === 'all' ? 'd-flex' : 'd-none'}" data-user-id='${friend?.id}'  >
                     <img id="rb-1" onclick="implementBtns('accept',${friend?.id})" src="/static/img/chat/valide.png" alt="icon" class="Rbtns ${type === 'pending' ? 'd-flex' : 'd-none'}"  >
-                    <img id="rb-2" onclick="implementBtns('decline',${friend?.id})" src="/static/img/chat/remove.png" alt="icon" class="Rbtns ${type === 'pending' || 'online' || 'all' ? 'd-flex' : 'd-none'}"  >
+                    <img id="rb-2" onclick="implementBtns('decline',${friend?.id})" src="/static/img/chat/remove.png" alt="icon" class="Rbtns ${type !== 'blocked' ? 'd-flex' : 'd-none'}"  >
                     <img id="rb-3" onclick="implementBtns('unblock',${friend?.id})" src="/static/img/chat/unblock_user.png" alt="icon" class="Rbtns ${type === 'blocked' ? 'd-flex' : 'd-none'}" >
+                </div>
+                <div class="align-items-center gap-2 ${blockedby.some(block=>block.id === friend.id) ? 'd-flex' : 'd-none'}">
+                    Can't chat with this user
                 </div>
             </div>`
 }
@@ -36,7 +39,7 @@ const Friends = (friend, type) => {
 const chatFriend = (friend) => {
     return `<div class="Rectangle h-10 position-relative w-100">
                 <img class="Rimg Cimg position-absolute rounded-circle" src=${friend.profilepic ? friend.profilepic : "/static/img/general/Account.png"} alt="avatar">
-                <div class="online rounded-circle position-absolute"></div>
+                <div class="circle_status ${friend.isOnline ? 'online' : 'offline'} rounded-circle position-absolute "></div>
             </div>
             <div class="Cinformation text-white d-flex flex-column w-90 h-30 p-3 gap-3">
                 <div class="CitemInfo d-flex flex-column"> 

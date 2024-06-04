@@ -73,4 +73,23 @@ function SkeletonCards(){
     Rcards.innerHTML = ""
     for (let i = 0; i < 3; i++)
         Rcards.innerHTML += CardsSkeleton()
+
+}
+
+function SkeletonFriends(){
+    const resUsers = document.getElementById('resUsers')
+
+    resUsers.innerHTML = ""
+        for (let i = 0; i < 7; i++) {
+            resUsers.innerHTML += FriendsSkeleton();
+        }
+}
+
+function handleError()
+{
+    const resUsers = document.getElementById('resUsers')
+    const Rcards = document.getElementById('Rcards')
+
+    Rcards.innerHTML = `<h4 class="text-secondary">Failed connection!</h4>`
+    resUsers.innerHTML = `<h4 class="text-white d-flex justify-content-center">Failed connection!</h4>`
 }

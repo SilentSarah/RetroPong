@@ -507,13 +507,21 @@ body {
     margin: 12px 0px 0px 5px;
 }
 
-.online {
+.circle_status{
     border: 2px solid rgba(144, 144, 144, 0.545);
     width: 12px;
     height: 12px;
     background: rgb(3, 234, 3);
     left: 75px;
     bottom: -30px;
+}
+
+.online {
+    background: rgb(3, 234, 3);
+}
+
+.offline{
+    background: rgb(234, 53, 3);
 }
 
 .Ccimg {

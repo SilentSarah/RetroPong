@@ -90,18 +90,14 @@ def acceptInvite(request, id, contact_id):
     try:
         target_user = User.objects.get(id=contact_id)
         user = User.objects.get(id=id)
-        if Invitation.objects.filter(iSender=contact_id, iReceiver=id).exists():
-            invitation = Invitation.objects.get(iSender=contact_id, iReceiver=id)
-            print(invitation)
-            invitation.delete()
-            user.AFriends.append(contact_id)
-            user.ARequests.remove(contact_id)
-            target_user.AFriends.append(id)
-            user.save()
-            target_user.save()
-            return JsonResponse({"status":"Accepted invitation"}, status=200)
-        else:
-            return JsonResponse({"status":"No invitation found"}, status=200)
+        invitation = Invitation.objects.get(iSender=contact_id, iReceiver=id)
+        invitation.delete()
+        user.AFriends.append(contact_id)
+        user.ARequests.remove(contact_id)
+        target_user.AFriends.append(id)
+        user.save()
+        target_user.save()
+        return JsonResponse({"status":"Accepted invitation"}, status=200)
     except:
         return JsonResponse({"status":"Not found this user"}, status=404)
 
@@ -115,25 +111,25 @@ def declineInvite(request, id, contact_id):
     try:
         target_user = User.objects.get(id=contact_id)
         user = User.objects.get(id=id)
+        # to block user
         if contact_id in user.AFriends and id in target_user.AFriends:
             user.ABlocked.append(contact_id)
             target_user.ABlockedBy.append(id)
             user.AFriends.remove(contact_id)
-            target_user.AFriends.remove(id)
+            # target_user.AFriends.remove(id)
+
             user.save()
             target_user.save()
-            return JsonResponse({"status":"Blocked user"}, status=200)            
-        if Invitation.objects.filter(iSender=contact_id, iReceiver=id).exists():
-            invitation = Invitation.objects.get(iSender=contact_id, iReceiver=id)
-            invitation.delete()
-            user.ARequests.remove(contact_id)
-            user.ABlocked.append(contact_id)
-            target_user.ABlockedBy.append(id)
-            target_user.save()
-            user.save()
-            return JsonResponse({"status":"Declined invitation"}, status=200)
-        else:
-            return JsonResponse({"status":"No invitation found"}, status=200)
+            return JsonResponse({"status":"Blocked user"}, status=200)     
+        # to deline invite
+        invitation = Invitation.objects.get(iSender=contact_id, iReceiver=id)
+        invitation.delete()
+        user.ARequests.remove(contact_id)
+        user.ABlocked.append(contact_id)
+        target_user.ABlockedBy.append(id)
+        target_user.save()
+        user.save()
+        return JsonResponse({"status":"Declined invitation"}, status=200)
     except:
         return JsonResponse({"status":"Not found this user"}, status=404)
 
@@ -151,7 +147,7 @@ def unblockUser(request, id, contact_id):
             user.ABlocked.remove(contact_id)
             target_user.ABlockedBy.remove(id)
             user.AFriends.append(contact_id)
-            target_user.AFriends.append(id)
+            # target_user.AFriends.append(id)
             user.save()
             target_user.save()
             return JsonResponse({"status":"Unblocked user"}, status=200)
@@ -168,10 +164,15 @@ def sendMessage(request, id, contact_id, conversation_id):
         return JsonResponse({"status":"Unauthorized"}, status=401)
 
     try:
-        conversation = Conversation.objects.get(id=conversation_id)
-        print(id, contact_id, conversation.cMembers)
+        conversation = Conversation.objects.get(id=conversation_id)    
+
+        contact_user = User.objects.get(id=contact_id).ABlocked
+        print(contact_user)
+        if id in contact_user:
+            return JsonResponse({"status":"This user is blocked."}, status=401)
+
         if id not in conversation.cMembers or contact_id not in conversation.cMembers:
-            return JsonResponse({"status":"zbi"}, status=401)
+            return JsonResponse({"status":"not found this conversation!"}, status=401)
     
         content = request.body
         content = (json.loads(content).get('content'))
@@ -180,18 +181,3 @@ def sendMessage(request, id, contact_id, conversation_id):
         return JsonResponse({"status":"Message sent"}, status=200)
     except:
         return JsonResponse({"status":"Not found this user or conversation."}, status=404)
-
-
-# @csrf_exempt
-# def countNotifications(id):
-#     try:
-#         user = User.objects.get(id=id)
-#         messages = Message.objects.filter(mReceiver=id, mRead=False)
-#         invitations = Invitation.objects.filter(iReceiver=id, iRead=False)
-#         print(invitations)
-#         return  {"message":list(messages.values('id','mSender','mCreated','mRead')), 'countMessage':len(messages),
-#                 "invitation":list(invitations.values('id','iSender','iRead')), 'countInvitation':len(invitations),
-#                 "total":len(messages)+len(invitations)}
-                             
-#     except:
-#         return JsonResponse({"status":"Not found this user"}, status=404)

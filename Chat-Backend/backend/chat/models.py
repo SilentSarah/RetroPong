@@ -22,6 +22,8 @@ class User(models.Model):
     uprofilebgpic = models.CharField(db_column='uProfileBgPic', max_length=100, default="")
     udesc = models.CharField(db_column='uDesc', max_length=100, default="") 
     
+    isOnline = models.BooleanField(db_column='online', default=False)
+
     class Meta:
         db_table = 'UserDataManagement_user'
         managed=True

@@ -219,7 +219,7 @@ function findHighiestGrade(matches) {
 
 function loadEvents() {
     scanLinks();
-
+    Websocket()
     if (window.location.pathname === '/') {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')

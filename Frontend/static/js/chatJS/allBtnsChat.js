@@ -70,11 +70,6 @@ function transition(destination) {
         page_discover.classList.add('d-none');
         page_discussion.classList.add('d-none');
         filterFriends('online')
-        resUsers.innerHTML = ""
-        for (let i = 0; i < 7; i++) {
-            resUsers.innerHTML += FriendsSkeleton();
-        }
-        UserContactFetching()
     }
     else if (destination == 'discover') {
         page_discover.classList.remove('d-none');
@@ -126,6 +121,13 @@ function filterFriends(type) {
 }
 
 
+async function sendRequest(target_user_id, target, userId, token) {
+    isRequest = true
+    const data = await fetchData(`http://127.0.0.1:8002/chat/${target}/${userId}/${target_user_id}`, 'GET', token)
+    ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
+    UserContactFetching()
+}
+
 async function implementBtns(target, target_user_id) {
     const page_discussion = document.getElementById('page_discussion');
     const page_chat = document.getElementById('page_chat');
@@ -150,23 +152,11 @@ async function implementBtns(target, target_user_id) {
         localStorage.setItem('coversation_id', data.data.conversation_id)
         loadDataChat(data?.data, target_user_id)
     }
-    else if (target === 'accept' && isRequest === false){
-        isRequest = true
-        const data = await fetchData(`http://127.0.0.1:8002/chat/accept/${userId}/${target_user_id}`, 'GET', token)
-        ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
-        UserContactFetching()
-    }
-    else if (target === 'decline' && isRequest === false){
-        isRequest = true
-        const data = await fetchData(`http://127.0.0.1:8002/chat/decline/${userId}/${target_user_id}`, 'GET', token)
-        ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
-        UserContactFetching()
-    }
-    else if (target === 'unblock' && isRequest === false){
-        isRequest = true
-        const data = await fetchData(`http://127.0.0.1:8002/chat/unblock/${userId}/${target_user_id}`, 'GET', token)
-        ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
-        UserContactFetching()
-    }
+    else if (target === 'accept' && isRequest === false)
+        sendRequest(target_user_id, "accept", userId, token)
+    else if (target === 'decline' && isRequest === false)
+        sendRequest(target_user_id, "decline", userId, token)
+    else if (target === 'unblock' && isRequest === false)
+        sendRequest(target_user_id, "unblock", userId, token)
 }
 

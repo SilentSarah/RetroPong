@@ -19,15 +19,16 @@ class JsonObj:
             "email": user.uEmail,
             "fname": user.uFname,
             "lname": user.uLname,
-            "otherUser": list(otherUsers.values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc')),
-            "friends": list(User.objects.filter(id__in=user.AFriends).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc')),
-            "requests": list(User.objects.filter(id__in=user.ARequests).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc')),
-            "blocked": list(User.objects.filter(id__in=user.ABlocked).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc')),
-            "blockedby": list(User.objects.filter(id__in=user.ABlockedBy).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc')),
+            "otherUser": list(otherUsers.values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
+            "friends": list(User.objects.filter(id__in=user.AFriends).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
+            "requests": list(User.objects.filter(id__in=user.ARequests).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
+            "blocked": list(User.objects.filter(id__in=user.ABlocked).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
+            "blockedby": list(User.objects.filter(id__in=user.ABlockedBy).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
             "profilepic": user.uprofilepic,
             "profilebgpic": user.uprofilebgpic,
             "desc": user.udesc,
             "invitation": invitation,
+            "isOnline": user.isOnline
         }
 
     @staticmethod
@@ -42,6 +43,7 @@ class JsonObj:
             "profilepic": user.uprofilepic,
             "profilebgpic": user.uprofilebgpic,
             "desc": user.udesc,
+            "isOnline": user.isOnline
         }             
 
     def messages(messages,user):

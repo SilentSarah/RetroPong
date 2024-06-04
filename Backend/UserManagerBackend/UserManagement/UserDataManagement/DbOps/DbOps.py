@@ -173,6 +173,6 @@ class DbOps:
             uregdate=timezone.now(),
             uprofilepic=pfp if pfp is not None else "",
             uprofilebgpic=bg if bg is not None else "",
-            uIs42=False if is42 == 0 else True
+            uIs42=False if is42 == 0 else True ,
         )
         return True
