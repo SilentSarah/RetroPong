@@ -142,7 +142,8 @@ class notifications {
         }    
         this.notifications.onclose = function(event) {
             const notifications_container = document.getElementById('notifications_container');
-            notifications_container.innerHTML = `<p class="text-secondary text-center nokora fw-light my-auto fade_in">No Notifications</p>`;
+            if (notifications_container)
+                notifications_container.innerHTML = `<p class="text-secondary text-center nokora fw-light my-auto fade_in">No Notifications</p>`;
             console.log("Connection closed");
         }
         this.notifications.onerror = function(event) {

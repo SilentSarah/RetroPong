@@ -64,8 +64,8 @@ function DisplayNavBar() {
     let navbar = document.getElementById('navbar');
     let open = false;
     if (document.getElementById("retro_menu") === null 
-        || document.getElementById("notification") === null 
-        || document.getElementById("logout") === null) {
+    || document.getElementById("notification") === null 
+    || document.getElementById("logout") === null) {
         navbar.innerHTML = navbar_logged_in;
         let notificationElement = document.getElementById('notification');
         notificationElement.addEventListener('click', function () {
@@ -127,6 +127,7 @@ function scanInput() {
 }
 
 function linkClickHandler(e) {
+    DestroyConfirmationPopUp();
     e.preventDefault();
     history.pushState(null, null, this.href);
     router();
@@ -159,78 +160,17 @@ function copyIDListener() {
     }
 }
 
-function handlePictureUploads() {
-    let uploadBG = document.getElementById('uploadBG');
-    let uploadPFP = document.getElementById('uploadPFP');
-    let fileInputBg = document.createElement('input');
-    let fileInputPfp = document.createElement('input');
-    fileInputBg.type = 'file';
-    fileInputPfp.type = 'file';
-    if (uploadBG && uploadPFP) {
-        uploadBG.addEventListener('click', function () {
-            fileInputBg.click();
-            if (fileInputBg.files) {
-                // TO BE FURTHER IMPLEMENTED
-            }
-
-        });
-        uploadPFP.addEventListener('click', function () {
-            fileInputPfp.click();
-            if (fileInputPfp.files) {
-                // TO BE FURTHER IMPLEMENTED
-            }
-        });
-    }
-}
-
-function TwoFactorAuthHandler() {
-    let Offbtn = document.getElementById('offBtn');
-    let Onbtn = document.getElementById('onBtn');
-    if (Offbtn && Onbtn) {
-        Offbtn.addEventListener('click', function () {
-            Offbtn.setAttribute('fill', 'white');
-            Offbtn.setAttribute('x', '7');
-            Offbtn.setAttribute('y', '23');
-            Offbtn.setAttribute('font-size', '17');
-            //=====//
-            Onbtn.setAttribute('fill', 'grey');
-            Onbtn.setAttribute('x', '7');
-            Onbtn.setAttribute('y', '23');
-            Onbtn.setAttribute('font-size', '16');
-            //=====//
-            Onbtn.classList.remove('text-glow');
-            Offbtn.classList.add('text-glow');
-        });
-        Onbtn.addEventListener('click', function () {
-            Onbtn.setAttribute('fill', 'white');
-            Onbtn.setAttribute('x', '7');
-            Onbtn.setAttribute('y', '23');
-            Onbtn.setAttribute('font-size', '17');
-            //=====//
-            Offbtn.setAttribute('fill', 'grey');
-            Offbtn.setAttribute('x', '7');
-            Offbtn.setAttribute('y', '23');
-            Offbtn.setAttribute('font-size', '16');
-            //=====//
-            Offbtn.classList.remove('text-glow');
-            Onbtn.classList.add('text-glow');
-
-        });
-    }
-}
-
 function loadEvents() {
     if (notificationHandler === null && getCookie('access') != '') {
         notificationHandler = new notifications();
     }
-    scanLinks();
     if (window.location.pathname === '/') {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
         scanInput();
     else if (window.location.pathname === '/settings') {
-        handlePictureUploads();
-        TwoFactorAuthHandler();
+        switchTabsHandler();
+        loadAccountDetailsInSettings();
     }
 	else if (window.location.pathname === '/game')
 		initGame();
@@ -238,10 +178,7 @@ function loadEvents() {
         copyIDListener();
         setDashboardStats();
     }
-    else if (window.location.pathname === '/settings') {
-        handlePictureUploads();
-        TwoFactorAuthHandler();
-    }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();
+    scanLinks();
 }

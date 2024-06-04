@@ -97,6 +97,7 @@ function fetchUserData() {
                 return response.json();
             } else {
                 deleteCookie("access");
+                sessionStorage.clear();
             }
         })
         .then(data => {
@@ -105,6 +106,10 @@ function fetchUserData() {
                     sessionStorage.setItem(key, JSON.stringify(value));
                     continue;
                 }
+                if (key === 'fname')
+                    sessionStorage.setItem('full_name', value);
+                if (key === 'lname')
+                    sessionStorage.setItem('full_name', sessionStorage.getItem('full_name') + " " + value);
                 sessionStorage.setItem(key, value);
             }
             if (window.location.pathname === "/dashboard")
@@ -112,7 +117,6 @@ function fetchUserData() {
             DisplayNavBar();
         })
         .catch((error) => {
-            sessionStorage.clear();
             if (error.message === 'Failed to fetch') {
                 toast('Server is not responding, try again later.', 'bg-danger');
                 clearInterval(fetchID);
@@ -139,13 +143,21 @@ function setPlayerRank() {
 }
 
 function setDashboardPlayerPfpAndBg() {
-    let pfp = document.getElementById("profile_pic")
+    let pfp = document.getElementById("profile_pic");
+    let bg = document.getElementById("profile_bg");
     let pfp_path = sessionStorage.getItem('profilepic');
+    let bg_path = sessionStorage.getItem('profilebgpic');
     if (pfp_path === null || pfp_path === "") {
         pfp.style.backgroundImage = 'url("/static/img/pfp/Default.png")';
     } else {
         pfp.style.backgroundImage = `url(${pfp_path})`;
     }
+    if (bg_path === null || bg_path === "") {
+        bg.style.backgroundImage = 'url("/static/img/bg/DefaultBG.png")';
+    } else {
+        bg.style.backgroundImage = `url(${bg_path})`;
+    }
+
 }
 
 
