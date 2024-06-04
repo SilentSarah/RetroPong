@@ -29,6 +29,7 @@ SECRET_KEY = 'django-insecure-^a$f%2q-v*t73-o27^r%507ny(us74u!r5^-69qaabw7jjfsnc
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+SITE_ID = 1
 
 ALLOWED_HOSTS = ["*"]
 CORS_ALLOW_ALL_ORIGINS = True
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     "corsheaders",
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -112,10 +114,10 @@ DATABASES = {
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            'hosts': [('redis://' + env.get('REDIS_USER') + ':' + env.get('REDIS_PASSWORD') + '@' + env.get('REDIS_HOST') + ':' + env.get('REDIS_PORT') + '')],
-        },
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+        # 'CONFIG': {
+        #     'hosts': [('redis://' + env.get('REDIS_USER') + ':' + env.get('REDIS_PASSWORD') + '@' + env.get('REDIS_HOST') + ':' + env.get('REDIS_PORT') + '')],
+        # },
     },
 }
 
@@ -159,3 +161,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_ROOT = ""
+MEDIA_URL = ""

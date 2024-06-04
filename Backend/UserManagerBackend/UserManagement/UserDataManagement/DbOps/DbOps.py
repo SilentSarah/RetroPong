@@ -3,7 +3,14 @@ import bcrypt
 from django.utils import timezone
 from django.db.models import Q
 import datetime
+import requests
+from requests.models import Response
 import re
+from django.core.files.base import ContentFile
+from django.contrib.sites.models import Site
+
+DEFAULT_PFP_LINK = "https://i.ibb.co/3pWy5cD/Default.png"
+DEFAULT_BG_LINK = "https://i.ibb.co/yg3Z2dy/Default-BG.png"
 
 class DbOps:
     def __init__(self):
@@ -72,6 +79,8 @@ class DbOps:
                 user = User.objects.get(uusername=username)
             else:
                 user = User.objects.get(id=user_id)
+            print("Url:", user.uprofilebgpic.path)
+            domain = Site.objects.get_current().domain
             user = {
                 "id": user.id,
                 "username": user.uusername,
@@ -80,8 +89,8 @@ class DbOps:
                 "fname": user.ufname,
                 "lname": user.ulname,
                 "regdate": user.uregdate,
-                "profilepic": user.uprofilepic,
-                "profilebgpic": user.uprofilebgpic,
+                "profilepic": 'http://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png") ,
+                "profilebgpic": 'http://{}{}'.format(domain, user.uprofilebgpic.url if user.uprofilebgpic != "/static/img/pfp/DefaultBG.png" else "/static/img/pfp/DefaultBG.png") ,
                 "desc": user.udesc,
                 "ucids": user.ucids,
                 "is42": user.uIs42,
@@ -97,8 +106,8 @@ class DbOps:
                 "tournamentswon": user.utournamentswon,
                 "tournamentslost": user.utournamentslost,
                 "matchhistory": DbOps.generate_match_history(user.id),
-                "matchstatistics": DbOps.generate_match_statistics(user.id)
-                
+                "matchstatistics": DbOps.generate_match_statistics(user.id),
+                "two_factor": user.TwoFactor,                
             }
             return user
         except User.DoesNotExist:
@@ -154,6 +163,7 @@ class DbOps:
             bool: True if user is created, False if creation fails
         """
         user_data_copy = user_data.copy()
+        print(user_data_copy)
         unhashed_password = str(user_data_copy.get("uPassword"))
         if (re.match(r'[A-Za-z0-9]{8,}', unhashed_password) is None):
             return False
@@ -162,20 +172,27 @@ class DbOps:
             {
                 "uPassword": hashed_password
             })
-        pfp = user_data_copy.get('uProfilepic')
-        bg = user_data_copy.get('uProfilebgpic')
-        User.objects.create(
+        pfp_url = user_data_copy.get('uProfilepic')
+        bg_url = user_data_copy.get('uProfilebgpic')
+        pfp_response = requests.get(DEFAULT_PFP_LINK) if pfp_url is None else requests.get(pfp_url)
+        bg_response = requests.get(DEFAULT_BG_LINK) if bg_url is None else requests.get(bg_url)
+
+        new_user = User(
             uusername=user_data_copy.get('uUsername'),
             upassword=user_data_copy.get('uPassword'),
             uemail=user_data_copy.get('uEmail'),
             ufname=user_data_copy.get('uFname'),
             ulname=user_data_copy.get('uLname'),
             uregdate=timezone.now(),
-            uprofilepic=pfp if pfp is not None else "",
-            uprofilebgpic=bg if bg is not None else "",
             uIs42=False if is42 == 0 else True
         )
-        return True
+
+
+        new_user.uprofilepic.save(f"{user_data_copy.get('uUsername')}.jpg", ContentFile(pfp_response.content)) if pfp_response is not None and type(pfp_response) is Response else None
+        new_user.uprofilebgpic.save(f"{user_data_copy.get('uUsername')}_bg.jpg", ContentFile(bg_response.content)) if bg_response is not None and type(bg_response) is Response else None
+
+        new_user.save()
+        return True # I NEED TO SET THIS BACK TO TRUE AND UNCOMMENT THE ABOVE LINE
     @staticmethod
     def get_notifications(user_id: int) -> dict[str]:
         """Retrieves notifications from the database

@@ -21,6 +21,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             self.group_name,
             self.channel_name
         )
+        self.close()
         
     async def receive(self, text_data):
         notification_data = json.loads(text_data)

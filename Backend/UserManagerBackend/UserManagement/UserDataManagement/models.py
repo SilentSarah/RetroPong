@@ -17,8 +17,9 @@ class User(models.Model):
     ufname = models.CharField(db_column='uFName', max_length=16, default="")
     ulname = models.CharField(db_column='uLName', max_length=16, default="")
     uregdate = models.DateTimeField(db_column='uRegDate', default="")
-    uprofilepic = models.CharField(db_column='uProfilePic', max_length=100, default="")
-    uprofilebgpic = models.CharField(db_column='uProfileBgPic', max_length=100, default="")
+    TwoFactor = models.BooleanField(db_column='TwoFactor', default=False)
+    uprofilepic = models.ImageField(db_column='uProfilePic', upload_to='profile_pics/', default="/static/img/pfp/Default.png")
+    uprofilebgpic = models.ImageField(db_column='uProfileBgPic', upload_to='profile_bg_pics/', default="")
     udesc = models.CharField(db_column='uDesc', max_length=100, default="") 
     uip = models.CharField(db_column='uIp', max_length=16, default="") 
     ucids = ArrayField(models.IntegerField(), db_column='ucIDs', default=list) 
@@ -38,6 +39,7 @@ class User(models.Model):
     ABlockedBy = ArrayField(models.IntegerField(), db_column='ABlockedBy', default=list)
     Afriends = ArrayField(models.IntegerField(), db_column='AFriends', default=list)
     ARequests = ArrayField(models.IntegerField(), db_column='ARequests', default=list)
+    isOnline = models.BooleanField(db_column='online', default=False)
 
 class UsersAdmin(ModelAdmin):
     list_display = ['uusername', 'upassword', 'uemail', 'ufname', 'ulname' ,'uregdate', 'uprofilepic', 'uprofilebgpic', 'udesc', 'uip', 'ucids', 'uIs42', 'matchesplayed', 'matcheswon', 'matcheslost', 'xp', 'rank']

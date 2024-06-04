@@ -22,6 +22,7 @@ def user_data(request: HttpRequest):
         user_data.pop('password')
         return JsonResponse(user_data, status=200)
     except Exception as e:
+        print("error:", e)
         return JsonResponse({"error":"Bad Request"}, status=401)
     
 @csrf_exempt
@@ -122,6 +123,20 @@ def logout_user(request: HttpRequest):
         if (token is None or user_id is None):
             return HttpResponse(status=401)
         response = JsonResponse({"message":"Logged Out Successfully"}, status=200)
+        response.set_cookie('access', '', max_age=1, samesite='none', secure=True)
+        return response
+    except Exception as e:
+        return JsonResponse({"error":"Bad Request"}, status=401)
+    
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_user(request: HttpRequest):
+    try:
+        token, user_id = ViewAssist.verify_token(request)
+        if (token is None or user_id is None):
+            return HttpResponse(status=401)
+        DbOps.delete_user(user_id)
+        response = JsonResponse({"message":"User Deleted Successfully"}, status=200)
         response.set_cookie('access', '', max_age=1, samesite='none', secure=True)
         return response
     except Exception as e:
