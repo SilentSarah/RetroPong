@@ -6,7 +6,6 @@ from django.db.utils import *
 from .WebOps.WebOps import *
 from .DbOps.DbOps import *
 from django.http import *
-import json, asyncio
 
 
 MAX_DURATION = 7
@@ -105,15 +104,22 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             return HttpResponse(status=400)
 
 @csrf_exempt
-@require_http_methods(["UPDATE"])
+@require_http_methods(["POST"])
 def update_user(request: HttpRequest):
-    if (ViewAssist.verify_token(request) is not None):
-        user_data = json.loads(request.body.decode('utf-8'))
-        if (DbOps.update_user(id, user_data) == False):
-            return HttpResponse(status=400)
-        else:
-            return HttpResponse(status=200)
-        
+    token, user_id = ViewAssist.verify_token(request)
+    if (token is not None and user_id is not None):
+        try:
+            settings_cfg = ViewAssist.generate_acc_settings_cfg(request)
+            DbOps.update_user(user_id=user_id, new_data=settings_cfg, uploaded_files=request.FILES)
+            user = DbOps.get_user(user_id=user_id)
+            user.pop('password')
+            print("user:", user)
+            return JsonResponse(user, status=200)
+        except Exception as e:
+            print("error:", e)
+            return JsonResponse({"error":"Bad Request"}, status=400)
+    else:
+        return HttpResponse(status=401)
         
 @csrf_exempt
 @require_http_methods(["DELETE"])

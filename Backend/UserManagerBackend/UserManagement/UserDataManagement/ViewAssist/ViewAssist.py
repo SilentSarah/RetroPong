@@ -169,3 +169,44 @@ class ViewAssist:
             "password": registarion_data.get('uPassword')
         }
         return user_login_data
+    
+    @staticmethod
+    def generate_acc_settings_cfg(request: HttpRequest) -> dict:
+        full_name = request.POST.get('full_name')
+        if (full_name is not None):
+            split_name = full_name.split(' ')
+            first_name = full_name.split(' ')[0] if len(split_name) > 0 else None
+            last_name = full_name.split(' ')[1] if len(split_name) > 1 else None
+        else:
+            first_name = None
+            last_name = None
+        password = request.POST.get('password')
+        if (password is not None):
+            if (re.match(r'[A-Za-z0-9]{8,}', password) is None):
+                password_hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            raise Exception("Invalid password")
+        else:
+            password_hashed = None
+        data =  {
+            "ufname": first_name,
+            "ulname": last_name,
+            "uusername": request.POST.get('username'),
+            "udiscordid": request.POST.get('discordid'),
+            "utitle": request.POST.get('title'),
+            "udesc": request.POST.get('desc'),
+            "uemail": request.POST.get('email'),
+            "upassword": password_hashed,
+            "TwoFactor": True if request.POST.get('two_factor') == "true" else False,
+        }
+        return data
+    
+    @staticmethod
+    def validate_form_data(request: HttpRequest) -> bool:
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if (email is None or username is None or password is None):
+            return False
+        if (re.match(r'[A-Za-z0-9]{8,}', password) is None):
+            return False
+        return True

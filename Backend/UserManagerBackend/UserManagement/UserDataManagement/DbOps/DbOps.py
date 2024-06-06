@@ -8,6 +8,8 @@ from requests.models import Response
 import re
 from django.core.files.base import ContentFile
 from django.contrib.sites.models import Site
+from django.utils.datastructures import MultiValueDict
+from django.core.files.uploadedfile import UploadedFile
 
 DEFAULT_PFP_LINK = "https://i.ibb.co/3pWy5cD/Default.png"
 DEFAULT_BG_LINK = "https://i.ibb.co/yg3Z2dy/Default-BG.png"
@@ -126,13 +128,15 @@ class DbOps:
         """
         try:
             user = User.objects.get(id=user_id)
+            user.uprofilepic.delete()
+            user.uprofilebgpic.delete()
             user.delete()
             return True
         except User.DoesNotExist:
             return False
     
     @staticmethod
-    def update_user(user_id: int, new_data: dict) -> bool:
+    def update_user(user_id: int, new_data: dict, uploaded_files: MultiValueDict[str, UploadedFile]) -> bool:
         """Updates user data in the database
 
         Args:
@@ -144,14 +148,24 @@ class DbOps:
         """
         try:
             user = User.objects.get(id=user_id)
+            pfp_uploaded = uploaded_files.get('pfp')
+            bg_uploaded = uploaded_files.get('bg')
             for key, value in new_data.items():
+                if (value == None or value == ""):
+                    continue
                 setattr(user, key, value)
+            if (uploaded_files is not None):
+                if (pfp_uploaded is not None):
+                    user.uprofilepic.delete()
+                    user.uprofilepic.save(f"{user.uusername + pfp_uploaded.name}", pfp_uploaded)
+                if (bg_uploaded is not None):
+                    user.uprofilebgpic.delete()
+                    user.uprofilebgpic.save(f"{user.uusername + bg_uploaded.name}", bg_uploaded)
             user.save()
             return True
         except Exception as e:
             print("DbOps: ",e)
             return False
-        
     @staticmethod 
     def create_user(user_data: dict, is42: int = 0) -> bool:
         """Creates a new user in the database
