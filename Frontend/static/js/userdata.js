@@ -74,6 +74,20 @@ function deleteCookie(name) {
     document.cookie = name + '=; Max-Age=-99999999;';
 }
 
+function setValuesToSessionStorage(data) {
+    for (const [key, value] of Object.entries(data)) {
+        if (key === 'matchhistory' || key === 'matchstatistics') {
+            sessionStorage.setItem(key, JSON.stringify(value));
+            continue;
+        }
+        if (key === 'fname')
+            sessionStorage.setItem('full_name', value);
+        if (key === 'lname')
+            sessionStorage.setItem('full_name', sessionStorage.getItem('full_name') + " " + value);
+        sessionStorage.setItem(key, value);
+    }
+}
+
 function fetchUserData() {
     if (getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
@@ -101,17 +115,7 @@ function fetchUserData() {
             }
         })
         .then(data => {
-            for (const [key, value] of Object.entries(data)) {
-                if (key === 'matchhistory' || key === 'matchstatistics') {
-                    sessionStorage.setItem(key, JSON.stringify(value));
-                    continue;
-                }
-                if (key === 'fname')
-                    sessionStorage.setItem('full_name', value);
-                if (key === 'lname')
-                    sessionStorage.setItem('full_name', sessionStorage.getItem('full_name') + " " + value);
-                sessionStorage.setItem(key, value);
-            }
+            setValuesToSessionStorage(data);
             if (window.location.pathname === "/dashboard")
                 setDashboardStats();
             DisplayNavBar();

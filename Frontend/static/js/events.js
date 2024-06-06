@@ -93,6 +93,9 @@ function DisplayNavBar() {
                 open = false;
             }
         });
+        if (notificationHandler === null && getCookie('access') != '') {
+            notificationHandler = new notifications();
+        }
         scanLinks();
     }
 }
@@ -161,16 +164,13 @@ function copyIDListener() {
 }
 
 function loadEvents() {
-    if (notificationHandler === null && getCookie('access') != '') {
-        notificationHandler = new notifications();
-    }
     if (window.location.pathname === '/') {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
         scanInput();
     else if (window.location.pathname === '/settings') {
         switchTabsHandler();
-        loadAccountDetailsInSettings();
+        loadAccountDetailsInSettings(true);
     }
 	else if (window.location.pathname === '/game')
 		initGame();

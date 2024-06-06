@@ -161,7 +161,7 @@
         width: 80%;
     }
     .rp-form {
-        width: 270px !important;
+        width: 100% !important;
     }
     br {
         display: none;
@@ -370,7 +370,7 @@
         width: 80%;
     }
     .rp-form {
-        width: 270px !important;
+        width: 100% !important;
     }
     br {
         display: none;

@@ -56,17 +56,21 @@
                     <div class="d-flex flex-wrap align-items-center justify-content-evenly w-100 mb-2">
                         <!-- Name Username Title -->
                         <form method="put" class="d-flex flex-column gap-3 p-2 align-items-center">
-                            <div class="d-flex flex-column gap-1">
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="FullName" class="text-white fw-light">Full Name (Old: <span id="fullName" class="text-pink text-turncate"></span>)</label>
                                 <input type="text" id="full_name" name="FullName" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" >
                             </div>
-                            <div class="d-flex flex-column gap-1">
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="Username" class="text-white fw-light">Username (Old: <span id="userName" class="text-pink text-turncate"></span>)</label>
                                 <input type="text" id="username" name="Username" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2">
                             </div>
-                            <div class="d-flex flex-column gap-1">
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="Title" class="text-white fw-light">Title (Old: <span id="title" class="text-pink text-turncate"></span>)</label>
                                 <input type="text" id="title" name="Title" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2">
+                            </div>
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
+                                <label for="discordid" class="text-white fw-light">Discord ID (Old: <span id="discord_id_old" class="text-pink text-turncate"></span>)</label>
+                                <input type="text" id="discordid" name="discordid" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2">
                             </div>
                         </form>
                         <div class="h-line d-md-block d-sm-none"></div>
@@ -94,9 +98,13 @@
                                 <label for="Email" class="text-white fw-light">New Email</label>
                                 <input type="email" id="email" name="Email" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Email" >
                             </div>
-                            <div class="d-flex flex-column gap-1">
+                            <div class="d-flex flex-column gap-1 w-100">
                                 <label for="Password" class="text-white fw-light">New Password</label>
                                 <input type="password" id="Password" name="Password" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Password">
+                                <p class="text-white nokora fw-light text-center w-100" style="font-size:small;">
+                                    Your password should contain at least 8 characters<br>
+                                    1 uppercase letter, 1 lowercase letter and 1 number
+                                </p>
                             </div>
                         </form>
                     </div>
@@ -105,7 +113,7 @@
                 <div class="d-flex flex-column align-items-center">
                     <p class="nokora text-center text-white fs-4 fw-light text-shadow">Two Factor Authentication</p>
                     <div class="d-flex flex-column justify-content-center align-items-center border-transparent-0-5 rounded-3 p-5 gap-3 mx-2">
-                        <p class="text-white opacity-75 text-center fs-5 fw-light">
+                        <p class="text-white opacity-75 text-center fs-5 fw-light text-center">
                             Two Factor Authentication (2FA) Provides Additional layer of security. <br> No one can access your account without the security code provided by the website.<br>
                             Would you like to <span id="2fa_text">enable</span> this feature?
                         </p>

@@ -7,7 +7,6 @@ const pairs = {
 
 function parseValue(key, value, sessionStorageValue) {
     if (key === "desc") {
-        console.log(`[${value}]`, `[${sessionStorageValue}]`);
         if (value === sessionStorageValue) {
             delete updated_values[key];
             if (Object.keys(updated_values).length === 0)
@@ -74,13 +73,13 @@ function handleUpload(type) {
         if (this.files && this.files[0]) {
             console.log("File selected: ", this.files[0].name);
             if (type === "pfp") {
-                const pfp = new FormData();
-                pfp.append('pfp', this.files[0]);
-                updated_values['pfp'] = pfp;
+                // const pfp = new FormData();
+                // pfp.append('pfp', this.files[0]);
+                updated_values['pfp'] = this.files[0];
             } else if (type === "bg") {
-                const bg = new FormData();
-                bg.append('bg', this.files[0]);
-                updated_values['bg'] = bg;
+                // const bg = new FormData();
+                // bg.append('bg', this.files[0]);
+                updated_values['bg'] = this.files[0];
             }
             DisplayConfirmationPopUp();
         }
@@ -98,7 +97,8 @@ function acquireHTMLValues() {
     const tfa = document.getElementById('2fa_text');
     const tfa_status = document.getElementById('2fa_status');
     const tfa_btn =  document.querySelector('#tfa_btn');
-    return { pfp, bg, fullName, username, title, desc, tfa, tfa_status, tfa_btn };
+    const discordid = document.getElementById('discord_id_old');
+    return { pfp, bg, fullName, username, title, desc, tfa, tfa_status, tfa_btn, discordid };
 
 }
 
@@ -112,6 +112,7 @@ function acquireSessionData()
         title: sessionStorage.getItem('title'),
         desc: sessionStorage.getItem('desc'),
         tfa: sessionStorage.getItem('two_factor'),
+        discordid: sessionStorage.getItem('discordid'),
     };
     return values;
 }
@@ -126,6 +127,10 @@ function setSettingsValues(HTMLElements, values) {
     HTMLElements.tfa.innerHTML = values.tfa === 'false' ? 'Enable' : 'Disable';
     HTMLElements.tfa_status.innerHTML = values.tfa === 'false' ? 'Enable' : 'Disable';
     HTMLElements.tfa_btn.setAttribute('status', values.tfa);
+    HTMLElements.discordid.innerHTML = values.discordid === '' ? 'No Discord ID' : values.discordid;
+    console.log("PFP:", HTMLElements.pfp.style.backgroundImage);
+    console.log("BG:", HTMLElements.bg.style.backgroundImage);
+
 }
 
 function DestroyConfirmationPopUp() {
@@ -174,13 +179,44 @@ function SaveChanges() {
         toast('No changes detected', 'bg-danger')
         return ;    
     }
+    if (updated_values.Password && check_pass_strength(updated_values.Password) === false) {
+        toast('Password too weak', 'bg-danger');
+        return ;
+    }
+    for (const [key, value] of Object.entries(updated_values)) {
+        if (parseValue(key, value, sessionStorage.getItem(key)) === 1 && updated_values['pfp'] === undefined && updated_values['bg'] === undefined) {
+            toast('No changes detected', 'bg-danger');
+            return ;
+        }
+    }
     const form = new FormData();
     for (const key in updated_values) {
         form.append(key, updated_values[key]);
     }
+    
+    fetch('http://127.0.0.1:8001/userdata/update', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access'),
+        },
+        body: form,
+    })
+    .then(response => response.json())
+    .then (response => {
+        for (const key of Object.entries(updated_values))
+            delete updated_values[key];
+        setValuesToSessionStorage(response);
+        loadAccountDetailsInSettings();
+    })
+    .catch((error) => {
+        console.log(error);
+        toast('An error occured', 'bg-danger');
+    })
 }
 
 function initiateEventHandlers(updated_values) {
+    const textarea = document.querySelector('textarea');
+    const tfa_btn = document.getElementById('tfa_btn');
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('input', function() {
             updated_values[this.id] = this.value;
@@ -188,12 +224,12 @@ function initiateEventHandlers(updated_values) {
             parseValue(this.id, this.value, sessionStorage.getItem(this.id));
         });
     });
-    document.querySelector('textarea').addEventListener('input', function() {
+    textarea.addEventListener('input', function() {
         updated_values[this.id] = this.value;
         DisplayConfirmationPopUp();
         parseValue(this.id, this.value, sessionStorage.getItem(this.id));
     });
-    document.getElementById('tfa_btn').addEventListener('click', function() {
+    tfa_btn.addEventListener('click', function() {
         if (this.getAttribute('status') === 'true') {
             this.setAttribute('status', 'false');
             updated_values['two_factor'] = 'false';
@@ -207,15 +243,15 @@ function initiateEventHandlers(updated_values) {
         }
         DisplayConfirmationPopUp();
         parseValue('two_factor', this.getAttribute('status'), sessionStorage.getItem('two_factor'));
-
     });
 }
 
-function loadAccountDetailsInSettings() {
+function loadAccountDetailsInSettings(boolean = false) {
     const HTMLElements = acquireHTMLValues();
     const values = acquireSessionData();
     setSettingsValues(HTMLElements, values);
-    initiateEventHandlers(updated_values);
+    if (boolean === true)
+        initiateEventHandlers(updated_values);
 }
 
 function DeleteAccountPrompt() {
