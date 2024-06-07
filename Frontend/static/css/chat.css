@@ -500,7 +500,7 @@ body {
 
 .timeSize{
     font-size: 10px;
-    color: white;
+    color: rgba(255, 255, 255, 0.577);
 }
 
 .CcontentMessage{
@@ -536,11 +536,12 @@ body {
     word-break: break-all;
     background-color: #231423;
     font-size: 15px;
-    color: white;
+    color: rgba(255, 255, 255, 0.72);
     border-radius: 12px;
     display: flex !important;
     align-items: center;
     padding: 10px;
+    font-weight: 200;
 }
 
 .Cmessage2 {

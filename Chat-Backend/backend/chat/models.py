@@ -29,7 +29,7 @@ class User(models.Model):
         managed=True
     
     def __str__(self):
-        return str(self.id)
+        return self.uUsername + " " + str(self.id)
          
  
 class Conversation(models.Model):
@@ -73,3 +73,27 @@ class Invitation(models.Model):
 
 
 
+class Channel(models.Model):
+    chID = models.AutoField(primary_key=True)
+    chName = models.CharField(db_column='chName', max_length=50, default="")  # Field name made lowercase.
+    chMembers = ArrayField(models.IntegerField(), db_column='chMembers', default=list)
+    chDesc = models.CharField(db_column='chDesc', max_length=100, default="")
+    chAdmin = models.IntegerField(db_column='chAdmin', default=0)
+    chCreated = models.DateTimeField(db_column='chCreated', auto_now_add=True)
+    chUpdated = models.DateTimeField(db_column='chUpdated', auto_now=True)
+
+    
+    def __str__(self):
+        return self.chName
+
+class ChannelMessage(models.Model):
+    id = models.AutoField(primary_key=True)
+    chID = models.IntegerField(db_column='chID', default=0)
+    cmContent = models.TextField(db_column='cmContent', default="")
+    cmSender = models.IntegerField(db_column='cmSender', default=0)
+    cmCreated = models.DateTimeField(db_column='cmCreated', auto_now_add=True)
+    cmUpdated = models.DateTimeField(db_column='cmUpdated', auto_now=True)
+    cmRead = models.BooleanField(db_column='cmRead', default=False)
+
+    def __str__(self):
+        return str(self.id)

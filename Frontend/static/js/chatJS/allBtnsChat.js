@@ -64,17 +64,20 @@ function transition(destination) {
     const page_discover = document.getElementById('page_discover'); // page discover
     const page_discussion = document.getElementById('page_discussion');
     const resUsers = document.getElementById('resUsers');
+    const page_channel = document.getElementById('page_channel');
 
     if (destination == 'chat') {
         page_chat.classList.remove('d-none');
         page_discover.classList.add('d-none');
         page_discussion.classList.add('d-none');
+        page_channel.classList.add('d-none');
         filterFriends('online')
     }
     else if (destination == 'discover') {
         page_discover.classList.remove('d-none');
         page_chat.classList.add('d-none');
         page_discussion.classList.add('d-none');
+        page_channel.classList.add('d-none');
         filterFriends('online')
     }
 
@@ -144,6 +147,9 @@ async function implementBtns(target, target_user_id) {
     const page_discussion = document.getElementById('page_discussion');
     const page_chat = document.getElementById('page_chat');
     const page_discover = document.getElementById('page_discover');
+    const page_channel = document.getElementById('page_channel');
+    // channel
+
     
    
     const Cback = document.getElementById('contact_user');
@@ -153,6 +159,7 @@ async function implementBtns(target, target_user_id) {
         page_chat.classList.add('d-none');
         page_discussion.classList.remove('d-none');
         page_discover.classList.add('d-none');
+        page_channel.classList.add('d-none');
         Cback.src = "/static/img/general/Account.png"
         target_id = target_user_id
         const data = await fetchDataChat(target_user_id)
@@ -165,13 +172,52 @@ async function implementBtns(target, target_user_id) {
         sendRequest(target_user_id, "decline", userId, token)
     else if (target === 'unblock' && isRequest === false)
         sendRequest(target_user_id, "unblock", userId, token)
+    //channel
+    if(target === 'toChannel')
+    {
+        page_chat.classList.add('d-none');
+        page_discussion.classList.add('d-none');
+        page_discover.classList.add('d-none');
+        page_channel.classList.remove('d-none');
+        const channel_message = await fetchData(`http://127.0.0.1:8002/chat/channel/${channelObj.chID}`, 'GET', token)
+        handleChannel(channel_message)
+    }
 }
 
-
-
-// channels
-function openFormGroup()
+function handleChannel(channel_message)
 {
-    console.log("object")
-    
+    console.log(channel_message)
+    const chUser = document.getElementById('chUser');
+    const chMessages = document.getElementById('chMessages');
+    const chTitle = document.getElementById('chTitle');
+    const chDesc = document.getElementById('chDesc');
+
+    if(channel_message.status === "200")
+    {   
+        chTitle.innerHTML = "#" + channelObj?.chName
+        chDesc.innerHTML = channelObj?.chDesc
+        chUser.innerHTML = channel_message?.data?.users?.map(user => member(user)).join('')
+        chMessages.innerHTML = channel_message?.data?.messages?.map(msg => message_channel(msg,channel_message?.data?.users?.find(user=> user.id === msg.cmSender))).join('')
+        AddListener()
+        console.log("object")
+    }
 }
+
+function AddListener()
+{
+    const {userId, token} = GetUserIdToken();
+    const chsendBtn = document.getElementById('chsendBtn');
+    const chInput = document.getElementById('chInput');
+    
+    chsendBtn.addEventListener('click', async () => {
+        const value = chInput.value
+        if(value === "")
+            return
+        chInput.value = ""
+        chInput.focus()
+        console.log(channelObj)
+        const data = await fetchData(`http://localhost:8002/chat/channel/send/${channelObj.chID}/${userId}/`,'POST',token,{"content":value}) 
+        console.log(data)
+    })
+}
+ 

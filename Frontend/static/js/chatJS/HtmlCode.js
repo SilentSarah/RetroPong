@@ -56,9 +56,33 @@ const chatFriend = (friend) => {
 const message = (msg, target_user_id) => {
     return `<div class="slide-in-blurred-top-1 CcontentMessage d-flex align-items-end ml-2 position-relative" >
                 <div class="d-flex gap-3">
-                   <img class="Ccimg rounded-circle" src=${msg.user.profilepic} alt="avatar">
+                   <img class="Ccimg rounded-circle" src=${msg?.user?.profilepic} alt="avatar">
                    <div class="${msg.user.id === target_user_id ? 'Cmessage' : 'Cmessage2'} bg-pink ">${msg.content}</div>
                 </div>
                 <span class="timeChat position-absolute">${msg.user.username} <span class="timeSize fw-normal">10:00 AM</span></span>
+            </div>`
+}
+
+
+const member = (member) => {
+    return `<div class="chUser d-flex justify-content-between align-items-center p-2">
+    <div class="d-flex align-items-center gap-1"> 
+        <img class="chImg rounded-circle" src=${member.profilepic ?  member.profilepic :"/static/img/general/Account.png"} alt="avatar">
+        <div class="d-flex flex-column">
+            <span class="chName nokora">${member.username}</span>
+            <span class="chDesc nokora">${member.desc}</span>
+        </div>
+    </div>
+    <button class="chBtn_invite">Invite</button>
+</div>`
+}
+
+const message_channel =(member, user)=>{
+    return `<div class="slide-in-blurred-top-1 CcontentMessage d-flex align-items-end ml-2 position-relative" >
+                <div class="d-flex gap-3">
+                   <img class="Ccimg rounded-circle" src=${user.profilepic}  alt="avatar">
+                   <div class="Cmessage bg-pink fs-small">${member.cmContent}</div>
+                </div>
+                <span class="timeChat position-absolute"> <span class="timeSize fw-normal">10:00 AM</span></span>
             </div>`
 }

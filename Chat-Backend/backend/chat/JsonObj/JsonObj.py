@@ -13,6 +13,8 @@ class JsonObj:
     def user_info(user):
         otherUsers = User.objects.exclude(Q(id__in=user.AFriends) | Q(id__in=user.ARequests) | Q(id__in=user.ABlocked) | Q(id__in=user.ABlockedBy) | Q(id=user.id))
         invitation = [x.id for x in otherUsers if Invitation.objects.filter(Q(iSender=user.id) & Q(iReceiver=x.id))]
+        channel = Channel.objects.filter(chMembers__contains=[user.id])
+        # print("channel", channel[0].values())
         return {
             "id": user.id,
             "username": user.uUsername,
@@ -28,12 +30,13 @@ class JsonObj:
             "profilebgpic": user.uprofilebgpic,
             "desc": user.udesc,
             "invitation": invitation,
-            "isOnline": user.isOnline
+            "isOnline": user.isOnline,
+            "channel": list(channel.values())
         }
 
     @staticmethod
     def user_chat(user):
-        # print("there ", user.id)
+        print("there ", user.id)
         return {
             "id":  user.id,
             "username": user.uUsername,

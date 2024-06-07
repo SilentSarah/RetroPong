@@ -34,10 +34,7 @@ function searchOtherUser(values, otherUser) {
 
 const typeofData = (type) => {
     if (type === 'online')
-    {
-        console.log(dataUser?.friends )
         return dataUser?.friends?.filter(friend => friend.isOnline === true)
-    }
     else if (type === 'all')
         return dataUser?.friends
     else if (type === 'pending')

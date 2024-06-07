@@ -5,6 +5,7 @@ let target_id = ""
 let conversation = ""
 let storeDataWs = {}
 let storeDataUser = {}
+let channelObj = {}
 
 function Websocket() {
     const userId = document.cookie.split(';')[0].split('=')[1]
@@ -16,7 +17,7 @@ function Websocket() {
         ws.onclose = (event) => {
             console.log('closing socket!', event)
             ws = null
-            Websocket()
+            setTimeout(() => { Websocket() }, 2000)
         }
         ws.onmessage = function (event) {
             let data = JSON.parse(event.data)
@@ -36,20 +37,21 @@ function Websocket() {
 async function UserContactFetching() {
     const { userId, token } = GetUserIdToken()
 
-    if (dataUser.length === 0) {
+    if (dataUser?.length === 0) {
         SkeletonCards() // skeleton cards
         SkeletonFriends() // skeleton friends
     }
     const data = await fetchData(`http://127.0.0.1:8002/chat/contact/${userId}`, 'GET', token) // fetch data
-    dataUser = data.data // store data to value dataUser
-    // ws.close()
     if (data.status === "200") {
+        dataUser = data.data // store data to value dataUser
         LoadDataSuggestion(data.data)
         type = localStorage.getItem('type')
         LoadDataFriend(type ? type : 'online')
+        LoadChannel(data.data?.channel)
     }
     else
         handleError()
+    setTimeout(() => {  if(data.status !== "200") handleError()}, 5000)
     isRequest = false // to handle request by request to avoid many requests
 }
 
@@ -68,7 +70,7 @@ function LoadDataSuggestion(data, target_user_id) {
     const btn_search = document.getElementById('btn_search')
     let content = ""
 
-    if (data.otherUser.length === 0)
+    if (data?.otherUser?.length === 0)
         Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
     else if (target_user_id) {
         const id = document.getElementById(`${target_user_id + 'id'}`)
@@ -76,8 +78,8 @@ function LoadDataSuggestion(data, target_user_id) {
             id.innerHTML = "Pending"
     }
     else {
-        data.otherUser.forEach(friend => {
-            content += Cards(friend, target_user_id ? data.invitation.concat(target_user_id) : data.invitation)
+        data?.otherUser?.forEach(friend => {
+            content += Cards(friend, target_user_id ? data?.invitation?.concat(target_user_id) : data?.invitation)
         });
         if (content === "")
             Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
@@ -85,7 +87,7 @@ function LoadDataSuggestion(data, target_user_id) {
             Rcards.innerHTML = content
     }
     btn_search.addEventListener('click', () => {
-        searchOtherUser(search.value, data.otherUser)
+        searchOtherUser(search.value, data?.otherUser)
     })
 }
 
@@ -109,6 +111,21 @@ async function LoadDataFriend(type) {
     }
 }
 
+
+// load channel
+function LoadChannel(channel) {
+    const channel_title = document.getElementById('channel_title')
+    const channel_general = document.getElementById('channel')
+
+    if(channel)
+    {
+        channelObj = channel[0]
+        channel_general.classList.remove('d-none')
+    }
+    // console.log(channel[0].chName)
+    if(channel_title)
+        channel_title.innerHTML = channel[0].chName
+}
 
 // send invite
 async function SendInvite(target_user_id) {

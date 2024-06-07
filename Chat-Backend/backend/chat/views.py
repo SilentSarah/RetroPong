@@ -181,3 +181,32 @@ def sendMessage(request, id, contact_id, conversation_id):
         return JsonResponse({"status":"Message sent"}, status=200)
     except:
         return JsonResponse({"status":"Not found this user or conversation."}, status=404)
+
+
+# Channel messages
+def get_channel_messages(request, channel_id):
+    token, user_id = verify_token(request)
+    if (token is None or user_id is None):
+        return JsonResponse({"status":"Unauthorized"}, status=401)
+
+    try:
+        messages = ChannelMessage.objects.filter(chID=channel_id)
+        users = Channel.objects.get(chID=channel_id).chMembers
+        user = [JsonObj.user_chat(User.objects.get(id=x)) for x in users]
+
+        return JsonResponse({"messages": list(messages.values()),"users":list(user)}, status=200)
+    except:
+        return JsonResponse({"status":"Not found this channel"}, status=404)
+
+@csrf_exempt
+def Send_message_channel(request, channel_id, user_id):
+     
+    if(request.method == 'POST'):
+        try:
+            content = json.loads(request.body).get('content')
+            print(content)
+            message = ChannelMessage.objects.create(chID=channel_id, cmContent=content, cmSender=user_id)
+            return JsonResponse({"status":"Message sent"}, status=200)
+        except:
+            return JsonResponse({"status":"Not found this channel"}, status=404)
+    return JsonResponse({"status":"Not found this channel"}, status=404)

@@ -10,5 +10,8 @@ urlpatterns=[
     path('accept/<int:id>/<int:contact_id>', acceptInvite, name='Accept'),
     path('decline/<int:id>/<int:contact_id>', declineInvite, name='Deline'),
     path('unblock/<int:id>/<int:contact_id>', unblockUser, name='Unblock'),
-    path('sendMessage/<int:id>/<int:contact_id>/<int:conversation_id>', sendMessage, name='Send Message'),
+    path('sendMessage/<int:id>/<int:contact_id>/<int:conversation_id>', sendMessage, name='Send Message'),  
+    #channel
+    path('channel/<int:channel_id>/', get_channel_messages, name='channel_list'),
+    path('channel/send/<int:channel_id>/<int:user_id>/', Send_message_channel, name='channel_list'),
 ]
