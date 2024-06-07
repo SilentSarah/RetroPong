@@ -203,8 +203,8 @@ function setMatchHistory() {
     let matchHistory = document.getElementById("matchHistory");
     matchHistory.innerHTML = "";
     const matches = JSON.parse(sessionStorage.getItem('matchhistory'));
-    if (matches === null || matches === undefined || matches.length === 0) {
-        matchHistory.innerHTML = "No matches played yet";
+    if (matches === null || matches === undefined || Object.keys(matches).length === 0){
+        matchHistory.innerHTML = '<span class="text-white text-center nokora fw-light opacity-75">No Matches</span>';
     } else {
         for (const [key, value] of Object.entries(matches)) {
             createMatchHistoryElement(matchHistory, value);

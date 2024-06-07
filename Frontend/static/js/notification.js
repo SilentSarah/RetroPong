@@ -98,7 +98,6 @@ function invokeAction(notification_data, selected_notification) {
             anchor.remove();
             break;
         case 'ACCOUNT':
-            //  TO BE IMPLEMENTED
             break;
         case 'GAME':
             anchor.href = '/game';
