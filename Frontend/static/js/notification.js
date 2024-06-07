@@ -1,4 +1,5 @@
 let delay = 0;
+let last_notification_id = undefined;
 const img_paths = {
     'MESSAGE': '/static/img/general/Chat.png',
     'ACCOUNT': '/static/img/general/Account.png',
@@ -32,15 +33,12 @@ function scaleMessageDateSent(date) {
 }
 
 function controlNotificationFlow(data, notifications_container) {
-    if (data['Notifications'] == undefined)
+    if (data['Notifications'] == undefined || Object.keys(data['Notifications']).length == 0) {
+        notifications_container.innerHTML = `<p id="no_notification" class="text-secondary text-center nokora fw-light my-auto fade_in">No Notifications</p>`;
         return 1;
-    if (notifications_container.children[0].classList.contains('spinner-border')) {
+    }
+    if (notifications_container.children[0].id === 'loading_notifications' || notifications_container.children[0].id === 'no_notification')
         notifications_container.children[0].remove();
-    }
-    if (Object.keys(data['Notifications']).length == 0) {
-        notifications_container.innerHTML = `<p class="text-secondary text-center nokora fw-light my-auto fade_in">No Notifications</p>`;
-        return 1;
-    }
 }
 
 function constructNotificationData(each_notification) {
@@ -57,32 +55,41 @@ function constructNotificationData(each_notification) {
     return notification_Data;
 }
 
-function constructNotification(each_notification) {
+function clearNotificationArray() {
+    for (let i = 0; i < notifications_array.length; i++)
+        notifications_array[i].remove();
+}
+
+function constructNotification(each_notification, notifications_container) {
     const notification_Data = constructNotificationData(each_notification);
     let notification = document.createElement('div');
-    setTimeout(() => {
-        notifications_container.appendChild(notification);
-        notification.outerHTML = `
-        <div id="notification_content" back-link="${notification_Data.type}" notification_id="${notification_Data.id}" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0 fade_in" style="width:280px; height:100px;">
-            <div id="noti_header" class="d-flex align-items-center gap-1 opacity-75">
-                <img src="${img_paths[notification_Data.type]}" width="20px">
-                <p class="text-white nokora fw-bold m-0" style="font-size: 15px;">${notification_Data.type}</p>
-                <p class="ms-auto m-0 nokora fw-light text-white" style="font-size: 12px;">${scaleMessageDateSent(notification_Data.date)}</p>
-            </div>
-            <div id="noti_body" class="d-flex align-items-center justify-content-start gap-2">
-                <img src="${notification_Data.sender_pfp}" width="40px" height="40px" class="object-fit-cover border-pink rounded-3">
-                <p class="text-white m-0 fw-light text-turncate" style="font-size: 0.85rem;">
-                    <span class="nokora text-pink text-turncate">${notification_Data.sender_username}</span>
-                    ${notification_Data.content}
-                </p>
-                <button class="border-pink goto ms-auto" onclick="invokeActivity(${notification_Data.id})">
-                    <img src="/static/img/general/shortcut.png" width="25px" height="25px">
-                </button>
-            </div>
-        </div>`;
-    }, delay); 
-    delay += 250;
-    notifications_array.push(notification);
+    if (last_notification_id === undefined || last_notification_id != notification_Data.id)
+    {
+        setTimeout(() => {
+            notifications_container.insertBefore(notification, notifications_container.firstChild);
+            notification.outerHTML = `
+            <div id="notification_content" back-link="${notification_Data.type}" notification_id="${notification_Data.id}" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0 gap-1 fade_in" style="width:280px; height:120px;">
+                <div id="noti_header" class="d-flex align-items-center gap-1 opacity-75">
+                    <img src="${img_paths[notification_Data.type]}" width="20px">
+                    <p class="text-white nokora fw-bold m-0" style="font-size: 15px;">${notification_Data.type}</p>
+                    <p class="ms-auto m-0 nokora fw-light text-white" style="font-size: 12px;">${scaleMessageDateSent(notification_Data.date)}</p>
+                </div>
+                <div id="noti_body" class="d-flex align-items-center justify-content-start gap-2">
+                    <img src="${notification_Data.sender_pfp}" width="40px" height="40px" class="object-fit-cover border-pink rounded-3">
+                    <p class="text-white m-0 fw-light text-turncate" style="font-size: 0.85rem;">
+                        <span class="nokora text-pink text-turncate">${notification_Data.sender_username}</span>
+                        ${notification_Data.content}
+                    </p>
+                    <button class="border-pink goto ms-auto" onclick="invokeActivity(${notification_Data.id})">
+                        <img src="/static/img/general/shortcut.png" width="25px" height="25px">
+                    </button>
+                </div>
+            </div>`;
+        }, delay); 
+        delay += 250;
+        notifications_array.push(notification);
+        last_notification_id = notification_Data.id;
+    }
 }
 
 function invokeAction(notification_data, selected_notification) {
@@ -131,13 +138,14 @@ class notifications {
         }
         this.notifications.onmessage = function(event) {
             let data = JSON.parse(event.data);
+            console.log(data)
             const notifications_container = document.getElementById('notifications_container');
             if (controlNotificationFlow(data, notifications_container) == 1)
                 return;
+            clearNotificationArray();
             saveNotificationData(data);
             for (const [key, value] of Object.entries(data['Notifications']))
-                constructNotification(value);
-            
+                constructNotification(value, notifications_container);
         }    
         this.notifications.onclose = function(event) {
             const notifications_container = document.getElementById('notifications_container');

@@ -81,7 +81,6 @@ class DbOps:
                 user = User.objects.get(uusername=username)
             else:
                 user = User.objects.get(id=user_id)
-            print("Url:", user.uprofilebgpic.path)
             domain = Site.objects.get_current().domain
             user = {
                 "id": user.id,
@@ -166,7 +165,7 @@ class DbOps:
                 nContent="Your account settings has been updated",
                 nReciever=user_id,
                 nSender=user_id,
-                nDate=datetime.datetime.now()
+                nDate=datetime.datetime.now(tz=timezone.utc)
             )
             notification.save()
             user.save()
@@ -204,7 +203,7 @@ class DbOps:
             uemail=user_data_copy.get('uEmail'),
             ufname=user_data_copy.get('uFname'),
             ulname=user_data_copy.get('uLname'),
-            uregdate=timezone.now(),
+            uregdate=datetime.datetime.now(tz=timezone.utc),
             uIs42=False if is42 == 0 else True
         )
 
@@ -215,7 +214,7 @@ class DbOps:
         new_user.save()
         return True # I NEED TO SET THIS BACK TO TRUE AND UNCOMMENT THE ABOVE LINE
     @staticmethod
-    def get_notifications(user_id: int) -> dict[str]:
+    def get_notifications(user_id: int, last_notification_id: int = -1) -> dict[str]:
         """Retrieves notifications from the database
 
         Args:
@@ -226,7 +225,7 @@ class DbOps:
         """
         try:
             i: int = 1
-            notifications = Notification.objects.filter(nReciever=user_id).order_by('-id')
+            notifications = Notification.objects.filter(nReciever=user_id).order_by('-id')[0:5]
             notifications_list = {
                 "Notifications": {},
             }
@@ -235,6 +234,8 @@ class DbOps:
                 if (sender is not None):
                     sender_pfp = 'http://{}{}'.format(Site.objects.get_current().domain, sender.uprofilepic.url)
                     sender_username = sender.uusername
+                if (notification.id <= last_notification_id):
+                    continue
                 notifications_list["Notifications"][i] = {
                     "id": notification.id,
                     "type": notification.nType,

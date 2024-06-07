@@ -49,8 +49,8 @@ function DisplayNavBar() {
             <div id="notification_light" class="d-none"></div>
             <div id="notification_menu" class="d-flex flex-column justify-content-between align-items-center gap-2 position-absolute">
                 <h3 class="text-white fs-5 taprom text-pink-gradient text-glow m-0 py-2">Notifications</h3>
-                <div id="notifications_container" class="d-flex flex-column justify-content-start align-items-center px-2 h-100 overflow-y-auto overflow-x-hidden gap-2">
-                    <div class="spinner-border text-white my-auto" role="status">
+                <div id="notifications_container" class="d-flex flex-column justify-content-start align-items-center px-2 h-100 overflow-y-auto overflow-x-hidden gap-2 mb-2">
+                    <div id="loading_notifications" class="spinner-border text-white my-auto" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
@@ -182,3 +182,10 @@ function loadEvents() {
         fetchUserData();
     scanLinks();
 }
+
+window.addEventListener('beforeunload', function(event) {
+    clearInterval(fetchID);
+    if (notificationHandler !== null) {
+        notificationHandler.notifications.close();
+    }
+});

@@ -113,7 +113,6 @@ def update_user(request: HttpRequest):
             DbOps.update_user(user_id=user_id, new_data=settings_cfg, uploaded_files=request.FILES)
             user = DbOps.get_user(user_id=user_id)
             user.pop('password')
-            print("user:", user)
             return JsonResponse(user, status=200)
         except Exception as e:
             print("error:", e)

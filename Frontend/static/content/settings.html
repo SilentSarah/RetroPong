@@ -7,16 +7,16 @@
         </div>
         <div class="d-flex flex-column my-auto gap-3">
             <button class="button-rp tab-btn d-flex align-items-center justify-content-center gap-1 bg-white-transparent-0-15 border-transparent-0-5 rounded-3 px-3 py-2">
-                <img src="/static/img/general/Personal.png" alt="Personal Details" width="42px" height="42px" class="mx-auto">
-                <p class="text-white m-0 tab-info">Personal Details</p>
+                <img src="/static/img/general/Personal.png" alt="Personal Details" width="36px" height="36px" class="mx-auto">
+                <p class="text-white m-0 tab-info" >Personal Details</p>
             </button>
             <button class="button-rp tab-btn d-flex align-items-center justify-content-center gap-1 bg-white-transparent-0-15 border-transparent-0-5 rounded-3 px-3 py-2">
-                <img src="/static/img/general/Security.png" alt="Personal Details" width="42px" height="42px" class="mx-auto">
-                <p class="text-white m-0 tab-info">Account Security</p>
+                <img src="/static/img/general/Security.png" alt="Personal Details" width="36px" height="36px" class="mx-auto">
+                <p class="text-white m-0 tab-info" >Account Security</p>
             </button>
             <button class="button-rp tab-btn d-flex align-items-center justify-content-center gap-1 bg-white-transparent-0-15 border-transparent-0-5 rounded-3 px-3 py-2">
-                <img src="/static/img/general/Privacy.png" alt="Personal Details" width="42px" height="42px" class="mx-auto">
-                <p class="text-white m-0 tab-info">Account Privacy</p>
+                <img src="/static/img/general/Privacy.png" alt="Personal Details" width="36px" height="36px" class="mx-auto">
+                <p class="text-white m-0 tab-info" >Account Privacy</p>
             </button>
 
         </div>
@@ -58,19 +58,19 @@
                         <form method="put" class="d-flex flex-column gap-3 p-2 align-items-center">
                             <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="FullName" class="text-white fw-light">Full Name (Old: <span id="fullName" class="text-pink text-turncate"></span>)</label>
-                                <input type="text" id="full_name" name="FullName" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" >
+                                <input type="text" id="full_name" name="FullName" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="on">
                             </div>
                             <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="Username" class="text-white fw-light">Username (Old: <span id="userName" class="text-pink text-turncate"></span>)</label>
-                                <input type="text" id="username" name="Username" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2">
+                                <input type="text" id="username" name="Username" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="username">
                             </div>
                             <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="Title" class="text-white fw-light">Title (Old: <span id="title" class="text-pink text-turncate"></span>)</label>
-                                <input type="text" id="title" name="Title" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2">
+                                <input type="text" id="title" name="Title" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="on">
                             </div>
                             <div class="d-flex flex-column gap-1 w-100 px-5">
                                 <label for="discordid" class="text-white fw-light">Discord ID (Old: <span id="discord_id_old" class="text-pink text-turncate"></span>)</label>
-                                <input type="text" id="discordid" name="discordid" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2">
+                                <input type="text" id="discordid" name="discordid" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="username">
                             </div>
                         </form>
                         <div class="h-line d-md-block d-sm-none"></div>
@@ -96,11 +96,11 @@
                         <form method="put" class="d-flex flex-column gap-3 p-2">
                             <div class="d-flex flex-column gap-1">
                                 <label for="Email" class="text-white fw-light">New Email</label>
-                                <input type="email" id="email" name="Email" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Email" >
+                                <input type="email" id="email" name="Email" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Email" autocomplete="email" >
                             </div>
                             <div class="d-flex flex-column gap-1 w-100">
                                 <label for="Password" class="text-white fw-light">New Password</label>
-                                <input type="password" id="Password" name="Password" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Password">
+                                <input type="password" id="Password" name="Password" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Password" autocomplete="new-password">
                                 <p class="text-white nokora fw-light text-center w-100" style="font-size:small;">
                                     Your password should contain at least 8 characters<br>
                                     1 uppercase letter, 1 lowercase letter and 1 number
