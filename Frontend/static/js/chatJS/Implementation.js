@@ -3,34 +3,40 @@ let listenToSend = false
 let contact_id = null
 let target_id = ""
 let conversation = ""
+let storeDataWs = {}
+let storeDataUser = {}
 
 function Websocket() {
     const userId = document.cookie.split(';')[0].split('=')[1]
-    if (!ws)
-        ws = new WebSocket(`ws://localhost:8002/ws/chat/${userId}`)
-    ws.onopen = (event) => console.log('Connected to chat server')
-    ws.onclose = (event) => {
-        console.log('closing socket!', event)
-        ws = null
-        Websocket()
-    }
-    ws.onmessage = function (event) {
-        console.log("you",JSON.parse(event.data).contact_id, "userId", userId, "from", JSON.parse(event.data).id, "coversation",JSON.parse(event.data).conversation_id, "cov",conversation)
-        if (JSON.parse(event.data).contact_id === parseInt(userId) && JSON.parse(event.data).conversation_id === conversation) {  
-            if (JSON.parse(event.data).message !== "refresh" && JSON.parse(event.data).message !== "invite") {
-                const contact_user = dataUser.friends.filter(friend => friend.id === parseInt(JSON.parse(event.data).id))[0]
-                LoadMessageRealTime(JSON.parse(event.data).message, contact_user?.uprofilepic, contact_user?.uUsername)
-            }
+    if (userId) {
+        if (!ws)
+            ws = new WebSocket(`ws://localhost:8002/ws/chat/${userId}`)
+        ws.onopen = (event) => console.log('Connected to chat server')
+        ws.onerror = (event) => console.log('Error', event)
+        ws.onclose = (event) => {
+            console.log('closing socket!', event)
+            ws = null
+            Websocket()
         }
-        UserContactFetching()
+        ws.onmessage = function (event) {
+            let data = JSON.parse(event.data)
+            if (data.message === "statusOnlinePing")
+                storeDataWs = data
+            if ((data.contact_id === parseInt(userId)) && data.conversation_id === conversation) {
+                if (data.message !== "refresh" && data.message !== "invite") {
+                    const contact_user = dataUser.friends.filter(friend => friend.id === parseInt(data.id))[0]
+                    LoadMessageRealTime(data.message, contact_user?.uprofilepic, contact_user?.uUsername)
+                }
+            }
+            UserContactFetching()
+        }
     }
 }
 
 async function UserContactFetching() {
     const { userId, token } = GetUserIdToken()
-    
-    if(dataUser.length === 0)
-    {
+
+    if (dataUser.length === 0) {
         SkeletonCards() // skeleton cards
         SkeletonFriends() // skeleton friends
     }
@@ -42,7 +48,7 @@ async function UserContactFetching() {
         type = localStorage.getItem('type')
         LoadDataFriend(type ? type : 'online')
     }
-    else 
+    else
         handleError()
     isRequest = false // to handle request by request to avoid many requests
 }
@@ -97,7 +103,6 @@ async function LoadDataFriend(type) {
         resUsers.innerHTML = `<h4 class="text-white d-flex justify-content-center">No friends yet</h4>`
     else {
         resUsers.innerHTML = `<span id="typeOf" class="typeOf mb-4">${typeLower}: ${typeData?.length}</span>`
-        console.log(dataUser.blockedby, typeData)
         typeData?.forEach(friend => {
             resUsers.innerHTML += Friends(friend, type, dataUser.blockedby)
         });
@@ -110,7 +115,7 @@ async function SendInvite(target_user_id) {
     const { userId, token } = GetUserIdToken();
     const data = await fetchData(`http://127.0.0.1:8002/chat/invite/${userId}/${target_user_id}`, 'GET', token)
     LoadDataSuggestion(dataUser, target_user_id)
-    ws.send(JSON.stringify({ "message": "invite", "id": userId, "contact_id": target_user_id, "conversation_id": ""}))
+    ws.send(JSON.stringify({ "message": "invite", "id": userId, "contact_id": target_user_id, "conversation_id": "" }))
 }
 
 //send message
@@ -119,13 +124,13 @@ const ClickSend = async (value, target_user_id) => {
     const CsendBtn = document.getElementById('CsendBtn');
     const { userId, token } = GetUserIdToken();
     let data = []
-    
+
     if (value === "")
-    return
+        return
     Cinput.value = ""
     Cinput.focus()
     LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'))
-    ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation}))
+    ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation }))
     data = await fetchData(`http://127.0.0.1:8002/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })
 }
 
@@ -135,9 +140,9 @@ async function SendMessage(target_user_id) {
     const Cinput = document.getElementById('Cinput');
     const CsendBtn = document.getElementById('CsendBtn');
     target_id = target_user_id
-    
+
     Cinput.addEventListener('keypress', async (e) => {
-        if(e.key === 'Enter')
+        if (e.key === 'Enter')
             ClickSend(Cinput.value, target_id)
     })
     if (listenToSend === false)
@@ -154,11 +159,23 @@ loadDataChat = (data, target_user_id) => {
 
     conversation = data?.conversation_id
     CinfoUser.innerHTML = data && chatFriend(data?.users[0])
+    storeDataUser = data?.users[0]
     CcontentConver.innerHTML = data?.messages?.map(msg => message(msg, target_user_id)).join('') || ""
     CcontentConver.scrollTop = CcontentConver.scrollHeight
     contact_id = target_user_id
-    setTimeout(() => {
-    SendMessage(target_user_id)}, 1000)
+    setTimeout(() => { SendMessage(target_user_id) }, 1000)
     Cinput.focus()
 }
 
+setInterval(() => {
+    const circleStatus = document.getElementById('circleStatus')
+
+    if (storeDataUser.id === storeDataWs.id)
+        if (storeDataWs.status && circleStatus) {
+            circleStatus.classList.remove('offline')
+            circleStatus.classList.add('online')
+        } else if (circleStatus) {
+            circleStatus.classList.remove('online')
+            circleStatus.classList.add('offline')
+        }
+}, 1000)

@@ -128,12 +128,24 @@ async function sendRequest(target_user_id, target, userId, token) {
     UserContactFetching()
 }
 
+async function fetchDataChat(target_user_id)
+{ 
+    const CcontentConver = document.getElementById('CcontentConver');
+    const CinfoUser = document.getElementById('CinfoUser');
+
+    CinfoUser.innerHTML = chatFriendSkeleton(); // skeleton
+    CcontentConver.innerHTML = ""
+    for(let i = 0; i < 7; i++)
+        CcontentConver.innerHTML += contentMessageSkeleton(); // skeleton
+    return await DataChatFetching(target_user_id)
+}
+
 async function implementBtns(target, target_user_id) {
     const page_discussion = document.getElementById('page_discussion');
     const page_chat = document.getElementById('page_chat');
     const page_discover = document.getElementById('page_discover');
-    const CcontentConver = document.getElementById('CcontentConver');
-    const CinfoUser = document.getElementById('CinfoUser');
+    
+   
     const Cback = document.getElementById('contact_user');
     const  {userId, token} = GetUserIdToken();
 
@@ -142,13 +154,8 @@ async function implementBtns(target, target_user_id) {
         page_discussion.classList.remove('d-none');
         page_discover.classList.add('d-none');
         Cback.src = "/static/img/general/Account.png"
-        CinfoUser.innerHTML = chatFriendSkeleton(); // skeleton
-        CcontentConver.innerHTML = ""
-        for(let i = 0; i < 7; i++)
-        CcontentConver.innerHTML += contentMessageSkeleton(); // skeleton
         target_id = target_user_id
-        const data = await DataChatFetching(target_user_id)
-        console.log(data.data.conversation_id)
+        const data = await fetchDataChat(target_user_id)
         localStorage.setItem('coversation_id', data.data.conversation_id)
         loadDataChat(data?.data, target_user_id)
     }
@@ -160,3 +167,11 @@ async function implementBtns(target, target_user_id) {
         sendRequest(target_user_id, "unblock", userId, token)
 }
 
+
+
+// channels
+function openFormGroup()
+{
+    console.log("object")
+    
+}

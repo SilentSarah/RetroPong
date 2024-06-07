@@ -5,28 +5,38 @@
             <img class="menu w-60 cursor" src="/static/img/general/menu.png" alt="logo">
         </div>
         <div class="items slide-in-blurred-left  gap-3 position-relative">
-            <div id="circle_message" class="circle_message position-absolute z-1 text-white d-none align-items-center justify-content-center">0</div>
-            <img id='chat' class="btn_msg w-100 cursor" src="/static/img/general/DM 1.png" onclick="transition('chat')" alt="avatar">
+            <img id='chat' class="btn_msg w-100 cursor" src="/static/img/general/DM 1.png" onclick="transition('chat')"alt="avatar">
             <span class="title_btn text-white">Messages</span>
         </div>
         <div class="items slide-in-blurred-left gap-3">
-            <img id="discover" class="btn_msg w-100 cursor" src="/static/img/general/discover.png" onclick="transition('discover')" alt="avatar">
+            <img id="discover" class="btn_msg w-100 cursor rounded_channel" src="/static/img/general/gmc.webp"
+                onclick="transition('discover')" alt="avatar">
             <span class="title_btn text-white">Discover</span>
         </div>
+        <div class="items slide-in-blurred-left gap-3">
+            <img id="discover" class="btn_msg w-100 cursor" src="/static/img/general/discover.png"
+                onclick="transition('discover')" alt="avatar">
+            <span class="title_btn text-white">Discover</span>
+        </div>
+
+
     </div>
 
     <!--Discover page-->
     <div id='page_discover' class="main w-100 h-100 ">
-         <div class="searchItems d-flex align-items-center justify-content-center flex-column  h-40 w-100 gap-4">
+        <div class="searchItems d-flex align-items-center justify-content-center flex-column  h-40 w-100 gap-4">
             <span class="focus-in-expand discover_title text-white fw-bold">Discover new friends & communities</span>
-            <div class="slide-in-blurred-top inputSearch d-flex align-items-center justify-content-center w-60 position-relative">
+            <div
+                class="slide-in-blurred-top inputSearch d-flex align-items-center justify-content-center w-60 position-relative">
                 <input type="search" id="search" class="form-input w-90 h-100 " id="search" placeholder="Search">
                 <button id="btn_search" class="scale-in-center btn_search nokora text-white h-100 w-10">Search</button>
-                <img class="scale-in-center-1 iconSearch position-absolute" src="/static/img/general/icons8-search-512 1.png" alt="search">
+                <img class="scale-in-center-1 iconSearch position-absolute"
+                    src="/static/img/general/icons8-search-512 1.png" alt="search">
             </div>
-         </div>
-         <div class="resultSearch h-60 d-flex flex-column">
-            <span class="focus-in-expand title_result text-white d-flex justify-content-center align-items-center h-30">Recommendations</span>
+        </div>
+        <div class="resultSearch h-60 d-flex flex-column">
+            <span
+                class="focus-in-expand title_result text-white d-flex justify-content-center align-items-center h-30">Recommendations</span>
             <div id="Rcards" class="Rcards d-flex align-items-center justify-content-center h-100 p-4">
                 <!----->
             </div>
@@ -34,16 +44,23 @@
     </div>
 
     <!--Messages page-->
-    <div id='page_chat'  class="main w-100 h-100 d-none">
+    <div id='page_chat' class="main w-100 h-100 d-none">
         <div class="navFriend w-100 h-10 text-white d-flex align-items-center gap-4">
             <div class="navContent mx-4 d-flex align-items-center gap-1">
-                <svg x="0" y="0" class="icon_ae0b42" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path fill="currentColor" d="M13 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" class=""></path><path fill="currentColor" d="M3 5v-.75C3 3.56 3.56 3 4.25 3s1.24.56 1.33 1.25C6.12 8.65 9.46 12 13 12h1a8 8 0 0 1 8 8 2 2 0 0 1-2 2 .21.21 0 0 1-.2-.15 7.65 7.65 0 0 0-1.32-2.3c-.15-.2-.42-.06-.39.17l.25 2c.02.15-.1.28-.25.28H9a2 2 0 0 1-2-2v-2.22c0-1.57-.67-3.05-1.53-4.37A15.85 15.85 0 0 1 3 5Z" class=""></path></svg>
+                <svg x="0" y="0" class="icon_ae0b42" aria-hidden="true" role="img" xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path fill="currentColor" d="M13 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" class=""></path>
+                    <path fill="currentColor"
+                        d="M3 5v-.75C3 3.56 3.56 3 4.25 3s1.24.56 1.33 1.25C6.12 8.65 9.46 12 13 12h1a8 8 0 0 1 8 8 2 2 0 0 1-2 2 .21.21 0 0 1-.2-.15 7.65 7.65 0 0 0-1.32-2.3c-.15-.2-.42-.06-.39.17l.25 2c.02.15-.1.28-.25.28H9a2 2 0 0 1-2-2v-2.22c0-1.57-.67-3.05-1.53-4.37A15.85 15.85 0 0 1 3 5Z"
+                        class=""></path>
+                </svg>
                 <span class="fw-bold">Friends</span>
             </div>
-            <span id="online"  class="tracking-in-expand navItem text-pink" onclick="filterFriends('online')">  Online</span>
-            <span id="all"     class="tracking-in-expand navItem"           onclick="filterFriends('all')"   >  All   </span>
-            <span id="pending" class="tracking-in-expand navItem"           onclick="filterFriends('pending')"> Pending</span>
-            <span id="blocked" class="tracking-in-expand navItem"           onclick="filterFriends('blocked')"> Blocked</span>
+            <span id="online" class="tracking-in-expand navItem text-pink" onclick="filterFriends('online')">
+                Online</span>
+            <span id="all" class="tracking-in-expand navItem" onclick="filterFriends('all')"> All </span>
+            <span id="pending" class="tracking-in-expand navItem" onclick="filterFriends('pending')"> Pending</span>
+            <span id="blocked" class="tracking-in-expand navItem" onclick="filterFriends('blocked')"> Blocked</span>
         </div>
         <div id="resUsers" class="resUsers h-80 m-4 text-white d-flex flex-column ">
             <!--Users-->
@@ -57,11 +74,12 @@
                 <h1 class="focus-in-expand Ctitle taprom">#title</h1>
                 <span class="focus-in-expand nokora text-secondary">description of user or channel</span>
             </div>
-            <img id="contact_user" onclick="appearInfoFriend()" class="Cback cursor position-absolute rounded-circle" src="/static/img/general/Account.png" alt="back">
+            <img id="contact_user" onclick="appearInfoFriend()" class="Cback cursor position-absolute rounded-circle"
+                src="/static/img/general/Account.png" alt="back">
         </div>
 
         <div class="Ccontent d-flex h-100 w-100 ">
-           
+
             <div class="Cconverstation w-80 h-100 p-4 overflow-hidden">
                 <div id="CcontentConver" class="CcontentConver w-100 h-80 d-flex flex-column overflow-auto gap-4">
                     <!--messages-->
@@ -70,7 +88,7 @@
                 <div class="slide-in-bottom Cinputs h-10 w-100 d-flex align-items-end gap-3">
                     <input id="Cinput" type="text" class="Cinput w-90 text-white" placeholder="Type a message">
                     <div id="CsendBtn" class="Csend rounded-circle">
-                        <img  class="CsendBtn animate-send" src="/static/img/general/send.png"   alt="" >
+                        <img class="CsendBtn animate-send" src="/static/img/general/send.png" alt="">
                     </div>
                 </div>
             </div>
@@ -81,7 +99,7 @@
                     <div class="online rounded-circle position-absolute"></div>
                 </div>
                 <div class="Cinformation text-white d-flex flex-column w-90 h-30 p-3">
-                    <div class="CitemInfo d-flex flex-column"> 
+                    <div class="CitemInfo d-flex flex-column">
                         <span class="Cname fw-bold"></span>
                         <span class="Cdescription"> </span>
                     </div>

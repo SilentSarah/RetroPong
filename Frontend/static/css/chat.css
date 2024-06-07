@@ -660,6 +660,7 @@ body {
 
     .items {
         display: none;
+        margin: 0 !important;
     }
 
     .cursor {

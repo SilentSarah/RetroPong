@@ -39,7 +39,7 @@ const Friends = (friend, type, blockedby) => {
 const chatFriend = (friend) => {
     return `<div class="Rectangle h-10 position-relative w-100">
                 <img class="Rimg Cimg position-absolute rounded-circle" src=${friend.profilepic ? friend.profilepic : "/static/img/general/Account.png"} alt="avatar">
-                <div class="circle_status ${friend.isOnline ? 'online' : 'offline'} rounded-circle position-absolute "></div>
+                <div id="circleStatus" class="circle_status ${friend.isOnline ? 'online' : 'offline'} rounded-circle position-absolute "></div>
             </div>
             <div class="Cinformation text-white d-flex flex-column w-90 h-30 p-3 gap-3">
                 <div class="CitemInfo d-flex flex-column"> 
