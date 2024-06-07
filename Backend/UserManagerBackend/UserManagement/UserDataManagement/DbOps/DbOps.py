@@ -161,6 +161,14 @@ class DbOps:
                 if (bg_uploaded is not None):
                     user.uprofilebgpic.delete()
                     user.uprofilebgpic.save(f"{user.uusername + bg_uploaded.name}", bg_uploaded)
+            notification = Notification(
+                nType="ACCOUNT",
+                nContent="Your account settings has been updated",
+                nReciever=user_id,
+                nSender=user_id,
+                nDate=datetime.datetime.now()
+            )
+            notification.save()
             user.save()
             return True
         except Exception as e:
@@ -177,7 +185,6 @@ class DbOps:
             bool: True if user is created, False if creation fails
         """
         user_data_copy = user_data.copy()
-        print(user_data_copy)
         unhashed_password = str(user_data_copy.get("uPassword"))
         if (re.match(r'[A-Za-z0-9]{8,}', unhashed_password) is None):
             return False
@@ -224,10 +231,9 @@ class DbOps:
                 "Notifications": {},
             }
             for notification in notifications:
-                print(notification.nSender)
                 sender = User.objects.get(id=notification.nSender)
                 if (sender is not None):
-                    sender_pfp = sender.uprofilepic
+                    sender_pfp = 'http://{}{}'.format(Site.objects.get_current().domain, sender.uprofilepic.url)
                     sender_username = sender.uusername
                 notifications_list["Notifications"][i] = {
                     "id": notification.id,

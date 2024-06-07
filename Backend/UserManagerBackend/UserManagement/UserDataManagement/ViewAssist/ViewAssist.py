@@ -174,9 +174,9 @@ class ViewAssist:
     def generate_acc_settings_cfg(request: HttpRequest) -> dict:
         full_name = request.POST.get('full_name')
         if (full_name is not None):
-            split_name = full_name.split(' ')
-            first_name = full_name.split(' ')[0] if len(split_name) > 0 else None
-            last_name = full_name.split(' ')[1] if len(split_name) > 1 else None
+            split_name = full_name.split(' ', 1)
+            first_name = split_name[0] if len(split_name) > 0 else None
+            last_name = split_name[1] if len(split_name) > 1 else None
         else:
             first_name = None
             last_name = None
