@@ -68,7 +68,7 @@ function constructNotification(each_notification, notifications_container) {
         setTimeout(() => {
             notifications_container.insertBefore(notification, notifications_container.firstChild);
             notification.outerHTML = `
-            <div id="notification_content" back-link="${notification_Data.type}" notification_id="${notification_Data.id}" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0 gap-1 fade_in" style="width:280px; height:120px;">
+            <div id="notification_content" back-link="${notification_Data.type}" notification_id="${notification_Data.id}" class="d-flex flex-column justify-content-between rounded-3 bg-white-transparent-0-15 p-2 m-0 gap-1 fade_in" style="width:280px; height:100px;">
                 <div id="noti_header" class="d-flex align-items-center gap-1 opacity-75">
                     <img src="${img_paths[notification_Data.type]}" width="20px">
                     <p class="text-white nokora fw-bold m-0" style="font-size: 15px;">${notification_Data.type}</p>
@@ -105,6 +105,11 @@ function invokeAction(notification_data, selected_notification) {
             anchor.remove();
             break;
         case 'ACCOUNT':
+            anchor.href = '/settings';
+            selected_notification.appendChild(anchor);
+            scanLinks();
+            anchor.click();
+            anchor.remove();
             break;
         case 'GAME':
             anchor.href = '/game';
@@ -124,7 +129,7 @@ function invokeActivity(notificationID) {
 
 function saveNotificationData(data) {
     for (const [key, value] of Object.entries(data['Notifications'])) {
-        localStorage.setItem(key, JSON.stringify(value));
+        localStorage.setItem(value['id'], JSON.stringify(value));
     }
 }
 
