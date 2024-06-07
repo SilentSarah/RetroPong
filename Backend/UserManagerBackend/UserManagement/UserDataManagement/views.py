@@ -97,7 +97,6 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
                 res = HttpResponseRedirect("http://127.0.0.1:5500/dashboard")
                 res.set_cookie('user_id', user_data.get('id'), samesite="None", secure=True)
                 res.set_cookie('access', jwt_token, samesite="None", secure=True)
-                print("token:", jwt_token)
                 return res
         except Exception as e:
             print("error:", e)

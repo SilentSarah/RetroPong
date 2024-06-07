@@ -229,7 +229,7 @@ class DbOps:
             notifications_list = {
                 "Notifications": {},
             }
-            for notification in notifications:
+            for notification in reversed(notifications):
                 sender = User.objects.get(id=notification.nSender)
                 if (sender is not None):
                     sender_pfp = 'http://{}{}'.format(Site.objects.get_current().domain, sender.uprofilepic.url)
