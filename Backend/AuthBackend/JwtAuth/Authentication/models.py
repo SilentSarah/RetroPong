@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.admin import ModelAdmin
 from django.contrib.postgres.fields import ArrayField
-
+import django.utils.timezone 
 # Create your models here.
 
 class Users(models.Model):
@@ -16,6 +16,7 @@ class Users(models.Model):
     uIp = models.CharField(db_column='uIp', max_length=100, default="")  # Field name made lowercase.
     ucIDs = ArrayField(models.IntegerField(), db_column='ucIDs')  # Field name made lowercase.
     uIs42 = models.BooleanField(db_column='uIs42', default=False)  # Field name made lowercase.
+    TwoFactor = models.BooleanField(db_column='TwoFactor', default=False)  # Field name made lowercase.
     
     def __str__(self):
         return self.uUsername
@@ -26,3 +27,17 @@ class Users(models.Model):
 class UsersAdmin(ModelAdmin):
     list_display = ['id', 'uUsername', 'uPassword', 'uEmail', 'uFname', 'uLname', 'uRegdate', 'uDesc', 'uIp', 'ucIDs']
     search_fields = ['uUsername', 'uEmail', 'uFname', 'uLname']
+    
+    
+class TwoFactor(models.Model):
+    id = models.AutoField(primary_key=True)
+    secret = models.IntegerField()
+    created_at = models.DateTimeField()
+    verified = models.BooleanField(default=False)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.user.uUsername
+    
+    class Meta:
+        db_table = 'UserDataManagement_twofactor'

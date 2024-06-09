@@ -155,6 +155,7 @@ class DbOps:
                 setattr(user, key, value)
             if (uploaded_files is not None):
                 if (pfp_uploaded is not None):
+                    print(pfp_uploaded.size)
                     user.uprofilepic.delete()
                     user.uprofilepic.save(f"{user.uusername + pfp_uploaded.name}", pfp_uploaded)
                 if (bg_uploaded is not None):
