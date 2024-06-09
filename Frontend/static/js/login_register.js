@@ -15,7 +15,8 @@
 function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
-    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'position-absolute', 'z-5', 'slide-in-blurred-top');
+    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'slide-in-blurred-top', 'mx-auto', 'mt-5');
+    div.style.zIndex = '9999';
     div.setAttribute('role', 'alert');
     div.setAttribute('aria-live', 'assertive');
     div.setAttribute('aria-atomic', 'true');
@@ -37,8 +38,7 @@ function toast(message, color_class) {
     toast_content.appendChild(toast_body);
     toast_content.appendChild(close_btn);
 
-    let mainContent = document.getElementById('mainContent');
-    mainContent.appendChild(div);
+    document.querySelector("#modalContent").appendChild(div);
     
     div.style.display = 'block';
     div.style.top = '25px';
@@ -102,21 +102,24 @@ function log_user_in() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        if (response.status === 201) {
-            return response.json();
-        } else if (response.status >= 400 && response.status < 500) {
+        if (response.status >= 400 && response.status < 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
-        } else {
+        } else if (response.status >= 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Server error');
+        } else {
+            return response.json();
         }
     })
     .then(data => {
-        localStorage.setItem('user_id', data.user_id);
-        settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
-        DisplayNavBar();
-        passUserToDashboard();
+        if (data.message === '2FA Required') {
+            initiateTwoFactorModal();
+        } else {
+            DisplayNavBar();
+            localStorage.setItem('user_id', data.user_id);
+            settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
+        }
     })
     .catch((error) => {
         console.error('Error:', error);

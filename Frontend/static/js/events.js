@@ -166,8 +166,9 @@ function copyIDListener() {
 function loadEvents() {
     if (window.location.pathname === '/') {
     }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register')
+    if (window.location.pathname === '/login' || window.location.pathname === '/register'){
         scanInput();
+    }
     else if (window.location.pathname === '/settings') {
         switchTabsHandler();
         loadAccountDetailsInSettings(true);

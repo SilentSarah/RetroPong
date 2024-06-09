@@ -73,13 +73,11 @@ function handleUpload(type) {
         if (this.files && this.files[0]) {
             console.log("File selected: ", this.files[0].name);
             if (type === "pfp") {
-                // const pfp = new FormData();
-                // pfp.append('pfp', this.files[0]);
                 updated_values['pfp'] = this.files[0];
+                console.log("pfp size:", this.files[0].size);
             } else if (type === "bg") {
-                // const bg = new FormData();
-                // bg.append('bg', this.files[0]);
                 updated_values['bg'] = this.files[0];
+                console.log("pfp size:", this.files[0].size);
             }
             DisplayConfirmationPopUp();
         }
@@ -193,7 +191,7 @@ function SaveChanges() {
     for (const key in updated_values) {
         form.append(key, updated_values[key]);
     }
-    
+    clearInterval(fetchID);
     fetch('http://127.0.0.1:8001/userdata/update', {
         method: 'POST',
         headers: {
@@ -207,6 +205,7 @@ function SaveChanges() {
             delete updated_values[key];
         setValuesToSessionStorage(response);
         loadAccountDetailsInSettings();
+        fetchID = setInterval(fetchUserData, 5000);
     })
     .catch((error) => {
         console.log(error);
