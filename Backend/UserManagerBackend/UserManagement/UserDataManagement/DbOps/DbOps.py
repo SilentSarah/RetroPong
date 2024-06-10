@@ -146,6 +146,7 @@ class DbOps:
             bool: True if user is updated, False if user does not exist or update fails
         """
         try:
+            utc_morocco = timezone.get_fixed_timezone(60)
             user = User.objects.get(id=user_id)
             pfp_uploaded = uploaded_files.get('pfp')
             bg_uploaded = uploaded_files.get('bg')
@@ -166,7 +167,7 @@ class DbOps:
                 nContent="Your account settings has been updated",
                 nReciever=user_id,
                 nSender=user_id,
-                nDate=datetime.datetime.now(tz=timezone.utc)
+                nDate=datetime.datetime.now(tz=utc_morocco)
             )
             notification.save()
             user.save()

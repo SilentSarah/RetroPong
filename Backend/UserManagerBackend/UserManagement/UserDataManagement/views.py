@@ -94,10 +94,14 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             if (jwt_token is None):
                 return JsonResponse({"error":"JWT couldn't be acquired, please log in manually"}, status=400)
             else:
-                res = HttpResponseRedirect("http://127.0.0.1:5500/dashboard")
-                res.set_cookie('user_id', user_data.get('id'), samesite="None", secure=True)
-                res.set_cookie('access', jwt_token, samesite="None", secure=True)
-                return res
+                if (user_data.get('two_factor') == True):
+                    res = ViewAssist.send2fa_pin_to_user(user_data.get('id'))
+                    return res if res else JsonResponse({"error":"Couldn't send 2FA pin"}, status=400)
+                else:
+                    res = HttpResponseRedirect("http://127.0.0.1:5500/dashboard")
+                    res.set_cookie('user_id', user_data.get('id'), samesite='none', secure=True)
+                    res.set_cookie('access', jwt_token, samesite='none', secure=True)
+                    return res
         except Exception as e:
             print("error:", e)
             return HttpResponse(status=400)

@@ -2,7 +2,7 @@ import requests
 import json
 from ..WebOps.WebOps import *
 from ..DbOps.DbOps import *
-from django.http import HttpRequest
+from django.http import *
 import random
 from dotenv import dotenv_values
 
@@ -210,3 +210,16 @@ class ViewAssist:
         if (re.match(r'[A-Za-z0-9]{8,}', password) is None):
             return False
         return True
+    
+    @staticmethod
+    def send2fa_pin_to_user(user_id: id):
+        response = WebOps.request_endpoint("http://127.0.0.1:8000/auth/2fa/send", 
+                                "POST", 
+                                {"Content-Type": "application/json"}, 
+                                json.dumps({"user_id": user_id}))
+        if (response.status_code == 200):
+            response_to_user = HttpResponseRedirect('http://127.0.0.1:5500/login')
+            response_to_user.set_cookie('user_id', user_id, samesite='none', secure=True)
+            response_to_user.set_cookie('2fa', 'true', samesite='none', secure=True)
+            return response_to_user
+        return False
