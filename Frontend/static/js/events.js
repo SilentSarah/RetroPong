@@ -61,7 +61,7 @@ function DisplayNavBar() {
             console.log('Notification');
         });
         document.getElementById('logout').addEventListener('click', function () {
-            sessionStorage.clear();
+            // sessionStorage.clear();
             clearInterval(fetchID);
             delete_cookie('access');
             window.location.href = '/';
