@@ -2,6 +2,7 @@ import bcrypt, json
 from ..models import *
 from django.http import *
 import datetime
+from django.db.models import Q
 
 MAX_DURATION = 7
 
@@ -17,7 +18,7 @@ class DbOps:
             data = json.loads(request.body.decode('utf-8'))
             username = data.get("username")
             password = data.get("password")
-            user = Users.objects.get(uUsername=username)
+            user = Users.objects.get(Q(uUsername=username) | Q(uEmail=username))
             hash_comparision = bcrypt.checkpw(password.encode('utf-8'), user.uPassword.encode('utf-8'))
             if (hash_comparision == False):
                 return None
@@ -56,7 +57,8 @@ class DbOps:
             return JsonResponse({ 'error': 'Invalid username or password' }, status=401)
         elif (type(user) == int):
             response = JsonResponse({'message': '2FA Required'}, status=200)
-            # response.set_cookie('user_id', user, max_age=datetime.timedelta(minutes=5), samesite='None', secure=True)
+            response.set_cookie('user_id', user, max_age=datetime.timedelta(minutes=5), samesite='None', secure=True)
+            response.set_cookie('2fa', 'true', max_age=datetime.timedelta(minutes=5), samesite='None', secure=True)
             return response
         from ..JwtOps.JwtUtils import JwtOps
         access_token = JwtOps.create_token(user)

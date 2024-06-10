@@ -156,7 +156,7 @@ class JwtOps:
             return False
     
     @staticmethod
-    def verify_2fa_code(code: int):
+    def verify_2fa_code(code: int, user_id: int) -> int:
         """Verifies the 2fa code
 
         Args:
@@ -167,10 +167,13 @@ class JwtOps:
         """
         try:
             two_factor = TwoFactor.objects.get(secret=code)
+            if (int(user_id) != int(two_factor.user.id)):
+                print(user_id, two_factor.user.id)
+                raise ValueError("User id does not match")
             if (two_factor.verified == True):
-                return None
+                raise ValueError("Code already verified")
             if ((two_factor.created_at + datetime.timedelta(minutes=5)) < timezone.now()):
-                return None
+                raise ValueError("Code expired")    
             two_factor.verified = True
             two_factor.delete()
             user = two_factor.user.id

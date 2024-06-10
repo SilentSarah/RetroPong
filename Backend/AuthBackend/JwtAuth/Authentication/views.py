@@ -49,7 +49,8 @@ def verify_2fa(request: HttpRequest):
     try: 
         body = json.loads(request.body)
         code = body.get('code')
-        user_id = JwtOps.verify_2fa_code(code)
+        user_id = request.COOKIES.get('user_id')
+        user_id = JwtOps.verify_2fa_code(code, user_id)
         if (user_id != None):
             user = DbOps.retrieve_user_info(user_id)
             token = JwtOps.create_token(user)
@@ -59,6 +60,7 @@ def verify_2fa(request: HttpRequest):
                     'access': token 
                 }, status=201)
             response.set_cookie('access', token, max_age=datetime.timedelta(days=MAX_DURATION), samesite="None", secure=True)
+            response.delete_cookie('2fa')
             return response
         else:
             return JsonResponse({ 'error': 'Invalid 2FA code' }, status=401)
@@ -90,3 +92,29 @@ def generate_42_user_token(request: HttpRequest):
         }, status=201)
     response.set_cookie('access', token, max_age=datetime.timedelta(days=MAX_DURATION), samesite="None", secure=True)
     return response
+
+@csrf_exempt
+@require_http_methods(['POST'])
+def send2fa_pin(request: HttpRequest):
+    """Sends the 2FA pin to the user
+
+    Args:
+        request (HttpRequest): 
+
+    Returns:
+        JsonResponse: Response to the client in json format
+    """
+    try:
+        body = json.loads(request.body)
+        user_id = body.get('user_id')
+        user = DbOps.retrieve_user_info(user_id)
+        if (user == None):
+            return JsonResponse({ 'error': 'Invalid user' }, status=401)
+        if (user.TwoFactor == False):
+            return JsonResponse({ 'error': '2FA not enabled' }, status=401)
+        if (JwtOps.send_2fa_code(user) == False):
+            return JsonResponse({ 'error': 'Failed to send 2FA code' }, status=500)
+        return JsonResponse({ 'message': '2FA code sent' }, status=200)
+    except Exception as e:
+        print("Error: ", e)
+        return JsonResponse({ 'error': 'Bad Request' }, status=400)
