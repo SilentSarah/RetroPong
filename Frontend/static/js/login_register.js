@@ -113,7 +113,7 @@ function log_user_in() {
         }
     })
     .then(data => {
-        if (data.message === '2FA Required') {
+        if (getCookie('2fa') != '') {
             initiateTwoFactorModal();
         } else {
             DisplayNavBar();

@@ -1,4 +1,5 @@
 function initiateTwoFactorModal() {
+    if (document.querySelector('.overlay') !== null) return;
     let overlay = document.createElement('div');
     overlay.classList.add('overlay', 'd-flex', 'align-items-center', 'justify-content-center');
     overlay.innerHTML = `
@@ -37,7 +38,7 @@ function initiateTFAEventHandlers() {
     const code_pin_form = document.getElementById('code_pin_form');
     const code_inputs = code_pin_form.querySelectorAll('input');
 
-    close_btn.addEventListener('click', function() { overlay.remove(); });
+    close_btn.addEventListener('click', function() { delete_cookie('2fa'); delete_cookie('user_id'); overlay.remove(); });
     code_inputs.forEach(input => {
         input.addEventListener('input', function () {
             if (input.value.length > 0) {
@@ -83,13 +84,19 @@ function accumulateCode() {
     }, '');
 }
 
+function scan2fa() {
+    if (getCookie('2fa') != '') {
+        initiateTwoFactorModal();
+    }
+}
+
 function Verify2FA() {
     const accumulated_code = accumulateCode();
     if (accumulated_code.length < 6) {
         toast('Please enter the full code before verifying.', 'bg-danger');
         return;
     }
-    fetch('http://127.0.0.1:8000/auth/verify2fa', {
+    fetch('http://127.0.0.1:8000/auth/2fa/verify', {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -103,6 +110,7 @@ function Verify2FA() {
         if (response.status === 201) {
             toast('2FA verification successful', 'bg-success');
             document.querySelector('.overlay').remove();
+            delete_cookie('2fa');
             DisplayNavBar();
             setTimeout(() => {
                 passUserToDashboard();

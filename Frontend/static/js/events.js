@@ -167,6 +167,7 @@ function loadEvents() {
     if (window.location.pathname === '/') {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register'){
+        scan2fa();
         scanInput();
     }
     else if (window.location.pathname === '/settings') {
