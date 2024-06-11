@@ -115,8 +115,14 @@ function initGame()
 	gameSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 
-		
-		if (data.type == 'update')
+		if (data.type == 'fetch_session_storage')
+		{
+			gameSocket.send(JSON.stringify({
+						'type': 'session_storage',
+						...sessionStorage
+					}));
+		}
+		else if (data.type == 'update')
 		{
 			// console.log("the data from the update is: ", data);
 			render(data);
@@ -169,4 +175,3 @@ function initGame()
 
 // execution
 let soundFx = [new Audio('/static/sounds/hit.mp3'), new Audio('/static/sounds/score.mp3')]
-initSocket(initGame);

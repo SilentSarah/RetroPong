@@ -3,7 +3,7 @@ let gameSocket;
 function initSocket(initGame) {
 	gameSocket = new WebSocket(
 		'ws://'
-		+ window.location.hostname + ':8000'
+		+ window.location.hostname + ':8003'
 		+ '/ws/game/'
 	);
 	

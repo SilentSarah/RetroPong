@@ -231,7 +231,7 @@ function loadEvents() {
         TwoFactorAuthHandler();
     }
 	else if (window.location.pathname === '/game')
-		initGame();
+		initSocket(initGame);
     else if (window.location.pathname === '/dashboard') {
         copyIDListener();
         setDashboardStats();

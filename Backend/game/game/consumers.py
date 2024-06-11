@@ -18,6 +18,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.game = False
+		self.player_info = {}
 
 
 	def check_player(self):
@@ -79,6 +80,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 		# Will be dealt with later -> # await self.channel_layer.group_add(self.group_name, self.channel_name)
 		await self.accept()
+		await self.send_json(content={"type": "fetch_session_storage"})
 		# color = "\033[31;42m"
 		# reset_color = "\033[0;0m"
 		# print(f"{color}[{datetime.now()}] new socket got connected{reset_color}", file=sys.stderr)
@@ -141,7 +143,13 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	async def receive_json(self, content):
 		type = content["type"]
 		# paddle = {}
-		if (type == 'start'):
+		if (type == 'session_storage'):
+			self.player_info = content
+		elif (type == 'start'):
+			await self.send_json(content={
+				"type": "log",
+				"log": self.player_info
+			})
 			# await self.send_json(content={"type": "log", "log": 'I reach here'})
 			# await self.game.start(content['mode'])
 			if (content['mode'] == 'tournament'):
