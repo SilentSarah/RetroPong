@@ -255,7 +255,7 @@ function loadAccountDetailsInSettings(boolean = false) {
 
 function DeleteAccountPrompt() {
         const overlay = document.createElement('div');
-        overlay.classList.add('position-absolute', 'w-100', 'h-100', 'bg-black-transparent-0-5', 'z-20');
+        overlay.classList.add('position-absolute', 'w-100', 'h-100', 'bg-black-transparent-0-5', 'z-20', 'overlay');
         document.body.appendChild(overlay);
         const confirmation_message = document.createElement('div');
         confirmation_message.classList.add('position-absolute', 'border-transparent-0-5', 'confirmation_message', 'rounded-3', 'z-20');
