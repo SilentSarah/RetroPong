@@ -11,17 +11,17 @@ class Game:
 	game_number = 0
 	def __init__(self, consumer, mode):
 		self.mode = mode
-		self.ready = self.finished = False
+		self.full = self.finished = False
 		# self.consumer = consumer
 		self.players = [consumer.channel_name]
 		self.paddles = {consumer.channel_name: Paddle()}
 		self.details = {
 			'creator': consumer.channel_name,
-			'name': f"room_{Game.game_number}"
+			'id': f"room_{Game.game_number}"
 		}
 		Game.game_number += 1
 		self.ball = {'r': 1 / 150}
-		self.hit = [False, 5]
+		self.hit = [False, 5] # for soundFx
 		self.reset_ball()
 		self.score = [0, 0]
 
@@ -82,8 +82,8 @@ class Game:
 		self.calc_xp()
 		self.finished = True
 
-	def name(self):
-		return (self.details['name'])
+	def id(self):
+		return (self.details['id'])
 	
 	def add_player(self, player):
 		self.players.append(player)

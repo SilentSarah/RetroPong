@@ -7,9 +7,10 @@
 				<div id="mainMenu">
 					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
 					<div class="btns-wrapper">
-						<button class="game-mode-btn" onclick="startMode(1)"><i class="lni lni-user"></i> Solo Mode</button>
-						<button class="game-mode-btn" onclick="startMode(2)"><i class="lni lni-users"></i> Duo Mode</button>
-						<button class="game-mode-btn" onclick="startMode('tournament')"><i class="lni lni-cup"></i> Tournament</button>
+						<!-- the random mode will show two options buttons, either solo or duo -->
+						<button class="game-mode-btn" onclick="soloOrDuo('mainMenu')"><i class="fa-solid fa-dice"></i> Random Mode</button>
+						<button class="game-mode-btn" onclick="startMode(3)"><i class="fa-solid fa-lock"></i> Private Mode</button>
+						<button class="game-mode-btn" onclick="startMode(4)"><i class="fa fa-desktop"></i> Local Mode</button>
 					</div>
 				</div>
 				<!-- Options Menu -->

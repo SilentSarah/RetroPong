@@ -9,29 +9,49 @@ from game.paddle import Paddle
 import threading
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
-	active_players = {} # {"channel_name": Player, ...}
-	solos = [] # list of solo game objects
-	duos = [] # list of duo game objects
-	tournaments = [] # list of tournament game objects
+	# active_players = {} # {"channel_name": Player, ...}
+	# solos = [] # list of solo game objects
+	# duos = [] # list of duo game objects
+	user_matches = {}
+	games = {}
+
 
 	# check gpt later for this
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.game = False
-		self.player_info = {}
+		self.user_info = {}
 
 
-	def check_player(self):
-		if self.channel_name not in GameConsumer.active_players:
-			# name, pic and related stuff will be fetched from the DB
-			GameConsumer.active_players[self.channel_name] = Player('static/img/pfp/L7afouzli9.jpg', 'pfp', self.channel_name, 21)
+	# def check_player(self):
+	# 	if self.channel_name not in GameConsumer.active_players:
+	# 		# name, pic and related stuff will be fetched from the DB
+	# 		GameConsumer.active_players[self.channel_name] = Player('static/img/pfp/L7afouzli9.jpg', 'pfp', self.channel_name, 21)
 	
+	async def join_game(self, mode):
+		# will depend on game_mode to decide how to join the game
+		game_id = GameConsumer.user_matches[self.user_info['user_id']][mode]
+		if (game_id):
+			self.game = GameConsumer.games[game_id]
+		else:
+			if (mode <= 2): # random
+				mode_games = {k:v for (k,v) in GameConsumer.games.items() if v['mode'] == mode}
+				last_game = list(mode_games.values())[-1]
+				if (not last_game.full()): self.game = last_game
+			if (not self.game): self.game = Game(mode)
+			GameConsumer.games[self.game.id()] = self.game
+			GameConsumer.user_matches[self.user_info['user_id']][mode] = self.game.id()
+			# STOPPED HERE
+			self.game.add_player(self.user_info['user_id'])
+		return self.game
+			
+
 	async def join_solo(self): # returns game object
 		for game in GameConsumer.solos:
-			if (not game.ready):
+			if (not game.full):
 				game.add_player(self.channel_name) # will be using channel_names for now, until the auth is set
 				game.add_paddle(self.channel_name) # this will add a paddle in the game and return the id/no
-				game.ready = game.players_count() == 2
+				game.full = game.players_count() == 2
 				return game
 		new_game = Game(self, 1)
 		GameConsumer.solos.append(new_game)
@@ -39,40 +59,40 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
 	async def join_duo(self): # returns game object
 		for game in GameConsumer.duos:
-			if (not game.ready):
+			if (not game.full):
 				game.add_player(self.channel_name) # will be using channel_names for now, until the auth is set
 				game.add_paddle(self.channel_name) # this will add a paddle in the game and return the id/no
-				game.ready = game.players_count() == 4
-				print(f'game.ready: {game.ready}, game.players_count(): {game.players_count()}')
+				game.full = game.players_count() == 4
+				print(f'game.full: {game.full}, game.players_count(): {game.players_count()}')
 				return game
 		print('I got inside duo')
 		new_game = Game(self, 2)
 		GameConsumer.duos.append(new_game)
 		return GameConsumer.duos[-1]
-	
-	def join_tournament(self):
-		print(f"\033[91m >> join tournament << \033[0m", file=sys.stderr)
-		pass
 
 	def leave_game(self): # returns game object
 		# remove from active players
-		for player in self.game.players:
-			if player in GameConsumer.active_players:
-				del GameConsumer.active_players[player]
+		# for player in self.game.players:
+		# 	if player in GameConsumer.active_players:
+		# 		del GameConsumer.active_players[player]
 		# set the game as finished
 		self.game.finish()
 
+	# temp async - to remove later
+	async def check_user(self):
+		if (not (self.user_info['user_id'] in GameConsumer.user_matches)):
+			GameConsumer.user_matches[self.user_info['user_id']] = {
+				1: False, 2: False, 3: False, 4: False,
+			}
+			await self.send_json(content={"type": "log", "log": "The user wasn't found"})
+		else:
+			await self.send_json(content={"type": "log", "log": "The user was found"})
+			await self.send_json(content={"type": "log", "log": self.user_matches[self.user_info['user_id']]})
 	async def connect(self):
 		# self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		# self.room_group_name = f"game_{self.room_name}"
 
-		# Test Start
-		user = self.scope["user"]
-		print(f"The user is: {user}")
-		# Test End
-
-
-		self.check_player()
+		# self.check_player()
 
 		# self.game = self.join_game() <--
 
@@ -85,13 +105,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# reset_color = "\033[0;0m"
 		# print(f"{color}[{datetime.now()}] new socket got connected{reset_color}", file=sys.stderr)
 		# await self.send_json(content={"type": "log", "log": "check alive"})
-		
 
 		# OLD START
 
 		# if self.game.players_count() < 2:
 		# 	# tell the currect player to wait
-		# 	log = f"[{self.game.name()}]: waiting for another player to join... [No# Players: {self.game.players_count()}]"
+		# 	log = f"[{self.game.id()}]: waiting for another player to join... [No# Players: {self.game.players_count()}]"
 		# 	await self.send_json(content={"type": "log", "log": log})
 		# else:
 		# 	#tell them all to be ready
@@ -110,21 +129,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
 	async def disconnect(self, close_code):
 		print(f"\033[91m >> The channel just disconnected is: { self.channel_name } << \033[0m")
-		self.leave_game()
+		# self.leave_game()
+		# will probe this later
 		await self.channel_layer.group_discard(
-			self.game.name(), self.channel_name
+			self.game.id(), self.channel_name
 		)
 		# color = "\033[31;42m"
 		# reset_color = "\033[0;0m"
 		# print(f"{color}[{datetime.now()}] The socket got disconnected{reset_color}", file=sys.stderr)
-		print("Pass")
-		await self.channel_layer.group_send(
-			self.game.name(), {
-				"type": "game.recv.broadcast",
-				"message": "The Game is over!"
-				})
-		print(f'sent to the group 2 {self.game.name()}', file=sys.stderr)
-		pass
+		# await self.channel_layer.group_send(
+		# 	self.game.id(), {
+		# 		"type": "game.recv.broadcast",
+		# 		"message": "The Game is over!"
+		# 		})
 		# await self.channel_layer.group_discard(
 		# 	# self.room_group_name, self.channel_name
 		# 	self.group_name, self.channel_name
@@ -139,48 +156,44 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				"log": msg
 			})
 
+	async def standby_update(self):
+		await self.channel_layer.group_add(self.game.id(), self.channel_name)
+		await self.channel_layer.group_send(
+			self.game.id(), {
+				"type": "game.recv.broadcast",
+				"action": "standby_update"
+				})
 
 	async def receive_json(self, content):
 		type = content["type"]
 		# paddle = {}
 		if (type == 'session_storage'):
-			self.player_info = content
+			self.user_info = content
+			# will check if the user is already in the user_matches dict otherwise it'll add it.
+			await self.check_user()
 		elif (type == 'start'):
-			await self.send_json(content={
-				"type": "log",
-				"log": self.player_info
-			})
 			# await self.send_json(content={"type": "log", "log": 'I reach here'})
 			# await self.game.start(content['mode'])
-			if (content['mode'] == 'tournament'):
-				self.join_tournament()
-			else:
-				if (content['mode'] == 1):
-					self.game = await self.join_solo()
-				elif (content['mode'] == 2):
-					self.game = await self.join_duo()
+			
+			self.join_game(content['mode'])
+			# await self.standby_update()
+			
+			# print(f'sent to the group {self.game.id()}', file=sys.stderr)
+			# print(f'>>>>self.game: {self.game}', file=sys.stderr)
+			# to be added to channel group, so I can broadcast
+			# print(f'>>>>self.game.id(): {self.game.id()}', file=sys.stderr)
+			# await self.send_json(content={"type": "ready", "players": [GameConsumer.active_players[self.channel_name].getProps()]})
 				
-				await self.channel_layer.group_add(self.game.name(), self.channel_name)
-				await self.channel_layer.group_send(
-					self.game.name(), {
-						"type": "game.recv.broadcast",
-						"action": "standby_update"
-						})
-				# print(f'sent to the group {self.game.name()}', file=sys.stderr)
-				# print(f'>>>>self.game: {self.game}', file=sys.stderr)
-				# to be added to channel group, so I can broadcast
-				# print(f'>>>>self.game.name(): {self.game.name()}', file=sys.stderr)
-				# await self.send_json(content={"type": "ready", "players": [GameConsumer.active_players[self.channel_name].getProps()]})
-					
-				# else:
-				# 	await self.send_json(content={"type": "standby", "players": [GameConsumer.active_players[self.channel_name].getProps()]})
+			# else:
+			# 	await self.send_json(content={"type": "standby", "players": [GameConsumer.active_players[self.channel_name].getProps()]})
 
-				self.game.ready and	threading.Timer(3, self.game.start).start()
+			# I might change 'ready' by 'full'
+			self.game.full and	threading.Timer(3, self.game.start).start()
 
 		elif (type == 'spec'):
 			strs = ['explosion', 'defence', 'speed']
 			print(f"I received a spec of type: {strs[content['mode']]}")
-		elif (type == "update" and self.game and self.game.ready): # to adapt this condition later
+		elif (type == "update" and self.game and self.game.full): # to adapt this condition later
 			# p1 = self.game.paddles[0]
 			# p2 = self.game.paddles[1]
 
@@ -220,8 +233,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		print('I received smthg from the recv_broadcast>>>>>>>>>>', file=sys.stderr)
 		if ('action' in event.keys() and event['action'] == 'standby_update'):
 			print('I received smthg from the recv_broadcast>>>>>>>>>>')
-			type = 'ready' if self.game.ready else 'standby'
+			type = 'ready' if self.game.full else 'standby'
 			# stopped below AttributeError: 'str' object has no attribute 'pName'
 			# players = list(filter(lambda p: p.pName in self.game.players, GameConsumer.active_players.values()))
-			players = [p.getProps() for p in GameConsumer.active_players.values() if p.pName in self.game.players]
+			# players = [p.getProps() for p in GameConsumer.active_players.values() if p.pName in self.game.players]
+			# ^^^^^^^ This will be changes later by sending user_id instead
 			await self.send_json(content={"type": type, "players": players})

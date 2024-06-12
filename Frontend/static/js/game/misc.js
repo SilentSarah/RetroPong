@@ -41,6 +41,16 @@ function startMode(mode)
 	gameSocket.send(JSON.stringify({ 'type': 'start', mode }));
 }
 
+function soloOrDuo(parentId)
+{
+	const parentMenu = document.getElementById(parentId);
+	const btnsWrapper = parentMenu.querySelector('.btns-wrapper');
+	btnsWrapper.innerHTML = '';
+	['Solo', 'Duo'].forEach((v, i) => {
+		btnsWrapper.innerHTML += `<button class="game-mode-btn" onclick="startMode(${i + 1})"><i class="fa fa-user${i?'s':''}"></i> ${v}</button>`
+	});
+}
+
 function spec(mode)
 {
 	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));

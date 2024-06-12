@@ -107,5 +107,6 @@ function router() {
 }
 
 router();
-fetchUserData();
-fetchID = setInterval(fetchUserData, 1500);
+// temp commented below
+// fetchUserData();
+// fetchID = setInterval(fetchUserData, 1500);
