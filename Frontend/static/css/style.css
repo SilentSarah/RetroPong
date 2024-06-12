@@ -81,20 +81,22 @@ body::after {
 }
 
 .mainTitle {
-    /* RetroPong */
+    font-family: 'Taprom';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 196px;
+    line-height: 354px;
+    display: flex;
+    align-items: center;
+    color: #F080F2;
+    text-shadow: 0px 0px 7px #F080F2;
+    transform-origin: left top;
+    transition: all 0.5s ease-in-out;
+    filter: opacity(0);
+}
 
-font-family: 'Taprom';
-font-style: normal;
-font-weight: 400;
-font-size: 196px;
-line-height: 354px;
-display: flex;
-align-items: center;
-
-color: #F080F2;
-
-text-shadow: 0px 0px 7px #F080F2;
-
+.mainTitle.open {
+    filter: opacity(1);
 }
 
 .rnavbar {
@@ -751,4 +753,24 @@ input[type=number] {
 #two_factor_modal.open {
     transform: translateY(0);
     filter: opacity(1);
+}
+
+#users_search {
+    outline: none;
+    height: 40px;
+    border-width: 1px;
+    border-radius: 0.5rem;
+    width: 500px;
+}
+
+.transition-all {
+    transition: all 0.25s ease-in-out;
+}
+
+.backdrop-filter-blur {
+    backdrop-filter: blur(1rem);
+}   
+
+.backdrop-filter-brightness {
+    backdrop-filter: brightness(0.75);
 }

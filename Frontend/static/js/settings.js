@@ -118,14 +118,14 @@ function acquireSessionData()
 function setSettingsValues(HTMLElements, values) {
     HTMLElements.pfp.style.backgroundImage = `url('${values.pfp}')`;
     HTMLElements.bg.style.backgroundImage = `url('${values.bg}')`;
-    HTMLElements.fullName.innerHTML = values.fullName;
-    HTMLElements.username.innerHTML = values.username;
-    HTMLElements.title.innerHTML = values.title === '' ? 'No title' : values.title;
-    HTMLElements.desc.innerHTML = values.desc;
-    HTMLElements.tfa.innerHTML = values.tfa === 'false' ? 'Enable' : 'Disable';
-    HTMLElements.tfa_status.innerHTML = values.tfa === 'false' ? 'Enable' : 'Disable';
+    HTMLElements.fullName.textContent = values.fullName;
+    HTMLElements.username.textContent = values.username;
+    HTMLElements.title.textContent = values.title === '' ? 'No title' : values.title;
+    HTMLElements.desc.textContent = values.desc;
+    HTMLElements.tfa.textContent = values.tfa === 'false' ? 'Enable' : 'Disable';
+    HTMLElements.tfa_status.textContent = values.tfa === 'false' ? 'Enable' : 'Disable';
     HTMLElements.tfa_btn.setAttribute('status', values.tfa);
-    HTMLElements.discordid.innerHTML = values.discordid === '' ? 'No Discord ID' : values.discordid;
+    HTMLElements.discordid.textContent = values.discordid === '' ? 'No Discord ID' : values.discordid;
     console.log("PFP:", HTMLElements.pfp.style.backgroundImage);
     console.log("BG:", HTMLElements.bg.style.backgroundImage);
 

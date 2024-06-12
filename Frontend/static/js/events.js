@@ -105,7 +105,7 @@ function confirmOperartion(type, parent) {
     if (type === 'copy') {
         document.getElementById('copyConfirm') ? parent.removeChild(document.getElementById('copyConfirm')) : null;
         Confirmation.id = 'copyConfirm';
-        Confirmation.innerHTML = ' Copied to clipboard!';
+        Confirmation.textContent = ' Copied to clipboard!';
         Confirmation.classList.add('nokora', 'text-white');
         Confirmation.style.fontSize = '0.5rem';
         parent.appendChild(Confirmation);
@@ -163,12 +163,24 @@ function copyIDListener() {
     }
 }
 
+function displayTitle() {
+    let title = document.querySelector('.mainTitle');
+    if (title) {
+        setTimeout(() => {
+            title.classList.add('open');
+        }, 250);
+    }
+}
+
 function loadEvents() {
     if (window.location.pathname === '/') {
+        displayTitle();
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register'){
         scan2fa();
         scanInput();
+        if (getCookie('access') == '' || getCookie('2FA') == '')
+            document.cookie = '';
     }
     else if (window.location.pathname === '/settings') {
         switchTabsHandler();

@@ -15,7 +15,7 @@
 function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
-    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'slide-in-blurred-top', 'mx-auto', 'mt-5');
+    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'slide-in-blurred-top', 'mb-auto', 'mt-5');
     div.style.zIndex = '9999';
     div.setAttribute('role', 'alert');
     div.setAttribute('aria-live', 'assertive');
@@ -47,7 +47,7 @@ function toast(message, color_class) {
 }
 
 function settoastmsg(toast, message, color_class) {
-    toast.children[0].children[0].innerHTML = message;
+    toast.children[0].children[0].textContent = message;
     toast.classList.add(color_class);
 }
 

@@ -177,6 +177,9 @@
         top: 8%;
         transform: translate(-50%, 0);
     }
+    #users_search {
+        width: 80vw !important;
+    }
 }
 
 @media screen and (min-width: 768px){

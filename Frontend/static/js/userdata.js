@@ -129,12 +129,13 @@ function fetchUserData() {
         });
     }
 }
+
 function setElementInnerHTML(id, sessionKey, defaultValue = "") {
     let element = document.getElementById(id);
     let value = sessionStorage.getItem(sessionKey);
     if (value === null || value === undefined)
         return ;
-    element.innerHTML = value === "" ? defaultValue : value;
+    element.textContent = value === "" ? defaultValue : value;
 }
 
 function setPlayerRank() {
@@ -255,12 +256,12 @@ function setDashboardStats() {
     let player_id = document.getElementById("player_id");
     let player_id_value = sessionStorage.getItem('id');
     if (player_id_value)
-        player_id.innerHTML = `RP-ID-${player_id_value}`;
+        player_id.textContent = `RP-ID-${player_id_value}`;
 
     let full_name = document.getElementById("full_name");
     let first_name = sessionStorage.getItem('fname');
     let last_name = sessionStorage.getItem('lname');
     if (first_name && last_name)
-        full_name.innerHTML = first_name + " " + last_name;
+        full_name.textContent = first_name + " " + last_name;
     setPlayerRank();
 }
