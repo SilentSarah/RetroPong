@@ -27,8 +27,9 @@ class DbOps:
                 if (user.TwoFactor == True):
                     if (JwtOps.send_2fa_code(user) == False):
                         return None
-                    return 274
-                return user
+                    return user.id
+                else:
+                    return user
         except Exception as e:
             print("Error: ", e)
             return None
