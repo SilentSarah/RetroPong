@@ -116,6 +116,33 @@ class DbOps:
         return user
     
     @staticmethod
+    def get_users(search_term: str) -> dict:
+        image: str
+        users_data = {}
+        users = User.objects.filter(Q(uusername__icontains=search_term))[0:4]
+        for user in users:
+            domain = Site.objects.get_current().domain
+            # CODE BELOW IS FOR DEBUGGING PURPOSES ONLY ======= 
+            try:
+                if (user.uprofilepic.url.find("http") != -1):
+                    image = user.uprofilepic.url
+                else:
+                    image = 'http://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png")
+            except:
+                print("--- NO IMAGE FOUND ---")
+                image = "/static/img/pfp/Default.png"
+            # CODE ABOVE IS FOR DEBUGGING PURPOSES ONLY ======== 
+            users_data[user.id] = {
+                "id": user.id,
+                "username": user.uusername,
+                "profilepic": image,
+                "xp": user.xp,
+                "level": user.level,
+                "title": user.utitle,
+            }
+        return users_data
+    
+    @staticmethod
     def delete_user(user_id: int) -> bool:
         """Deletes a user from the database
 
