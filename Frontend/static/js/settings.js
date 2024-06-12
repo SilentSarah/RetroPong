@@ -203,13 +203,13 @@ function SaveChanges() {
     .then (response => {
         for (const key of Object.entries(updated_values))
             delete updated_values[key];
+        toast('Changes saved', 'bg-success');
         setValuesToSessionStorage(response);
         loadAccountDetailsInSettings();
         fetchID = setInterval(fetchUserData, 5000);
     })
     .catch((error) => {
         console.log(error);
-        toast('An error occured', 'bg-danger');
     })
 }
 

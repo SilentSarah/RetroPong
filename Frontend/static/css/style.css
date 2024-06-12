@@ -781,3 +781,7 @@ input[type=number] {
     right: 2.5%;
     z-index: 25;
 }
+
+.move_to_top {
+    transform: translateX(-10%) !important;
+}

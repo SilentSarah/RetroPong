@@ -41,7 +41,7 @@ function DisplayNavBar() {
         </div>
     </div>
     <a href="/" class="ms-3">
-        <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
+        <img class="img img-shadow" src="./static/img/general/Rp.png" width="50px">
     </a>
     <div class="d-flex gap-2 me-3">
         <div id="notification" href="" class="nav_btn position-relative">
@@ -101,17 +101,8 @@ function DisplayNavBar() {
 }
 
 function confirmOperartion(type, parent) {
-    let Confirmation = document.createElement('div');
     if (type === 'copy') {
         document.getElementById('copyConfirm') ? parent.removeChild(document.getElementById('copyConfirm')) : null;
-        // Confirmation.id = 'copyConfirm';
-        // Confirmation.innerHTML = ' Copied to clipboard!';
-        // Confirmation.classList.add('nokora', 'text-white');
-        // Confirmation.style.fontSize = '0.5rem';
-        // parent.appendChild(Confirmation);
-        // setTimeout(() => {
-        //     parent.removeChild(Confirmation);
-        // }, 1000);
         toast('Copied to clipboard!', 'bg-success');
     }
 }
@@ -173,6 +164,8 @@ function displayTitle() {
     }
 }
 
+
+
 function loadEvents() {
     if (window.location.pathname === '/') {
         displayTitle();
@@ -196,6 +189,7 @@ function loadEvents() {
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();
     scanLinks();
+    enableAccountSearchMenu();
 }
 
 window.addEventListener('beforeunload', function(event) {

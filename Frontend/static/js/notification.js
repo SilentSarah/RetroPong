@@ -16,18 +16,26 @@ function convertDateFormat(dateStr) {
 }
 
 function scaleMessageDateSent(date) {
-    const date_sent = new Date(convertDateFormat(date));
-    const current_date = new Date();
-    if (current_date.getFullYear() > date_sent.getFullYear())
-        return `${current_date.getFullYear() - date_sent.getFullYear()} years ago`;
-    if (current_date.getMonth() > date_sent.getMonth())
-        return `${current_date.getMonth() - date_sent.getMonth()} ${current_date.getMonth() - date_sent.getMonth() > 1 ? "years":"year"} ago`;
-    if (current_date.getDate() > date_sent.getDate())
-        return `${current_date.getDate() - date_sent.getDate()} ${current_date.getDate() - date_sent.getDate() > 1 ? "days":"day"} ago`;
-    if (current_date.getHours() > date_sent.getHours())
-        return `${current_date.getHours() - date_sent.getHours()} ${current_date.getHours() - date_sent.getHours() > 1 ? "hours":"hour"} ago`;
-    if (current_date.getMinutes() > date_sent.getMinutes())
-        return `${current_date.getMinutes() - date_sent.getMinutes()} ${current_date.getMinutes() - date_sent.getMinutes() > 1 ? "minutes":"minute"} ago`;
+    const currentDate = new Date();
+    const diff = currentDate - convertDateFormat(date);
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+    if (years > 0)
+        return `${years}y ago`;
+    if (months > 0)
+        return `${months}m ago`;
+    if (days > 0)
+        return `${days}d ago`;
+    if (hours > 0)
+        return `${hours}h ago`;
+    if (minutes > 0)
+        return `${minutes}m ago`;
+    if (seconds > 0)
+        return `${seconds}s ago`;
     return `Just now`;
 
 }
