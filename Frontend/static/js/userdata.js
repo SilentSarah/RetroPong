@@ -130,7 +130,7 @@ function fetchUserData() {
     }
 }
 
-function setElementInnerHTML(id, sessionKey, defaultValue = "") {
+function setTextContentHTML(id, sessionKey, defaultValue = "") {
     let element = document.getElementById(id);
     let value = sessionStorage.getItem(sessionKey);
     if (value === null || value === undefined)
@@ -236,19 +236,19 @@ function setMatchStatistics() {
 }
 
 function setDashboardStats() {
-    setElementInnerHTML('username', 'username');
-    setElementInnerHTML('title', 'title', 'The NPC');
-    setElementInnerHTML('email', 'email');
-    setElementInnerHTML('discordid', 'discordid', 'None');
-    setElementInnerHTML('Experience', 'xp');
-    setElementInnerHTML('level', 'level');
-    setElementInnerHTML('tournamentsplayed', 'tournamentsplayed');
-    setElementInnerHTML('tournamentswon', 'tournamentswon');
-    setElementInnerHTML('tournamentslost', 'tournamentslost');
-    setElementInnerHTML('desc', 'desc', "No description provided");
-    setElementInnerHTML('matches', 'matchesplayed');
-    setElementInnerHTML('matches_won', 'matcheswon');
-    setElementInnerHTML('matches_lost', 'matcheslost');
+    setTextContentHTML('username', 'username');
+    setTextContentHTML('title', 'title', 'The NPC');
+    setTextContentHTML('email', 'email');
+    setTextContentHTML('discordid', 'discordid', 'None');
+    setTextContentHTML('Experience', 'xp');
+    setTextContentHTML('level', 'level');
+    setTextContentHTML('tournamentsplayed', 'tournamentsplayed');
+    setTextContentHTML('tournamentswon', 'tournamentswon');
+    setTextContentHTML('tournamentslost', 'tournamentslost');
+    setTextContentHTML('desc', 'desc', "No description provided");
+    setTextContentHTML('matches', 'matchesplayed');
+    setTextContentHTML('matches_won', 'matcheswon');
+    setTextContentHTML('matches_lost', 'matcheslost');
     setDashboardPlayerPfpAndBg();
     setMatchHistory();
     setMatchStatistics();

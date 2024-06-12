@@ -104,14 +104,15 @@ function confirmOperartion(type, parent) {
     let Confirmation = document.createElement('div');
     if (type === 'copy') {
         document.getElementById('copyConfirm') ? parent.removeChild(document.getElementById('copyConfirm')) : null;
-        Confirmation.id = 'copyConfirm';
-        Confirmation.textContent = ' Copied to clipboard!';
-        Confirmation.classList.add('nokora', 'text-white');
-        Confirmation.style.fontSize = '0.5rem';
-        parent.appendChild(Confirmation);
-        setTimeout(() => {
-            parent.removeChild(Confirmation);
-        }, 1000);
+        // Confirmation.id = 'copyConfirm';
+        // Confirmation.innerHTML = ' Copied to clipboard!';
+        // Confirmation.classList.add('nokora', 'text-white');
+        // Confirmation.style.fontSize = '0.5rem';
+        // parent.appendChild(Confirmation);
+        // setTimeout(() => {
+        //     parent.removeChild(Confirmation);
+        // }, 1000);
+        toast('Copied to clipboard!', 'bg-success');
     }
 }
 

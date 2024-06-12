@@ -715,7 +715,7 @@ background: linear-gradient(150.02deg, rgba(0, 0, 0, 0.7) 70%, rgba(240, 128, 24
 }
 
 .z-20 {
-    z-index: 20;
+    z-index: 20 !important;
 }
 .overlay {
     position: absolute;
@@ -773,4 +773,11 @@ input[type=number] {
 
 .backdrop-filter-brightness {
     backdrop-filter: brightness(0.75);
+}
+
+.toast_position {
+    position: absolute;
+    bottom: 2.5%;
+    right: 2.5%;
+    z-index: 25;
 }
