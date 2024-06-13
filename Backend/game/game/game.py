@@ -82,10 +82,10 @@ class Game:
 		
 
 	def finish(self):
-		if (not self.over and self.players_count() > 1):
+		if (not self.over):
 			self.game_loop_interval.cancel()
-		self.calc_xp()
-		self.over = True
+			self.calc_xp() # will be dealt with later
+			self.over = True
 
 	def id(self):
 		return (self.details['id'])

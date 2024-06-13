@@ -37,7 +37,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			if (mode <= 2): # random
 				mode_games = {k:v for (k,v) in GameConsumer.games.items() if v.mode == mode}
 				last_game = mode_games and list(mode_games.values())[-1]
-				if (last_game and not last_game.full()): self.game = last_game
+				if (last_game and not last_game.over and not last_game.full()):
+					self.game = last_game
 			if (not self.game): self.game = Game(self.user_info['id'], mode)
 			GameConsumer.games[self.game.id()] = self.game
 			GameConsumer.user_matches[self.user_info['id']][mode] = self.game.id()
@@ -46,10 +47,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 
 	def leave_game(self): # returns game object
 		# remove from active players
-		# for player in self.game.players:
-		# 	if player in GameConsumer.active_players:
-		# 		del GameConsumer.active_players[player]
-		# set the game as finished
+		self.game.finish()
+		GameConsumer.user_matches[self.user_info['id']][self.game.mode] = False
 		pass# self.game.finish()
 
 	# temp async - to remove later
@@ -164,7 +163,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			# 	await self.send_json(content={"type": "standby", "players": [GameConsumer.active_players[self.channel_name].getProps()]})
 
 			self.game.full() and threading.Timer(3, self.game.start).start()
-
+		elif (type == 'leave'):
+			self.leave_game()
 		elif (type == 'spec'):
 			strs = ['explosion', 'defence', 'speed']
 			print(f"I received a spec of type: {strs[content['mode']]}")
@@ -186,6 +186,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			self.game.move_paddle(self.user_info['id'], content['direction'])
 		elif (self.game and type == 'stop'):
 			self.game.stop_paddle(self.user_info['id'])
+		else:
+			print(f"The type received was: {type}")
 
 			# await self.send_json(content={"type": "log", "log": log})
 		# type = content["type"]

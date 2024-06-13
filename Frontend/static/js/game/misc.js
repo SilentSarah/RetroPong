@@ -41,6 +41,12 @@ function startMode(mode)
 	gameSocket.send(JSON.stringify({ 'type': 'start', mode }));
 }
 
+async function leaveMatch()
+{
+	await gameSocket.send(JSON.stringify({ 'type': 'leave'}));
+	window.location.replace('/');
+}
+
 function soloOrDuo(parentId)
 {
 	const parentMenu = document.getElementById(parentId);

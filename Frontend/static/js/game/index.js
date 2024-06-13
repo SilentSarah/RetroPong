@@ -119,7 +119,7 @@ function initGame()
 		{
 			gameSocket.send(JSON.stringify({
 						'type': 'session_storage',
-						.../* {user_id: 141}// */sessionStorage
+						.../* {id: Math.round(Math.random() \* 1000)}// */sessionStorage
 					}));
 		}
 		else if (data.type == 'update')
