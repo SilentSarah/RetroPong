@@ -7,19 +7,20 @@ from game.paddle import Paddle
 import time
 # from game.models import MatchHistory
 
+# Make sure to implement the full() method
+
 class Game:
-	game_number = 0
-	def __init__(self, consumer, mode):
+	serial_number = 0
+	def __init__(self, creator_id, mode):
 		self.mode = mode
-		self.full = self.finished = False
+		self.over = False
 		# self.consumer = consumer
-		self.players = [consumer.channel_name]
-		self.paddles = {consumer.channel_name: Paddle()}
+		self.paddles = {creator_id: Paddle()}
 		self.details = {
-			'creator': consumer.channel_name,
-			'id': f"room_{Game.game_number}"
+			'creator': creator_id,
+			'id': f"room_{Game.serial_number}"
 		}
-		Game.game_number += 1
+		Game.serial_number += 1
 		self.ball = {'r': 1 / 150}
 		self.hit = [False, 5] # for soundFx
 		self.reset_ball()
@@ -29,6 +30,11 @@ class Game:
 		self.paddles[id] = Paddle()
 		if (len(self.paddles) % 2 == 0):
 			self.paddles[id].switchSide()
+	
+	def full(self):
+		if (self.mode == 2): #random duo
+			return self.players_count() >= 4
+		return self.players_count() >= 2
 
 	# def broadcast(self):
 		# async_to_sync(self.consumer.channel_layer.group_send)(
@@ -61,7 +67,7 @@ class Game:
 
 		# self.init_match_history()
 		# 1/60 for 60 fps
-		if (not self.finished):
+		if (not self.over):
 			self.game_loop_interval = set_interval(1/60, self.update)
 
 		# will stop interval in 5s
@@ -73,23 +79,19 @@ class Game:
 	def calc_xp(self):
 		pass # this one needs auth working
 		# oddness = 0 if self.score[0] > self.score[1] else 1
-		# for player in self.players
 		
 
 	def finish(self):
-		if (not self.finished and self.players_count() > 1):
+		if (not self.over and self.players_count() > 1):
 			self.game_loop_interval.cancel()
 		self.calc_xp()
-		self.finished = True
+		self.over = True
 
 	def id(self):
 		return (self.details['id'])
-	
-	def add_player(self, player):
-		self.players.append(player)
-	
+
 	def players_count(self):
-		return (len(self.players))
+		return (len(self.paddles))
 
 	# async def broadcast():
 
