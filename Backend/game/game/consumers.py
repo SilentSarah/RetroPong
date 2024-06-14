@@ -7,6 +7,9 @@ from game.player import Player
 from game.game import Game
 from game.paddle import Paddle
 import threading
+from game.models import MatchHistory
+from asgiref.sync import sync_to_async
+
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
 	# active_players = {} # {"channel_name": Player, ...}
@@ -21,7 +24,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		super().__init__(*args, **kwargs)
 		self.game = False
 		self.user_info = {}
-
 
 	# def check_player(self):
 	# 	if self.channel_name not in GameConsumer.active_players:
@@ -91,7 +93,6 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# 	self.game.start()
 
 		# OLD END
-
 
 		# print(">>> I reach here", file=sys.stderr)
 		# await self.send_json(content={"type": "position"})
@@ -187,7 +188,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		elif (self.game and type == 'stop'):
 			self.game.stop_paddle(self.user_info['id'])
 		else:
-			print(f"The type received was: {type}")
+			# print(f"The type received was: {type}")
+			pass
 
 			# await self.send_json(content={"type": "log", "log": log})
 		# type = content["type"]

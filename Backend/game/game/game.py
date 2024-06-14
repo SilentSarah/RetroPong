@@ -4,13 +4,15 @@ import threading
 from game.set_interval import set_interval
 # from asgiref.sync import async_to_sync
 from game.paddle import Paddle
-import time
-# from game.models import MatchHistory
+from datetime import datetime
+from game.models import MatchHistory
 
 # Make sure to implement the full() method
 
 class Game:
 	serial_number = 0
+	opponent_fieldnames = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent']
+	match_type_fieldnames = ['solo', 'duo']
 	def __init__(self, creator_id, mode):
 		self.mode = mode
 		self.over = False
@@ -64,7 +66,7 @@ class Game:
 	def start(self):
 		# testing
 		print("THE GAME HAS STARTED>>>>>>>>>>>")
-
+		self.start_datetime = datetime.now()
 		# self.init_match_history()
 		# 1/60 for 60 fps
 		if (not self.over):
@@ -76,16 +78,25 @@ class Game:
 		
 		# print("The start function was called however!", file=sys.stderr)
 	
-	def calc_xp(self):
-		pass # this one needs auth working
-		# oddness = 0 if self.score[0] > self.score[1] else 1
-		
+	def get_winners(self):
+		oddness = self.score[0] < self.score[1]
+		return [user_id for i, user_id in enumerate(self.paddles) if i % 2 == oddness ]
+
+	def update_MatchHistory(self):
+		new_MatchHistory = MatchHistory()
+		setattr(new_MatchHistory, 'matchtype', Game.match_type_fieldnames[self.mode - 1])
+		for i, user_id in enumerate(self.paddles):
+			setattr(new_MatchHistory, Game.opponent_fieldnames[i], user_id)
+		setattr(new_MatchHistory, 'mStartDate', self.start_datetime)
+		setattr(new_MatchHistory, 'Score', self.score)
+		setattr(new_MatchHistory, 'Winners', self.get_winners())
+		new_MatchHistory.save()
 
 	def finish(self):
 		if (not self.over):
 			self.game_loop_interval.cancel()
-			self.calc_xp() # will be dealt with later
 			self.over = True
+			# self.update_MatchHistory()
 
 	def id(self):
 		return (self.details['id'])
@@ -103,8 +114,8 @@ class Game:
 		else: return
 		self.reset_ball()
 		if (self.score[0] == 7 or self.score[1] == 7):
-			# self.finish()
-			pass
+			self.finish()
+			# pass
 
 	def update(self):
 		self.check_score() # will see this later

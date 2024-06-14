@@ -49,7 +49,8 @@ function setScore(score) {
 
 	if (score[0] > leftScore.textContent
 		|| score[1] > rightScore.textContent)
-		soundFx[1].play();
+		// soundFx[1].play();
+		console.log('');
 	leftScore.textContent = score[0];
 	rightScore.textContent = score[1];
 }
@@ -127,7 +128,7 @@ function initGame()
 			// console.log("the data from the update is: ", data);
 			render(data);
 			setScore(data.score);
-			data.hit && soundFx[0].play();
+			// data.hit && soundFx[0].play();
 		}
 		else if (data.type == 'log')
 		{
