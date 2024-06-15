@@ -169,6 +169,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		elif (type == 'spec'):
 			strs = ['explosion', 'defence', 'speed']
 			print(f"I received a spec of type: {strs[content['mode']]}")
+			self.game.check_spec(self.user_info['id'], content['mode'])
 		elif (type == "update" and self.game and self.game.full()): # to adapt this condition later
 			# p1 = self.game.paddles[0]
 			# p2 = self.game.paddles[1]
@@ -180,7 +181,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				"r": self.game.ball['r'],
 				"paddles": [paddle.getProps() for paddle in self.game.paddles.values()],
 				"score": self.game.score,
-				"hit": self.game.hit[0]
+				"hit_fx_span": self.game.ball['hit_fx_span']
 			})
 		# stopped here
 		elif (self.game and type == "move"):

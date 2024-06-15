@@ -23,8 +23,7 @@ class Game:
 			'id': f"room_{Game.serial_number}"
 		}
 		Game.serial_number += 1
-		self.ball = {'r': 1 / 150}
-		self.hit = [False, 5] # for soundFx
+		self.ball = {'r': 1 / 150, 'hit_fx_span': 0}
 		self.reset_ball()
 		self.score = [0, 0]
 
@@ -94,6 +93,7 @@ class Game:
 
 	def finish(self):
 		if (not self.over):
+			self.ball['hit_fx_span'] = 0
 			self.game_loop_interval.cancel()
 			self.over = True
 			# self.update_MatchHistory()
@@ -114,21 +114,42 @@ class Game:
 		else: return
 		self.reset_ball()
 		if (self.score[0] == 7 or self.score[1] == 7):
-			self.finish()
-			# pass
+			# self.finish()
+			pass
+
+	def check_fx(self):
+		# Check hit sound
+		if (self.check_wall_collision() or self.check_paddle_collision()):
+			self.ball['hit_fx_span'] = 5
+		elif (self.ball['hit_fx_span']):
+			self.ball['hit_fx_span'] -= 1
+
+	def spec_explosion(self, user_id):
+		pass
+	
+	def spec_defence(self, user_id):
+		pass
+
+	def spec_speed(self, user_id):
+		self.paddles[user_id].speed_boost()
+		pass
+
+
+	def check_spec(self, user_id, mode):
+		if (mode == 0):
+			self.spec_explosion(user_id)
+		elif (mode == 1):
+			self.spec_defence(user_id)
+		else: # mode == 2
+			self.spec_speed(user_id)
 
 	def update(self):
-		self.check_score() # will see this later
 		# the ball has a velocity
 		self.ball["x"] += self.ball["velocityX"]
 		self.ball["y"] += self.ball["velocityY"]
-		if (self.check_wall_collision() or self.check_paddle_collision()):
-			self.hit = [True, 5]
-		elif (self.hit[1]):
-			self.hit[1] -= 1
-		else:
-			self.hit[0] = False
+		self.check_fx()
 		self.move_paddles()
+		self.check_score()
 		# self.broadcast()
 		# print(f"-{time.time()}-", file=sys.stderr)
 		# here we will be sending updates to all players

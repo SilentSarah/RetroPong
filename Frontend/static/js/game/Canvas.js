@@ -71,7 +71,7 @@ class Canvas
 	// draw the ball
 	drawBall(x, y, r)
 	{
-		setShadow(this);
+		setShadow(this, '#0005');
 		this.ctx.fillStyle = '#fff';
 		this.ctx.beginPath();
 		this.ctx.arc(
@@ -90,7 +90,7 @@ class Canvas
 	// draw the net
 	drawNet()
 	{
-		setShadow(this);
+		setShadow(this, '#0005');
 		this.ctx.setLineDash([this.el.height / 7, this.el.height / 20]);//pattern
 		// Set line color and width
 		this.ctx.strokeStyle = '#fff7';

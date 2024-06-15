@@ -15,9 +15,9 @@ function drawRect(canvas, x, y, w, h, color)
     canvas.ctx.fillRect(x, y, w, h);
 }
 
-function setShadow(canvas)
+function setShadow(canvas, shadowColor)
 {
-	canvas.ctx.shadowColor = '#0005'; // Shadow color with alpha (transparency)
+	canvas.ctx.shadowColor = shadowColor; // Shadow color with alpha (transparency)
 	canvas.ctx.shadowBlur = canvas.el.height / 75; // Blur radius of the shadow
 	canvas.ctx.shadowOffsetY = canvas.el.height / 75;
 }
