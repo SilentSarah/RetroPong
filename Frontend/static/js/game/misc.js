@@ -38,6 +38,7 @@ function startMode(mode)
 {
 	document.getElementById('mainMenu').classList.toggle('hidden');
 	document.getElementById('gameInfo').classList.toggle('hidden');
+	mode == 4 && document.getElementById('specs').classList.toggle('hidden');
 	gameSocket.send(JSON.stringify({ 'type': 'start', mode }));
 }
 

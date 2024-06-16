@@ -36,6 +36,7 @@ class Game:
 	def full(self):
 		if (self.mode == 2): #random duo
 			return self.players_count() >= 4
+		# print(f"full is: {self.players_count() >= 2}")
 		return self.players_count() >= 2
 
 	# def broadcast(self):
@@ -51,12 +52,12 @@ class Game:
 			paddle.move()
 	# move & stop will be optimized later when the auth will be set
 	# old: move
-	def move_paddle(self, id, direction):
-			self.paddles[id].moving_direction =  direction
+	def move_paddle(self, id, pressed_key):
+			self.paddles[id].pressed_key =  pressed_key
 
 	# old: stop
 	def stop_paddle(self, id):
-		self.paddles[id].moving_direction =  ''
+		self.paddles[id].pressed_key =  ''
 
 	# def init_match_history(self):
 	# 	self.match_history = MatchHistory.objects.create()

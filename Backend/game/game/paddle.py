@@ -10,7 +10,7 @@ class Paddle:
 		self.x = (self.line_width + self.offset)
 		self.y = (1  - self.height) / 2
 		self.stroke_colors = Paddle.stroke_palette[0]
-		self.moving_direction = ''
+		self.pressed_key = ''
 		self.speed_boost_span = 0
 		self.explosion = False
 
@@ -27,15 +27,15 @@ class Paddle:
 		return (1/100)
 
 	def move(self):
-		if self.moving_direction == '': return
+		if self.pressed_key == '': return
 		step = self.get_step()
-		if (self.moving_direction == 'up' and self.y >= 0):
+		if (self.pressed_key in 'wi' and self.y >= 0):
 			newVal = self.y - self.line_width / 2 - step
 			if (newVal >= 0):
 				self.y = newVal
 			else:
 				self.y = 0 + self.line_width / 2
-		elif (self.moving_direction == 'down'):
+		elif (self.pressed_key in 'sk'):
 			newVal = self.y + self.line_width / 2 + step
 			if (newVal <= 1 - self.height):
 				self.y = newVal

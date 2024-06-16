@@ -32,7 +32,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	
 	def join_game(self, mode):
 		# will depend on game_mode to decide how to join the game
-		game_id = GameConsumer.user_matches[self.user_info['id']][mode]
+		game_id = GameConsumer.user_matches[str(self.user_info['id'])][mode]
 		if (game_id):
 			self.game = GameConsumer.games[game_id]
 		else:
@@ -41,28 +41,29 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				last_game = mode_games and list(mode_games.values())[-1]
 				if (last_game and not last_game.over and not last_game.full()):
 					self.game = last_game
-			if (not self.game): self.game = Game(self.user_info['id'], mode)
+			if (not self.game): self.game = Game(str(self.user_info['id']), mode)
 			GameConsumer.games[self.game.id()] = self.game
-			GameConsumer.user_matches[self.user_info['id']][mode] = self.game.id()
-			# STOPPED HERE
-			self.game.add_paddle(self.user_info['id'])
+			GameConsumer.user_matches[str(self.user_info['id'])][mode] = self.game.id()
+			self.game.add_paddle(str(self.user_info['id']))
+			# in local mode
+			if (mode == 4): self.game.add_paddle(str(self.user_info['id']) + '_dup')
 
 	def leave_game(self): # returns game object
 		# remove from active players
 		self.game.finish()
-		GameConsumer.user_matches[self.user_info['id']][self.game.mode] = False
+		GameConsumer.user_matches[str(self.user_info['id'])][self.game.mode] = False
 		pass# self.game.finish()
 
 	# temp async - to remove later
 	async def check_user(self):
-		if (not (self.user_info['id'] in GameConsumer.user_matches)):
-			GameConsumer.user_matches[self.user_info['id']] = {
+		if (not (str(self.user_info['id']) in GameConsumer.user_matches)):
+			GameConsumer.user_matches[str(self.user_info['id'])] = {
 				1: False, 2: False, 3: False, 4: False,
 			}
 			await self.send_json(content={"type": "log", "log": "The user wasn't found"})
 		else:
 			await self.send_json(content={"type": "log", "log": "The user was found"})
-			await self.send_json(content={"type": "log", "log": self.user_matches[self.user_info['id']]})
+			await self.send_json(content={"type": "log", "log": self.user_matches[str(self.user_info['id'])]})
 	async def connect(self):
 		# self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
 		# self.room_group_name = f"game_{self.room_name}"
@@ -169,7 +170,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		elif (type == 'spec'):
 			strs = ['explosion', 'defence', 'speed']
 			print(f"I received a spec of type: {strs[content['mode']]}")
-			self.game.check_spec(self.user_info['id'], content['mode'])
+			self.game.check_spec(str(self.user_info['id']), content['mode'])
 		elif (type == "update" and self.game and self.game.full()): # to adapt this condition later
 			# p1 = self.game.paddles[0]
 			# p2 = self.game.paddles[1]
@@ -185,11 +186,16 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				'fireball': self.game.ball['curr_speed'] > self.game.ball['speed'],
 				'barriers': self.game.barriers,
 			})
-		# stopped here
 		elif (self.game and type == "move"):
-			self.game.move_paddle(self.user_info['id'], content['direction'])
+			if (self.game.mode == 4 and content['key'] in 'ik'):
+				self.game.move_paddle(str(self.user_info['id']) + '_dup', content['key'])
+			else:
+				self.game.move_paddle(str(self.user_info['id']), content['key'])
 		elif (self.game and type == 'stop'):
-			self.game.stop_paddle(self.user_info['id'])
+			if (self.game.mode == 4 and content['key'] in 'ik'):
+				self.game.stop_paddle(str(self.user_info['id']) + '_dup')
+			else:
+				self.game.stop_paddle(str(self.user_info['id']))
 		else:
 			# print(f"The type received was: {type}")
 			pass

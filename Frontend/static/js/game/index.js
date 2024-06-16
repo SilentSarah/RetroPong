@@ -67,23 +67,17 @@ function initGame()
 		console.log("The keydown is detected!!!");
 		// e.preventDefault()
 		// e.preventDefault(); e.stopPropagation();
-		let direction;
-		if (e.key == 'w')
-			direction = 'up'
-		else if (e.key == 's')
-			direction = 'down'
-		else
-			return ;
-		gameSocket.send(JSON.stringify({
+		"wsik".includes(e.key) && gameSocket.send(JSON.stringify({
 			'type': 'move',
-			'direction': direction
+			'key': e.key
 		}));
 	});
 
 	window.addEventListener("keyup", (e) => {
 		// e.preventDefault(); e.stopPropagation();
 		gameSocket.send(JSON.stringify({
-			'type': 'stop'
+			'type': 'stop',
+			'key': e.key
 		}));
 	});
 
