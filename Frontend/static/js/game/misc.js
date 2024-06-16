@@ -57,7 +57,9 @@ function soloOrDuo(parentId)
 	});
 }
 
-function spec(mode)
+function spec(mode, e)
 {
+	e.currentTarget.setAttribute('onclick', null);
+	e.currentTarget.classList.toggle('disabled');
 	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));
 }
