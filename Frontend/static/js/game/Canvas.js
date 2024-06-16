@@ -69,10 +69,10 @@ class Canvas
 	// }
 
 	// draw the ball
-	drawBall(x, y, r)
+	drawBall(x, y, r, c)
 	{
 		setShadow(this, '#0005');
-		this.ctx.fillStyle = '#fff';
+		this.ctx.fillStyle = c;
 		this.ctx.beginPath();
 		this.ctx.arc(
 			x * this.el.width,

@@ -23,7 +23,7 @@ class Game:
 			'id': f"room_{Game.serial_number}"
 		}
 		Game.serial_number += 1
-		self.ball = {'r': 1 / 150, 'hit_fx_span': 0}
+		self.ball = {'r': 1 / 150}
 		self.reset_ball()
 		self.score = [0, 0]
 
@@ -93,7 +93,7 @@ class Game:
 
 	def finish(self):
 		if (not self.over):
-			self.ball['hit_fx_span'] = 0
+			self.reset_ball()
 			self.game_loop_interval.cancel()
 			self.over = True
 			# self.update_MatchHistory()
@@ -125,9 +125,12 @@ class Game:
 			self.ball['hit_fx_span'] -= 1
 
 	def spec_explosion(self, user_id):
+		self.paddles[user_id].activate_explosion()
+		print('The explosion was activated')
 		pass
 	
 	def spec_defence(self, user_id):
+		# self.paddles[user_id].defence()
 		pass
 
 	def spec_speed(self, user_id):
@@ -160,6 +163,8 @@ class Game:
 		self.ball["speed"] = 0.007 * 1
 		self.ball["velocityX"] = self.ball["speed"]
 		self.ball["velocityY"] = self.ball["speed"]
+		self.ball["hit_fx_span"] = 0
+		self.ball["curr_speed"] = self.ball["speed"]
 	
 	def collision(self, b, p):
 		# b->ball, p->player
@@ -193,7 +198,7 @@ class Game:
 		return False
 
 	def check_collective_collision(self, oddness):
-		# The following need debugging!!!
+		# The following need debugging!!! maybe not
 		# print(f'enumerate(self.paddles): {list(enumerate(self.paddles.items()))}')
 		blockers = {k: v for i, (k, v) in enumerate(self.paddles.items()) if i % 2 == oddness}
 		for blocker in blockers.values():
@@ -210,12 +215,16 @@ class Game:
 				# Math.PI/4 = 45degrees
 				angle_rad = (math.pi/4) * collide_point
 				
+				# check if there is a spec speed
+				if (blocker.explosion):
+					blocker.explosion = False
+					self.ball["curr_speed"] = self.ball["speed"] * 10
 				# change the X and Y velocity direction
 				direction = 1 if (self.ball['x'] + self.ball['r'] < 1 / 2) else -1
-				self.ball['velocityX'] = direction * self.ball['speed'] * math.cos(angle_rad)
-				self.ball['velocityY'] = self.ball['speed'] * math.sin(angle_rad)
+				self.ball['velocityX'] = direction * self.ball["curr_speed"] * math.cos(angle_rad)
+				self.ball['velocityY'] = self.ball["curr_speed"] * math.sin(angle_rad)
 				
-				# speed up the ball everytime a paddle hits it.
+				# speed up the ball everytime after a paddle hits it.
 				self.ball['speed'] += self.ball['speed'] * 0.1
 				return True
 		return False

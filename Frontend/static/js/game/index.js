@@ -88,13 +88,14 @@ function initGame()
 	});
 
 	// render function, the function that does all the drawing
-	function render({x, y, r, paddles}){
+	function render({x, y, r, fireball, paddles}){
 		// clear the canvas
 		canvas.clear();
 		// update and draw user's paddle
 		paddles.forEach((paddle) => draw_paddle(canvas, paddle));
 		// draw the ball
-		canvas.drawBall(x, y, r);
+		const c = fireball ? '#f00' : '#fff';
+		canvas.drawBall(x, y, r, c);
 	}
 
 	// update function, the function sends update request to the server

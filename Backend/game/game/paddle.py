@@ -11,9 +11,13 @@ class Paddle:
 		self.stroke_colors = Paddle.stroke_palette[0]
 		self.moving_direction = ''
 		self.speed_boost_span = 0
-	
+		self.explosion = False
+
 	def speed_boost(self):
 		self.speed_boost_span = 100 # will be tested
+
+	def activate_explosion(self):
+		self.explosion = True
 
 	def get_step(self):
 		if (self.speed_boost_span):
