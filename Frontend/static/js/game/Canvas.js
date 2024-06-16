@@ -48,6 +48,26 @@ class Canvas
 		});
 	}
 
+	drawBarrier(barriers)
+	{
+		barriers.forEach((active, xFactor) => {
+			if (!active) return ;
+
+			setShadow(this, '#0005');
+			// Set line color and width
+			this.ctx.strokeStyle = '#07e7';
+			this.ctx.lineWidth = this.el.width / 120;
+			// Draw the barrera
+			const offset = this.el.width / 100
+			const x = offset + xFactor * (this.el.width - offset * 2)
+			this.ctx.beginPath();
+			this.ctx.moveTo(x, 0); // Starting point
+			this.ctx.lineTo(x, this.el.height); // Ending point
+			this.ctx.stroke();
+			clearShadow(this);
+		})
+	}
+
 	setup()
 	{
 		this.dprAdjust();

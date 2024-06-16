@@ -26,11 +26,12 @@ class Game:
 		self.ball = {'r': 1 / 150}
 		self.reset_ball()
 		self.score = [0, 0]
+		self.barriers = [False, False] # Maybe will switch them later to nums
 
 	def add_paddle(self, id):
 		self.paddles[id] = Paddle()
 		if (len(self.paddles) % 2 == 0):
-			self.paddles[id].switchSide()
+			self.paddles[id].switch_side()
 	
 	def full(self):
 		if (self.mode == 2): #random duo
@@ -130,7 +131,7 @@ class Game:
 		pass
 	
 	def spec_defence(self, user_id):
-		# self.paddles[user_id].defence()
+		self.barriers[self.paddles[user_id].side] = True
 		pass
 
 	def spec_speed(self, user_id):
@@ -148,8 +149,8 @@ class Game:
 
 	def update(self):
 		# the ball has a velocity
-		self.ball["x"] += self.ball["velocityX"]
-		self.ball["y"] += self.ball["velocityY"]
+		self.ball["x"] += self.ball["velocity_x"]
+		self.ball["y"] += self.ball["velocity_y"]
 		self.check_fx()
 		self.move_paddles()
 		self.check_score()
@@ -161,8 +162,8 @@ class Game:
 		self.ball["x"] = 1/2
 		self.ball["y"] = 1/2
 		self.ball["speed"] = 0.007 * 1
-		self.ball["velocityX"] = self.ball["speed"]
-		self.ball["velocityY"] = self.ball["speed"]
+		self.ball["velocity_x"] = self.ball["speed"]
+		self.ball["velocity_y"] = self.ball["speed"]
 		self.ball["hit_fx_span"] = 0
 		self.ball["curr_speed"] = self.ball["speed"]
 	
@@ -189,12 +190,25 @@ class Game:
 	def check_wall_collision(self):
 		# When the ball collides with bottom and top walls we inverse the y velocity.
 		if self.ball['y'] - self.ball['r'] <= 0 or self.ball['y'] + self.ball['r'] >= 1:
-			self.ball['velocityY'] = -self.ball['velocityY']
+			self.ball['velocity_y'] = -self.ball['velocity_y']
 			if self.ball['y'] - self.ball['r'] <= 0:
 				self.ball['y'] = max(self.ball['y'], self.ball['r'])  # Prevent going below zero
 			else:
 				self.ball['y'] = min(self.ball['y'], 1 - self.ball['r'])
 			return True
+
+		# Check wall defence
+		if (self.barriers[0] and self.ball['x'] - self.ball['r'] <= 0):
+			self.ball['velocity_x'] = -self.ball['velocity_x']
+			self.ball['x'] = max(self.ball['x'], self.ball['r'])
+			self.barriers[0] = False
+			return True
+		elif (self.barriers[1] and self.ball['x'] + self.ball['r'] >= 1):
+			self.ball['velocity_x'] = -self.ball['velocity_x']
+			self.ball['x'] = min(self.ball['x'], 1 - self.ball['r'])
+			self.barriers[1] = False
+			return True
+
 		return False
 
 	def check_collective_collision(self, oddness):
@@ -221,8 +235,8 @@ class Game:
 					self.ball["curr_speed"] = self.ball["speed"] * 10
 				# change the X and Y velocity direction
 				direction = 1 if (self.ball['x'] + self.ball['r'] < 1 / 2) else -1
-				self.ball['velocityX'] = direction * self.ball["curr_speed"] * math.cos(angle_rad)
-				self.ball['velocityY'] = self.ball["curr_speed"] * math.sin(angle_rad)
+				self.ball['velocity_x'] = direction * self.ball["curr_speed"] * math.cos(angle_rad)
+				self.ball['velocity_y'] = self.ball["curr_speed"] * math.sin(angle_rad)
 				
 				# speed up the ball everytime after a paddle hits it.
 				self.ball['speed'] += self.ball['speed'] * 0.1

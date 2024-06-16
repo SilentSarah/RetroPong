@@ -6,6 +6,7 @@ class Paddle:
 		self.radius = 1 / 80
 		self.line_width = 1 / 400
 		self.offset = 1 / 50
+		self.side = 0 # left
 		self.x = (self.line_width + self.offset)
 		self.y = (1  - self.height) / 2
 		self.stroke_colors = Paddle.stroke_palette[0]
@@ -41,7 +42,8 @@ class Paddle:
 			else:
 				self.y = 1 - self.height - self.line_width / 2
 	
-	def switchSide(self):
+	def switch_side(self):
+		self.side = 1 # right
 		self.x = (1 - self.width) - (self.line_width + self.offset)
 		self.stroke_colors = Paddle.stroke_palette[1]
 

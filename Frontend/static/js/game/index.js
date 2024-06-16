@@ -88,9 +88,11 @@ function initGame()
 	});
 
 	// render function, the function that does all the drawing
-	function render({x, y, r, fireball, paddles}){
+	function render({x, y, r, fireball, paddles, barriers}){
 		// clear the canvas
 		canvas.clear();
+		// draw barriers if there are any
+		canvas.drawBarrier(barriers);
 		// update and draw user's paddle
 		paddles.forEach((paddle) => draw_paddle(canvas, paddle));
 		// draw the ball
