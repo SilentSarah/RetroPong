@@ -45,16 +45,17 @@ class DbOps:
     @staticmethod
     def generate_match_statistics(id: int) -> dict:
         try:
-            today = datetime.datetime.now(tz=timezone.utc)
-            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
-            if (matches is None):
-                return {}
-            four_day_matches = []
-            for i in range(4):
-                four_day_matches.append(matches.filter(mStartDate__range=[today - datetime.timedelta(days=i), today - datetime.timedelta(days=i-1)]))
             matches_played = {
                 "Matches Played": {},
             }
+            today = datetime.datetime.now()
+            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
+            if (matches is None):
+                print("No matches found")
+                return matches_played
+            four_day_matches = []
+            for i in range(4):
+                four_day_matches.append(matches.filter(mStartDate__range=[today - datetime.timedelta(days=i), today - datetime.timedelta(days=i-1)]))
             i = 0
             for day_matches in four_day_matches:
                 date = (today - datetime.timedelta(days=i)).strftime('%d/%m')
@@ -63,7 +64,7 @@ class DbOps:
                 i += 1
             return matches_played
         except Exception as e:
-            print("DbOps: ", e)
+            print("DbOps X: ", e)
             return None
 
     @staticmethod
