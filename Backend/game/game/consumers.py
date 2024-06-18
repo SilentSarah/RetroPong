@@ -30,10 +30,14 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	# 		# name, pic and related stuff will be fetched from the DB
 	# 		GameConsumer.active_players[self.channel_name] = Player('static/img/pfp/L7afouzli9.jpg', 'pfp', self.channel_name, 21)
 	
-	def join_game(self, mode):
+	def join_game(self, mode, inviter_id):
 		# will depend on game_mode to decide how to join the game
 		game_id = GameConsumer.user_matches[str(self.user_info['id'])][mode]
 		if (game_id):
+			self.game = GameConsumer.games[game_id]
+			return 
+		elif (mode == 3 and inviter_id):#privat mode invite
+			game_id = GameConsumer.user_matches[str(inviter_id)][mode]
 			self.game = GameConsumer.games[game_id]
 		else:
 			if (mode <= 2): # random
@@ -41,12 +45,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 				last_game = mode_games and list(mode_games.values())[-1]
 				if (last_game and not last_game.over and not last_game.full()):
 					self.game = last_game
-			if (not self.game): self.game = Game(str(self.user_info['id']), mode)
-			GameConsumer.games[self.game.id()] = self.game
-			GameConsumer.user_matches[str(self.user_info['id'])][mode] = self.game.id()
-			self.game.add_paddle(str(self.user_info['id']))
-			# in local mode
-			if (mode == 4): self.game.add_paddle(str(self.user_info['id']) + '_dup')
+		if (not self.game): self.game = Game(str(self.user_info['id']), mode)
+		GameConsumer.games[self.game.id()] = self.game
+		GameConsumer.user_matches[str(self.user_info['id'])][mode] = self.game.id()
+		self.game.add_paddle(str(self.user_info['id']))
+		# in local mode
+		if (mode == 4): self.game.add_paddle(str(self.user_info['id']) + '_dup')
 
 	def leave_game(self): # returns game object
 		# remove from active players
@@ -148,11 +152,13 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			await self.send_json(content={"type": "log", "log": f"The user_info is: >{self.user_info}<"})
 			# will check if the user is already in the user_matches dict otherwise it'll add it.
 			await self.check_user()
+			# to confirm the receipt of sessionStorage
+			await self.send_json(content={"type": "session_storage_ack"})
 		elif (type == 'start'):
 			# await self.send_json(content={"type": "log", "log": 'I reach here'})
 			# await self.game.start(content['mode'])
 			
-			self.join_game(content['mode'])
+			self.join_game(content['mode'], content['inviter_id'])
 			# await self.standby_update()
 			
 			# print(f'sent to the group {self.game.id()}', file=sys.stderr)

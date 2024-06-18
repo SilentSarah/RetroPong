@@ -34,12 +34,12 @@ function tester()
 	alert("Hello world, I am working!!!");
 }
 
-function startMode(mode)
+function startMode(mode, inviterId=null)
 {
 	document.getElementById('mainMenu').classList.toggle('hidden');
 	document.getElementById('gameInfo').classList.toggle('hidden');
 	mode == 4 && document.getElementById('specs').classList.toggle('hidden');
-	gameSocket.send(JSON.stringify({ 'type': 'start', mode }));
+	gameSocket.send(JSON.stringify({ 'type': 'start', mode, 'inviter_id': inviterId }));
 }
 
 async function leaveMatch()

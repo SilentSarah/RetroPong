@@ -55,6 +55,12 @@ function setScore(score) {
 	rightScore.textContent = score[1];
 }
 
+function checkInvite()
+{
+	const inviterId = sessionStorage.getItem('inviterId');
+	inviterId && startMode(3, inviterId);
+}
+
 function initGame()
 {
 	// const gameEl = document.getElementById("game");
@@ -113,8 +119,13 @@ function initGame()
 		{
 			gameSocket.send(JSON.stringify({
 						'type': 'session_storage',
-						...{id: Math.round(Math.random() * 1000)}//sessionStorage
+						.../* {id: Math.round(Math.random() * 1000)}// */sessionStorage
 					}));
+		}
+		if (data.type == 'session_storage_ack')
+		{
+			console.log("received the session storage ack<<<<<<");
+			checkInvite();
 		}
 		else if (data.type == 'update')
 		{
