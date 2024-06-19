@@ -52,6 +52,11 @@ const routes = [
         on: false,
         component: () => grabContent('/static/content/chatv2.html')
     },
+    {
+        path: '/profile',
+        on: false,
+        component: () => grabContent('/static/content/dashboard.html')
+    },
 ]
 
 async function StartLoading(route) {
@@ -78,18 +83,17 @@ function router() {
     StartLoading(route);
     setTimeout(() => {
     if (route) {
-        if (route.on === true)
-            return;
         route.component().then(html => {
-            mainContent.innerHTML = html;
+            if (route.on === false)
+                mainContent.innerHTML = html;
             loadEvents();
-        });
-        route.on = true;
-        for (let i = 0; i < routes.length; i++) {
-            if (routes[i].path !== path && routes[i].on) {
-                routes[i].on = false;
+            route.on = true;
+            for (let i = 0; i < routes.length; i++) {
+                if (routes[i].path !== path && routes[i].on) {
+                    routes[i].on = false;
+                }
             }
-        }
+        });
     } else {
         routes[0].component().then(html => {
             mainContent.innerHTML = html;

@@ -2,7 +2,14 @@ let account_finder_active = false;
 let last_search_id = undefined;
 const current_user = {};
 
-// I NEED TO IMPLEMENT AN OBJECT TO HOLD ALL THE PLAYERS THE USER HAS SEARCHED FOR
+function passUsertoProfile() {
+    const profilePage = document.createElement('a');
+    profilePage.href = `/profile`;
+    profilePage.classList.add('d-none');
+    document.body.appendChild(profilePage);
+    scanLinks();
+    profilePage.click();
+}
 
 function spawnAccountSearchMenu(element) {
     const input = element.querySelector('input');
@@ -33,13 +40,13 @@ function eliminateAccountSearchMenu(element) {
 }
 
 function DisplayProfileDetails(id) {
-    console.log("clicked")
+    console.log("Displaying Profile Details...", id)
     if (id == undefined || id == null) return;
     fetch ("http://127.0.0.1:8001/userdata/" + id, {
         method: 'GET',
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + getCookie('access'),
+            'Content-Type': 'application/json',
         }
     })
     .then(response => response.json())
@@ -47,6 +54,7 @@ function DisplayProfileDetails(id) {
         for (const [key, value] of Object.entries(data)) {
             current_user[key] = value;
         }
+        passUsertoProfile(current_user);
     })
     .catch(error => {
         console.error('Error:', error);

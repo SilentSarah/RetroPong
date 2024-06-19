@@ -143,15 +143,17 @@ function scanLinks() {
     document.querySelectorAll('a').forEach(iterateOverLinks);
 }
 
+function copyToClipboard() {
+    let copyText = document.getElementById('player_id');
+    navigator.clipboard.writeText(copyText.textContent);
+    confirmOperartion('copy', copyText.parentElement);
+}
+
 function copyIDListener() {
     let cpyID = document.getElementById('cpyID');
     if (cpyID) {
-        cpyID.addEventListener('click', function () {
-            let copyText = document.getElementById('player_id');
-            navigator.clipboard.writeText(copyText.innerHTML);
-            confirmOperartion('copy', copyText.parentElement);
-
-        });
+        cpyID.removeEventListener('click', copyToClipboard);
+        cpyID.addEventListener('click', copyToClipboard);
     }
 }
 
@@ -182,9 +184,9 @@ function loadEvents() {
     }
 	else if (window.location.pathname === '/game')
 		initGame();
-    else if (window.location.pathname === '/dashboard') {
+    else if (window.location.pathname === '/dashboard' || window.location.pathname === '/profile') {
         copyIDListener();
-        setDashboardStats();
+        window.location.pathname === '/dashboard' ? setDashboardStats(true) : setDashboardStats(false);
     }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();

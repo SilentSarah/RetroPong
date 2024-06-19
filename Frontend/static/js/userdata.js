@@ -130,16 +130,16 @@ function fetchUserData() {
     }
 }
 
-function setTextContentHTML(id, sessionKey, defaultValue = "") {
+function setTextContentHTML(id, sessionKey, defaultValue = "", self = true) {
     let element = document.getElementById(id);
-    let value = sessionStorage.getItem(sessionKey);
+    let value = self ? sessionStorage.getItem(sessionKey) : current_user[sessionKey];
     if (value === null || value === undefined)
         return ;
     element.textContent = value === "" ? defaultValue : value;
 }
 
-function setPlayerRank() {
-    let rank = sessionStorage.getItem('rank');
+function setPlayerRank(self = true) {
+    let rank = self ? sessionStorage.getItem('rank') : current_user['rank'];
     if (rank === null || rank === undefined)
         return ;
     let tier = document.getElementById('tier');
@@ -147,11 +147,11 @@ function setPlayerRank() {
         tier.src=`/static/img/rank/${rank}.png`;
 }
 
-function setDashboardPlayerPfpAndBg() {
+function setDashboardPlayerPfpAndBg(self = true) {
     let pfp = document.getElementById("profile_pic");
     let bg = document.getElementById("profile_bg");
-    let pfp_path = sessionStorage.getItem('profilepic');
-    let bg_path = sessionStorage.getItem('profilebgpic');
+    let pfp_path = self ? sessionStorage.getItem('profilepic') : current_user['profilepic'];
+    let bg_path = self ? sessionStorage.getItem('profilebgpic') : current_user['profilebgpic'];
     if (pfp_path === null || pfp_path === "") {
         pfp.style.backgroundImage = 'url("/static/img/pfp/Default.png")';
     } else {
@@ -166,11 +166,12 @@ function setDashboardPlayerPfpAndBg() {
 }
 
 
-function createMatchHistoryElement(matchHistory, match) {
+function createMatchHistoryElement(matchHistory, match, self = true) {
+    console.log(match)
     const match_data = {
-        player_id: sessionStorage.getItem('id'),
-        player_username: sessionStorage.getItem('username'),
-        player_pfp: sessionStorage.getItem('profilepic'),
+        player_id: match.OpponentData.self_id,
+        player_username: match.OpponentData.self_username,  
+        player_pfp: match.OpponentData.self_pfp,
         opponent_id: match.OpponentData.id,
         opponent_username: match.OpponentData.username,
         score: match.OpponentData.score,
@@ -178,6 +179,7 @@ function createMatchHistoryElement(matchHistory, match) {
         opponent_pfp: match.OpponentData.pfp,
 
     }
+    console.log(match_data);
     let div = document.createElement("div");
     const match_color = match_data.result == "WIN" ? "bg-win" : match_data.result == "LOSS" ? "bg-loss" : match_data.result == "DRAW" ? "bg-draw" : "text-white";
     const match_text_color = match_data.result == "WIN" ? "text-success" : match_data.result == "LOSS" ? "text-danger" : match_data.result == "DRAW" ? "ext-white-fade" : "text-white";
@@ -185,7 +187,7 @@ function createMatchHistoryElement(matchHistory, match) {
     div.classList.add("d-flex", "border-transparent-0-5", "rounded-3", "align-items-center", "justify-content-evenly", "p-2", "dynamic-fill");
     div.classList.add(match_color);
     div.innerHTML = `
-    <img src=${match_data.player_pfp == "" ? '/static/img/pfp/Default.png': match_data.player_pfp} width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover" />
+    <img src=${match_data.player_pfp == "" ? '/static/img/pfp/Default.png': match_data.player_pfp} onclick="DisplayProfileDetails(${match_data.self_id})"  width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover hover-cursor" />
     <div class="d-flex flex-column align-items-center mx-3">
     <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 ${match_text_color} text-shadow">
         ${match_data.result}
@@ -194,32 +196,31 @@ function createMatchHistoryElement(matchHistory, match) {
             ${match_score}
     </p>
     </div>
-    <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
+    <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" onclick="DisplayProfileDetails(${match_data.opponent_id})" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover hover-cursor">
     `;
     matchHistory.appendChild(div);
     
 }
 
-function setMatchHistory() {
+function setMatchHistory(self = true) {
     let matchHistory = document.getElementById("matchHistory");
     matchHistory.innerHTML = "";
-    const matches = JSON.parse(sessionStorage.getItem('matchhistory'));
+    const matches = self ? JSON.parse(sessionStorage.getItem('matchhistory')) : current_user['matchhistory'];
     if (matches === null || matches === undefined || Object.keys(matches).length === 0){
         matchHistory.innerHTML = '<span class="text-white text-center nokora fw-light opacity-75">No Matches</span>';
     } else {
-        
         for (const [key, value] of Object.entries(matches)) {
             createMatchHistoryElement(matchHistory, value);
         }
     }
 }
 
-function setMatchStatistics() {
-    let match_statistics = sessionStorage.getItem('matchstatistics');
+function setMatchStatistics(self = true) {
+    let match_statistics = self ? sessionStorage.getItem('matchstatistics') : current_user['matchstatistics'];
     if (match_statistics === null || match_statistics === undefined) {
         return ;
     }
-    match_statistics = JSON.parse(match_statistics);
+    match_statistics = self ? JSON.parse(match_statistics) : match_statistics;
     if (match_statistics === null || match_statistics === undefined) {
         console.log("FUK")
         return ;
@@ -235,32 +236,32 @@ function setMatchStatistics() {
 
 }
 
-function setDashboardStats() {
-    setTextContentHTML('username', 'username');
-    setTextContentHTML('title', 'title', 'The NPC');
-    setTextContentHTML('email', 'email');
-    setTextContentHTML('discordid', 'discordid', 'None');
-    setTextContentHTML('Experience', 'xp');
-    setTextContentHTML('level', 'level');
-    setTextContentHTML('tournamentsplayed', 'tournamentsplayed');
-    setTextContentHTML('tournamentswon', 'tournamentswon');
-    setTextContentHTML('tournamentslost', 'tournamentslost');
-    setTextContentHTML('desc', 'desc', "No description provided");
-    setTextContentHTML('matches', 'matchesplayed');
-    setTextContentHTML('matches_won', 'matcheswon');
-    setTextContentHTML('matches_lost', 'matcheslost');
-    setDashboardPlayerPfpAndBg();
-    setMatchHistory();
-    setMatchStatistics();
+function setDashboardStats(self = true) {
+    setTextContentHTML('username', 'username', "", self);
+    setTextContentHTML('title', 'title', 'The NPC', self);
+    setTextContentHTML('email', 'email', "", self);
+    setTextContentHTML('discordid', 'discordid', 'None', self);
+    setTextContentHTML('Experience', 'xp', "0", self);
+    setTextContentHTML('level', 'level', "0", self);
+    setTextContentHTML('tournamentsplayed', 'tournamentsplayed', "0", self);
+    setTextContentHTML('tournamentswon', 'tournamentswon', "0", self);
+    setTextContentHTML('tournamentslost', 'tournamentslost', "0", self);
+    setTextContentHTML('desc', 'desc', "No description provided", self);
+    setTextContentHTML('matches', 'matchesplayed', "0", self);
+    setTextContentHTML('matches_won', 'matcheswon', "0", self);
+    setTextContentHTML('matches_lost', 'matcheslost', "0", self);
+    setDashboardPlayerPfpAndBg(self);
+    setMatchHistory(self);
+    setMatchStatistics(self);
 
     let player_id = document.getElementById("player_id");
-    let player_id_value = sessionStorage.getItem('id');
+    let player_id_value = self ? sessionStorage.getItem('id') : current_user['id'];
     if (player_id_value)
         player_id.textContent = `RP-ID-${player_id_value}`;
 
     let full_name = document.getElementById("full_name");
-    let first_name = sessionStorage.getItem('fname');
-    let last_name = sessionStorage.getItem('lname');
+    let first_name = self ? sessionStorage.getItem('fname') : current_user['fname'];
+    let last_name = self ? sessionStorage.getItem('lname') : current_user['lname'];
     if (first_name && last_name)
         full_name.textContent = first_name + " " + last_name;
     setPlayerRank();
