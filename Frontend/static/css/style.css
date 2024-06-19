@@ -789,3 +789,7 @@ input[type=number] {
 .move_to_top {
     transform: translateX(-10%) !important;
 }
+
+.hover-cursor {
+    cursor: pointer;
+}

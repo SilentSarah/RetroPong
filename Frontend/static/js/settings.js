@@ -217,6 +217,8 @@ function initiateEventHandlers(updated_values) {
     const textarea = document.querySelector('textarea');
     const tfa_btn = document.getElementById('tfa_btn');
     document.querySelectorAll('input').forEach(input => {
+        if (input.id === "users_search")
+            return ;
         input.addEventListener('input', function() {
             updated_values[this.id] = this.value;
             DisplayConfirmationPopUp();

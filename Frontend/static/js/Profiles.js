@@ -1,5 +1,6 @@
 let account_finder_active = false;
 let last_search_id = undefined;
+const current_user = {};
 
 // I NEED TO IMPLEMENT AN OBJECT TO HOLD ALL THE PLAYERS THE USER HAS SEARCHED FOR
 
@@ -31,6 +32,27 @@ function eliminateAccountSearchMenu(element) {
     }, 250);
 }
 
+function DisplayProfileDetails(id) {
+    console.log("clicked")
+    if (id == undefined || id == null) return;
+    fetch ("http://127.0.0.1:8001/userdata/" + id, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie('access'),
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        for (const [key, value] of Object.entries(data)) {
+            current_user[key] = value;
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
 function displayUsersOnTheSearchMenu(data) {
     const search_result = document.getElementById('search_result');
     search_result.innerHTML = '';
@@ -48,9 +70,10 @@ function displayUsersOnTheSearchMenu(data) {
             title: value.title,
         }
         const div = document.createElement('div');
-        div.classList.add('d-flex', 'align-items-center', 'bg-white-transparent-0-15', 'border-transparent-1', 'rounded-3', 'p-1', 'justify-content-between', 'w-100');
+        div.classList.add('d-flex', 'align-items-center', 'bg-white-transparent-0-15', 'border-transparent-1', 'rounded-3', 'p-1', 'justify-content-between', 'w-100', 'hover-cursor');
+        div.onclick = () => { DisplayProfileDetails(each_player.id); };
         div.innerHTML = `
-        <div class="d-flex align-items-center gap-1" onclick="">
+        <div class="d-flex align-items-center gap-1">
             <img src="${each_player.pfp}" width="50px" height="50px" class="rounded-3 object-fit-cover border-transparent-0-5">
             <p class="text-white nokora m-0 fw-light">${each_player.username}</p>
         </div>
