@@ -34,6 +34,10 @@ function eliminateAccountSearchMenu(element) {
 function displayUsersOnTheSearchMenu(data) {
     const search_result = document.getElementById('search_result');
     search_result.innerHTML = '';
+    if (Object.keys(data).length == 0) {
+        search_result.innerHTML = `<p class="m-auto text-white fw-lighter fs-5">No user was found</p>`;
+        return;
+    }
     for (const [key, value] of Object.entries(data)) {
         const each_player = {
             id: value.id,
@@ -131,6 +135,17 @@ function initiateAccountSearchMenuEvents() {
     }
 }
 
+function DetectOSAndReturnKey() {
+    const OS = navigator.platform;
+    if (OS.includes('Mac')) {
+        return '<img src="/static/img/general/CommandKey.png" alt="Command or Alt Key" width="26px">';
+    } else if (OS.includes('Win') || OS.includes('Linux')) {
+        return '<img class="opacity-75" src="/static/img/general/alt.png" alt="Command or Alt Key" width="26px">';
+    } else {
+        return ""
+    }
+}
+
 function enableAccountSearchMenu() {
     if (getCookie('access') != '') {
         const modalContent = document.getElementById('modalContent');
@@ -142,8 +157,8 @@ function enableAccountSearchMenu() {
             <div class="d-flex align-items-center justify-content-between">
             <label for="users_search" class="text-white nokora fs-5 fw-light opacity-75">Account Search</label>
             <div class="d-flex align-items-center mb-1 opacity-75">
-                <img src="/static/img/general/CommandKey.png" alt="Command or Alt Key" width="24px">
-                <img src="/static/img/general/K.png" alt="Command or Alt Key" width="24px">
+                ${DetectOSAndReturnKey()}
+                <img src="/static/img/general/K.png" alt="K Key" width="24px">
             </div>
             </div>
             <input type="text" id="users_search" class="bg-white-transparent-0-25 border-transparent-0-5 px-2 text-white fs-5 fw-light" placeholder="Search for Someone">
