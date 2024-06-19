@@ -26,17 +26,23 @@ class DbOps:
                 return {}
             match_history = {}
             for round in matches:
-                opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 else round.sOpponent
+                opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 and round.fOpponent != id else round.sOpponent
                 opponent = User.objects.get(id=opponent)
+                user = User.objects.get(id=id)
+                domain = Site.objects.get_current().domain
                 match_history[round.id] = {
                     "OpponentData": {
+                        "self_id": id,
+                        "self_pfp": 'http://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
+                        "self_username": user.uusername,
                         "id": opponent.id,
-                        "pfp": opponent.uprofilepic,
+                        "pfp": 'http://{}{}'.format(domain, opponent.uprofilepic.url if opponent.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
                         "username": opponent.uusername,
                         "score": round.Score,
                         "result": "WIN" if id in round.Winners else "LOSS" if opponent.id in round.Winners else "DRAW" if opponent.id in round.Winners and id in round.Winners else "DRAW",
                     }
                 }
+                print(match_history)
             return match_history
         except Exception as e:
             print("DbOps: ", e)
@@ -114,6 +120,9 @@ class DbOps:
             return user
         except User.DoesNotExist:
             user = None
+        except Exception as e:
+            print("DbOps: ", e)
+            return None
         return user
     
     @staticmethod

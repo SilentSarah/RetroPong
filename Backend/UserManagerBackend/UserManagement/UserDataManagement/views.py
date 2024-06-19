@@ -18,6 +18,7 @@ def user_data(request: HttpRequest):
         if (token is None or user_id is None):
             return HttpResponse(status=401)
         user_data = DbOps.get_user(user_id=user_id)
+        print("SOMEONE IS HERE")
         user_data.pop('password')
         return JsonResponse(user_data, status=200)
     except Exception as e:
@@ -99,6 +100,7 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             token = ViewAssist.generate_42_request_token(code, "http://127.0.0.1:8001/userdata/42login/callback/")
             if (token is None):
                 return HttpResponseRedirect("http://127.0.0.1:5500/")
+            print("test")
             required_data = ViewAssist.generate_42_user_data(token)
             if (required_data is None):
                 return JsonResponse({"Error":"Missing Values"}, status=400)

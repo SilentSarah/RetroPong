@@ -49,8 +49,9 @@ class ViewAssist:
             "code": code,
             "redirect_uri": redirect_uri
         }
+        print(CLIENT_ID, SECRET_ID, code, redirect_uri)
         access_token = requests.post(token_url, params=params)
-        print(access_token.status_code)
+        print(access_token.content.decode('utf-8'))
         access_token = access_token.json()
         
         token = access_token.get('access_token')

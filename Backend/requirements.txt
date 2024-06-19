@@ -10,4 +10,4 @@ daphne
 django-eventstream==4.5.1
 channels_redis
 Pillow
-
+django-storages[s3]
