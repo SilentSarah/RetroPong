@@ -714,6 +714,10 @@ background: linear-gradient(150.02deg, rgba(0, 0, 0, 0.7) 70%, rgba(240, 128, 24
     inset: 50% 50%;
 }
 
+.z-ultimate {
+    z-index: 100 !important;
+}
+
 .z-20 {
     z-index: 20 !important;
 }
