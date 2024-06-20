@@ -167,7 +167,6 @@ function setDashboardPlayerPfpAndBg(self = true) {
 
 
 function createMatchHistoryElement(matchHistory, match, self = true) {
-    console.log(match)
     const match_data = {
         player_id: match.OpponentData.self_id,
         player_username: match.OpponentData.self_username,  
@@ -179,7 +178,6 @@ function createMatchHistoryElement(matchHistory, match, self = true) {
         opponent_pfp: match.OpponentData.pfp,
 
     }
-    console.log(match_data);
     let div = document.createElement("div");
     const match_color = match_data.result == "WIN" ? "bg-win" : match_data.result == "LOSS" ? "bg-loss" : match_data.result == "DRAW" ? "bg-draw" : "text-white";
     const match_text_color = match_data.result == "WIN" ? "text-success" : match_data.result == "LOSS" ? "text-danger" : match_data.result == "DRAW" ? "ext-white-fade" : "text-white";
@@ -265,4 +263,7 @@ function setDashboardStats(self = true) {
     if (first_name && last_name)
         full_name.textContent = first_name + " " + last_name;
     setPlayerRank();
+    if (self === false) {
+        DisplayProfileOptions();
+    }
 }

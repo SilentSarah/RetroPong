@@ -52,7 +52,7 @@ function controlNotificationFlow(data, notifications_container) {
 function constructNotificationData(each_notification) {
     const notification_Data = {
         id: each_notification.id,
-        type: each_notification.type,
+        type: each_notification.type == 'FRIEND' ? 'MESSAGE' : each_notification.type,
         content: each_notification.content,
         date: each_notification.date,
         reciever: each_notification.reciever,
@@ -167,7 +167,8 @@ class notifications {
             console.log("Connection closed");
         }
         this.notifications.onerror = function(event) {
-            console.log("Error: " + event.data);
+            delete this.notifications;
+            this.notifications = new WebSocket("ws://127.0.0.1:8001/ws/notifications/");
         }
     }
 

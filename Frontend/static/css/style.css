@@ -515,13 +515,13 @@ border-radius: 25px;
 
 .nav_btn {
     z-index: 10;
-    transition: all 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940);
+    transition: all 0.25s cubic-bezier(0.250, 0.460, 0.450, 0.940);
     transform: scale(1);
 }
 
 .nav_btn:hover {
     cursor: pointer;
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .selected:hover {
@@ -681,7 +681,6 @@ background: linear-gradient(150.02deg, rgba(0, 0, 0, 0.7) 70%, rgba(240, 128, 24
 
 .bg-none {
     background: none;
-    border: none;
     border-radius: 25%;
     transition: all 0.25s ease-in-out;
 }
@@ -792,4 +791,8 @@ input[type=number] {
 
 .hover-cursor {
     cursor: pointer;
+}
+
+.cursor-not-allowed {
+    cursor: not-allowed;
 }

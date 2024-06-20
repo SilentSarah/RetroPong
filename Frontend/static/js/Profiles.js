@@ -11,6 +11,64 @@ function passUsertoProfile() {
     profilePage.click();
 }
 
+function Invite(id, type) {
+    const profileOptions = document.getElementById('profileOptions');
+    if (id == undefined || id == null || type == undefined || type == null) return;
+    if (type != 'friend' && type != 'game') return;
+    Array.from(profileOptions.children).forEach(child => {
+        child.disabled = true;
+        child.classList.add('opacity-75', 'cursor-not-allowed');
+    });
+    console.log("Inviting...", id, type);
+    fetch ("http://127.0.0.1:8001/userdata/invite", {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access'),
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            'type': type,
+            'receiver': id
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        toast(data.message, "bg-success");
+        Array.from(profileOptions.children).forEach(child => {
+            child.disabled = false;
+            child.classList.remove('opacity-75', 'cursor-not-allowed');
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function DisplayProfileOptions() {
+    if (current_user == undefined || current_user == null) return;
+    if (Object.keys(current_user).length == 0) return;
+    if (current_user.id === parseInt(sessionStorage.getItem('id')))
+    {
+        const ProfileOptions = document.getElementById('profileOptions');
+        if (ProfileOptions)
+            ProfileOptions.remove();
+        return ;
+    }
+    const modalContent = document.getElementById('modalContent');
+    const profileOptions = document.createElement('div');
+    profileOptions.classList.add('d-flex', 'gap-2', 'align-items-center', 'justify-content-center', 'w-100', 'z-ultimate', 'position-sticky', 'transform-middle');
+    profileOptions.style.top = '85%';
+    profileOptions.id = 'profileOptions';
+    profileOptions.innerHTML = `
+        <button id="friendInvite" onclick="Invite(${current_user.id}, 'friend')" class="button-rp text-white border-transparent-2 rounded-3 bg-bubblegum transition-all p-2">
+            <img src="/static/img/general/AddFriend.png" width="40px" height="40px" alt="Add this Friend">
+        </button>
+        <button id="GameInvite" onclick="Invite(${current_user.id}, 'game')" class="button-rp text-white border-transparent-2 rounded-3 bg-blueberry transition-all p-2">
+            <img src="/static/img/general/InviteGame.png" width="40px" height="40px" alt="Duel this friend">
+        </button>`;
+    modalContent.appendChild(profileOptions);
+}
+
 function spawnAccountSearchMenu(element) {
     const input = element.querySelector('input');
     const modalContent = document.getElementById('modalContent');

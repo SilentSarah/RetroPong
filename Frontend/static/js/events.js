@@ -166,7 +166,14 @@ function displayTitle() {
     }
 }
 
-
+function clearModals() {
+    const modalContent = document.querySelector('#modalContent');
+    Array.from(modalContent.children).forEach(content => {
+        if (content.id !== 'account_finder') {
+            content.remove();
+        }
+    });
+}
 
 function loadEvents() {
     if (window.location.pathname === '/') {
@@ -187,6 +194,9 @@ function loadEvents() {
     else if (window.location.pathname === '/dashboard' || window.location.pathname === '/profile') {
         copyIDListener();
         window.location.pathname === '/dashboard' ? setDashboardStats(true) : setDashboardStats(false);
+    }
+    if (window.location.pathname !== '/profile') {
+        clearModals();
     }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();
