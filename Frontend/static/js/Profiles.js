@@ -45,20 +45,16 @@ function Invite(id, type) {
 }
 
 function DisplayProfileOptions() {
-    if (current_user == undefined || current_user == null) {console.log("null data"); return;}
-    if (Object.keys(current_user).length == 0) {console.log("empty data"); return;}
     const ProfileOptions = document.getElementById('profileOptions');
+
+    if (current_user == undefined || current_user == null) return;
+    if (Object.keys(current_user).length == 0) return;
     if (ProfileOptions) ProfileOptions.remove();
-    if (current_user.id === parseInt(sessionStorage.getItem('id')))
-    {
-        if (ProfileOptions)
-            ProfileOptions.remove();
-        console.log("Profile Options already displayed...")
-        return ;
-    }
+    if (current_user.id === parseInt(sessionStorage.getItem('id'))) return ;
+
     const modalContent = document.getElementById('modalContent');
     const profileOptions = document.createElement('div');
-    profileOptions.classList.add('d-flex', 'gap-2', 'align-items-center', 'justify-content-center', 'w-100', 'z-ultimate', 'position-sticky', 'transform-middle');
+    profileOptions.classList.add('d-flex', 'gap-2', 'align-items-center', 'justify-content-center', 'start-50', 'end-50', 'z-ultimate', 'position-sticky', 'transform-middle');
     profileOptions.style.top = '85%';
     profileOptions.id = 'profileOptions';
     profileOptions.innerHTML = `
