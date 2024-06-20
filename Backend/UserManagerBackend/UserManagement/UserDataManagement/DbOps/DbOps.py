@@ -42,7 +42,6 @@ class DbOps:
                         "result": "WIN" if id in round.Winners else "LOSS" if opponent.id in round.Winners else "DRAW" if opponent.id in round.Winners and id in round.Winners else "DRAW",
                     }
                 }
-                print(match_history)
             return match_history
         except Exception as e:
             print("DbOps: ", e)
@@ -290,3 +289,31 @@ class DbOps:
         except Exception as e:
             print("DbOps: ", e)
             return None
+        
+    @staticmethod
+    def create_user_invite(user_id: int, invitee_id: int, invite_type):
+        if (user_id == None or invitee_id == None or invite_type == None):
+            return False
+        try:
+            if (int(user_id) == int(invitee_id) or invite_type != "friend" and invite_type != "game"):
+                print("Invalid Invite", int(user_id) == int(invitee_id), invite_type != "friend" or invite_type != "game")
+                return False
+            
+            user = User.objects.get(id=user_id)
+            if (invite_type == "friend"):
+                invitee = User.objects.get(id=invitee_id)
+                if (user_id not in invitee.ARequests):
+                    invitee.ARequests.append(user_id)
+                invitee.save()
+            invite_notification = Notification(
+                nType=invite_type.upper(),
+                nContent=f"Invited you to match by" if invite_type == "game" else f"{user.uusername} sent you a friend request",
+                nReciever=invitee_id,
+                nSender=user_id,
+                nDate=datetime.datetime.now()
+            )
+            invite_notification.save()
+            return True
+        except Exception as e:
+            print("DbOps: ", e)
+            return False

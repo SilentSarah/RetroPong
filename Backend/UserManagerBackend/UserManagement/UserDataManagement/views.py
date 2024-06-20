@@ -52,6 +52,24 @@ def user_id_data(request: HttpRequest, id: int):
         return JsonResponse(user_data, status=200)
     except Exception as e:
         return JsonResponse({"error":"Bad Request"}, status=401)
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def invite_user(request: HttpRequest):
+    token, user_id = ViewAssist.verify_token(request)
+    if (token is not None and user_id is not None):
+        try:
+            body = json.loads(request.body)
+            invite_type = body.get('type')
+            invitee_id = body.get('receiver')
+            if (DbOps.create_user_invite(user_id, invitee_id, invite_type) == False):
+                return JsonResponse({"error":"Invite Creation Failed"}, status=400)
+            return JsonResponse({"message":"Invite Sent Successfully"}, status=201)
+        except Exception as e:
+            print("error:", e)
+            return JsonResponse({"error":"Bad Request"}, status=400)
+    else:
+        return HttpResponse(status=401)
 
 @csrf_exempt
 @require_http_methods(["POST"])

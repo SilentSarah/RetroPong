@@ -9,6 +9,7 @@ urlpatterns = [
     path("delete", delete_user, name="delete_user"),
     path("update", update_user, name="update_user"),
     path("search", search_user, name="search_user"),
+    path("invite", invite_user, name="invite_user"),
     path("42login", login_42_user, name="login_42_user"),
     path("42login/callback/", login_42_user_callback, name="login_42_user_callback"),
 ]
