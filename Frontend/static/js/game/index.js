@@ -61,6 +61,20 @@ function checkInvite()
 	inviterId && startMode(3, inviterId);
 }
 
+function initTournament()
+{
+	tournamentSocket.onmessage = function(e) {
+		const data = JSON.parse(e.data);
+
+		if (data.type == 'log')
+		{
+			console.log("Log: ", data.log);
+		}
+		// if (data.type != 'update')
+		// 	console.log(`The Type is: ${data.type}, type==ready: ${data.type == 'ready'}`)
+	};
+}
+
 function initGame()
 {
 	// const gameEl = document.getElementById("game");
@@ -119,7 +133,7 @@ function initGame()
 		{
 			gameSocket.send(JSON.stringify({
 						'type': 'session_storage',
-						.../* {id: Math.round(Math.random() * 1000)}// */sessionStorage
+						...{id: Math.round(Math.random() * 1000)}//sessionStorage
 					}));
 		}
 		if (data.type == 'session_storage_ack')
@@ -146,10 +160,10 @@ function initGame()
 			data.players.forEach((player, i) => {
 				const options = {
 					sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',
-					pfpSrc: player.pfpSrc,
-					pfpAlt: player.pfpAlt,
-					pName: player.pName,
-					lvl: player.lvl
+					// pfpSrc: player.pfpSrc, // will be altered later using the db
+					// pfpAlt: player.pfpAlt, // will be altered later using the db
+					pName: player,
+					lvl: 42 // will be altered later using the db
 				}
 				addWaiter(options);
 			});

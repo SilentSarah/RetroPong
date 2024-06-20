@@ -11,6 +11,32 @@ from game.models import MatchHistory
 from asgiref.sync import sync_to_async
 
 
+class TournamentConsumer(AsyncJsonWebsocketConsumer):
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		print('A tournament consumer Instant was created!!!')
+
+	async def connect(self):
+		await self.accept()
+		# await self.send_json(content={"type": "fetch_session_storage"})
+
+	async def disconnect(self, close_code):
+		print(f"\033[91m >> The channel just disconnected is: { self.channel_name } << \033[0m")
+		# await self.channel_layer.group_discard(
+		# 	self.game.id(), self.channel_name
+		# )
+
+	async def receive_json(self, content):
+		type = content["type"]
+		# paddle = {}
+		if (type == 'test'):
+			await self.send_json(content={"type": "log", "log": "the test type was received"})
+		else:
+			# print(f"The type received was: {type}")
+			pass
+
+
+
 class GameConsumer(AsyncJsonWebsocketConsumer):
 	# active_players = {} # {"channel_name": Player, ...}
 	# solos = [] # list of solo game objects
@@ -159,7 +185,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			# await self.game.start(content['mode'])
 			
 			self.join_game(content['mode'], content['inviter_id'])
-			# await self.standby_update()
+			await self.standby_update()
 			
 			# print(f'sent to the group {self.game.id()}', file=sys.stderr)
 			# print(f'>>>>self.game: {self.game}', file=sys.stderr)
@@ -231,6 +257,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			# stopped below AttributeError: 'str' object has no attribute 'pName'
 			# players = list(filter(lambda p: p.pName in self.game.players, GameConsumer.active_players.values()))
 			# players = [p.getProps() for p in GameConsumer.active_players.values() if p.pName in self.game.players]
+			players = list(self.game.paddles.keys())
 			# ^^^^^^^ This will be changes later by sending id instead
-			# await self.send_json(content={"type": type, "players": players})
-			await self.send_json(content={"type": 'log', 'log': 'From game_recv_broadcast'})
+			await self.send_json(content={"type": type, "players": players})
+			# await self.send_json(content={"type": 'log', 'log': 'From game_recv_broadcast'})

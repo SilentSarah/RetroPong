@@ -43,6 +43,11 @@ const routes = [
         component: () => grabContent('/static/content/game.html')
     },
     {
+        path: '/tournament',
+        on: false,
+        component: () => grabContent('/static/content/tournament.html')
+    },
+    {
         path: '/settings',
         on: false,
         component: () => grabContent('/static/content/settings.html')
