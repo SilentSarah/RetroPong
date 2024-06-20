@@ -231,10 +231,18 @@ function setMatchStatistics(self = true) {
         Chart.setDates();
         Chart.setBarValues();
     });
-
 }
 
 function setDashboardStats(self = true) {
+    if (self === false) {
+        if (sessionStorage.getItem("profile") === null) {
+            passUsertoProfile();
+            return ;
+        }
+        if (Object.keys(current_user).length === 0)
+            current_user = JSON.parse(sessionStorage.getItem("profile"));
+        DisplayProfileOptions();
+    }
     setTextContentHTML('username', 'username', "", self);
     setTextContentHTML('title', 'title', 'The NPC', self);
     setTextContentHTML('email', 'email', "", self);
@@ -263,7 +271,4 @@ function setDashboardStats(self = true) {
     if (first_name && last_name)
         full_name.textContent = first_name + " " + last_name;
     setPlayerRank();
-    if (self === false) {
-        DisplayProfileOptions();
-    }
 }

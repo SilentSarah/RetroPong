@@ -1,6 +1,6 @@
 let account_finder_active = false;
 let last_search_id = undefined;
-const current_user = {};
+let current_user = {};
 
 function passUsertoProfile() {
     const profilePage = document.createElement('a');
@@ -45,13 +45,15 @@ function Invite(id, type) {
 }
 
 function DisplayProfileOptions() {
-    if (current_user == undefined || current_user == null) return;
-    if (Object.keys(current_user).length == 0) return;
+    if (current_user == undefined || current_user == null) {console.log("null data"); return;}
+    if (Object.keys(current_user).length == 0) {console.log("empty data"); return;}
+    const ProfileOptions = document.getElementById('profileOptions');
+    if (ProfileOptions) ProfileOptions.remove();
     if (current_user.id === parseInt(sessionStorage.getItem('id')))
     {
-        const ProfileOptions = document.getElementById('profileOptions');
         if (ProfileOptions)
             ProfileOptions.remove();
+        console.log("Profile Options already displayed...")
         return ;
     }
     const modalContent = document.getElementById('modalContent');
@@ -112,7 +114,8 @@ function DisplayProfileDetails(id) {
         for (const [key, value] of Object.entries(data)) {
             current_user[key] = value;
         }
-        passUsertoProfile(current_user);
+        sessionStorage.setItem("profile", JSON.stringify(current_user));
+        passUsertoProfile();
     })
     .catch(error => {
         console.error('Error:', error);
