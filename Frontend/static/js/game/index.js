@@ -29,17 +29,22 @@ function addWaiter(options)
 }
 // Test End
 
-function readyToPlayCounter() {
+function readyToPlayCounter(isTournament) {
 	console.log("I got into the counter already");
 	let i = 3;
-	document.getElementById('waitStatus').textContent = `Be Ready to play in ${i--}s`;
+	const message = isTournament ? "You will be redirected to /game" : "Be Ready to play";
+	document.getElementById('waitStatus').textContent = `${message} in ${i--}s`;
 	const interval = setInterval(() => {
 		if (!(i))
 		{
 			clearInterval(interval);
-			document.getElementById('waitMenu').classList.toggle('hidden');
+			// Below is commented temporarily to test tournament's page
+			if (isTournament)
+				window.location.href = '/game'
+			else
+				document.getElementById('waitMenu').classList.toggle('hidden');
 		}
-		document.getElementById('waitStatus').textContent = `Be Ready to play in ${i--}s`;
+		document.getElementById('waitStatus').textContent = `${message} in ${i--}s`;
 	}, 1000)
 }
 
@@ -66,12 +71,54 @@ function initTournament()
 	tournamentSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 
-		if (data.type == 'log')
+		if (data.type == 'fetch_session_storage')
+		{
+			tournamentSocket.send(JSON.stringify({
+						'type': 'session_storage',
+						...{id: Math.round(Math.random() * 1000)}//sessionStorage
+					}));
+		}
+		else if (data.type == 'session_storage_ack')
+		{
+			console.log("received the session storage ack<<<<<<");
+		}
+		else if (data.type == 'log')
 		{
 			console.log("Log: ", data.log);
 		}
-		// if (data.type != 'update')
-		// 	console.log(`The Type is: ${data.type}, type==ready: ${data.type == 'ready'}`)
+		else if (data.type == 'standby')
+		{
+			document.getElementById('waitStatus').textContent = 'Waiting for people to join...';
+			console.log("players fetched: ", data.players);
+			// clearWaiters();
+			// data.players.forEach((player, i) => {
+			// 	const options = {
+			// 		sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',
+			// 		// pfpSrc: player.pfpSrc, // will be altered later using the db
+			// 		// pfpAlt: player.pfpAlt, // will be altered later using the db
+			// 		pName: player,
+			// 		lvl: 42 // will be altered later using the db
+			// 	}
+			// 	addWaiter(options);
+			// });
+		}
+		else if (data.type == 'ready')
+		{
+			console.log("Ready >>>>>>>>>");
+			console.log("players fetched: ", data.players);
+			// clearWaiters();
+			// data.players.forEach((player, i) => {
+			// 	const options = {
+			// 		sideId: i % 2 == 0 ? 'leftWaiters' : 'rightWaiters',
+			// 		pfpSrc: player.pfpSrc,
+			// 		pfpAlt: player.pfpAlt,
+			// 		pName: player.pName,
+			// 		lvl: player.lvl
+			// 	}
+			// 	addWaiter(options);
+			// });
+			readyToPlayCounter(true);
+		}
 	};
 }
 
@@ -183,7 +230,7 @@ function initGame()
 				}
 				addWaiter(options);
 			});
-			readyToPlayCounter();
+			readyToPlayCounter(false);
 		}
 		if (data.type != 'update')
 			console.log(`The Type is: ${data.type}, type==ready: ${data.type == 'ready'}`)

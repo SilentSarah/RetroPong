@@ -7,8 +7,6 @@ from game.paddle import Paddle
 from datetime import datetime
 from game.models import MatchHistory
 
-# Make sure to implement the full() method
-
 class Game:
 	serial_number = 0
 	opponent_fieldnames = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent']
