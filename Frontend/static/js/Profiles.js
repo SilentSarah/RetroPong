@@ -67,7 +67,8 @@ function DisplayProfileOptions() {
     modalContent.appendChild(profileOptions);
 }
 
-function spawnAccountSearchMenu(element) {
+function spawnAccountSearchMenu() {
+    const element = document.getElementById('account_finder');
     const input = element.querySelector('input');
     const modalContent = document.getElementById('modalContent');
     account_finder_active = true;
@@ -81,6 +82,12 @@ function spawnAccountSearchMenu(element) {
     }, 250);
     users_search.removeEventListener('input', seachForUsers);
     users_search.addEventListener('input', seachForUsers);
+    document.onclick = function (e) {
+        if (element.classList.contains('d-flex') === true) {
+            if (e.target.closest('#account_finder') === null && e.target.id !== 'account_search_btn')
+                eliminateAccountSearchMenu(element);
+        }
+    };
 }
 
 function eliminateAccountSearchMenu(element) {
@@ -214,11 +221,6 @@ function initiateAccountSearchMenuEvents() {
                     e.preventDefault();
                 }
             };
-            document.onclick = function (e) {
-                if (e.target.closest('#account_finder') === null) {
-                    eliminateAccountSearchMenu(account_finder);
-                }
-            }
         }
     }
 }

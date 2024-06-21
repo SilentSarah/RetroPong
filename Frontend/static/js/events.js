@@ -26,6 +26,9 @@ function DisplayNavBar() {
             <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
                 <img src="/static/img/general/Account.png" width="30px">
             </a>
+            <div onclick="spawnAccountSearchMenu()" class="nav_btn selected hover-cursor">
+                <img id="account_search_btn" src="/static/img/general/FindUser.png" width="30px">
+            </div>
             <a href="/chat" class="nav_btn selected">
                 <img src="/static/img/general/Chat.png" width="30px">
             </a>

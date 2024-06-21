@@ -233,11 +233,17 @@ function setMatchStatistics(self = true) {
     });
 }
 
+function passUserto404() {
+    const notFound = document.createElement("a");
+    notFound.href = "/404";
+    scanLinks();
+    notFound.click();
+}
+
 function setDashboardStats(self = true) {
     if (self === false) {
         if (sessionStorage.getItem("profile") === null) {
-            passUsertoProfile();
-            return ;
+            return passUserto404();
         }
         if (Object.keys(current_user).length === 0)
             current_user = JSON.parse(sessionStorage.getItem("profile"));
