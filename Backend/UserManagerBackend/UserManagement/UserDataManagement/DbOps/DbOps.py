@@ -241,7 +241,7 @@ class DbOps:
             uemail=user_data_copy.get('uEmail'),
             ufname=user_data_copy.get('uFname'),
             ulname=user_data_copy.get('uLname'),
-            uregdate=datetime.datetime.now(tz=timezone.utc),
+            uregdate=datetime.datetime.now(),
             uIs42=False if is42 == 0 else True
         )
 
