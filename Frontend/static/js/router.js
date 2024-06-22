@@ -47,6 +47,11 @@ const routes = [
         on: false,
         component: () => grabContent('/static/content/tournament.html')
     },
+    { // For testing only >>>
+        path: '/info',
+        on: false,
+        component: () => grabContent('/static/content/info.html')
+    },
     {
         path: '/settings',
         on: false,

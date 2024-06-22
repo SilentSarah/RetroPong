@@ -13,9 +13,12 @@ class Game:
 	match_type_fieldnames = ['solo', 'duo']
 	def __init__(self, creator_id, mode):
 		self.mode = mode
+		self.started = False
 		self.over = False
 		# self.consumer = consumer
-		self.paddles = {creator_id: Paddle()}
+		self.paddles = {}
+		if (mode != 5):
+			self.paddles = {creator_id: Paddle()}
 		self.details = {
 			'creator': creator_id,
 			'id': f"room_{Game.serial_number}"

@@ -64,3 +64,18 @@ function spec(mode, e)
 	e.currentTarget.classList.toggle('disabled');
 	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));
 }
+
+
+// Below is only for temp
+function submitDataToSessionStorage(e)
+{
+	e.preventDefault();
+	console.log("The sessionStorage before is: ", sessionStorage);
+	const form = e.currentTarget;
+	const customId = form.querySelector('#customId').value;
+	const customImg = form.querySelector('#customImg').value;
+	// Don't forget to disable this later
+	sessionStorage.setItem('id', customId);
+	sessionStorage.setItem('pfp', customImg);
+	console.log("The sessionStorage is: ", sessionStorage);
+}

@@ -32,17 +32,22 @@ function addWaiter(options)
 function readyToPlayCounter(isTournament) {
 	console.log("I got into the counter already");
 	let i = 3;
-	const message = isTournament ? "You will be redirected to /game" : "Be Ready to play";
+	const message = isTournament
+		? "You will be redirected to /game"
+		: "Be Ready to play";
 	document.getElementById('waitStatus').textContent = `${message} in ${i--}s`;
 	const interval = setInterval(() => {
 		if (!(i))
 		{
+			console.log("i is: ", i);
 			clearInterval(interval);
-			// Below is commented temporarily to test tournament's page
 			if (isTournament)
 				window.location.href = '/game'
 			else
+			{
+				console.log("I should Hide the waitMenu >>>>>>>>\n");
 				document.getElementById('waitMenu').classList.toggle('hidden');
+			}
 		}
 		document.getElementById('waitStatus').textContent = `${message} in ${i--}s`;
 	}, 1000)
@@ -66,6 +71,12 @@ function checkInvite()
 	inviterId && startMode(3, inviterId);
 }
 
+function checkTournament()
+{
+	const previous_location = (new URL(document.referrer)).pathname
+	previous_location == '/tournament' && startMode(5);
+}
+
 function initTournament()
 {
 	tournamentSocket.onmessage = function(e) {
@@ -75,7 +86,7 @@ function initTournament()
 		{
 			tournamentSocket.send(JSON.stringify({
 						'type': 'session_storage',
-						...{id: Math.round(Math.random() * 1000)}//sessionStorage
+						...sessionStorage
 					}));
 		}
 		else if (data.type == 'session_storage_ack')
@@ -180,13 +191,14 @@ function initGame()
 		{
 			gameSocket.send(JSON.stringify({
 						'type': 'session_storage',
-						...{id: Math.round(Math.random() * 1000)}//sessionStorage
+						...sessionStorage
 					}));
 		}
 		if (data.type == 'session_storage_ack')
 		{
 			console.log("received the session storage ack<<<<<<");
 			checkInvite();
+			checkTournament();
 		}
 		else if (data.type == 'update')
 		{

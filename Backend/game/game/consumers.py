@@ -26,6 +26,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		game_id = GameConsumer.user_matches[str(self.user_info['id'])][mode]
 		if (game_id):
 			self.game = GameConsumer.games[game_id]
+			if (mode == 5 and (str(self.user_info['id']) not in self.game.paddles)):
+				self.game.add_paddle(str(self.user_info['id']))
 			return 
 		elif (mode == 3 and inviter_id):#privat mode invite
 			game_id = GameConsumer.user_matches[str(inviter_id)][mode]
@@ -53,12 +55,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	async def check_user(self):
 		if (not (str(self.user_info['id']) in GameConsumer.user_matches)):
 			GameConsumer.user_matches[str(self.user_info['id'])] = {
-				1: False, 2: False, 3: False, 4: False,
+				1: False, 2: False, 3: False, 4: False, 5: False
 			}
 			await self.send_json(content={"type": "log", "log": "The user wasn't found"})
 		else:
 			await self.send_json(content={"type": "log", "log": "The user was found"})
-			await self.send_json(content={"type": "log", "log": self.user_matches[str(self.user_info['id'])]})
+			# await self.send_json(content={"type": "log", "log": self.user_matches[str(self.user_info['id'])]})
 	
 	async def connect(self):
 		await self.accept()
@@ -93,10 +95,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		elif (type == 'start'):
 			# await self.send_json(content={"type": "log", "log": 'I reach here'})
 			# await self.game.start(content['mode'])
-			
 			self.join_game(content['mode'], content['inviter_id'])
+			await self.send_json(content={"type": "log", "log": f"game_id after joining is: >{self.game.id()}<"})
 			await self.standby_update()
-			self.game.full() and threading.Timer(3, self.game.start).start()
+			self.game.full() and not self.game.started and threading.Timer(3, self.game.start).start()
 		elif (type == 'leave'):
 			self.leave_game()
 		elif (type == 'spec'):
@@ -135,16 +137,19 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	# Receive message from room group
 	async def game_recv_broadcast(self, event):
 		# print(f"I have received in the function recv_broadcast: '{event["message"]}'", file=sys.stderr)
-		print('I received smthg from the recv_broadcast>>>>>>>>>>', file=sys.stderr)
-		if ('action' in event.keys() and event['action'] == 'standby_update'):
+		if (not self.game.started
+	  		and 'action' in event.keys() and event['action'] == 'standby_update'):
 			print('I received smthg from the recv_broadcast>>>>>>>>>>')
 			type = 'ready' if self.game.full() else 'standby'
+			if (type == 'ready'): self.game.started = True
 			# stopped below AttributeError: 'str' object has no attribute 'pName'
 			# players = list(filter(lambda p: p.pName in self.game.players, GameConsumer.active_players.values()))
 			# players = [p.getProps() for p in GameConsumer.active_players.values() if p.pName in self.game.players]
 			players = list(self.game.paddles.keys())
 			# ^^^^^^^ This will be changes later by sending id instead
 			await self.send_json(content={"type": type, "players": players})
+			await self.send_json(content={"type": 'log', "log": f'The ball\'s speed is: {self.game.ball["speed"]}'})
+			await self.send_json(content={"type": 'log', "log": f'The paddles are: {self.game.paddles}'})
 
 
 
@@ -215,6 +220,7 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		elif (type == 'join'):
 			print('received the join type')
 			self.join_tournament()
+			await self.send_json(content={"type": "log", "log": f"The tournament_id after joining is: >{self.tournament.id()}<"})
 			await self.standby_update()
 			# self.tournament.full() and threading.Timer(3, self.game.start).start()
 		else:
@@ -225,6 +231,6 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 	async def tournament_recv_broadcast(self, event):
 		if ('action' in event.keys() and event['action'] == 'standby_update'):
 			print('I received smthg from the Tournament\'s recv_broadcast>>>>>>>>>>')
-			type = 'ready' if self.tournament.full() else 'standby'
+			type = 'ready' if self.tournament.check_start() else 'standby'
 			await self.send_json(content={"type": type, "players": self.tournament.players})
 			await self.send_json(content={"type": 'log', 'log': f'the tournoi id: {self.tournament.id()}'})
