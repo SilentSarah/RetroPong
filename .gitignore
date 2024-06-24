@@ -1,5 +1,6 @@
 Authlib
 UserLibs
+GameLibs
 __pycache__
 .env
 .DS_Store

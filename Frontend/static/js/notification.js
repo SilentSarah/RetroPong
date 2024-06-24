@@ -151,7 +151,6 @@ class notifications {
         }
         this.notifications.onmessage = function(event) {
             let data = JSON.parse(event.data);
-            console.log(data)
             const notifications_container = document.getElementById('notifications_container');
             if (controlNotificationFlow(data, notifications_container) == 1)
                 return;
