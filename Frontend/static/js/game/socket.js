@@ -1,9 +1,9 @@
-let gameSocket;
+let gameSocket, tournamentSocket;
 
-function initSocket() {
+function initGameSocket(initGame) {
 	gameSocket = new WebSocket(
 		'ws://'
-		+ window.location.hostname + ':8000'
+		+ window.location.hostname + ':8003'
 		+ '/ws/game/'
 	);
 	
@@ -13,10 +13,22 @@ function initSocket() {
 		console.error('Game socket closed unexpectedly');
 		
 	};
+	gameSocket.addEventListener('open', () => initGame())
 }
 
-// document.getElementById('join-game').onclick = function(e) {
-// 	gameSocket.send(JSON.stringify({
-// 		'type': 'join'
-// 	}));
-// };
+function initTournamentSocket(initTournament) {
+	tournamentSocket = new WebSocket(
+		'ws://'
+		+ window.location.hostname + ':8003'
+		+ '/ws/tournament/'
+	);
+	
+	console.log("window.location.host is: ", window.location.host)
+	
+	tournamentSocket.onclose = function(e) {
+		console.error('Tournament socket closed unexpectedly');
+		
+	};
+	tournamentSocket.addEventListener('open', () => initTournament())
+}
+

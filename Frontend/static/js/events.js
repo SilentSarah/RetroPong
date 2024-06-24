@@ -80,7 +80,7 @@ function DisplayNavBar() {
             }
         });
         document.getElementById('logout').addEventListener('click', function () {
-            sessionStorage.clear();
+            // sessionStorage.clear();
             clearInterval(fetchID);
             delete_cookie('access');
             window.location.href = '/';
@@ -178,7 +178,12 @@ function clearModals() {
     });
 }
 
+ 
+
+
 function loadEvents() {
+    scanLinks();
+    Websocket()
     if (window.location.pathname === '/') {
         displayTitle();
     }
@@ -193,13 +198,18 @@ function loadEvents() {
         loadAccountDetailsInSettings(true);
     }
 	else if (window.location.pathname === '/game')
-		initGame();
-    else if (window.location.pathname === '/dashboard' || window.location.pathname === '/profile') {
+		initGameSocket(initGame);
+  else if (window.location.pathname === '/tournament')
+		initTournamentSocket(initTournament);
+  else if (window.location.pathname === '/dashboard') {
         copyIDListener();
         window.location.pathname === '/dashboard' ? setDashboardStats(true) : setDashboardStats(false);
     }
     if (window.location.pathname !== '/profile') {
         clearModals();
+    }
+    else if (window.location.pathname === '/chat') {
+        UserContactFetching();
     }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();

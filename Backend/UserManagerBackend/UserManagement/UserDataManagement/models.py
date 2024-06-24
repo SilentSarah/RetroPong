@@ -39,6 +39,7 @@ class User(models.Model):
     ABlockedBy = ArrayField(models.IntegerField(), db_column='ABlockedBy', default=list)
     Afriends = ArrayField(models.IntegerField(), db_column='AFriends', default=list)
     ARequests = ArrayField(models.IntegerField(), db_column='ARequests', default=list)
+    TwoFactor = models.BooleanField(db_column='TwoFactor', default=False)
     isOnline = models.BooleanField(db_column='online', default=False)
 
 class UsersAdmin(ModelAdmin):

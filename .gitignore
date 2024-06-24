@@ -6,3 +6,8 @@ __pycache__
 .vscode
 profile_pics
 profile_bg_pics
+Pipfile.lock
+Pipfile
+venv
+game_pyenv
+.venv

@@ -82,6 +82,11 @@ function loginWith42() {
     });
 }
 
+// function storeCookies(data) {
+// 	for (let key in data)
+// 		document.cookie = `${key}=${data[key]}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+// }
+
 function log_user_in() {
     let items = document.querySelectorAll('input');
     let username = items[0].value;
@@ -121,6 +126,7 @@ function log_user_in() {
             DisplayNavBar();
             localStorage.setItem('user_id', data.user_id);
             settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
+            passUserToDashboard();
         }
     })
     .catch((error) => {

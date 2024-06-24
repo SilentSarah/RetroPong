@@ -7,9 +7,10 @@
 				<div id="mainMenu">
 					<img src="static/img/general/Logo-text.png" alt="retropong-logo-text">
 					<div class="btns-wrapper">
-						<button class="game-mode-btn" onclick="startMode(1)"><i class="lni lni-user"></i> Solo Mode</button>
-						<button class="game-mode-btn" onclick="startMode(2)"><i class="lni lni-users"></i> Duo Mode</button>
-						<button class="game-mode-btn" onclick="startMode('tournament')"><i class="lni lni-cup"></i> Tournament</button>
+						<!-- the random mode will show two options buttons, either solo or duo -->
+						<button class="game-mode-btn" onclick="soloOrDuo('mainMenu')"><i class="fa-solid fa-dice"></i> Random Mode</button>
+						<button class="game-mode-btn" onclick="startMode(3)"><i class="fa-solid fa-lock"></i> Private Mode</button>
+						<button class="game-mode-btn" onclick="startMode(4)"><i class="fa fa-desktop"></i> Local Mode</button>
 					</div>
 				</div>
 				<!-- Options Menu -->
@@ -21,7 +22,7 @@
 						</button>
 						<h1>Pause</h1>
 						<button onclick="toggleMenu('optionsMenu', 'backgroundsMenu')">Background Colors</button>
-						<button onclick="window.location.replace('/')">Leave Match</button>
+						<button onclick="leaveMatch()">Leave Match</button>
 					</div>
 				</div>
 				<!-- Background Menu -->
@@ -124,21 +125,21 @@
 		<div class="hidden" id="gameInfo"> <!--class="hidden"-->
 			<div class="player-info">
 				<h1 class="taprom txt-orange">SSarah</h1>
-				<h1 class="score">7</h1>
+				<h1 id="leftScore" class="score">0</h1>
 			</div>
 			<div>
 				<h1 class="taprom txt-glow-fff">VS</h1>
-				<div class="specs-wrapper">
+				<div id="specs" class="specs-wrapper">
 					<button onclick="toggleMenu('optionsMenu')" class="spec">
 						<img src="static/img/icons/pause.svg" alt="pause">
 					</button>
-					<button class="spec">
+					<button onclick="spec(0, event)" class="spec">
 						<img src="static/img/icons/explosion.svg" alt="explosion">
 					</button>
-					<button class="spec">
+					<button onclick="spec(1, event)" class="spec">
 						<img src="static/img/icons/defence.svg" alt="defence">
 					</button>
-					<button class="spec disabled">
+					<button onclick="spec(2, event)" class="spec">
 						<img src="static/img/icons/speed.svg" alt="speed">
 					</button>
 				</div>
@@ -150,7 +151,7 @@
 			</div>
 			<div class="player-info">
 				<h1 class="taprom txt-blue">SSarah</h1>
-				<h1 class="score">7</h1>
+				<h1 id="rightScore" class="score">0</h1>
 			</div>
 		</div>
 		<!-- <form id="special-abilities">
