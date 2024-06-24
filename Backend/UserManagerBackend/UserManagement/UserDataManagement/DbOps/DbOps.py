@@ -3,7 +3,16 @@ import bcrypt
 from django.utils import timezone
 from django.db.models import Q
 import datetime
+import requests
+from requests.models import Response
 import re
+from django.core.files.base import ContentFile
+from django.contrib.sites.models import Site
+from django.utils.datastructures import MultiValueDict
+from django.core.files.uploadedfile import UploadedFile
+
+DEFAULT_PFP_LINK = "https://i.ibb.co/3pWy5cD/Default.png"
+DEFAULT_BG_LINK = "https://i.ibb.co/yg3Z2dy/Default-BG.png"
 
 class DbOps:
     def __init__(self):
@@ -17,12 +26,17 @@ class DbOps:
                 return {}
             match_history = {}
             for round in matches:
-                opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 else round.sOpponent
+                opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 and round.fOpponent != id else round.sOpponent
                 opponent = User.objects.get(id=opponent)
+                user = User.objects.get(id=id)
+                domain = Site.objects.get_current().domain
                 match_history[round.id] = {
                     "OpponentData": {
+                        "self_id": id,
+                        "self_pfp": 'http://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
+                        "self_username": user.uusername,
                         "id": opponent.id,
-                        "pfp": opponent.uprofilepic,
+                        "pfp": 'http://{}{}'.format(domain, opponent.uprofilepic.url if opponent.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
                         "username": opponent.uusername,
                         "score": round.Score,
                         "result": "WIN" if id in round.Winners else "LOSS" if opponent.id in round.Winners else "DRAW" if opponent.id in round.Winners and id in round.Winners else "DRAW",
@@ -36,25 +50,26 @@ class DbOps:
     @staticmethod
     def generate_match_statistics(id: int) -> dict:
         try:
-            today = datetime.datetime.now(tz=timezone.utc)
-            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
-            if (matches is None):
-                return {}
-            four_day_matches = []
-            for i in range(4):
-                four_day_matches.append(matches.filter(mStartDate__range=[today - datetime.timedelta(days=i), today - datetime.timedelta(days=i-1)]))
             matches_played = {
                 "Matches Played": {},
             }
+            today = datetime.datetime.now()
+            matches = MatchHistory.objects.filter(Q(fOpponent=id) | Q(sOpponent=id) | Q(tOpponent=id) | Q(lOpponent=id)).filter(matchtype="solo").order_by('-mStartDate')
+            if (matches is None):
+                print("No matches found")
+                return matches_played
+            four_day_matches = []
+            for i in range(4):
+                four_day_matches.append(matches.filter(mStartDate__range=[today - datetime.timedelta(days=i), today - datetime.timedelta(days=i-1)]))
             i = 0
             for day_matches in four_day_matches:
                 date = (today - datetime.timedelta(days=i)).strftime('%d/%m')
                 match_count = day_matches.count()
                 matches_played["Matches Played"][date] = match_count
-                i += 1;
+                i += 1
             return matches_played
         except Exception as e:
-            print("DbOps: ", e)
+            print("DbOps X: ", e)
             return None
 
     @staticmethod
@@ -72,6 +87,7 @@ class DbOps:
                 user = User.objects.get(uusername=username)
             else:
                 user = User.objects.get(id=user_id)
+            domain = Site.objects.get_current().domain
             user = {
                 "id": user.id,
                 "username": user.uusername,
@@ -80,8 +96,8 @@ class DbOps:
                 "fname": user.ufname,
                 "lname": user.ulname,
                 "regdate": user.uregdate,
-                "profilepic": user.uprofilepic,
-                "profilebgpic": user.uprofilebgpic,
+                "profilepic": 'http://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png") ,
+                "profilebgpic": 'http://{}{}'.format(domain, user.uprofilebgpic.url if user.uprofilebgpic != "/static/img/pfp/DefaultBG.png" else "/static/img/pfp/DefaultBG.png") ,
                 "desc": user.udesc,
                 "ucids": user.ucids,
                 "is42": user.uIs42,
@@ -97,13 +113,43 @@ class DbOps:
                 "tournamentswon": user.utournamentswon,
                 "tournamentslost": user.utournamentslost,
                 "matchhistory": DbOps.generate_match_history(user.id),
-                "matchstatistics": DbOps.generate_match_statistics(user.id)
-                
+                "matchstatistics": DbOps.generate_match_statistics(user.id),
+                "two_factor": user.TwoFactor,                
             }
             return user
         except User.DoesNotExist:
             user = None
+        except Exception as e:
+            print("DbOps: ", e)
+            return None
         return user
+    
+    @staticmethod
+    def get_users(search_term: str) -> dict:
+        image: str
+        users_data = {}
+        users = User.objects.filter(Q(uusername__icontains=search_term))[0:4]
+        for user in users:
+            domain = Site.objects.get_current().domain
+            # CODE BELOW IS FOR DEBUGGING PURPOSES ONLY ======= 
+            try:
+                if (user.uprofilepic.url.find("http") != -1):
+                    image = user.uprofilepic.url
+                else:
+                    image = 'http://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png")
+            except:
+                print("--- NO IMAGE FOUND ---")
+                image = "/static/img/pfp/Default.png"
+            # CODE ABOVE IS FOR DEBUGGING PURPOSES ONLY ======== 
+            users_data[user.id] = {
+                "id": user.id,
+                "username": user.uusername,
+                "profilepic": image,
+                "xp": user.xp,
+                "level": user.level,
+                "title": user.utitle,
+            }
+        return users_data
     
     @staticmethod
     def delete_user(user_id: int) -> bool:
@@ -117,13 +163,15 @@ class DbOps:
         """
         try:
             user = User.objects.get(id=user_id)
+            user.uprofilepic.delete()
+            user.uprofilebgpic.delete()
             user.delete()
             return True
         except User.DoesNotExist:
             return False
     
     @staticmethod
-    def update_user(user_id: int, new_data: dict) -> bool:
+    def update_user(user_id: int, new_data: dict, uploaded_files: MultiValueDict[str, UploadedFile]) -> bool:
         """Updates user data in the database
 
         Args:
@@ -134,15 +182,35 @@ class DbOps:
             bool: True if user is updated, False if user does not exist or update fails
         """
         try:
+            utc_morocco = timezone.get_fixed_timezone(60)
             user = User.objects.get(id=user_id)
+            pfp_uploaded = uploaded_files.get('pfp')
+            bg_uploaded = uploaded_files.get('bg')
             for key, value in new_data.items():
+                if (value == None or value == ""):
+                    continue
                 setattr(user, key, value)
+            if (uploaded_files is not None):
+                if (pfp_uploaded is not None):
+                    print(pfp_uploaded.size)
+                    user.uprofilepic.delete()
+                    user.uprofilepic.save(f"{user.uusername + pfp_uploaded.name}", pfp_uploaded)
+                if (bg_uploaded is not None):
+                    user.uprofilebgpic.delete()
+                    user.uprofilebgpic.save(f"{user.uusername + bg_uploaded.name}", bg_uploaded)
+            notification = Notification(
+                nType="ACCOUNT",
+                nContent="Your account settings has been updated",
+                nReciever=user_id,
+                nSender=user_id,
+                nDate=datetime.datetime.now(tz=utc_morocco)
+            )
+            notification.save()
             user.save()
             return True
         except Exception as e:
             print("DbOps: ",e)
             return False
-        
     @staticmethod 
     def create_user(user_data: dict, is42: int = 0) -> bool:
         """Creates a new user in the database
@@ -162,17 +230,90 @@ class DbOps:
             {
                 "uPassword": hashed_password
             })
-        pfp = user_data_copy.get('uProfilepic')
-        bg = user_data_copy.get('uProfilebgpic')
-        User.objects.create(
+        pfp_url = user_data_copy.get('uProfilepic')
+        bg_url = user_data_copy.get('uProfilebgpic')
+        pfp_response = requests.get(DEFAULT_PFP_LINK) if pfp_url is None else requests.get(pfp_url)
+        bg_response = requests.get(DEFAULT_BG_LINK) if bg_url is None else requests.get(bg_url)
+
+        new_user = User(
             uusername=user_data_copy.get('uUsername'),
             upassword=user_data_copy.get('uPassword'),
             uemail=user_data_copy.get('uEmail'),
             ufname=user_data_copy.get('uFname'),
             ulname=user_data_copy.get('uLname'),
-            uregdate=timezone.now(),
-            uprofilepic=pfp if pfp is not None else "",
-            uprofilebgpic=bg if bg is not None else "",
-            uIs42=False if is42 == 0 else True ,
+            uregdate=datetime.datetime.now(),
+            uIs42=False if is42 == 0 else True
         )
-        return True
+
+
+        new_user.uprofilepic.save(f"{user_data_copy.get('uUsername')}.jpg", ContentFile(pfp_response.content)) if pfp_response is not None and type(pfp_response) is Response else None
+        new_user.uprofilebgpic.save(f"{user_data_copy.get('uUsername')}_bg.jpg", ContentFile(bg_response.content)) if bg_response is not None and type(bg_response) is Response else None
+
+        new_user.save()
+        return True # I NEED TO SET THIS BACK TO TRUE AND UNCOMMENT THE ABOVE LINE
+    @staticmethod
+    def get_notifications(user_id: int, last_notification_id: int = -1) -> dict[str]:
+        """Retrieves notifications from the database
+
+        Args:
+            user_id (int): user id of the user to be retrieved
+
+        Returns:
+            dict: Notifications in dictionary format
+        """
+        try:
+            i: int = 1
+            notifications = Notification.objects.filter(nReciever=user_id).order_by('-id')[0:5]
+            notifications_list = {
+                "Notifications": {},
+            }
+            for notification in reversed(notifications):
+                sender = User.objects.get(id=notification.nSender)
+                if (sender is not None):
+                    sender_pfp = 'http://{}{}'.format(Site.objects.get_current().domain, sender.uprofilepic.url)
+                    sender_username = sender.uusername
+                if (notification.id <= last_notification_id):
+                    continue
+                notifications_list["Notifications"][i] = {
+                    "id": notification.id,
+                    "type": notification.nType,
+                    "content": notification.nContent,
+                    "date": datetime.datetime.strftime(notification.nDate, "%d/%m/%Y %H:%M:%S"),
+                    "reciever": notification.nReciever,
+                    "sender": notification.nSender,
+                    "sender_username": sender_username,
+                    "sender_pfp": sender_pfp,
+                }
+                i += 1
+            return notifications_list
+        except Exception as e:
+            print("DbOps: ", e)
+            return None
+        
+    @staticmethod
+    def create_user_invite(user_id: int, invitee_id: int, invite_type):
+        if (user_id == None or invitee_id == None or invite_type == None):
+            return False
+        try:
+            if (int(user_id) == int(invitee_id) or invite_type != "friend" and invite_type != "game"):
+                print("Invalid Invite", int(user_id) == int(invitee_id), invite_type != "friend" or invite_type != "game")
+                return False
+            
+            user = User.objects.get(id=user_id)
+            if (invite_type == "friend"):
+                invitee = User.objects.get(id=invitee_id)
+                if (user_id not in invitee.ARequests):
+                    invitee.ARequests.append(user_id)
+                invitee.save()
+            invite_notification = Notification(
+                nType=invite_type.upper(),
+                nContent=f"Invited you to match by" if invite_type == "game" else f"{user.uusername} sent you a friend request",
+                nReciever=invitee_id,
+                nSender=user_id,
+                nDate=datetime.datetime.now()
+            )
+            invite_notification.save()
+            return True
+        except Exception as e:
+            print("DbOps: ", e)
+            return False

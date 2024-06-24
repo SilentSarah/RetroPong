@@ -62,6 +62,11 @@ const routes = [
         on: false,
         component: () => grabContent('/static/content/chatv2.html')
     },
+    {
+        path: '/profile',
+        on: false,
+        component: () => grabContent('/static/content/dashboard.html')
+    },
 ]
 
 async function StartLoading(route) {
@@ -88,22 +93,19 @@ function router() {
     StartLoading(route);
     setTimeout(() => {
     if (route) {
-        console.log(route);
-        if (route.on === true)
-            return;
         route.component().then(html => {
-            mainContent.innerHTML = html;
+            if (route.on === false)
+                mainContent.innerHTML = html;
             loadEvents();
-        });
-        route.on = true;
-        for (let i = 0; i < routes.length; i++) {
-            if (routes[i].path !== path && routes[i].on) {
-                routes[i].on = false;
+            route.on = true;
+            for (let i = 0; i < routes.length; i++) {
+                if (routes[i].path !== path && routes[i].on) {
+                    routes[i].on = false;
+                }
             }
-        }
+        });
     } else {
         routes[0].component().then(html => {
-            console.log("404");
             mainContent.innerHTML = html;
             routes[0].on = true;
             for (let i = 1; i < routes.length; i++) {
@@ -117,6 +119,5 @@ function router() {
 }
 
 router();
-// temp commented below
-// fetchUserData();
-// fetchID = setInterval(fetchUserData, 1500);
+fetchUserData();
+fetchID = setInterval(fetchUserData, 5000);

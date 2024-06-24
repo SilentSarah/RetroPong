@@ -12,6 +12,7 @@
 *                        1337                       *
 *****************************************************/
 
+let notificationHandler = null;
 
 function delete_cookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
@@ -20,32 +21,43 @@ function delete_cookie(name) {
 function DisplayNavBar() {
     let navbar_logged_in = `
     <div id="retro_menu" class="nav_btn ms-3 position-relative">
-            <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
-            <div id="menu_content" class="flex-column justify-content-center align-items-center gap-2 position-absolute">
-                <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
-                    <img src="/static/img/general/Account.png" width="30px">
-                </a>
-                <a href="/chat" class="nav_btn selected">
-                    <img src="/static/img/general/Chat.png" width="30px">
-                </a>
-                <a href="/game" class="nav_btn selected">
-                    <img src="/static/img/general/Game.png" width="30px">
-                </a>
-                <a href="/tournament" class="nav_btn selected">
-                    <img src="/static/img/general/Tournament.png" width="30px">
-                </a>
-                <a href="/settings" class="nav_btn selected">
-                    <img src="/static/img/general/Settings.png" width="30px">
-                </a>
+        <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
+        <div id="menu_content" class="flex-column justify-content-center align-items-center gap-2 position-absolute">
+            <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
+                <img src="/static/img/general/Account.png" width="30px">
+            </a>
+            <div onclick="spawnAccountSearchMenu()" class="nav_btn selected hover-cursor">
+                <img id="account_search_btn" src="/static/img/general/FindUser.png" width="30px">
             </div>
+            <a href="/chat" class="nav_btn selected">
+                <img src="/static/img/general/Chat.png" width="30px">
+            </a>
+            <a href="/game" class="nav_btn selected">
+                <img src="/static/img/general/Game.png" width="30px">
+            </a>
+            <a href="/tournament" class="nav_btn selected">
+                <img src="/static/img/general/Tournament.png" width="30px">
+            </a>
+            <a href="/settings" class="nav_btn selected">
+                <img src="/static/img/general/Settings.png" width="30px">
+            </a>
+        </div>
     </div>
     <a href="/" class="ms-3">
-        <img class="img img-shadow" src="./static/img/general/Logo.png" width="100px">
+        <img class="img img-shadow" src="./static/img/general/Rp.png" width="50px">
     </a>
     <div class="d-flex gap-2 me-3">
         <div id="notification" href="" class="nav_btn position-relative">
-            <img src="/static/img/general/Notfication.png" width="40px">
+            <img src="/static/img/general/Notfication.png" width="40px" class="position-relative" style="z-index: 12;">
             <div id="notification_light" class="d-none"></div>
+            <div id="notification_menu" class="d-flex flex-column justify-content-between align-items-center gap-2 position-absolute">
+                <h3 class="text-white fs-5 taprom text-pink-gradient text-glow m-0 py-2">Notifications</h3>
+                <div id="notifications_container" class="d-flex flex-column justify-content-start align-items-center px-2 h-100 overflow-y-auto overflow-x-hidden gap-2 mb-2">
+                    <div id="loading_notifications" class="spinner-border text-white my-auto" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
         </div>
         <div id="logout" href="" class="nav_btn">
             <img src="/static/img/general/Logout.png" width="40px">
@@ -55,11 +67,17 @@ function DisplayNavBar() {
     let navbar = document.getElementById('navbar');
     let open = false;
     if (document.getElementById("retro_menu") === null 
-        || document.getElementById("notification") === null 
-        || document.getElementById("logout") === null) {
+    || document.getElementById("notification") === null 
+    || document.getElementById("logout") === null) {
         navbar.innerHTML = navbar_logged_in;
-        document.getElementById('notification').addEventListener('click', function () {
-            console.log('Notification');
+        let notificationElement = document.getElementById('notification');
+        notificationElement.addEventListener('click', function () {
+            let notification_menu = document.getElementById('notification_menu');
+            if (notification_menu.classList.contains('open') == true) {
+                notification_menu.classList.remove('open');
+            } else {
+                notification_menu.classList.add('open');
+            }
         });
         document.getElementById('logout').addEventListener('click', function () {
             // sessionStorage.clear();
@@ -69,7 +87,6 @@ function DisplayNavBar() {
         });
         let retro_menu = document.getElementById('retro_menu');
         retro_menu.addEventListener('click', function () {
-            console.log('Menu');
             let menu = document.getElementById('menu_content');
             if (open === false) {
                 menu.classList.add('open');
@@ -79,22 +96,17 @@ function DisplayNavBar() {
                 open = false;
             }
         });
+        if (notificationHandler === null && getCookie('access') != '') {
+            notificationHandler = new notifications();
+        }
         scanLinks();
     }
 }
 
 function confirmOperartion(type, parent) {
-    let Confirmation = document.createElement('div');
     if (type === 'copy') {
         document.getElementById('copyConfirm') ? parent.removeChild(document.getElementById('copyConfirm')) : null;
-        Confirmation.id = 'copyConfirm';
-        Confirmation.innerHTML = ' Copied to clipboard!';
-        Confirmation.classList.add('nokora', 'text-white');
-        Confirmation.style.fontSize = '0.5rem';
-        parent.appendChild(Confirmation);
-        setTimeout(() => {
-            parent.removeChild(Confirmation);
-        }, 1000);
+        toast('Copied to clipboard!', 'bg-success');
     }
 }
 
@@ -113,6 +125,7 @@ function scanInput() {
 }
 
 function linkClickHandler(e) {
+    DestroyConfirmationPopUp();
     e.preventDefault();
     history.pushState(null, null, this.href);
     router();
@@ -133,87 +146,36 @@ function scanLinks() {
     document.querySelectorAll('a').forEach(iterateOverLinks);
 }
 
+function copyToClipboard() {
+    let copyText = document.getElementById('player_id');
+    navigator.clipboard.writeText(copyText.textContent);
+    confirmOperartion('copy', copyText.parentElement);
+}
+
 function copyIDListener() {
     let cpyID = document.getElementById('cpyID');
     if (cpyID) {
-        cpyID.addEventListener('click', function () {
-            let copyText = document.getElementById('player_id');
-            navigator.clipboard.writeText(copyText.innerHTML);
-            confirmOperartion('copy', copyText.parentElement);
-
-        });
+        cpyID.removeEventListener('click', copyToClipboard);
+        cpyID.addEventListener('click', copyToClipboard);
     }
 }
 
-function handlePictureUploads() {
-    let uploadBG = document.getElementById('uploadBG');
-    let uploadPFP = document.getElementById('uploadPFP');
-    let fileInputBg = document.createElement('input');
-    let fileInputPfp = document.createElement('input');
-    fileInputBg.type = 'file';
-    fileInputPfp.type = 'file';
-    if (uploadBG && uploadPFP) {
-        uploadBG.addEventListener('click', function () {
-            fileInputBg.click();
-            if (fileInputBg.files) {
-                // TO BE FURTHER IMPLEMENTED
-            }
-
-        });
-        uploadPFP.addEventListener('click', function () {
-            fileInputPfp.click();
-            if (fileInputPfp.files) {
-                // TO BE FURTHER IMPLEMENTED
-            }
-        });
+function displayTitle() {
+    let title = document.querySelector('.mainTitle');
+    if (title) {
+        setTimeout(() => {
+            title.classList.add('open');
+        }, 250);
     }
 }
 
-function TwoFactorAuthHandler() {
-    let Offbtn = document.getElementById('offBtn');
-    let Onbtn = document.getElementById('onBtn');
-    if (Offbtn && Onbtn) {
-        Offbtn.addEventListener('click', function () {
-            Offbtn.setAttribute('fill', 'white');
-            Offbtn.setAttribute('x', '7');
-            Offbtn.setAttribute('y', '23');
-            Offbtn.setAttribute('font-size', '17');
-            //=====//
-            Onbtn.setAttribute('fill', 'grey');
-            Onbtn.setAttribute('x', '7');
-            Onbtn.setAttribute('y', '23');
-            Onbtn.setAttribute('font-size', '16');
-            //=====//
-            Onbtn.classList.remove('text-glow');
-            Offbtn.classList.add('text-glow');
-        });
-        Onbtn.addEventListener('click', function () {
-            Onbtn.setAttribute('fill', 'white');
-            Onbtn.setAttribute('x', '7');
-            Onbtn.setAttribute('y', '23');
-            Onbtn.setAttribute('font-size', '17');
-            //=====//
-            Offbtn.setAttribute('fill', 'grey');
-            Offbtn.setAttribute('x', '7');
-            Offbtn.setAttribute('y', '23');
-            Offbtn.setAttribute('font-size', '16');
-            //=====//
-            Offbtn.classList.remove('text-glow');
-            Onbtn.classList.add('text-glow');
-
-        });
-    }
-}
-
-function findHighiestGrade(matches) {
-    let highiest = 0;
-    for ([key, value] of Object.entries(matches)) {
-        if (value['won'] > highiest) {
-            highiest = value['won'];
+function clearModals() {
+    const modalContent = document.querySelector('#modalContent');
+    Array.from(modalContent.children).forEach(content => {
+        if (content.id !== 'account_finder') {
+            content.remove();
         }
-    }
-    return highiest;
-
+    });
 }
 
  
@@ -222,33 +184,42 @@ function findHighiestGrade(matches) {
 function loadEvents() {
     scanLinks();
     Websocket()
-
     if (window.location.pathname === '/') {
+        displayTitle();
     }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register')
+    if (window.location.pathname === '/login' || window.location.pathname === '/register'){
+        scan2fa();
         scanInput();
-    else if (window.location.pathname == '/dashboard' ) {
-        copyIDListener();
+        if (getCookie('access') == '' || getCookie('2FA') == '')
+            document.cookie = '';
     }
     else if (window.location.pathname === '/settings') {
-        handlePictureUploads();
-        TwoFactorAuthHandler();
+        switchTabsHandler();
+        loadAccountDetailsInSettings(true);
     }
 	else if (window.location.pathname === '/game')
 		initGameSocket(initGame);
-    else if (window.location.pathname === '/tournament')
+  else if (window.location.pathname === '/tournament')
 		initTournamentSocket(initTournament);
-    else if (window.location.pathname === '/dashboard') {
+  else if (window.location.pathname === '/dashboard') {
         copyIDListener();
-        setDashboardStats();
+        window.location.pathname === '/dashboard' ? setDashboardStats(true) : setDashboardStats(false);
     }
-    else if (window.location.pathname === '/settings') {
-        handlePictureUploads();
-        TwoFactorAuthHandler();
+    if (window.location.pathname !== '/profile') {
+        clearModals();
     }
     else if (window.location.pathname === '/chat') {
         UserContactFetching();
     }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
-        fetchUserData();   
+        fetchUserData();
+    scanLinks();
+    enableAccountSearchMenu();
 }
+
+window.addEventListener('beforeunload', function(event) {
+    clearInterval(fetchID);
+    if (notificationHandler !== null) {
+        notificationHandler.notifications.close();
+    }
+});

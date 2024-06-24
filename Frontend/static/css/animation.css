@@ -35,3 +35,7 @@
       transform: translateY(-100px);
     }
 }
+
+img {
+    filter: brightness(1) !important;
+}

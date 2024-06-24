@@ -64,7 +64,7 @@ After you finish working on the microservice assigned to you please make to comm
 
 Microservice Architecture is a backend design in which a set of services (servers) communicate with each other in order for them to relay content, validate client requests and to minimize downtime during deployment and development.
 
-For example imagine there's 2 Microservices:
+For example imagine there are 2 Microservices:
 
 * Auth
 * Profile
@@ -93,7 +93,6 @@ To start connecting your django instance (Microservice) to the database you need
    ```shell
    $ ./manage inspectdb > models.py
    ```
-
    1. What inspectdb does is to inspect the database for any existing tables and then make classes for them and their columns with appropriate types for each column.
 2. After you get the models.py file from the command without errors, copy the newly created models.py file to the desired **APP** inside your **Microservice**.
 3. You should have this class inside any of the tables in your **models.py** that class is the one responsible for providing metadata about the table:
@@ -103,7 +102,6 @@ To start connecting your django instance (Microservice) to the database you need
            db_table = 'YOUR DESIRED TABLE'
    	managed = False
    ```
-
    1. `db_table` is an identifier that links your **Class** to your **Table** using the name of your table in the database to find it and link it.
    2. `managed` is a trigger that controls whether **Django's ORM** should preform any Creation/Deletion Operation on your existing table, `False` means **Django's ORM**  will not preform the previously mentioned operations on that db and will treat it as an existing table. I prefer not to mess with this option and do it the classic way.
    3. It's recommended to delete the `managed` option inside the `Meta` class.
@@ -114,7 +112,6 @@ To start connecting your django instance (Microservice) to the database you need
    $ ./manage.py makemigrations
    $ ./manage.py migrate --fake
    ```
-
    1. The above commands will make the migrations for the tables, so django identifies which tables to interact with and the second to commit those tables. `--fake` parameter insures that the migration to the db is faked and no data inside the db is affected and also to stop django from trying to create an already existing table.
 6. Correct any missing information inside each of tables properties, `default` argument will be very useful when you use it to tweak the default value for each property (use `-1` for integer values and `""` for strings, Lastly use  `False` for booleans)
 7. Once all is done, check if the connection is successful with the command:

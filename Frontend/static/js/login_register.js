@@ -15,7 +15,8 @@
 function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
-    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'position-absolute', 'z-5', 'slide-in-blurred-top');
+    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'slide-in-blurred-top', 'position-absolute', 'translate-middle');
+    div.style.zIndex = '99999';
     div.setAttribute('role', 'alert');
     div.setAttribute('aria-live', 'assertive');
     div.setAttribute('aria-atomic', 'true');
@@ -37,17 +38,18 @@ function toast(message, color_class) {
     toast_content.appendChild(toast_body);
     toast_content.appendChild(close_btn);
 
-    let mainContent = document.getElementById('mainContent');
-    mainContent.appendChild(div);
+    document.body.appendChild(div);
     
     div.style.display = 'block';
-    div.style.top = '25px';
+    div.style.top = '100px';
+    div.style.left = '50%';
+    div.style.right = '50%';
     destroytoast(div);
     return div;
 }
 
 function settoastmsg(toast, message, color_class) {
-    toast.children[0].children[0].innerHTML = message;
+    toast.children[0].children[0].textContent = message;
     toast.classList.add(color_class);
 }
 
@@ -80,10 +82,10 @@ function loginWith42() {
     });
 }
 
-function storeCookies(data) {
-	for (let key in data)
-		document.cookie = `${key}=${data[key]}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
-}
+// function storeCookies(data) {
+// 	for (let key in data)
+// 		document.cookie = `${key}=${data[key]}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+// }
 
 function log_user_in() {
     let items = document.querySelectorAll('input');
@@ -107,23 +109,25 @@ function log_user_in() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        if (response.status === 201) {
-            return response.json();
-        } else if (response.status >= 400 && response.status < 500) {
+        if (response.status >= 400 && response.status < 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
-        } else {
+        } else if (response.status >= 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Server error');
+        } else {
+            return response.json();
         }
     })
     .then(data => {
-        console.log('Success:', data);
-        localStorage.setItem('user_id', data.user_id);
-		storeCookies(data);
-        settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
-        DisplayNavBar();
-        passUserToDashboard();
+        if (getCookie('2fa') != '') {
+            initiateTwoFactorModal();
+        } else {
+            DisplayNavBar();
+            localStorage.setItem('user_id', data.user_id);
+            settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
+            passUserToDashboard();
+        }
     })
     .catch((error) => {
         console.error('Error:', error);

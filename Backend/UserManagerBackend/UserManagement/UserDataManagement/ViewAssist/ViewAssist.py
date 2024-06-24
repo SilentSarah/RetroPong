@@ -2,7 +2,7 @@ import requests
 import json
 from ..WebOps.WebOps import *
 from ..DbOps.DbOps import *
-from django.http import HttpRequest
+from django.http import *
 import random
 from dotenv import dotenv_values
 
@@ -49,7 +49,9 @@ class ViewAssist:
             "code": code,
             "redirect_uri": redirect_uri
         }
+        print(CLIENT_ID, SECRET_ID, code, redirect_uri)
         access_token = requests.post(token_url, params=params)
+        print(access_token.content.decode('utf-8'))
         access_token = access_token.json()
         
         token = access_token.get('access_token')
@@ -84,8 +86,8 @@ class ViewAssist:
                 "uFname": response.get('first_name'),
                 "uLname": response.get('last_name'),
                 "uRegdate": timezone.now(),
-                "uProfilepic": image.get('link') if image is not None else "",
-                "uProfilebgpic": "",
+                "uProfilepic": image.get('link') if image is not None else DEFAULT_PFP_LINK,
+                "uProfilebgpic": DEFAULT_BG_LINK,
                 "uDesc": "",
                 "uIp": "",
                 "ucIDs": [],
@@ -140,14 +142,14 @@ class ViewAssist:
             return None
     
     @staticmethod
-    def verify_token(request: HttpRequest) -> str:
-        auth_token = request.headers.get('Authorization')
+    def verify_token(request: HttpRequest = None, token_from_ws = None) -> str:
+        auth_token = request.headers.get('Authorization') if request is not None else token_from_ws
         if auth_token is None:
             print("hermosa you forgot the jwt")
-            return None
+            return None, None
         else:
             request = requests.Session()
-            request.headers['Authorization'] = f"{auth_token}"
+            request.headers['Authorization'] =  f"{auth_token}"
             response = request.get('http://127.0.0.1:8000/auth/')
             if response.status_code == 200:
                 body = response.json()
@@ -156,7 +158,7 @@ class ViewAssist:
                 return token, user_id
             else:
                 print("Auth server said sike")
-                return None
+                return None, None
             
     @staticmethod
     def create_user_and_setup_login_creds(request: HttpRequest) -> dict:
@@ -168,3 +170,57 @@ class ViewAssist:
             "password": registarion_data.get('uPassword')
         }
         return user_login_data
+    
+    @staticmethod
+    def generate_acc_settings_cfg(request: HttpRequest) -> dict:
+        full_name = request.POST.get('full_name')
+        if (full_name is not None):
+            split_name = full_name.split(' ', 1)
+            first_name = split_name[0] if len(split_name) > 0 else None
+            last_name = split_name[1] if len(split_name) > 1 else None
+        else:
+            first_name = None
+            last_name = None
+        password = request.POST.get('password')
+        if (password is not None):
+            if (re.match(r'[A-Za-z0-9]{8,}', password) is None):
+                password_hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            raise Exception("Invalid password")
+        else:
+            password_hashed = None
+        data =  {
+            "ufname": first_name,
+            "ulname": last_name,
+            "uusername": request.POST.get('username'),
+            "udiscordid": request.POST.get('discordid'),
+            "utitle": request.POST.get('title'),
+            "udesc": request.POST.get('desc'),
+            "uemail": request.POST.get('email'),
+            "upassword": password_hashed,
+            "TwoFactor": True if request.POST.get('two_factor') == "true" else False,
+        }
+        return data
+    
+    @staticmethod
+    def validate_form_data(request: HttpRequest) -> bool:
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        if (email is None or username is None or password is None):
+            return False
+        if (re.match(r'[A-Za-z0-9]{8,}', password) is None):
+            return False
+        return True
+    
+    @staticmethod
+    def send2fa_pin_to_user(user_id: id):
+        response = WebOps.request_endpoint("http://127.0.0.1:8000/auth/2fa/send", 
+                                "POST", 
+                                {"Content-Type": "application/json"}, 
+                                json.dumps({"user_id": user_id}))
+        if (response.status_code == 200):
+            response_to_user = HttpResponseRedirect('http://127.0.0.1:5500/login')
+            response_to_user.set_cookie('user_id', user_id, samesite='none', secure=True)
+            response_to_user.set_cookie('2fa', 'true', samesite='none', secure=True)
+            return response_to_user
+        return False
