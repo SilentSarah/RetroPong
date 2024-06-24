@@ -3,6 +3,7 @@ let isRequest = false
 
 
 const openSidebar = (sidebar, items) => {
+    if (sidebar === null || items === null) return;
     sidebar.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     sidebar.style.width = '50%';
     items.forEach(item => {
@@ -12,6 +13,7 @@ const openSidebar = (sidebar, items) => {
 }
 
 const closeSidebar = (sidebar, items) => {
+    if (sidebar === null || items === null) return;
     sidebar.style.background = '';
     sidebar.style.backgroundColor = 'rgba(0, 0, 0, 0)';
     sidebar.style.width = '80px';
@@ -22,6 +24,7 @@ const closeSidebar = (sidebar, items) => {
 }
 
 const resetsettings = (sidebar, items) => {
+    if (sidebar === null || items === null) return;
     sidebar.style.background = 'linear-gradient(180deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.5) 100%)';
     sidebar.style.width = '80px';
     items.forEach(item => {
@@ -51,6 +54,7 @@ function openMenu() {
 
 function appearInfoFriend() {
     const divInfo = document.getElementById('CinfoUser');
+    if (divInfo === null) return;
     if (divInfo.style.left == '0px')
         divInfo.style.left = '-1000px';
     else

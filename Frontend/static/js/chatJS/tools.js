@@ -17,6 +17,7 @@ async function fetchData(url, method, token, content) {
  
 function searchOtherUser(values, otherUser) {
     const Rcards = document.getElementById('Rcards')
+    if (Rcards === null) return;
     
     if (otherUser.length === 0)
         return
@@ -44,20 +45,19 @@ const typeofData = (type) => {
 }
 
 const GetUserIdToken=()=>{
-    const userId = document.cookie.split(';')[0].split('=')[1]
-    const token = 'Bearer ' + document.cookie.split(';')[1].split('=')[1]
+    const userId = getCookie('user_id')
+    const token = 'Bearer ' + getCookie('access')
     return {userId, token}
 }
 
 // load message in real time 
 function LoadMessageRealTime(value, profilepic, username) {
     const CcontentConver = document.getElementById('CcontentConver');
+    if (CcontentConver === null) return;
+
     CcontentConver.innerHTML += message({
         "content": value, "user":
             { "profilepic": profilepic, "username": username }
     })
     CcontentConver.scrollTop = CcontentConver.scrollHeight
 }
-
-
- 

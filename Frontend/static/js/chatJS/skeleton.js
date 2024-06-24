@@ -69,6 +69,7 @@ const CardsSkeleton = () => {
 
 function SkeletonCards(){
     const Rcards = document.getElementById('Rcards')
+    if (Rcards === null) return;
 
     Rcards.innerHTML = ""
     for (let i = 0; i < 3; i++)
@@ -78,6 +79,7 @@ function SkeletonCards(){
 
 function SkeletonFriends(){
     const resUsers = document.getElementById('resUsers')
+    if (resUsers === null) return;
 
     resUsers.innerHTML = ""
         for (let i = 0; i < 7; i++) {

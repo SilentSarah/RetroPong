@@ -197,21 +197,19 @@ function loadEvents() {
         initGameSocket(initGame);
     else if (window.location.pathname === '/tournament')
         initTournamentSocket(initTournament);
-    else if (window.location.pathname === '/dashboard') {
+    else if (window.location.pathname === '/dashboard' || window.location.pathname === '/profile') {
         copyIDListener();
         window.location.pathname === '/dashboard' ? setDashboardStats(true) : setDashboardStats(false);
     }
-    if (window.location.pathname !== '/profile') {
+    else if (window.location.pathname !== "/profile")
         clearModals();
-    }
     else if (window.location.pathname === '/chat') {
-        UserContactFetching();
+        Websocket();
     }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();
     scanLinks();
     if (getCookie('access') != '') {
-        Websocket(); 
         enableAccountSearchMenu();
     }
 }
