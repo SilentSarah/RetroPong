@@ -30,7 +30,7 @@
 }
 
 #game-container .hidden {
-	display: none;
+	display: none !important;
 }
 
 #game-container .btns-wrapper {

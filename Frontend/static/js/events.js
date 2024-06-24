@@ -61,7 +61,7 @@ function DisplayNavBar() {
             console.log('Notification');
         });
         document.getElementById('logout').addEventListener('click', function () {
-            sessionStorage.clear();
+            // sessionStorage.clear();
             clearInterval(fetchID);
             delete_cookie('access');
             window.location.href = '/';
@@ -231,7 +231,9 @@ function loadEvents() {
         TwoFactorAuthHandler();
     }
 	else if (window.location.pathname === '/game')
-		initGame();
+		initGameSocket(initGame);
+    else if (window.location.pathname === '/tournament')
+		initTournamentSocket(initTournament);
     else if (window.location.pathname === '/dashboard') {
         copyIDListener();
         setDashboardStats();

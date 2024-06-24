@@ -2,8 +2,8 @@
 
 function draw_paddle(canvas, props)
 {
-	let drawX, drawY, drawW, drawH, drawR, drawLineWidth;
-	const { x, y, w, h, r, lineWidth, strokeColors } = props;
+	let drawX, drawY, drawW, drawH, drawR, drawLineWidth, shadowColor;
+	const { x, y, w, h, r, lineWidth, strokeColors, speedBoostSpan } = props;
 
 	drawX = x * canvas.el.width;
 	drawY = y * canvas.el.height;
@@ -12,7 +12,8 @@ function draw_paddle(canvas, props)
 	drawR = r * canvas.el.width;
 	drawLineWidth = lineWidth * canvas.el.width;
 
-	setShadow(canvas);
+	shadowColor = speedBoostSpan ? "#fff" : "#0005" ;
+	setShadow(canvas, shadowColor);
 	canvas.ctx.lineJoin = 'round';
 	canvas.ctx.beginPath();
 	canvas.ctx.moveTo(drawX + drawR, drawY);

@@ -75,7 +75,7 @@ function deleteCookie(name) {
 }
 
 function fetchUserData() {
-    if (getCookie('access') === "") {
+    if (!/*<- added ! for dev only*/getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
             window.location.href = "/login";
             return ;
@@ -112,7 +112,7 @@ function fetchUserData() {
             DisplayNavBar();
         })
         .catch((error) => {
-            sessionStorage.clear();
+            // sessionStorage.clear();
             if (error.message === 'Failed to fetch') {
                 toast('Server is not responding, try again later.', 'bg-danger');
                 clearInterval(fetchID);

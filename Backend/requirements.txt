@@ -5,3 +5,5 @@ djangorestframework-simplejwt
 requests
 python-dotenv
 django-cors-headers
+channels
+daphne
