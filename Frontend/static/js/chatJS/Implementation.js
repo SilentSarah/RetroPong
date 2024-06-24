@@ -8,8 +8,8 @@ let storeDataUser = {}
 let channelObj = {}
 
 function Websocket() {
-    const userId = document.cookie.split(';')[0].split('=')[1]
-    if (userId) {
+    const userId = getCookie('user_id')
+    if (userId != "") {
         if (!ws)
             ws = new WebSocket(`ws://localhost:8002/ws/chat/${userId}`)
         ws.onopen = (event) => console.log('Connected to chat server')
