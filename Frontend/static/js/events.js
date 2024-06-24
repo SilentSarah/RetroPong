@@ -12,6 +12,7 @@
 *                        1337                       *
 *****************************************************/
 
+
 function delete_cookie(name) {
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
@@ -96,8 +97,6 @@ function confirmOperartion(type, parent) {
         }, 1000);
     }
 }
-
- 
 
 function scanInput() {
     let items = document.querySelectorAll('input');
@@ -217,8 +216,13 @@ function findHighiestGrade(matches) {
 
 }
 
+ 
+
+
 function loadEvents() {
     scanLinks();
+    Websocket()
+
     if (window.location.pathname === '/') {
     }
     if (window.location.pathname === '/login' || window.location.pathname === '/register')
@@ -242,6 +246,9 @@ function loadEvents() {
         handlePictureUploads();
         TwoFactorAuthHandler();
     }
+    else if (window.location.pathname === '/chat') {
+        UserContactFetching();
+    }
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
-        fetchUserData();
+        fetchUserData();   
 }
