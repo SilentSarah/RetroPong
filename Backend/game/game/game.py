@@ -6,6 +6,7 @@ from game.set_interval import set_interval
 from game.paddle import Paddle
 from datetime import datetime
 from game.models import MatchHistory
+from asgiref.sync import async_to_sync
 
 class Game:
 	serial_number = 0
@@ -14,8 +15,8 @@ class Game:
 	def __init__(self, creator_id, mode):
 		self.mode = mode
 		self.started = False
+		self.consumer = False
 		self.over = False
-		# self.consumer = consumer
 		self.paddles = {}
 		if (mode != 5):
 			self.paddles = {creator_id: Paddle()}
@@ -68,11 +69,13 @@ class Game:
 	def start(self):
 		# testing
 		print("THE GAME HAS STARTED>>>>>>>>>>>")
+		# print(f"MATCHHISTORY: { MatchHistory.objects.all() }")
 		self.start_datetime = datetime.now()
 		# self.init_match_history()
 		# 1/60 for 60 fps
 		if (not self.over):
 			self.game_loop_interval = set_interval(1/60, self.update)
+			self.started = True
 
 		# will stop interval in 5s
 		# t = threading.Timer(5, interval.cancel)
@@ -100,6 +103,8 @@ class Game:
 			self.game_loop_interval.cancel()
 			self.over = True
 			# self.update_MatchHistory()
+			if (self.mode == 5):
+				(async_to_sync(self.consumer.redirect_all))()
 
 	def id(self):
 		return (self.details['id'])
@@ -116,7 +121,8 @@ class Game:
 			self.score[1] += 1
 		else: return
 		self.reset_ball()
-		if (self.score[0] == 7 or self.score[1] == 7):
+		goals = 7
+		if (self.score[0] == goals or self.score[1] == goals):
 			# self.finish()
 			pass
 
@@ -157,7 +163,7 @@ class Game:
 		self.move_paddles()
 		self.check_score()
 		# self.broadcast()
-		# print(f"-{time.time()}-", file=sys.stderr)
+		print(f"-{datetime.now().time()}-", file=sys.stderr)
 		# here we will be sending updates to all players
 
 	def reset_ball(self):

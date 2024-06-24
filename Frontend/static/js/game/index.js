@@ -30,7 +30,7 @@ function addWaiter(options)
 // Test End
 
 function readyToPlayCounter(isTournament) {
-	console.log("I got into the counter already");
+	// console.log("I got into the counter already>>>>>>>>>>>>>>>>>");
 	let i = 3;
 	const message = isTournament
 		? "You will be redirected to /game"
@@ -161,6 +161,7 @@ function initGame()
 
 	// render function, the function that does all the drawing
 	function render({x, y, r, fireball, paddles, barriers}){
+		// console.log("I am rendering");
 		// clear the canvas
 		canvas.clear();
 		// draw barriers if there are any
@@ -187,14 +188,19 @@ function initGame()
 	gameSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 
-		if (data.type == 'fetch_session_storage')
+		if (data.type == 'redirect')
+		{
+			console.log("I got the redirection msg");
+			window.location.href = '/tournament';
+		}
+		else if (data.type == 'fetch_session_storage')
 		{
 			gameSocket.send(JSON.stringify({
 						'type': 'session_storage',
 						...sessionStorage
 					}));
 		}
-		if (data.type == 'session_storage_ack')
+		else if (data.type == 'session_storage_ack')
 		{
 			console.log("received the session storage ack<<<<<<");
 			checkInvite();

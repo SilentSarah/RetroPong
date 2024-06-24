@@ -1,6 +1,6 @@
 django 
 bcrypt
-psycopg2
+psycopg2-binary
 djangorestframework-simplejwt
 requests
 python-dotenv

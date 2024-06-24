@@ -27,6 +27,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		if (game_id):
 			self.game = GameConsumer.games[game_id]
 			if (mode == 5 and (str(self.user_info['id']) not in self.game.paddles)):
+				if (not self.game.consumer):
+					self.game.consumer = self
 				self.game.add_paddle(str(self.user_info['id']))
 			return 
 		elif (mode == 3 and inviter_id):#privat mode invite
@@ -50,6 +52,11 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		self.game.finish()
 		GameConsumer.user_matches[str(self.user_info['id'])][self.game.mode] = False
 		pass# self.game.finish()
+
+	async def redirect_all(self):
+		await self.channel_layer.group_send(
+			self.game.id(), { "type": "game.redirect.all" })
+		pass
 
 	# temp async - to remove later
 	async def check_user(self):
@@ -137,11 +144,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 	# Receive message from room group
 	async def game_recv_broadcast(self, event):
 		# print(f"I have received in the function recv_broadcast: '{event["message"]}'", file=sys.stderr)
-		if (not self.game.started
+		if ((not self.game.started)
 	  		and 'action' in event.keys() and event['action'] == 'standby_update'):
 			print('I received smthg from the recv_broadcast>>>>>>>>>>')
 			type = 'ready' if self.game.full() else 'standby'
-			if (type == 'ready'): self.game.started = True
 			# stopped below AttributeError: 'str' object has no attribute 'pName'
 			# players = list(filter(lambda p: p.pName in self.game.players, GameConsumer.active_players.values()))
 			# players = [p.getProps() for p in GameConsumer.active_players.values() if p.pName in self.game.players]
@@ -150,6 +156,12 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			await self.send_json(content={"type": type, "players": players})
 			await self.send_json(content={"type": 'log', "log": f'The ball\'s speed is: {self.game.ball["speed"]}'})
 			await self.send_json(content={"type": 'log', "log": f'The paddles are: {self.game.paddles}'})
+		else:
+			await self.send_json(content={"type": 'log', "log": f"I didnt get in: self.game.started: {self.game.started}"})
+
+	# Redirect all players
+	async def game_redirect_all(self, event):
+		await self.send_json(content={"type": 'redirect'})
 
 
 
