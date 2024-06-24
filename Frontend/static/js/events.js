@@ -15,7 +15,7 @@
 let notificationHandler = null;
 
 function delete_cookie(name) {
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
 function DisplayNavBar() {
@@ -66,9 +66,9 @@ function DisplayNavBar() {
 
     let navbar = document.getElementById('navbar');
     let open = false;
-    if (document.getElementById("retro_menu") === null 
-    || document.getElementById("notification") === null 
-    || document.getElementById("logout") === null) {
+    if (document.getElementById("retro_menu") === null
+        || document.getElementById("notification") === null
+        || document.getElementById("logout") === null) {
         navbar.innerHTML = navbar_logged_in;
         let notificationElement = document.getElementById('notification');
         notificationElement.addEventListener('click', function () {
@@ -178,16 +178,12 @@ function clearModals() {
     });
 }
 
- 
-
 
 function loadEvents() {
-    scanLinks();
-    Websocket()
     if (window.location.pathname === '/') {
         displayTitle();
     }
-    if (window.location.pathname === '/login' || window.location.pathname === '/register'){
+    if (window.location.pathname === '/login' || window.location.pathname === '/register') {
         scan2fa();
         scanInput();
         if (getCookie('access') == '' || getCookie('2FA') == '')
@@ -197,11 +193,11 @@ function loadEvents() {
         switchTabsHandler();
         loadAccountDetailsInSettings(true);
     }
-	else if (window.location.pathname === '/game')
-		initGameSocket(initGame);
-  else if (window.location.pathname === '/tournament')
-		initTournamentSocket(initTournament);
-  else if (window.location.pathname === '/dashboard') {
+    else if (window.location.pathname === '/game')
+        initGameSocket(initGame);
+    else if (window.location.pathname === '/tournament')
+        initTournamentSocket(initTournament);
+    else if (window.location.pathname === '/dashboard') {
         copyIDListener();
         window.location.pathname === '/dashboard' ? setDashboardStats(true) : setDashboardStats(false);
     }
@@ -214,10 +210,13 @@ function loadEvents() {
     if (window.location.pathname != '/login' && window.location.pathname != '/register' && window.location.pathname != '/')
         fetchUserData();
     scanLinks();
-    enableAccountSearchMenu();
+    if (getCookie('access') != '') {
+        Websocket(); 
+        enableAccountSearchMenu();
+    }
 }
 
-window.addEventListener('beforeunload', function(event) {
+window.addEventListener('beforeunload', function (event) {
     clearInterval(fetchID);
     if (notificationHandler !== null) {
         notificationHandler.notifications.close();

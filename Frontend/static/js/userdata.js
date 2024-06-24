@@ -89,7 +89,7 @@ function setValuesToSessionStorage(data) {
 }
 
 function fetchUserData() {
-    if (!/*<- added ! for dev only*/getCookie('access') === "") {
+    if (getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
             window.location.href = "/login";
             return ;

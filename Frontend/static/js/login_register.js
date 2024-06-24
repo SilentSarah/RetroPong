@@ -82,15 +82,9 @@ function loginWith42() {
     });
 }
 
-// function storeCookies(data) {
-// 	for (let key in data)
-// 		document.cookie = `${key}=${data[key]}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
-// }
-
 function log_user_in() {
-    let items = document.querySelectorAll('input');
-    let username = items[0].value;
-    let password = items[1].value;
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
     let toasty = toast('Logging in...', 'bg-primary');
     if (username === undefined || password === undefined || username === null || password === null  || username === '' || password === '') {
         settoastmsg(toasty, 'Please fill in all fields', 'bg-danger');
