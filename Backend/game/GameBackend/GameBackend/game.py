@@ -3,7 +3,7 @@ from .set_interval import set_interval
 # from asgiref.sync import async_to_sync
 from .paddle import Paddle
 from datetime import datetime
-from .models import MatchHistory
+from game_database.models import MatchHistory
 
 class Game:
 	serial_number = 0
