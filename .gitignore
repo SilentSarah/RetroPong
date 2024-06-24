@@ -7,3 +7,6 @@ __pycache__
 Pipfile.lock
 Pipfile
 venv
+game_pyenv
+.venv
+.python-version
