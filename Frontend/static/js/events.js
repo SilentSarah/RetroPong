@@ -85,7 +85,7 @@ function DisplayNavBar() {
             sessionStorage.clear();
             // clearInterval(fetchID);
             delete_cookie('access');
-            passUserTo("/")
+            window.location.href = '/';
         });
         let retro_menu = document.getElementById('retro_menu');
         retro_menu.addEventListener('click', function () {

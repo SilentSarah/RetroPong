@@ -11,6 +11,7 @@ function Invite(id, type) {
         child.classList.add('opacity-75', 'cursor-not-allowed');
     });
     console.log("Inviting...", id, type);
+    setLoadingOverlay(true);
     fetch ("http://127.0.0.1:8001/userdata/invite", {
         method: 'POST',
         headers: {
@@ -29,9 +30,11 @@ function Invite(id, type) {
             child.disabled = false;
             child.classList.remove('opacity-75', 'cursor-not-allowed');
         });
+        setLoadingOverlay(false);
     })
     .catch(error => {
         console.error('Error:', error);
+        setLoadingOverlay(false);
     });
 }
 
@@ -87,7 +90,8 @@ function eliminateAccountSearchMenu(element) {
     account_finder_active = false;
     element.classList.remove('opacity-100');
     element.classList.add('opacity-0');
-    modalContent.classList.remove('overlay');
+    if (modalContent.querySelector("#loadingOverlay") === null)
+        modalContent.classList.remove('overlay');
     setTimeout(() => {
         element.classList.add('d-none');
         element.classList.remove('d-flex');

@@ -67,6 +67,7 @@ function passUserTo(path) {
     document.body.appendChild(dashboard);
     scanLinks();
     dashboard.click();
+    dashboard.remove();
 }
 
 function loginWith42() {
@@ -96,6 +97,7 @@ function log_user_in() {
         username: username,
         password: password
     };
+    setLoadingOverlay(true);
     fetch('http://127.0.0.1:8000/auth/', {
         method: 'POST',
         credentials: 'include',
@@ -105,6 +107,7 @@ function log_user_in() {
         body: JSON.stringify(data)
     })
     .then(response => {
+        setLoadingOverlay(false);
         if (response.status >= 400 && response.status < 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
@@ -200,7 +203,7 @@ function register_user() {
         "uFname": uFname,
         "uLname": uLname,
     }
-
+    setLoadingOverlay(true);
     fetch('http://127.0.0.1:8001/userdata/create', {
         method: 'POST',
         credentials: 'include',
@@ -210,6 +213,7 @@ function register_user() {
         body: JSON.stringify(data)
     })
     .then(response => {
+        setLoadingOverlay(false);
         if (response.status === 201) {
             toast('Registration successful, Redirecting...', 'bg-success');
             DisplayNavBar();
@@ -226,5 +230,6 @@ function register_user() {
     .catch((error) => {
         console.error('Error:', error);
         unblock_inputs(inputs);
+        setLoadingOverlay(false);
     });
 }

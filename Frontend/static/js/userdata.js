@@ -97,7 +97,10 @@ function fetchUserData() {
     } else {
         if (window.location.pathname === "/login" || window.location.pathname === "/register") {
             window.location.href = "/dashboard";
-        }  
+            return ;
+        }
+        else if (window.location.pathname === "/") return ;
+        setLoadingOverlay(true);
         fetch("http://127.0.0.1:8001/userdata/",
         { 
             method: 'GET',
@@ -112,13 +115,15 @@ function fetchUserData() {
             } else {
                 deleteCookie("access");
                 sessionStorage.clear();
+                setLoadingOverlay(false);
             }
         })
         .then(data => {
             setValuesToSessionStorage(data);
-            // if (window.location.pathname === "/dashboard")
-            //     setDashboardStats();
+            if (window.location.pathname === "/dashboard")
+                setDashboardStats();
             DisplayNavBar();
+            setLoadingOverlay(false);
         })
         .catch((error) => {
             sessionStorage.clear();
@@ -127,6 +132,7 @@ function fetchUserData() {
                 // clearInterval(fetchID);
                 return ;
             }
+            setLoadingOverlay(false);
         });
     }
 }
@@ -237,15 +243,17 @@ function setMatchStatistics(self = true) {
 function setLoadingOverlay(boolean = true) {
     const modalContent = document.getElementById('modalContent');
     const loadingOverlay = document.createElement('div');
-    loadingOverlay.classList.add('custom-loader', "top-50", "start-50", "translate-middle");
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.classList.add('custom-loader', "mx-auto", "position-fixed", "top-50", "start-50");
+
     if (modalContent) {
         if (boolean === true) {
             modalContent.classList.add("overlay");
-            modalContent.appendChild(loadingOverlay);
+            modalContent.appendChild(loadingOverlay)
         } else {
+            const loader = modalContent.querySelector("#loadingOverlay");
+            loader !== null ? loader.remove() : null;
             modalContent.classList.remove("overlay");
-            if (modalContent.contains(loadingOverlay))
-                modalContent.removeChild(loadingOverlay);
         }          
     }
 }
