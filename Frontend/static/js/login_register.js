@@ -59,9 +59,11 @@ function destroytoast(toasty) {
     }, 2000);
 }
 
-function passUserToDashboard() {
+function passUserTo(path) {
+    if (path === '' || path === null || path === undefined)
+            path = '/';
     const dashboard = document.createElement('a');
-    dashboard.href = '/dashboard';
+    dashboard.href = path;
     document.body.appendChild(dashboard);
     scanLinks();
     dashboard.click();
@@ -120,7 +122,7 @@ function log_user_in() {
             DisplayNavBar();
             localStorage.setItem('user_id', data.user_id);
             settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
-            passUserToDashboard();
+            passUserTo("/dashboard");
         }
     })
     .catch((error) => {
@@ -211,7 +213,7 @@ function register_user() {
         if (response.status === 201) {
             toast('Registration successful, Redirecting...', 'bg-success');
             DisplayNavBar();
-            passUserToDashboard();
+            passUserTo('/dashboard')
         } else if (response.status === 409)
             toast('Username/Email already exists', 'bg-danger');
         else if (response.status >= 400 && response.status < 500)

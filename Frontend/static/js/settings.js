@@ -191,7 +191,7 @@ function SaveChanges() {
     for (const key in updated_values) {
         form.append(key, updated_values[key]);
     }
-    clearInterval(fetchID);
+    // clearInterval(fetchID);
     fetch('http://127.0.0.1:8001/userdata/update', {
         method: 'POST',
         headers: {
@@ -206,7 +206,8 @@ function SaveChanges() {
         toast('Changes saved', 'bg-success');
         setValuesToSessionStorage(response);
         loadAccountDetailsInSettings();
-        fetchID = setInterval(fetchUserData, 5000);
+        // fetchID = setInterval(fetchUserData, 5000);
+        fetchUserData();
     })
     .catch((error) => {
         console.log(error);
@@ -305,7 +306,7 @@ function DeleteAccount() {
         btn.innerHTML = 'Account Deleted Successfuly';
         setTimeout(() => {
             sessionStorage.clear();
-            clearInterval(fetchID);
+            // clearInterval(fetchID);
             delete_cookie('access');
             window.location.href = '/';
         }, 1000);

@@ -113,7 +113,7 @@ function Verify2FA() {
             delete_cookie('2fa');
             DisplayNavBar();
             setTimeout(() => {
-                passUserToDashboard();
+                passUserTo('/dashboard');
             }, 250);
             return response.json();
         } else if (response.status === 401 || response.status === 401) {

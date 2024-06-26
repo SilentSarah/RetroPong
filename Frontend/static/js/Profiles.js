@@ -2,15 +2,6 @@ let account_finder_active = false;
 let last_search_id = undefined;
 let current_user = {};
 
-function passUsertoProfile() {
-    const profilePage = document.createElement('a');
-    profilePage.href = `/profile`;
-    profilePage.classList.add('d-none');
-    document.body.appendChild(profilePage);
-    scanLinks();
-    profilePage.click();
-}
-
 function Invite(id, type) {
     const profileOptions = document.getElementById('profileOptions');
     if (id == undefined || id == null || type == undefined || type == null) return;
@@ -52,6 +43,7 @@ function DisplayProfileOptions() {
     if (ProfileOptions) ProfileOptions.remove();
     if (current_user.id === parseInt(sessionStorage.getItem('id'))) return ;
 
+    console.log(current_user.id, parseInt(sessionStorage.getItem('id')));
     const modalContent = document.getElementById('modalContent');
     const profileOptions = document.createElement('div');
     profileOptions.classList.add('d-flex', 'gap-2', 'align-items-center', 'justify-content-center', 'start-50', 'end-50', 'z-ultimate', 'position-sticky', 'transform-middle');
@@ -118,7 +110,7 @@ function DisplayProfileDetails(id) {
             current_user[key] = value;
         }
         sessionStorage.setItem("profile", JSON.stringify(current_user));
-        passUsertoProfile();
+        passUserTo('/profile');
     })
     .catch(error => {
         console.error('Error:', error);

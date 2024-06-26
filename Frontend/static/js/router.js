@@ -16,36 +16,42 @@ let fetchID;
 const routes = [
     {   path: '/404', 
         on: false,
-        component: () => grabContent('/404.html')
+        component: () => grabContent('/404.html'),
+        func_arr: []
     },
     {   path: '/',
         on: false,
-        component: () => grabContent('/static/content/home.html')
+        component: () => grabContent('/static/content/home.html'),
+        func_arr: [() => {displayTitle()}]
     },
     {
         path: '/login',
         on: false,
-        component: () => grabContent('/static/content/login.html')
+        component: () => grabContent('/static/content/login.html'),
+        func_arr: [() => credentialsScan()]
     },
     {
         path: '/register',
         on: false,
-        component: () => grabContent('/static/content/registration.html')
+        component: () => grabContent('/static/content/registration.html'),
+        func_arr: [() => credentialsScan()]
     },
     {
         path: '/dashboard',
         on: false,
-        component: () => grabContent('/static/content/dashboard.html')
+        component: () => grabContent('/static/content/dashboard.html'),
+        func_arr: [() => copyIDListener(), () => setDashboardStats(true)]
     },
     {
         path: '/game',
         on: false,
-        component: () => grabContent('/static/content/game.html')
+        component: () => grabContent('/static/content/game.html'),
+        func_arr: [() => initGameSocket()]
     },
     {
         path: '/tournament',
         on: false,
-        component: () => grabContent('/static/content/tournament.html')
+        component: () => grabContent('/static/content/tournament.html'),
     },
     { // For testing only >>>
         path: '/info',
@@ -55,17 +61,20 @@ const routes = [
     {
         path: '/settings',
         on: false,
-        component: () => grabContent('/static/content/settings.html')
+        component: () => grabContent('/static/content/settings.html'),
+        func_arr: [() => switchTabsHandler(), () =>  loadAccountDetailsInSettings(true)]
     },
     {
         path: '/chat',
         on: false,
-        component: () => grabContent('/static/content/chatv2.html')
+        component: () => grabContent('/static/content/chatv2.html'),
+        func_arr: [() => Websocket()]
     },
     {
         path: '/profile',
         on: false,
-        component: () => grabContent('/static/content/dashboard.html')
+        component: () => grabContent('/static/content/dashboard.html'),
+        func_arr: [() => copyIDListener(), () =>  setDashboardStats(false)]
     },
 ]
 
@@ -90,6 +99,7 @@ function router() {
     const path = window.location.pathname;
     let route = routes.find(route => route.path === path);
     let mainContent = document.getElementById('mainContent');
+    clearModals();
     StartLoading(route);
     setTimeout(() => {
     if (route) {
@@ -117,7 +127,4 @@ function router() {
         });
     }}, 750);
 }
-
 router();
-fetchUserData();
-fetchID = setInterval(fetchUserData, 5000);

@@ -124,7 +124,8 @@ function LoadChannel(channel) {
     }
     // console.log(channel[0].chName)
     if(channel_title)
-        channel_title.innerHTML = channel[0].chName
+        if (channel[0])
+            channel_title.innerHTML = channel[0].chName
 }
 
 // send invite

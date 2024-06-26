@@ -116,15 +116,15 @@ function fetchUserData() {
         })
         .then(data => {
             setValuesToSessionStorage(data);
-            if (window.location.pathname === "/dashboard")
-                setDashboardStats();
+            // if (window.location.pathname === "/dashboard")
+            //     setDashboardStats();
             DisplayNavBar();
         })
         .catch((error) => {
             sessionStorage.clear();
             if (error.message === 'Failed to fetch') {
                 toast('Server is not responding, try again later.', 'bg-danger');
-                clearInterval(fetchID);
+                // clearInterval(fetchID);
                 return ;
             }
         });
@@ -234,17 +234,26 @@ function setMatchStatistics(self = true) {
     });
 }
 
-function passUserto404() {
-    const notFound = document.createElement("a");
-    notFound.href = "/404";
-    scanLinks();
-    notFound.click();
+function setLoadingOverlay(boolean = true) {
+    const modalContent = document.getElementById('modalContent');
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.classList.add('custom-loader', "top-50", "start-50", "translate-middle");
+    if (modalContent) {
+        if (boolean === true) {
+            modalContent.classList.add("overlay");
+            modalContent.appendChild(loadingOverlay);
+        } else {
+            modalContent.classList.remove("overlay");
+            if (modalContent.contains(loadingOverlay))
+                modalContent.removeChild(loadingOverlay);
+        }          
+    }
 }
 
 function setDashboardStats(self = true) {
     if (self === false) {
         if (sessionStorage.getItem("profile") === null) {
-            return passUserto404();
+            return passUserTo("/404");
         }
         if (Object.keys(current_user).length === 0)
             current_user = JSON.parse(sessionStorage.getItem("profile"));
