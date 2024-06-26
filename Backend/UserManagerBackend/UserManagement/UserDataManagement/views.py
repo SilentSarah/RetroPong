@@ -62,7 +62,7 @@ def invite_user(request: HttpRequest):
             body = json.loads(request.body)
             invite_type = body.get('type')
             invitee_id = body.get('receiver')
-            if (DbOps.create_user_invite(user_id, invitee_id, invite_type) == False):
+            if (DbOps.create_user_invite(user_id, invitee_id, invite_type, token) == False):
                 return JsonResponse({"error":"Invite Creation Failed"}, status=400)
             return JsonResponse({"message":"Invite Sent Successfully"}, status=201)
         except Exception as e:
@@ -182,5 +182,22 @@ def delete_user(request: HttpRequest):
         response = JsonResponse({"message":"User Deleted Successfully"}, status=200)
         response.set_cookie('access', '', max_age=1, samesite='none', secure=True)
         return response
+    except Exception as e:
+        return JsonResponse({"error":"Bad Request"}, status=401)
+    
+@csrf_exempt
+@require_http_methods(["POST"])
+def gen_notification(request: HttpRequest):
+    try:
+        token, user_id = ViewAssist.verify_token(request)
+        if (token is None or user_id is None):
+            return HttpResponse(status=401)
+        body = json.loads(request.body)
+        notification = body.get('notification')
+        if (notification is None):
+            return JsonResponse({"error":"Missing Notification"}, status=400)
+        if (DbOps.create_notification(user_id, notification) == False):
+            return JsonResponse({"error":"Notification Creation Failed"}, status=400)
+        return JsonResponse({"message":"Notification Sent"}, status=200)
     except Exception as e:
         return JsonResponse({"error":"Bad Request"}, status=401)

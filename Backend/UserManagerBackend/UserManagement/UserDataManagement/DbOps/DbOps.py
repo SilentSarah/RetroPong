@@ -6,6 +6,7 @@ import datetime
 import requests
 from requests.models import Response
 import re
+import json
 from django.core.files.base import ContentFile
 from django.contrib.sites.models import Site
 from django.utils.datastructures import MultiValueDict
@@ -291,7 +292,7 @@ class DbOps:
             return None
         
     @staticmethod
-    def create_user_invite(user_id: int, invitee_id: int, invite_type):
+    def create_user_invite(user_id: int, invitee_id: int, invite_type, token: str) -> bool:
         if (user_id == None or invitee_id == None or invite_type == None):
             return False
         try:
@@ -302,9 +303,14 @@ class DbOps:
             user = User.objects.get(id=user_id)
             if (invite_type == "friend"):
                 invitee = User.objects.get(id=invitee_id)
-                if (user_id not in invitee.ARequests):
-                    invitee.ARequests.append(user_id)
-                invitee.save()
+                from ..WebOps.WebOps import WebOps
+                response = WebOps.request_endpoint(f"http://127.0.0.1:8002/chat/invite/{user_id}/{invitee_id}", "GET", {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {token}"
+                })
+                if (response.status_code != 200):
+                    print(response.content.decode('utf-8'))
+                    return False
             invite_notification = Notification(
                 nType=invite_type.upper(),
                 nContent=f"Invited you to match by" if invite_type == "game" else f"{user.uusername} sent you a friend request",
@@ -313,6 +319,29 @@ class DbOps:
                 nDate=datetime.datetime.now()
             )
             invite_notification.save()
+            return True
+        except Exception as e:
+            print("DbOps: ", e)
+            return False
+        
+    @staticmethod
+    def create_notification(user_id: int, notification_data: dict) -> bool:
+        notification_data = json.loads(notification_data)
+        ns_keys = notification_data.keys()
+        if ("nType" not in ns_keys 
+            or "nContent" not in ns_keys 
+            or "nReciever" not in ns_keys 
+            or "nSender" not in ns_keys):
+            return False
+        try:
+            notification = Notification(
+                nType=notification_data.get("nType"),
+                nContent=notification_data.get("nContent"),
+                nReciever=notification_data.get("nReciever"),
+                nSender=notification_data.get("nSender"),
+                nDate=datetime.datetime.now()
+            )
+            notification.save()
             return True
         except Exception as e:
             print("DbOps: ", e)

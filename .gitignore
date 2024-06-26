@@ -1,6 +1,7 @@
 Authlib
 UserLibs
 GameLibs
+ChatLibs
 __pycache__
 .env
 .DS_Store
