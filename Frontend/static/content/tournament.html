@@ -1,8 +1,55 @@
 <div class="container-fluid px-5 d-flex justify-content-center">
 	<div id="tournament-container">
-                <h1 class="taprom text-pink-gradient">This is the page of the Tournament</h1>
-                <button id="joinTournament" onclick="joinTournament()" style="display: block; margin: 0 auto;">Join a Tournament!</button>
-                <button onclick="EnterTournamentGame()" style="display: block; margin: 0 auto;">Enter Game!</button>
-				<h3 id="waitStatus"></h3>
-        </div>
+		<div id="tournament">
+			<!-- round 1 -->
+			<div class="c-1-1 cell round1"></div>
+			<div class="t-1-1 t-pipe"></div>
+			<div class="c-1-2 cell round1"></div>
+			<div class="c-1-3 cell round1"></div>
+			<div class="t-1-2 t-pipe"></div>
+			<div class="c-1-4 cell round1"></div>
+			<div class="c-1-5 cell round1"></div>
+			<div class="t-1-3 t-pipe"></div>
+			<div class="c-1-6 cell round1"></div>
+			<div class="c-1-7 cell round1"></div>
+			<div class="t-1-4 t-pipe"></div>
+			<div class="c-1-8 cell round1"></div>
+			<!-- pipes 1 -->
+			<div class="p-1-1 pipe"></div>
+			<div class="p-1-2 pipe"></div>
+			<div class="p-1-3 pipe"></div>
+			<div class="p-1-4 pipe"></div>
+			<!-- -------------------------------------------- -->
+			<!-- round 2 -->
+			<div class="c-2-1 cell round2"></div>
+			<div class="t-2-1 t-pipe"></div>
+			<div class="c-2-2 cell round2"></div>
+			<div class="c-2-3 cell round2"></div>
+			<div class="t-2-2 t-pipe"></div>
+			<div class="c-2-4 cell round2"></div>
+			<!-- pipes 2 -->
+			<div class="p-2-1 pipe"></div>
+			<div class="p-2-2 pipe"></div>
+			<!-- -------------------------------------------- -->
+			<!-- round 3 -->
+			<div class="win c-3-1 cell round3"></div>
+			<div class="t-3-1 t-pipe"></div>
+			<div class="lose c-3-2 cell round3"></div>
+			<!-- pipes 3 -->
+			<div class="p-3-1 pipe"></div>
+			<!-- winner -->
+			<div class="w cell champion"></div>
+			<!-- Buttons -->
+			<div class="enter">
+				<button class="reverse-grd">Play&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-gamepad"></i></button>
+			</div>
+			<div class="exit">
+				<button ><i class="fa-solid fa-delete-left"></i>&nbsp;&nbsp;&nbsp;Leave</button>
+			</div>
+		</div>
+		<!-- <h1 class="taprom text-pink-gradient">This is the page of the Tournament</h1>
+		<button id="joinTournament" onclick="joinTournament()" style="display: block; margin: 0 auto;">Join a Tournament!</button>
+		<button onclick="EnterTournamentGame()" style="display: block; margin: 0 auto;">Enter Game!</button>
+		<h3 id="waitStatus"></h3> -->
+	</div>
 </div>
