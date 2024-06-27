@@ -191,6 +191,12 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 			self.tournament.check_round_start()
 			print_blue(f'I reached the end of join_tournament')
 
+	async def leave_tournament(self):
+		del TournamentConsumer.user_tournaments[str(self.user_info['id'])]
+		await self.channel_layer.group_discard(self.tournament.id(), self.channel_name)
+		# self.tournament.check_round_start()
+		await self.send_json(content={"type": "leave_ack"})
+
 	async def check_user(self):
 		# Check Tournament
 		if (not (str(self.user_info['id']) in TournamentConsumer.user_tournaments)):
@@ -236,6 +242,8 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		if (type == 'test'):
 			print_blue('received the test type')
 			await self.send_json(content={"type": "log", "log": "the test type was received"})
+		elif (type == 'leave'):
+			await self.leave_tournament()
 		elif (type == 'session_storage'):
 			print_blue('received the session_storage type')
 			self.user_info = content

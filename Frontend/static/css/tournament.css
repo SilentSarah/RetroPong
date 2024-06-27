@@ -89,7 +89,8 @@
 .cell {
 	border: 2px solid #fff;
 	border-radius: .5rem;
-	background-image: url('/static/img/pfp/L7afouzli9.jpg');
+	color: #0f0;
+	/* background-image: url('/static/img/pfp/L7afouzli9.jpg'); */
 	background-position: center;
 	background-size: cover;
 }
@@ -172,6 +173,7 @@
 }
 
 #tournament button {
+	display: block;
 	cursor: pointer;
 	border: none;
 	border-radius: .5rem;
@@ -213,4 +215,56 @@
 .exit {
 	grid-area: o; /* o -> out */
 	/* background: green; */
+}
+
+
+#banner *,
+#banner ::before,
+#banner ::after {
+	margin: 0;
+	padding: 0;
+}
+
+/* Banner */
+
+#banner {
+	background: #0007;
+	border-radius: 1em;
+	padding: 3em 1em;
+	max-width: max-content;
+	margin: 0 auto;
+	color: #fff;
+}
+
+#banner > h1 {
+	margin-bottom: 1em;
+}
+
+#banner .rules {
+	padding-left: 2em;
+	color: #fffa;
+	text-shadow: 0px 0px 2px #fff;
+}
+
+#banner .rules > li + li {
+	margin-top: 1rem;
+}
+
+#banner button {
+	cursor: pointer;
+	display: block;
+	border: none;
+	border-radius: .5rem;
+	background: #000;
+	color: #fff;
+	padding: .5em 1em;
+	font-size: 1rem;
+	margin: 2em auto 0;
+	border: 1px solid #0000;
+	transition: all .2s ease-in-out;
+}
+
+#banner button:hover {
+	color: #c00da2;
+	border: 1px solid #c00da2;
 }

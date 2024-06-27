@@ -90,15 +90,14 @@ function initTournament()
 						...sessionStorage
 					}));
 		}
+		else if (data.type == 'leave_ack')
+			window.location.href = '/'
 		else if (data.type == 'session_storage_ack')
 		{
 			console.log("received the session storage ack<<<<<<");
 		}
 		else if (data.type == 'already_joined')
-		{
-			console.log("already Joined >>>>>");
-			document.getElementById('joinTournament').classList.toggle('hidden')
-		}
+			toggleMenu("banner", "tournament");
 		else if (data.type == 'log')
 		{
 			console.log("Log: ", data.log);

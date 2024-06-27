@@ -1,6 +1,6 @@
 <div class="container-fluid px-5 d-flex justify-content-center">
 	<div id="tournament-container">
-		<div id="tournament">
+		<div id="tournament" class="hidden fade-in">
 			<!-- round 1 -->
 			<div class="c-1-1 cell round1"></div>
 			<div class="t-1-1 t-pipe"></div>
@@ -38,18 +38,29 @@
 			<!-- pipes 3 -->
 			<div class="p-3-1 pipe"></div>
 			<!-- winner -->
-			<div class="w cell champion"></div>
+			<div class="w cell champion">TEST</div>
 			<!-- Buttons -->
 			<div class="enter">
-				<button class="reverse-grd">Play&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-gamepad"></i></button>
+				<button onclick="enterTournamentGame()" class="reverse-grd">
+					Play&nbsp;&nbsp;&nbsp;<i class="fa-solid fa-gamepad"></i>
+				</button>
 			</div>
 			<div class="exit">
-				<button ><i class="fa-solid fa-delete-left"></i>&nbsp;&nbsp;&nbsp;Leave</button>
+				<button onclick="leaveTournament()">
+					<i class="fa-solid fa-delete-left"></i>&nbsp;&nbsp;&nbsp;Leave
+			</button>
 			</div>
 		</div>
-		<!-- <h1 class="taprom text-pink-gradient">This is the page of the Tournament</h1>
-		<button id="joinTournament" onclick="joinTournament()" style="display: block; margin: 0 auto;">Join a Tournament!</button>
-		<button onclick="EnterTournamentGame()" style="display: block; margin: 0 auto;">Enter Game!</button>
-		<h3 id="waitStatus"></h3> -->
+		<div class="fade-in" id="banner">
+			<h1 class="taprom text-center">Rules</h1>
+			<ol class="rules">
+				<li class="uppercase">no hacking or cheating</li>
+				<li class="uppercase">respect your teammates and your opponents</li>
+				<li class="uppercase">abusing game bugs or glitches will cause account termination</li>
+				<li class="uppercase">leaving your teammate alone on a match is not allowed</li>
+				<li class="uppercase">profanity is not allowed</li>
+			</ol>
+			<button class="" onclick="joinTournament()">Accept & Join</button>
+		</div>
 	</div>
 </div>
