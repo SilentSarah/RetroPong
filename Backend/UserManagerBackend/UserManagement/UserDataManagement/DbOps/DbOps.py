@@ -302,7 +302,6 @@ class DbOps:
             
             user = User.objects.get(id=user_id)
             if (invite_type == "friend"):
-                invitee = User.objects.get(id=invitee_id)
                 from ..WebOps.WebOps import WebOps
                 response = WebOps.request_endpoint(f"http://127.0.0.1:8002/chat/invite/{user_id}/{invitee_id}", "GET", {
                     "Content-Type": "application/json",
@@ -311,14 +310,17 @@ class DbOps:
                 if (response.status_code != 200):
                     print(response.content.decode('utf-8'))
                     return False
-            invite_notification = Notification(
-                nType=invite_type.upper(),
-                nContent=f"Invited you to match by" if invite_type == "game" else f"{user.uusername} sent you a friend request",
-                nReciever=invitee_id,
-                nSender=user_id,
-                nDate=datetime.datetime.now()
-            )
-            invite_notification.save()
+                response_data = json.loads(response.content.decode('utf-8'))
+                message = str(response_data.get("status"))
+                if (message != "Already sent invitation"):
+                    invite_notification = Notification(
+                        nType=invite_type.upper(),
+                        nContent=f"Invited you to match by" if invite_type == "game" else f"{user.uusername} sent you a friend request",
+                        nReciever=invitee_id,
+                        nSender=user_id,
+                        nDate=datetime.datetime.now()
+                    )
+                    invite_notification.save()
             return True
         except Exception as e:
             print("DbOps: ", e)
@@ -328,11 +330,15 @@ class DbOps:
     def create_notification(user_id: int, notification_data: dict) -> bool:
         notification_data = json.loads(notification_data)
         ns_keys = notification_data.keys()
+        ns_values = notification_data.values()
         if ("nType" not in ns_keys 
             or "nContent" not in ns_keys 
             or "nReciever" not in ns_keys 
             or "nSender" not in ns_keys):
             return False
+        for value in ns_values:
+            if (value == None or value == ""):
+                return False
         try:
             notification = Notification(
                 nType=notification_data.get("nType"),
