@@ -123,7 +123,7 @@ class Game:
 		self.reset_ball()
 		goals = 7
 		if (self.score[0] == goals or self.score[1] == goals):
-			# self.finish()
+			self.finish()
 			pass
 
 	def check_fx(self):
@@ -163,7 +163,7 @@ class Game:
 		self.move_paddles()
 		self.check_score()
 		# self.broadcast()
-		print(f"-{datetime.now().time()}-", file=sys.stderr)
+		# print(f"-{datetime.now().time()}-", file=sys.stderr)
 		# here we will be sending updates to all players
 
 	def reset_ball(self):

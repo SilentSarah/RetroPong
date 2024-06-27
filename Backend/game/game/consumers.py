@@ -10,6 +10,7 @@ from game.tournament import Tournament
 import threading
 from game.models import MatchHistory
 from asgiref.sync import sync_to_async
+from .dbg_tools import print_blue
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
 	user_matches = {}
@@ -64,9 +65,9 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			GameConsumer.user_matches[str(self.user_info['id'])] = {
 				1: False, 2: False, 3: False, 4: False, 5: False
 			}
-			await self.send_json(content={"type": "log", "log": "The user wasn't found"})
+			await self.send_json(content={"type": "log", "log": "Game: The user wasn't found"})
 		else:
-			await self.send_json(content={"type": "log", "log": "The user was found"})
+			await self.send_json(content={"type": "log", "log": "Game: The user was found"})
 			# await self.send_json(content={"type": "log", "log": self.user_matches[str(self.user_info['id'])]})
 	
 	async def connect(self):
@@ -110,7 +111,7 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			self.leave_game()
 		elif (type == 'spec'):
 			strs = ['explosion', 'defence', 'speed']
-			print(f"I received a spec of type: {strs[content['mode']]}")
+			print_blue(f"I received a spec of type: {strs[content['mode']]}")
 			self.game.check_spec(str(self.user_info['id']), content['mode'])
 		elif (type == "update" and self.game and self.game.full()): # to adapt this condition later
 			# p1 = self.game.paddles[0]
@@ -146,9 +147,8 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		# print(f"I have received in the function recv_broadcast: '{event["message"]}'", file=sys.stderr)
 		if ((not self.game.started)
 	  		and 'action' in event.keys() and event['action'] == 'standby_update'):
-			print('I received smthg from the recv_broadcast>>>>>>>>>>')
+			print_blue('I received smthg from the recv_broadcast>>>>>>>>>>')
 			type = 'ready' if self.game.full() else 'standby'
-			# stopped below AttributeError: 'str' object has no attribute 'pName'
 			# players = list(filter(lambda p: p.pName in self.game.players, GameConsumer.active_players.values()))
 			# players = [p.getProps() for p in GameConsumer.active_players.values() if p.pName in self.game.players]
 			players = list(self.game.paddles.keys())
@@ -176,28 +176,34 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		self.tournament = False
 		self.user_info = {}
 
-	def join_tournament(self):
-		tournament_id = TournamentConsumer.user_tournaments[str(self.user_info['id'])]
-		if (tournament_id):
-			self.tournament = TournamentConsumer.tournaments[tournament_id]
-			return 
-		else:
+	async def join_tournament(self):
+		if (not self.tournament):
+			print_blue(f'I got inside the if of join_tournament')
 			last_tournament = TournamentConsumer.tournaments and list(TournamentConsumer.tournaments.values())[-1]
 			if (last_tournament and not last_tournament.over and not last_tournament.full()):
 				self.tournament = last_tournament
 				self.tournament.add_player(str(self.user_info['id']))
-		if (not self.tournament):
-			self.tournament = Tournament(str(self.user_info['id']))
-		TournamentConsumer.tournaments[self.tournament.id()] = self.tournament
-		TournamentConsumer.user_tournaments[str(self.user_info['id'])] = self.tournament.id()
+			if (not self.tournament):
+				self.tournament = Tournament(str(self.user_info['id']))
+			TournamentConsumer.tournaments[self.tournament.id()] = self.tournament
+			TournamentConsumer.user_tournaments[str(self.user_info['id'])] = self.tournament.id()
+			await self.channel_layer.group_add(self.tournament.id(), self.channel_name)
+			self.tournament.check_round_start()
+			print_blue(f'I reached the end of join_tournament')
 
 	async def check_user(self):
+		# Check Tournament
 		if (not (str(self.user_info['id']) in TournamentConsumer.user_tournaments)):
 			TournamentConsumer.user_tournaments[str(self.user_info['id'])] = False
 			await self.send_json(content={"type": "log", "log": "The user wasn't found"})
 		else:
 			await self.send_json(content={"type": "log", "log": "The user was found"})
 			await self.send_json(content={"type": "log", "log": self.user_tournaments[str(self.user_info['id'])]})
+		# Check Game
+		if (not (str(self.user_info['id']) in GameConsumer.user_matches)):
+			GameConsumer.user_matches[str(self.user_info['id'])] = {
+				1: False, 2: False, 3: False, 4: False, 5: False
+			}
 
 	async def connect(self):
 		await self.accept()
@@ -210,39 +216,58 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		# 	self.game.id(), self.channel_name
 		# )
 
-	async def standby_update(self):
-		await self.channel_layer.group_add(self.tournament.id(), self.channel_name)
+	async def tournament_update(self):
 		await self.channel_layer.group_send(
 			self.tournament.id(), {
 				"type": "tournament.recv.broadcast",
-				"action": "standby_update"
+				"action": "update"
 				})
+		pass
+
+	def already_joined(self):
+		tournament_id = TournamentConsumer.user_tournaments[str(self.user_info['id'])]
+		if (tournament_id):
+			self.tournament = TournamentConsumer.tournaments[tournament_id]
+			return True
+		return False
 
 	async def receive_json(self, content):
 		type = content["type"]
 		if (type == 'test'):
+			print_blue('received the test type')
 			await self.send_json(content={"type": "log", "log": "the test type was received"})
 		elif (type == 'session_storage'):
+			print_blue('received the session_storage type')
 			self.user_info = content
 			await self.send_json(content={"type": "log", "log": f"The user_info is: >{self.user_info}<"})
-			# will check if the user is already in the user_matches dict otherwise it'll add it.
+			# will check if the user is already in the user_tournaments dict otherwise it'll add it.
 			await self.check_user()
-			# to confirm the receipt of sessionStorage
-			await self.send_json(content={"type": "session_storage_ack"})
+			await self.send_json(content={"type": "log", "log": f"The user got checked!!!"})
+			if (self.already_joined()):
+				print_blue(f'I found that user {self.user_info["id"]} is already joined!')
+				await self.send_json(content={"type": "already_joined"})
+				await self.send_json(content={"type": "log", "log": f"Already join>>>><"})
+				await self.tournament_update()
 		elif (type == 'join'):
-			print('received the join type')
-			self.join_tournament()
+			print_blue('received the join type')
+			await self.join_tournament()
 			await self.send_json(content={"type": "log", "log": f"The tournament_id after joining is: >{self.tournament.id()}<"})
-			await self.standby_update()
+			await self.send_json(content={"type": "already_joined"})
+			await self.tournament_update()
 			# self.tournament.full() and threading.Timer(3, self.game.start).start()
+		elif (type == 'enter_game'):
+			print_blue('received the enter_game type')
+			# will redirect them to appropriate game
+			await self.send_json(content={"type": "log", "log": f"Enter the game"})
+			pass
 		else:
-			# print(f"The type received was: {type}")
+			# print_blue(f"The type received was: {type}")
 			pass
 	
 	# Receive message from tournament group
 	async def tournament_recv_broadcast(self, event):
-		if ('action' in event.keys() and event['action'] == 'standby_update'):
-			print('I received smthg from the Tournament\'s recv_broadcast>>>>>>>>>>')
-			type = 'ready' if self.tournament.check_start() else 'standby'
-			await self.send_json(content={"type": type, "players": self.tournament.players})
-			await self.send_json(content={"type": 'log', 'log': f'the tournoi id: {self.tournament.id()}'})
+		if ('action' in event.keys() and event['action'] == 'update'):
+			# Send update about tournament state and user_specific state
+			# For now send if the player can join a game or not
+			status_dict = self.tournament.get_status(self.user_info['id'])
+			await self.send_json(content={"type": "tournament_status", "tournament_status": status_dict})

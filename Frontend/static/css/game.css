@@ -29,7 +29,8 @@
 	margin: 1rem 0;
 }
 
-#game-container .hidden {
+#game-container .hidden,
+#tournament-container .hidden {
 	display: none !important;
 }
 

@@ -73,8 +73,9 @@ function checkInvite()
 
 function checkTournament()
 {
-	const previous_location = (new URL(document.referrer)).pathname
+	const previous_location = document.referrer && (new URL(document.referrer)).pathname
 	previous_location == '/tournament' && startMode(5);
+	console.log("the previous locaiton is: ", previous_location);
 }
 
 function initTournament()
@@ -92,6 +93,11 @@ function initTournament()
 		else if (data.type == 'session_storage_ack')
 		{
 			console.log("received the session storage ack<<<<<<");
+		}
+		else if (data.type == 'already_joined')
+		{
+			console.log("already Joined >>>>>");
+			document.getElementById('joinTournament').classList.toggle('hidden')
 		}
 		else if (data.type == 'log')
 		{
