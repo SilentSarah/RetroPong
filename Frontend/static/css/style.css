@@ -7,6 +7,8 @@
 :root {
     --bubblegum: #fd72ff78;
     --blueberry: #7287ff78;
+    --online: #50ff7c;
+    --offline: #4e4e4e;
 }
 
 body {
@@ -336,6 +338,7 @@ body::after {
     transform: translateY(-50%);
 }
 .user-profile-picture {
+    position: relative;
     background: url('/static/img/pfp/Default.png');
     background-size: cover;
     background-position: center; 
@@ -421,6 +424,14 @@ border-radius: 25px;
 
 .mt-chart {
     margin-top: 0.8rem !important;
+}
+
+.bg-online {
+    background-color: var(--online);
+}
+
+.bg-offline {
+    background-color: var(--offline);
 }
 
 .bg-white-transparent-0-05 {
@@ -537,6 +548,16 @@ border-radius: 25px;
     position: absolute;
     top: 10%;
     right: 75%;
+}
+
+.connection_status {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 1px solid #fda5ffb3;
+    left: 90%;
+    top: 90%;
 }
 
 #retro_menu_img {

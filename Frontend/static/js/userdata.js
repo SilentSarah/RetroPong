@@ -89,52 +89,41 @@ function setValuesToSessionStorage(data) {
 }
 
 function fetchUserData() {
-    if (getCookie('access') === "") {
-        if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
-            window.location.href = "/login";
-            return ;
+    if (!tokenCheck()) return ;
+    setLoadingOverlay(true);
+    fetch("http://127.0.0.1:8001/userdata/",
+    { 
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie('access'),
         }
-    } else {
-        if (window.location.pathname === "/login" || window.location.pathname === "/register") {
-            window.location.href = "/dashboard";
-            return ;
-        }
-        else if (window.location.pathname === "/") return ;
-        setLoadingOverlay(true);
-        fetch("http://127.0.0.1:8001/userdata/",
-        { 
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie('access'),
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                deleteCookie("access");
-                sessionStorage.clear();
-                setLoadingOverlay(false);
-            }
-        })
-        .then(data => {
-            setValuesToSessionStorage(data);
-            if (window.location.pathname === "/dashboard")
-                setDashboardStats();
-            DisplayNavBar();
-            setLoadingOverlay(false);
-        })
-        .catch((error) => {
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            deleteCookie("access");
             sessionStorage.clear();
-            if (error.message === 'Failed to fetch') {
-                toast('Server is not responding, try again later.', 'bg-danger');
-                // clearInterval(fetchID);
-                return ;
-            }
             setLoadingOverlay(false);
-        });
-    }
+        }
+    })
+    .then(data => {
+        setValuesToSessionStorage(data);
+        if (window.location.pathname === "/dashboard")
+            setDashboardStats();
+        DisplayNavBar();
+        setLoadingOverlay(false);
+    })
+    .catch((error) => {
+        sessionStorage.clear();
+        if (error.message === 'Failed to fetch') {
+            toast('Server is not responding, try again later.', 'bg-danger');
+            // clearInterval(fetchID);
+            return ;
+        }
+        setLoadingOverlay(false);
+    });
 }
 
 function setTextContentHTML(id, sessionKey, defaultValue = "", self = true) {
@@ -258,6 +247,17 @@ function setLoadingOverlay(boolean = true) {
     }
 }
 
+function checkProfileOnlineConnectivity() {
+    if (SelfUser.ws.readyState === 1) {
+        SelfUser.checkProfile(current_user.id);
+    } else {
+        setTimeout(() => {
+            checkProfileOnlineConnectivity();
+        }, 500);
+    }
+
+}
+
 function setDashboardStats(self = true) {
     if (self === false) {
         if (sessionStorage.getItem("profile") === null) {
@@ -266,6 +266,8 @@ function setDashboardStats(self = true) {
         if (Object.keys(current_user).length === 0)
             current_user = JSON.parse(sessionStorage.getItem("profile"));
         DisplayProfileOptions();
+        checkProfileOnlineConnectivity();
+
     }
     setTextContentHTML('username', 'username', "", self);
     setTextContentHTML('title', 'title', 'The NPC', self);

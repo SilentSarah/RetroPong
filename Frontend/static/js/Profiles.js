@@ -1,6 +1,67 @@
+class OnlineProfile {
+    constructor(link) {
+        this.link = link;
+        this.intervalID = null;
+        this.userConnectionData = {};
+        this.ws = new WebSocket(link);
+        this.checkProfile = (profile_id) => {
+            console.log("Checking Profile: ", profile_id);
+            const data = {
+                "Authorization": "Bearer " + getCookie('access'),
+                "viewed_user": profile_id
+            };
+            this.ws.send(JSON.stringify(data));
+        }
+        this.displayOnlineStatus = (profile_id) => {
+            
+            if (window.location.pathname !== '/profile') return;
+            if (Object.keys(this.userConnectionData).length === 0) return;
+            if (this.userConnectionData.viewed_user !== profile_id) return;
+
+            const pfp = document.getElementById('profile_pic');
+            const onlinestatus = document.createElement('div');
+            const status = pfp.querySelector('.connection_status');
+            onlinestatus.classList.add("connection_status");
+            
+            if (status === null) {
+                pfp.appendChild(onlinestatus);
+                this.userConnectionData.online === true ? 
+                (onlinestatus.classList.add("bg-online"), onlinestatus.classList.remove("bg-offline")): 
+                (onlinestatus.classList.add("bg-offline"), onlinestatus.classList.remove("bg-online"));
+            } else {
+                this.userConnectionData.online === true ? 
+                (status.classList.add("bg-online"), status.classList.remove("bg-offline")): 
+                (status.classList.add("bg-offline"), status.classList.remove("bg-online"));
+            }
+
+            console.log("Online Status: ", this.userConnectionData.online);
+        }
+        this.ws.onopen = () => {
+            const auth_data = { "Authorization": "Bearer " + getCookie('access')};
+            this.ws.send(JSON.stringify(auth_data));
+        };
+        this.ws.onmessage = (data) => {
+            let data_content = JSON.parse(data.data);
+            if (Object.keys(data_content).length > 0) {
+                this.userConnectionData = data_content;
+                this.displayOnlineStatus(this.userConnectionData.viewed_user);
+                clearInterval(this.intervalID);
+            }
+            console.log(data_content);
+        };
+        this.ws.onclose = () => {
+            console.log('Online System has been closed.');
+            if (getCookie('access') !== '') SelfUser = new OnlineProfile(this.link);
+            else this.ws = null;
+        };
+    }
+}
+
 let account_finder_active = false;
 let last_search_id = undefined;
 let current_user = {};
+let SelfUser = undefined;
+
 
 function Invite(id, type) {
     const profileOptions = document.getElementById('profileOptions');
