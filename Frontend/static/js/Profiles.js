@@ -16,7 +16,7 @@ class OnlineProfile {
             
             if (window.location.pathname !== '/profile') return;
             if (Object.keys(this.userConnectionData).length === 0) return;
-            if (this.userConnectionData.viewed_user !== profile_id) return;
+            if (Object.keys(current_user).indexOf("id") != -1 && this.userConnectionData.viewed_user !== current_user.id) return;
 
             const pfp = document.getElementById('profile_pic');
             const onlinestatus = document.createElement('div');
