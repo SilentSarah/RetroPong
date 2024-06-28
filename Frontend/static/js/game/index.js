@@ -80,6 +80,10 @@ function checkTournament()
 
 function initTournament()
 {
+	// temp
+	if (!sessionStorage.getItem('id'))
+		window.location.href = '/info'
+	// temp --
 	tournamentSocket.onmessage = function(e) {
 		const data = JSON.parse(e.data);
 
@@ -135,6 +139,8 @@ function initTournament()
 			// });
 			readyToPlayCounter(true);
 		}
+		else if (data.type == 'tournament_status')
+			updateTournamentStatus(data.tournament_status);
 	};
 }
 

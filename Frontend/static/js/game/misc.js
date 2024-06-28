@@ -65,6 +65,26 @@ function spec(mode, e)
 	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));
 }
 
+function disableElById(id)
+{
+	const el = document.getElementById(id);
+	el.setAttribute('disabled', 'disabled');
+	el.classList.toggle('disabled');
+}
+
+function undisableElById(id)
+{
+	const el = document.getElementById(id);
+	el.removeAttribute('disabled');
+	el.classList.toggle('disabled');
+}
+
+function ObjIsEmpty(obj) {
+	for (const prop in obj)
+		if (Object.hasOwn(obj, prop))
+		  return false;
+	return true;
+}
 
 // Below is only for temp
 function submitDataToSessionStorage(e)

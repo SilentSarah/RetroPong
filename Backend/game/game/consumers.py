@@ -10,7 +10,7 @@ from game.tournament import Tournament
 import threading
 from game.models import MatchHistory
 from asgiref.sync import sync_to_async
-from .dbg_tools import print_blue
+from .dbg_tools import print_blue, print_green
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
 	user_matches = {}
@@ -252,16 +252,19 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 			await self.check_user()
 			await self.send_json(content={"type": "log", "log": f"The user got checked!!!"})
 			if (self.already_joined()):
+				await self.channel_layer.group_add(self.tournament.id(), self.channel_name)
 				print_blue(f'I found that user {self.user_info["id"]} is already joined!')
 				await self.send_json(content={"type": "already_joined"})
 				await self.send_json(content={"type": "log", "log": f"Already join>>>><"})
 				await self.tournament_update()
+				self.tournament.update_games_status()
 		elif (type == 'join'):
 			print_blue('received the join type')
 			await self.join_tournament()
 			await self.send_json(content={"type": "log", "log": f"The tournament_id after joining is: >{self.tournament.id()}<"})
 			await self.send_json(content={"type": "already_joined"})
 			await self.tournament_update()
+			self.tournament.update_games_status()
 			# self.tournament.full() and threading.Timer(3, self.game.start).start()
 		elif (type == 'enter_game'):
 			print_blue('received the enter_game type')
@@ -277,5 +280,7 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		if ('action' in event.keys() and event['action'] == 'update'):
 			# Send update about tournament state and user_specific state
 			# For now send if the player can join a game or not
+			print_green(f'I received the tournament_recv_broadcast')
 			status_dict = self.tournament.get_status(self.user_info['id'])
+			print_green(f'the status dict sent is: {status_dict}')
 			await self.send_json(content={"type": "tournament_status", "tournament_status": status_dict})

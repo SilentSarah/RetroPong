@@ -8,7 +8,7 @@ from datetime import datetime
 from game.game import Game
 # from game.models import MatchHistory
 import game.consumers as consumers
-from .dbg_tools import print_blue, print_yellow
+from .dbg_tools import print_blue, print_yellow, print_red, print_magenta, print_cyan
 
 class Tournament:
 	serial_number = 0
@@ -24,7 +24,7 @@ class Tournament:
 		Tournament.serial_number += 1
 		self.started = False
 		self.round = 0
-		self.round_size = (2, 4, 2)
+		self.round_size = (8, 4, 2)
 		# games_status = {'playing': 'off', 'winners': []}
 		self.games_status = {}
 		self.add_player(creator_id)
@@ -33,15 +33,20 @@ class Tournament:
 		return (self.details['id'])
 
 	def init_game_status(self, game_id):
-		self.games_status[game_id] = {'playing': 'off', 'winners': []}
+		print_magenta(f"I inited the game status")
+		self.games_status[game_id] = {'playing': 'off', 'players': [], 'winners': []}
 
 	def update_games_status(self):
+		print_magenta(f"I enter update_games_status")
+		print_magenta(f"self.games_status.items() is: {self.games_status.items()}")
 		for game_id, game_status in self.games_status.items():
+			print_magenta(f"I got inside the for loop")
 			game = consumers.GameConsumer.games[game_id]
 			game_status['playing'] = game.started and not game.over
 			game_status['winners'] = game.winners if game.winners else []
 
 	def check_round_start(self):
+		print_cyan(f"self.full() of tournament.py is: {self.full()}")
 		if (self.full()):
 			for i in range(0, len(self.players), 2):
 				print_yellow(f"inited the Games")
@@ -51,6 +56,8 @@ class Tournament:
 				consumers.GameConsumer.games[new_game.id()] = new_game
 				consumers.GameConsumer.user_matches[str(self.players[i])][5] = new_game.id()
 				consumers.GameConsumer.user_matches[str(self.players[i + 1])][5] = new_game.id()
+				self.games_status[new_game.id()]['players'].append(str(self.players[i]))
+				self.games_status[new_game.id()]['players'].append(str(self.players[i + 1]))
 				self.started = True
 				# print(f'>>>Tournament, consumers.GameConsumer.user_matches: {consumers.GameConsumer.user_matches}', file=sys.stderr)
 			return True
@@ -65,7 +72,8 @@ class Tournament:
 		print_blue(f"user_id: {user_id}, last_game_id: {last_game_id}")
 		status_dict = {
 			'current_game': last_game_id if last_game_id and (not consumers.GameConsumer.games[last_game_id].over) else False,
-			'games_status': self.games_status
+			'games_status': self.games_status,
+			'players': self.players,
 		}
 		return status_dict
 	

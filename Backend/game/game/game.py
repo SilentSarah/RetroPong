@@ -29,6 +29,7 @@ class Game:
 		self.reset_ball()
 		self.score = [0, 0]
 		self.barriers = [False, False] # Maybe will switch them later to nums
+		self.winners = []
 
 	def add_paddle(self, id):
 		self.paddles[id] = Paddle()
@@ -48,6 +49,9 @@ class Game:
 		# 		})
 		# async_to_sync(self.consumer.send_json)(content={"type": "update", "x": self.ball['x'], "y": self.ball['y']})
 		# async_to_sync(self.consumer.send_json)(content={"type": "log", "log": "Broadcasting..."},)
+
+	def get_players(self):
+		return list(self.paddles.keys())
 
 	def move_paddles(self):
 		for paddle in self.paddles.values():
