@@ -182,18 +182,19 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 			last_tournament = TournamentConsumer.tournaments and list(TournamentConsumer.tournaments.values())[-1]
 			if (last_tournament and not last_tournament.over and not last_tournament.full()):
 				self.tournament = last_tournament
-				self.tournament.add_player(str(self.user_info['id']))
 			if (not self.tournament):
 				self.tournament = Tournament(str(self.user_info['id']))
 			TournamentConsumer.tournaments[self.tournament.id()] = self.tournament
 			TournamentConsumer.user_tournaments[str(self.user_info['id'])] = self.tournament.id()
-			await self.channel_layer.group_add(self.tournament.id(), self.channel_name)
-			self.tournament.check_round_start()
-			print_blue(f'I reached the end of join_tournament')
+		await self.channel_layer.group_add(self.tournament.id(), self.channel_name)
+		self.tournament.add_player(str(self.user_info['id']))
+		self.tournament.check_round_start()
+		print_blue(f'I reached the end of join_tournament')
 
 	async def leave_tournament(self):
 		del TournamentConsumer.user_tournaments[str(self.user_info['id'])]
 		await self.channel_layer.group_discard(self.tournament.id(), self.channel_name)
+		# Ill check so that it leaves from the current game too
 		# self.tournament.check_round_start()
 		await self.send_json(content={"type": "leave_ack"})
 
@@ -252,19 +253,18 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 			await self.check_user()
 			await self.send_json(content={"type": "log", "log": f"The user got checked!!!"})
 			if (self.already_joined()):
-				await self.channel_layer.group_add(self.tournament.id(), self.channel_name)
-				print_blue(f'I found that user {self.user_info["id"]} is already joined!')
+				await self.join_tournament()
 				await self.send_json(content={"type": "already_joined"})
 				await self.send_json(content={"type": "log", "log": f"Already join>>>><"})
 				await self.tournament_update()
-				self.tournament.update_games_status()
+				self.tournament.update_players_status()
 		elif (type == 'join'):
 			print_blue('received the join type')
 			await self.join_tournament()
 			await self.send_json(content={"type": "log", "log": f"The tournament_id after joining is: >{self.tournament.id()}<"})
 			await self.send_json(content={"type": "already_joined"})
 			await self.tournament_update()
-			self.tournament.update_games_status()
+			self.tournament.update_players_status()
 			# self.tournament.full() and threading.Timer(3, self.game.start).start()
 		elif (type == 'enter_game'):
 			print_blue('received the enter_game type')

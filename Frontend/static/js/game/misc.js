@@ -65,17 +65,17 @@ function spec(mode, e)
 	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));
 }
 
+function enableElById(id)
+{
+	const el = document.getElementById(id);
+	el.removeAttribute('disabled');
+	el.classList.toggle('disabled');
+}
+
 function disableElById(id)
 {
 	const el = document.getElementById(id);
 	el.setAttribute('disabled', 'disabled');
-	el.classList.toggle('disabled');
-}
-
-function undisableElById(id)
-{
-	const el = document.getElementById(id);
-	el.removeAttribute('disabled');
 	el.classList.toggle('disabled');
 }
 
@@ -98,4 +98,5 @@ function submitDataToSessionStorage(e)
 	sessionStorage.setItem('id', customId);
 	sessionStorage.setItem('pfp', customImg);
 	console.log("The sessionStorage is: ", sessionStorage);
+	window.location.href = '/tournament';
 }

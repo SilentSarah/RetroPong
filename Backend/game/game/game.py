@@ -87,9 +87,9 @@ class Game:
 		
 		# print("The start function was called however!", file=sys.stderr)
 	
-	def get_winners(self):
+	def set_winners(self):
 		oddness = self.score[0] < self.score[1]
-		return [user_id for i, user_id in enumerate(self.paddles) if i % 2 == oddness ]
+		self.winners = [user_id for i, user_id in enumerate(self.paddles) if i % 2 == oddness ]
 
 	def update_MatchHistory(self):
 		new_MatchHistory = MatchHistory()
@@ -98,7 +98,7 @@ class Game:
 			setattr(new_MatchHistory, Game.opponent_fieldnames[i], user_id)
 		setattr(new_MatchHistory, 'mStartDate', self.start_datetime)
 		setattr(new_MatchHistory, 'Score', self.score)
-		setattr(new_MatchHistory, 'Winners', self.get_winners())
+		setattr(new_MatchHistory, 'Winners', self.winners)
 		new_MatchHistory.save()
 
 	def finish(self):
@@ -106,6 +106,7 @@ class Game:
 			self.reset_ball()
 			self.game_loop_interval.cancel()
 			self.over = True
+			self.set_winners()
 			# self.update_MatchHistory()
 			if (self.mode == 5):
 				(async_to_sync(self.consumer.redirect_all))()
@@ -126,6 +127,7 @@ class Game:
 		else: return
 		self.reset_ball()
 		goals = 7
+		self.finish() # for testing only
 		if (self.score[0] == goals or self.score[1] == goals):
 			self.finish()
 			pass
