@@ -5,8 +5,8 @@ djangorestframework-simplejwt
 requests
 python-dotenv
 django-cors-headers
-channels==3.0.5
+channels
 daphne
-django-eventstream==4.5.1
+django-eventstream
 channels_redis
 Pillow

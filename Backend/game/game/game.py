@@ -1,7 +1,9 @@
+import sys
 import math
-from .set_interval import set_interval
+import threading
+from game.set_interval import set_interval
 # from asgiref.sync import async_to_sync
-from .paddle import Paddle
+from game.paddle import Paddle
 from datetime import datetime
 from game.models import MatchHistory
 from asgiref.sync import async_to_sync
