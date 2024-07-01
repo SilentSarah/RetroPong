@@ -1,0 +1,270 @@
+#tournament-container {
+	flex: 1 1 90%;
+}
+
+#tournament-container .hidden {
+	display: none !important;
+}
+
+#tournament > * {
+	z-index: 1;
+}
+
+#tournament::before {
+	content: '';
+	display: block;
+	position: absolute;
+	top:0;left:0;bottom:0;right:0;
+	background-color: #00000042;
+	filter: blur(8px);
+	z-index: 0;
+}
+
+#tournament {
+	position: relative;
+	display: grid;
+	aspect-ratio: 2/1;
+	margin: 0 auto;
+	/* height: 100%; */
+	border-radius: .5rem;
+	grid-template-columns: repeat(15, 1fr);
+	grid-template-rows: repeat(7, 1fr);
+	grid-template-areas: 
+	"o	o	o	.	.	.	.							w						.	.	.	.	e	 e	    e"
+	".	.	.	.	.	.	.  					      p-3-1						.	.	.	.	.	.		."
+	".	.	.		      c-3-1		t-3-1 t-3-1	t-3-1 t-3-1 t-3-1 t-3-1 t-3-1	  c-3-2			.	.		."
+	".	.	.			  p-2-1			.	.	.	.	.	.	.				  p-2-2			.	.		."
+	".		c-2-1	t-2-1 t-2-1 t-2-1	c-2-2		.	.	.		c-2-3	t-2-2 t-2-2 t-2-2	c-2-4		."
+	".		p-1-1		.	.	.		p-1-2		.	.	.		p-1-3		.	.	.		p-1-4		."
+	"c-1-1	t-1-1	c-1-2	.	c-1-3	t-1-2	c-1-4	.	c-1-5	t-1-3	c-1-6	.	c-1-7	t-1-4	c-1-8"
+	;
+}
+
+/* cells */
+	/* round 1 */
+	.c-1-1 { grid-area: c-1-1; }
+	.c-1-2 { grid-area: c-1-2; }
+	.c-1-3 { grid-area: c-1-3; }
+	.c-1-4 { grid-area: c-1-4; }
+	.c-1-5 { grid-area: c-1-5; }
+	.c-1-6 { grid-area: c-1-6; }
+	.c-1-7 { grid-area: c-1-7; }
+	.c-1-8 { grid-area: c-1-8; }
+	/* round 2 */
+	.c-2-1 { grid-area: c-2-1; }
+	.c-2-2 { grid-area: c-2-2; }
+	.c-2-3 { grid-area: c-2-3; }
+	.c-2-4 { grid-area: c-2-4; }
+	/* round 3 */
+	.c-3-1 { grid-area: c-3-1; }
+	.c-3-2 { grid-area: c-3-2; }
+	/* winner */
+	.w { grid-area: w; }
+
+/* t-pipes */
+	/* round 1 */
+	.t-1-1 { grid-area: t-1-1; }
+	.t-1-2 { grid-area: t-1-2; }
+	.t-1-3 { grid-area: t-1-3; }
+	.t-1-4 { grid-area: t-1-4; }
+	/* round 2 */
+	.t-2-1 { grid-area: t-2-1; }
+	.t-2-2 { grid-area: t-2-2; }
+	/* round 3 */
+	.t-3-1 { grid-area: t-3-1; }
+
+/* pipes */
+	/* round 1 */
+	.p-1-1 { grid-area: p-1-1; }
+	.p-1-2 { grid-area: p-1-2; }
+	.p-1-3 { grid-area: p-1-3; }
+	.p-1-4 { grid-area: p-1-4; }
+	/* round 2 */
+	.p-2-1 { grid-area: p-2-1; }
+	.p-2-2 { grid-area: p-2-2; }
+	/* round 3 */
+	.p-3-1 { grid-area: p-3-1; }
+
+/* cells */
+.cell {
+	border: 2px solid #fff;
+	border-radius: .5rem;
+	color: #0f0;
+	/* background-image: url('/static/img/pfp/L7afouzli9.jpg'); */
+	background-position: center;
+	background-size: cover;
+}
+
+@keyframes glow {
+	0%, 100% {
+		box-shadow: inset 0px 0px 10px 2px #fff0;
+	}
+
+	50% {
+		box-shadow: inset 0px 0px 10px 2px #ffff;
+	}
+}
+
+.cell.active {
+	animation: glow 1s ease-in-out infinite;
+	box-shadow: inset 0px 0px 10px 2px #fff0;
+}
+
+.cell.win {
+	box-shadow: inset 0px 0px 10px 2px #0f0;
+	border-color: #0f0;
+}
+
+.cell.lose {
+	box-shadow: inset 0px 0px 10px 2px #f00;
+	border-color: #f00;
+}
+
+.cell.round-4 {
+	box-shadow: inset 0px 0px 10px 2px #ff0;
+	border-color: #ff0;
+}
+
+.t-pipe, .pipe {
+	position: relative;
+	/* background-color: green; */
+	/* width: 100%;
+	height: 100%; */
+}
+
+.pipe::before, .pipe::after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	width: 50%;height: 100%;
+	border: none
+}
+
+.pipe::before {
+	left: 0;
+	border-right: 1px solid #fff;
+}
+
+.pipe::after {
+	right: 0;
+	border-left: 1px solid #fff;
+}
+
+.t-pipe::before, .t-pipe::after {
+	content: '';
+	display: block;
+	position: absolute;
+	top: 0;
+	width: 50%;height: 50%;
+	border: 1px solid #fff;
+	border-top: none;
+	border-bottom-width: 2px;
+}
+
+.t-pipe::before {
+	left: 0;
+	border-left: none;
+}
+
+.t-pipe::after {
+	right: 0;
+	border-right: none;
+}
+
+#tournament button {
+	display: block;
+	cursor: pointer;
+	border: none;
+	border-radius: .5rem;
+	background: linear-gradient(90deg, #3e257dcc, #f99df9cc);
+	color: #fff;
+	padding: .5em 1em;
+	font-size: 1.5rem;
+	transition: opacity .2s ease-in-out;
+}
+
+#tournament button:disabled {
+	opacity: .1;
+	cursor: not-allowed;
+}
+
+#tournament button.reverse-grd {
+	background: linear-gradient(-90deg, #3e257dcc, #f99df9cc);
+}
+
+#tournament button:hover {
+	opacity: .7;
+}
+
+#tournament button:hover:disabled {
+	opacity: .1;
+}
+
+.enter, .exit {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.enter {
+	grid-area: e; /* e -> enter */
+	/* background: green; */
+}
+
+.exit {
+	grid-area: o; /* o -> out */
+	/* background: green; */
+}
+
+
+#banner *,
+#banner ::before,
+#banner ::after {
+	margin: 0;
+	padding: 0;
+}
+
+/* Banner */
+
+#banner {
+	background: #0007;
+	border-radius: 1em;
+	padding: 3em 1em;
+	max-width: max-content;
+	margin: 0 auto;
+	color: #fff;
+}
+
+#banner > h1 {
+	margin-bottom: 1em;
+}
+
+#banner .rules {
+	padding-left: 2em;
+	color: #fffa;
+	text-shadow: 0px 0px 2px #fff;
+}
+
+#banner .rules > li + li {
+	margin-top: 1rem;
+}
+
+#banner button {
+	cursor: pointer;
+	display: block;
+	border: none;
+	border-radius: .5rem;
+	background: #000;
+	color: #fff;
+	padding: .5em 1em;
+	font-size: 1rem;
+	margin: 2em auto 0;
+	border: 1px solid #0000;
+	transition: all .2s ease-in-out;
+}
+
+#banner button:hover {
+	color: #c00da2;
+	border: 1px solid #c00da2;
+}

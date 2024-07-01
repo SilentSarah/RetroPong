@@ -3,7 +3,8 @@ from .set_interval import set_interval
 # from asgiref.sync import async_to_sync
 from .paddle import Paddle
 from datetime import datetime
-from .models import MatchHistory
+from game.models import MatchHistory
+from asgiref.sync import async_to_sync
 
 class Game:
 	serial_number = 0
@@ -12,8 +13,8 @@ class Game:
 	def __init__(self, creator_id, mode):
 		self.mode = mode
 		self.started = False
+		self.consumer = False
 		self.over = False
-		# self.consumer = consumer
 		self.paddles = {}
 		if (mode != 5):
 			self.paddles = {creator_id: Paddle()}
@@ -26,6 +27,7 @@ class Game:
 		self.reset_ball()
 		self.score = [0, 0]
 		self.barriers = [False, False] # Maybe will switch them later to nums
+		self.winners = []
 
 	def add_paddle(self, id):
 		self.paddles[id] = Paddle()
@@ -45,6 +47,9 @@ class Game:
 		# 		})
 		# async_to_sync(self.consumer.send_json)(content={"type": "update", "x": self.ball['x'], "y": self.ball['y']})
 		# async_to_sync(self.consumer.send_json)(content={"type": "log", "log": "Broadcasting..."},)
+
+	def get_players(self):
+		return list(self.paddles.keys())
 
 	def move_paddles(self):
 		for paddle in self.paddles.values():
@@ -66,11 +71,13 @@ class Game:
 	def start(self):
 		# testing
 		print("THE GAME HAS STARTED>>>>>>>>>>>")
+		# print(f"MATCHHISTORY: { MatchHistory.objects.all() }")
 		self.start_datetime = datetime.now()
 		# self.init_match_history()
 		# 1/60 for 60 fps
 		if (not self.over):
 			self.game_loop_interval = set_interval(1/60, self.update)
+			self.started = True
 
 		# will stop interval in 5s
 		# t = threading.Timer(5, interval.cancel)
@@ -78,9 +85,9 @@ class Game:
 		
 		# print("The start function was called however!", file=sys.stderr)
 	
-	def get_winners(self):
+	def set_winners(self):
 		oddness = self.score[0] < self.score[1]
-		return [user_id for i, user_id in enumerate(self.paddles) if i % 2 == oddness ]
+		self.winners = [user_id for i, user_id in enumerate(self.paddles) if i % 2 == oddness ]
 
 	def update_MatchHistory(self):
 		new_MatchHistory = MatchHistory()
@@ -89,15 +96,19 @@ class Game:
 			setattr(new_MatchHistory, Game.opponent_fieldnames[i], user_id)
 		setattr(new_MatchHistory, 'mStartDate', self.start_datetime)
 		setattr(new_MatchHistory, 'Score', self.score)
-		setattr(new_MatchHistory, 'Winners', self.get_winners())
+		setattr(new_MatchHistory, 'Winners', self.winners)
 		new_MatchHistory.save()
 
 	def finish(self):
 		if (not self.over):
-			self.reset_ball()
-			self.game_loop_interval.cancel()
 			self.over = True
+			if (self.started):
+				self.reset_ball()
+				self.game_loop_interval.cancel()
+				self.set_winners()
 			# self.update_MatchHistory()
+			if (self.mode == 5 and self.consumer):
+				(async_to_sync(self.consumer.redirect_all))()
 
 	def id(self):
 		return (self.details['id'])
@@ -114,8 +125,10 @@ class Game:
 			self.score[1] += 1
 		else: return
 		self.reset_ball()
-		if (self.score[0] == 7 or self.score[1] == 7):
-			# self.finish()
+		goals = 7
+		self.finish() # for testing only
+		if (self.score[0] == goals or self.score[1] == goals):
+			self.finish()
 			pass
 
 	def check_fx(self):
@@ -155,7 +168,7 @@ class Game:
 		self.move_paddles()
 		self.check_score()
 		# self.broadcast()
-		# print(f"-{time.time()}-", file=sys.stderr)
+		# print(f"-{datetime.now().time()}-", file=sys.stderr)
 		# here we will be sending updates to all players
 
 	def reset_ball(self):

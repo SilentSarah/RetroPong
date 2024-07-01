@@ -15,11 +15,13 @@ body {
     min-height: 100svh;
     max-width: 100svw;
     line-height: normal;
-    background: url('/static/img/general/BG.jpeg');
+	/* BELOW IS TEMP FOR DEV ENV */
+    /* background: url('/static/img/general/BG.jpeg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    backdrop-filter: brightness(0.5);
+    backdrop-filter: brightness(0.5); */
+	background-color: #000;
 }
 
 body::after {
@@ -163,6 +165,11 @@ body::after {
     font-weight: 400;
     font-style: normal;
 }
+
+.uppercase {
+	text-transform: uppercase;
+}
+
 .img-shadow {
     filter: drop-shadow(0px 4px 15px rgba(0, 0, 0, 0.6));
 }

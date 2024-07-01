@@ -36,6 +36,7 @@ function tester()
 
 function startMode(mode, inviterId=null)
 {
+	console.log("The start mode was: ", mode);
 	document.getElementById('mainMenu').classList.toggle('hidden');
 	document.getElementById('gameInfo').classList.toggle('hidden');
 	mode == 4 && document.getElementById('specs').classList.toggle('hidden');
@@ -65,6 +66,26 @@ function spec(mode, e)
 	gameSocket.send(JSON.stringify({ 'type': 'spec', mode }));
 }
 
+function enableElById(id)
+{
+	const el = document.getElementById(id);
+	el.removeAttribute('disabled');
+	el.classList.toggle('disabled');
+}
+
+function disableElById(id)
+{
+	const el = document.getElementById(id);
+	el.setAttribute('disabled', 'disabled');
+	el.classList.toggle('disabled');
+}
+
+function ObjIsEmpty(obj) {
+	for (const prop in obj)
+		if (Object.hasOwn(obj, prop))
+		  return false;
+	return true;
+}
 
 // Below is only for temp
 function submitDataToSessionStorage(e)
@@ -78,4 +99,5 @@ function submitDataToSessionStorage(e)
 	sessionStorage.setItem('id', customId);
 	sessionStorage.setItem('pfp', customImg);
 	console.log("The sessionStorage is: ", sessionStorage);
+	window.location.href = '/tournament';
 }
