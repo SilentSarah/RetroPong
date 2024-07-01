@@ -103,12 +103,13 @@ class Game:
 
 	def finish(self):
 		if (not self.over):
-			self.reset_ball()
-			self.game_loop_interval.cancel()
 			self.over = True
-			self.set_winners()
+			if (self.started):
+				self.reset_ball()
+				self.game_loop_interval.cancel()
+				self.set_winners()
 			# self.update_MatchHistory()
-			if (self.mode == 5):
+			if (self.mode == 5 and self.consumer):
 				(async_to_sync(self.consumer.redirect_all))()
 
 	def id(self):

@@ -10,7 +10,7 @@ from game.tournament import Tournament
 import threading
 from game.models import MatchHistory
 from asgiref.sync import sync_to_async
-from .dbg_tools import print_blue, print_green
+from .dbg_tools import print_blue, print_green, print_yellow
 
 class GameConsumer(AsyncJsonWebsocketConsumer):
 	user_matches = {}
@@ -78,9 +78,10 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 		print(f"\033[91m >> The channel just disconnected is: { self.channel_name } << \033[0m")
 		# self.leave_game()
 		# will probe this later vvvvvvv
-		await self.channel_layer.group_discard(
-			self.game.id(), self.channel_name
-		)
+		if (self.game):
+			await self.channel_layer.group_discard(
+				self.game.id(), self.channel_name
+			)
 
 	async def standby_update(self):
 		await self.channel_layer.group_add(self.game.id(), self.channel_name)
@@ -100,6 +101,11 @@ class GameConsumer(AsyncJsonWebsocketConsumer):
 			await self.check_user()
 			# to confirm the receipt of sessionStorage
 			await self.send_json(content={"type": "session_storage_ack"})
+		elif (type == 'tournament_game_chk'):
+			print_yellow(f"I received a tournament_game_chk")
+			if (GameConsumer.user_matches[str(self.user_info['id'])][5]):
+				await self.send_json(content={"type": "tournament_game_ack"})
+				print_yellow(f"I send a tournament_game_ack because the game id is: >{GameConsumer.user_matches[str(self.user_info['id'])][5]}<")
 		elif (type == 'start'):
 			# await self.send_json(content={"type": "log", "log": 'I reach here'})
 			# await self.game.start(content['mode'])
@@ -180,7 +186,7 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		if (not self.tournament):
 			print_blue(f'I got inside the if of join_tournament')
 			last_tournament = TournamentConsumer.tournaments and list(TournamentConsumer.tournaments.values())[-1]
-			if (last_tournament and not last_tournament.over and not last_tournament.full()):
+			if (last_tournament and not last_tournament.over and not last_tournament.started):
 				self.tournament = last_tournament
 			if (not self.tournament):
 				self.tournament = Tournament(str(self.user_info['id']))
@@ -191,11 +197,25 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 		self.tournament.check_round_start()
 		print_blue(f'I reached the end of join_tournament')
 
+	# STOPPED HERE
 	async def leave_tournament(self):
+		# leave game
+		last_game_id = GameConsumer.user_matches[str(self.user_info['id'])][5]
+		last_game = GameConsumer.games[last_game_id] if last_game_id else False
+		if (last_game):
+			last_game.finish()
+		# broadcast game leaving
+		await self.channel_layer.group_send(
+			self.tournament.id(), {
+				"type": "tournament.recv.broadcast",
+				"action": "leaving_game", #STOPPED HERE
+				"game_id": last_game_id
+				})
+		# leave tournament
+		if (not self.tournament.started):
+			del self.tournament.rounds[0][str(self.user_info['id'])]
 		del TournamentConsumer.user_tournaments[str(self.user_info['id'])]
 		await self.channel_layer.group_discard(self.tournament.id(), self.channel_name)
-		# Ill check so that it leaves from the current game too
-		# self.tournament.check_round_start()
 		await self.send_json(content={"type": "leave_ack"})
 
 	async def check_user(self):
@@ -277,10 +297,14 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
 	
 	# Receive message from tournament group
 	async def tournament_recv_broadcast(self, event):
-		if ('action' in event.keys() and event['action'] == 'update'):
-			# Send update about tournament state and user_specific state
-			# For now send if the player can join a game or not
-			print_green(f'I received the tournament_recv_broadcast')
-			status_dict = self.tournament.get_status(self.user_info['id'])
-			print_green(f'the status dict sent is: {status_dict}')
-			await self.send_json(content={"type": "tournament_status", "tournament_status": status_dict})
+		if ('action' in event.keys()):
+			if (event['action'] == 'update'):
+				# Send update about tournament state and user_specific state
+				# For now send if the player can join a game or not
+				print_green(f'I received the tournament_recv_broadcast')
+				status_dict = self.tournament.get_status(self.user_info['id'])
+				print_green(f'the status dict sent is: {status_dict}')
+				await self.send_json(content={"type": "tournament_status", "tournament_status": status_dict})
+			elif(event['action'] == 'leaving_game'):
+				if (event['game_id'] == GameConsumer.user_matches[self.user_info['id']][5]):
+					GameConsumer.user_matches[self.user_info['id']][5] = None

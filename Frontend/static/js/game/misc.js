@@ -36,6 +36,7 @@ function tester()
 
 function startMode(mode, inviterId=null)
 {
+	console.log("The start mode was: ", mode);
 	document.getElementById('mainMenu').classList.toggle('hidden');
 	document.getElementById('gameInfo').classList.toggle('hidden');
 	mode == 4 && document.getElementById('specs').classList.toggle('hidden');

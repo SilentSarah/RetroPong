@@ -71,10 +71,11 @@ function checkInvite()
 	inviterId && startMode(3, inviterId);
 }
 
-function checkTournament()
+function checkTournamentGame()
 {
+	// send json will be here instead of startMode(5)
 	const previous_location = document.referrer && (new URL(document.referrer)).pathname
-	previous_location == '/tournament' && startMode(5);
+	previous_location == '/tournament' && gameSocket.send(JSON.stringify({'type': 'tournament_game_chk'}));;
 	console.log("the previous locaiton is: ", previous_location);
 }
 
@@ -108,8 +109,8 @@ function initTournament()
 		}
 		else if (data.type == 'standby')
 		{
-			document.getElementById('waitStatus').textContent = 'Waiting for people to join...';
-			console.log("players fetched: ", data.players);
+			// document.getElementById('waitStatus').textContent = 'Waiting for people to join...';
+			// console.log("players fetched: ", data.players);
 			// clearWaiters();
 			// data.players.forEach((player, i) => {
 			// 	const options = {
@@ -215,8 +216,10 @@ function initGame()
 		{
 			console.log("received the session storage ack<<<<<<");
 			checkInvite();
-			checkTournament();
+			checkTournamentGame();
 		}
+		else if (data.type == 'tournament_game_ack')
+			startMode(5)
 		else if (data.type == 'update')
 		{
 			// console.log("the data from the update is: ", data);
