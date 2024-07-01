@@ -15,7 +15,8 @@
 function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
-    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'position-absolute', 'z-5', 'slide-in-blurred-top');
+    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'slide-in-blurred-top', 'position-absolute', 'translate-middle');
+    div.style.zIndex = '99999';
     div.setAttribute('role', 'alert');
     div.setAttribute('aria-live', 'assertive');
     div.setAttribute('aria-atomic', 'true');
@@ -37,17 +38,18 @@ function toast(message, color_class) {
     toast_content.appendChild(toast_body);
     toast_content.appendChild(close_btn);
 
-    let mainContent = document.getElementById('mainContent');
-    mainContent.appendChild(div);
+    document.body.appendChild(div);
     
     div.style.display = 'block';
-    div.style.top = '25px';
+    div.style.top = '100px';
+    div.style.left = '50%';
+    div.style.right = '50%';
     destroytoast(div);
     return div;
 }
 
 function settoastmsg(toast, message, color_class) {
-    toast.children[0].children[0].innerHTML = message;
+    toast.children[0].children[0].textContent = message;
     toast.classList.add(color_class);
 }
 
@@ -57,12 +59,15 @@ function destroytoast(toasty) {
     }, 2000);
 }
 
-function passUserToDashboard() {
+function passUserTo(path) {
+    if (path === '' || path === null || path === undefined)
+            path = '/';
     const dashboard = document.createElement('a');
-    dashboard.href = '/dashboard';
+    dashboard.href = path;
     document.body.appendChild(dashboard);
     scanLinks();
     dashboard.click();
+    dashboard.remove();
 }
 
 function loginWith42() {
@@ -80,15 +85,9 @@ function loginWith42() {
     });
 }
 
-function storeCookies(data) {
-	for (let key in data)
-		document.cookie = `${key}=${data[key]}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
-}
-
 function log_user_in() {
-    let items = document.querySelectorAll('input');
-    let username = items[0].value;
-    let password = items[1].value;
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
     let toasty = toast('Logging in...', 'bg-primary');
     if (username === undefined || password === undefined || username === null || password === null  || username === '' || password === '') {
         settoastmsg(toasty, 'Please fill in all fields', 'bg-danger');
@@ -98,6 +97,7 @@ function log_user_in() {
         username: username,
         password: password
     };
+    setLoadingOverlay(true);
     fetch('http://127.0.0.1:8000/auth/', {
         method: 'POST',
         credentials: 'include',
@@ -107,23 +107,26 @@ function log_user_in() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        if (response.status === 201) {
-            return response.json();
-        } else if (response.status >= 400 && response.status < 500) {
+        setLoadingOverlay(false);
+        if (response.status >= 400 && response.status < 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
-        } else {
+        } else if (response.status >= 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Server error');
+        } else {
+            return response.json();
         }
     })
     .then(data => {
-        console.log('Success:', data);
-        localStorage.setItem('user_id', data.user_id);
-		storeCookies(data);
-        settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
-        DisplayNavBar();
-        passUserToDashboard();
+        if (getCookie('2fa') != '') {
+            initiateTwoFactorModal();
+        } else {
+            DisplayNavBar();
+            localStorage.setItem('user_id', data.user_id);
+            settoastmsg(toasty, 'Login successful, Redirecting...', 'bg-success');
+            passUserTo("/dashboard");
+        }
     })
     .catch((error) => {
         console.error('Error:', error);
@@ -200,7 +203,7 @@ function register_user() {
         "uFname": uFname,
         "uLname": uLname,
     }
-
+    setLoadingOverlay(true);
     fetch('http://127.0.0.1:8001/userdata/create', {
         method: 'POST',
         credentials: 'include',
@@ -210,10 +213,11 @@ function register_user() {
         body: JSON.stringify(data)
     })
     .then(response => {
+        setLoadingOverlay(false);
         if (response.status === 201) {
             toast('Registration successful, Redirecting...', 'bg-success');
             DisplayNavBar();
-            passUserToDashboard();
+            passUserTo('/dashboard')
         } else if (response.status === 409)
             toast('Username/Email already exists', 'bg-danger');
         else if (response.status >= 400 && response.status < 500)
@@ -226,5 +230,6 @@ function register_user() {
     .catch((error) => {
         console.error('Error:', error);
         unblock_inputs(inputs);
+        setLoadingOverlay(false);
     });
 }

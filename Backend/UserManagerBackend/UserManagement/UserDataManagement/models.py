@@ -17,8 +17,9 @@ class User(models.Model):
     ufname = models.CharField(db_column='uFName', max_length=16, default="")
     ulname = models.CharField(db_column='uLName', max_length=16, default="")
     uregdate = models.DateTimeField(db_column='uRegDate', default="")
-    uprofilepic = models.CharField(db_column='uProfilePic', max_length=100, default="")
-    uprofilebgpic = models.CharField(db_column='uProfileBgPic', max_length=100, default="")
+    TwoFactor = models.BooleanField(db_column='TwoFactor', default=False)
+    uprofilepic = models.ImageField(db_column='uProfilePic', upload_to='profile_pics/', default="/static/img/pfp/Default.png")
+    uprofilebgpic = models.ImageField(db_column='uProfileBgPic', upload_to='profile_bg_pics/', default="")
     udesc = models.CharField(db_column='uDesc', max_length=100, default="") 
     uip = models.CharField(db_column='uIp', max_length=16, default="") 
     ucids = ArrayField(models.IntegerField(), db_column='ucIDs', default=list) 
@@ -71,3 +72,15 @@ class MatchHistoryAdmin(ModelAdmin):
     list_display = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent', 'mStartDate', 'Score', 'Winners']
     search_fields = ['fOpponent', 'sOpponent', 'tOpponent', 'lOpponent', 'mStartDate', 'Score', 'Winners']
     
+    
+class Notification(models.Model):
+    id = models.AutoField(primary_key=True)
+    nType = models.CharField(db_column='nType', max_length=16, default="")
+    nContent = models.CharField(db_column='nContent', max_length=100, default="")
+    nDate = models.DateTimeField(db_column='nDate', default="")
+    nReciever = models.IntegerField(db_column='nUser', default=-1)
+    nSender = models.IntegerField(db_column='nSender', default=-1)
+    
+class NotificationAdmin(ModelAdmin):
+    list_display = ['nType', 'nContent', 'nDate', 'nReciever', 'nSender']
+    search_fields = ['nType', 'nContent', 'nDate',  'nReciever', 'nSender']

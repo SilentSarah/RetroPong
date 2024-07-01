@@ -1,9 +1,15 @@
 Authlib
 UserLibs
+GameLibs
+ChatLibs
 __pycache__
 .env
 .DS_Store
 .vscode
+profile_pics
+profile_bg_pics
+Pipfile.lock
+Pipfile
+venv
 game_pyenv
 .venv
-.python-version

@@ -4,6 +4,9 @@ from django.http import *
 from dotenv import dotenv_values
 import datetime
 import time
+import requests
+from django.utils import timezone
+from random import randint
 
 
 env = dotenv_values("../../.env")
@@ -11,10 +14,6 @@ env = dotenv_values("../../.env")
 SECRET_KEY = env.get('SECRET_KEY')
 CLIENT_ID = env.get('CLIENT_ID')
 CLIENT_SECRET = env.get('CLIENT_SECRET')
-
-
-
-# SECRET_KEY from project settings
 AUDIENCE = ['retropong-game-service','retropong-user-service','retropong-auth-service','retropong-chat-service']
 MAX_DURATION = 7
 
@@ -103,9 +102,6 @@ class JwtOps:
             'exp': int(time.time() + datetime.timedelta(days=3).total_seconds())
         }
         try:
-            print(
-                SECRET_KEY
-            )
             token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
             return token
         except Exception as e:
@@ -128,4 +124,60 @@ class JwtOps:
             return user_id
         except Exception as e:
             print("JwtOps.retrieve_user_id_using_token: ", e)
+            return None
+        
+    @staticmethod
+    def send_2fa_code(user: Users) -> bool:
+        """Sends a 2fa code to the user
+
+        Args:
+            user (Users): User object
+
+        Returns:
+            bool: True if the code was sent, False otherwise
+        """
+        try:
+            two_factor =  TwoFactor(secret=randint(100000, 999999), user=user, created_at=timezone.now())
+            response = requests.post(f"https://api.mailgun.net/v3/mg.retropong.games/messages",
+                                    auth=("api", env.get('EMAIL_API_KEY')),
+                                    data = {
+                                        "from":f'RetroPong <{env.get("RP_EMAIL")}>',
+                                        "to": [user.uEmail],
+                                        "subject": "Account 2FA Verification",
+                                        "text": f"Your 2FA code is: {two_factor.secret}\nThis code will expire in 5 minutes.",
+                                    })
+            if (response.status_code != 200):
+                print(response.text)
+                return False
+            two_factor.save()
+            return True
+        except Exception as e:
+            print("JwtOps.send_2fa_code: ", e)
+            return False
+    
+    @staticmethod
+    def verify_2fa_code(code: int, user_id: int) -> int:
+        """Verifies the 2fa code
+
+        Args:
+            code (int): 2fa code
+
+        Returns:
+            User | None: User object if the code is valid, None otherwise
+        """
+        try:
+            two_factor = TwoFactor.objects.get(secret=code)
+            if (int(user_id) != int(two_factor.user.id)):
+                print(user_id, two_factor.user.id)
+                raise ValueError("User id does not match")
+            if (two_factor.verified == True):
+                raise ValueError("Code already verified")
+            if ((two_factor.created_at + datetime.timedelta(minutes=5)) < timezone.now()):
+                raise ValueError("Code expired")    
+            two_factor.verified = True
+            two_factor.delete()
+            user = two_factor.user.id
+            return user
+        except Exception as e:
+            print("JwtOps.verify_2fa_code: ", e)
             return None

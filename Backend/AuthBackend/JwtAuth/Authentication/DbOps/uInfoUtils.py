@@ -2,6 +2,7 @@ import bcrypt, json
 from ..models import *
 from django.http import *
 import datetime
+from django.db.models import Q
 
 MAX_DURATION = 7
 
@@ -10,18 +11,25 @@ class DbOps:
     def __init__(self):
         pass
     
+
     @staticmethod
     def authenticate_user(request: HttpRequest):
         try:
             data = json.loads(request.body.decode('utf-8'))
             username = data.get("username")
             password = data.get("password")
-            user = Users.objects.get(uUsername=username)
+            user = Users.objects.get(Q(uUsername=username) | Q(uEmail=username))
             hash_comparision = bcrypt.checkpw(password.encode('utf-8'), user.uPassword.encode('utf-8'))
             if (hash_comparision == False):
                 return None
             else:
-                return user
+                from ..JwtOps.JwtUtils import JwtOps
+                if (user.TwoFactor == True):
+                    if (JwtOps.send_2fa_code(user) == False):
+                        return None
+                    return user.id
+                else:
+                    return user
         except Exception as e:
             print("Error: ", e)
             return None
@@ -48,8 +56,11 @@ class DbOps:
         user = DbOps.authenticate_user(request)
         if (user == None):
             return JsonResponse({ 'error': 'Invalid username or password' }, status=401)
-        elif (user == 400):
-            return JsonResponse({ 'error': 'Bad Request' }, status=400)
+        elif (type(user) == int):
+            response = JsonResponse({'message': '2FA Required'}, status=200)
+            response.set_cookie('user_id', user, max_age=datetime.timedelta(minutes=5), samesite='None', secure=True)
+            response.set_cookie('2fa', 'true', max_age=datetime.timedelta(minutes=5), samesite='None', secure=True)
+            return response
         from ..JwtOps.JwtUtils import JwtOps
         access_token = JwtOps.create_token(user)
         user_id = JwtOps.retrieve_user_id_using_token(access_token)

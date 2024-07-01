@@ -74,82 +74,99 @@ function deleteCookie(name) {
     document.cookie = name + '=; Max-Age=-99999999;';
 }
 
-function fetchUserData() {
-    if (!/*<- added ! for dev only*/getCookie('access') === "") {
-        if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
-            window.location.href = "/login";
-            return ;
+function setValuesToSessionStorage(data) {
+    for (const [key, value] of Object.entries(data)) {
+        if (key === 'matchhistory' || key === 'matchstatistics') {
+            sessionStorage.setItem(key, JSON.stringify(value));
+            continue;
         }
-    } else {
-        if (window.location.pathname === "/login" || window.location.pathname === "/register") {
-            window.location.href = "/dashboard";
-        }  
-        fetch("http://127.0.0.1:8001/userdata/",
-        { 
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + getCookie('access'),
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                deleteCookie("access");
-            }
-        })
-        .then(data => {
-            for (const [key, value] of Object.entries(data)) {
-                if (key === 'matchhistory' || key === 'matchstatistics') {
-                    sessionStorage.setItem(key, JSON.stringify(value));
-                    continue;
-                }
-                sessionStorage.setItem(key, value);
-            }
-            if (window.location.pathname === "/dashboard")
-                setDashboardStats();
-            DisplayNavBar();
-        })
-        .catch((error) => {
-            // sessionStorage.clear();
-            if (error.message === 'Failed to fetch') {
-                toast('Server is not responding, try again later.', 'bg-danger');
-                clearInterval(fetchID);
-                return ;
-            }
-        });
+        if (key === 'fname')
+            sessionStorage.setItem('full_name', value);
+        if (key === 'lname')
+            sessionStorage.setItem('full_name', sessionStorage.getItem('full_name') + " " + value);
+        sessionStorage.setItem(key, value);
     }
 }
-function setElementInnerHTML(id, sessionKey, defaultValue = "") {
-    let element = document.getElementById(id);
-    let value = sessionStorage.getItem(sessionKey);
-    element.innerHTML = value === "" ? defaultValue : value;
+
+function fetchUserData() {
+    if (!tokenCheck()) return ;
+    setLoadingOverlay(true);
+    fetch("http://127.0.0.1:8001/userdata/",
+    { 
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + getCookie('access'),
+        }
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        } else {
+            deleteCookie("access");
+            sessionStorage.clear();
+            setLoadingOverlay(false);
+        }
+    })
+    .then(data => {
+        setValuesToSessionStorage(data);
+        if (window.location.pathname === "/dashboard")
+            setDashboardStats();
+        DisplayNavBar();
+        setLoadingOverlay(false);
+    })
+    .catch((error) => {
+        sessionStorage.clear();
+        if (error.message === 'Failed to fetch') {
+            toast('Server is not responding, try again later.', 'bg-danger');
+            // clearInterval(fetchID);
+            return ;
+        }
+        setLoadingOverlay(false);
+    });
 }
 
-function setPlayerRank() {
-    let rank = sessionStorage.getItem('rank');
+function setTextContentHTML(id, sessionKey, defaultValue = "", self = true) {
+    let element = document.getElementById(id);
+    let value = self ? sessionStorage.getItem(sessionKey) : current_user[sessionKey];
+    if (value === null || value === undefined)
+        return ;
+    element.textContent = value === "" ? defaultValue : value;
+}
+
+function setPlayerRank(self = true) {
+    let rank = self ? sessionStorage.getItem('rank') : current_user['rank'];
+    if (rank === null || rank === undefined)
+        return ;
     let tier = document.getElementById('tier');
     if (tier)
         tier.src=`/static/img/rank/${rank}.png`;
 }
 
-function setDashboardPlayerPfpAndBg() {
-    let pfp = document.getElementById("profile_pic")
-    let pfp_path = sessionStorage.getItem('profilepic');
+function setDashboardPlayerPfpAndBg(self = true) {
+    let pfp = document.getElementById("profile_pic");
+    let bg = document.getElementById("profile_bg");
+    let pfp_path = self ? sessionStorage.getItem('profilepic') : current_user['profilepic'];
+    let bg_path = self ? sessionStorage.getItem('profilebgpic') : current_user['profilebgpic'];
     if (pfp_path === null || pfp_path === "") {
         pfp.style.backgroundImage = 'url("/static/img/pfp/Default.png")';
     } else {
         pfp.style.backgroundImage = `url(${pfp_path})`;
     }
+    if (bg_path === null || bg_path === "") {
+        bg.style.backgroundImage = 'url("/static/img/bg/DefaultBG.png")';
+    } else {
+        bg.style.backgroundImage = `url(${bg_path})`;
+    }
+
 }
 
 
-function createMatchHistoryElement(matchHistory, match) {
+function createMatchHistoryElement(matchHistory, match, self = true) {
     const match_data = {
-        player_id: sessionStorage.getItem('id'),
-        player_username: sessionStorage.getItem('username'),
-        player_pfp: sessionStorage.getItem('profilepic'),
+        player_id: match.OpponentData.self_id,
+        player_username: match.OpponentData.self_username,  
+        player_pfp: match.OpponentData.self_pfp,
         opponent_id: match.OpponentData.id,
         opponent_username: match.OpponentData.username,
         score: match.OpponentData.score,
@@ -164,7 +181,7 @@ function createMatchHistoryElement(matchHistory, match) {
     div.classList.add("d-flex", "border-transparent-0-5", "rounded-3", "align-items-center", "justify-content-evenly", "p-2", "dynamic-fill");
     div.classList.add(match_color);
     div.innerHTML = `
-    <img src=${match_data.player_pfp == "" ? '/static/img/pfp/Default.png': match_data.player_pfp} width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover" />
+    <img src=${match_data.player_pfp == "" ? '/static/img/pfp/Default.png': match_data.player_pfp} onclick="DisplayProfileDetails(${match_data.self_id})"  width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover hover-cursor" />
     <div class="d-flex flex-column align-items-center mx-3">
     <p class="mx-2 text-white-fade nokora fw-bold mb-0 fs-3 ${match_text_color} text-shadow">
         ${match_data.result}
@@ -173,18 +190,18 @@ function createMatchHistoryElement(matchHistory, match) {
             ${match_score}
     </p>
     </div>
-    <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover">
+    <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" onclick="DisplayProfileDetails(${match_data.opponent_id})" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover hover-cursor">
     `;
     matchHistory.appendChild(div);
     
 }
 
-function setMatchHistory() {
+function setMatchHistory(self = true) {
     let matchHistory = document.getElementById("matchHistory");
     matchHistory.innerHTML = "";
-    const matches = JSON.parse(sessionStorage.getItem('matchhistory'));
-    if (matches === null || matches === undefined || matches.length === 0) {
-        matchHistory.innerHTML = "No matches played yet";
+    const matches = self ? JSON.parse(sessionStorage.getItem('matchhistory')) : current_user['matchhistory'];
+    if (matches === null || matches === undefined || Object.keys(matches).length === 0){
+        matchHistory.innerHTML = '<span class="text-white text-center nokora fw-light opacity-75">No Matches</span>';
     } else {
         for (const [key, value] of Object.entries(matches)) {
             createMatchHistoryElement(matchHistory, value);
@@ -192,18 +209,17 @@ function setMatchHistory() {
     }
 }
 
-function setMatchStatistics() {
-    let match_statistics = sessionStorage.getItem('matchstatistics');
+function setMatchStatistics(self = true) {
+    let match_statistics = self ? sessionStorage.getItem('matchstatistics') : current_user['matchstatistics'];
     if (match_statistics === null || match_statistics === undefined) {
         return ;
     }
-    match_statistics = JSON.parse(match_statistics);
+    match_statistics = self ? JSON.parse(match_statistics) : match_statistics;
     if (match_statistics === null || match_statistics === undefined) {
         console.log("FUK")
         return ;
     }
     const Chart = new SSChart(match_statistics, 'Matches Played', '/static/content/components/chart.html');
-    // console.log("HELP");
     Chart.Component.then(html => {
         document.getElementById('ChartMark').innerHTML = html;
         Chart.setChartTitle();
@@ -211,33 +227,74 @@ function setMatchStatistics() {
         Chart.setDates();
         Chart.setBarValues();
     });
+}
+
+function setLoadingOverlay(boolean = true) {
+    const modalContent = document.getElementById('modalContent');
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'loadingOverlay';
+    loadingOverlay.classList.add('custom-loader', "mx-auto", "position-fixed", "top-50", "start-50");
+
+    if (modalContent) {
+        if (boolean === true) {
+            modalContent.classList.add("overlay");
+            modalContent.appendChild(loadingOverlay)
+        } else {
+            const loader = modalContent.querySelector("#loadingOverlay");
+            loader !== null ? loader.remove() : null;
+            modalContent.classList.remove("overlay");
+        }          
+    }
+}
+
+function checkProfileOnlineConnectivity() {
+    if (SelfUser.ws.readyState === 1) {
+        SelfUser.checkProfile(current_user.id);
+    } else {
+        setTimeout(() => {
+            checkProfileOnlineConnectivity();
+        }, 500);
+    }
 
 }
 
-function setDashboardStats() {
-    setElementInnerHTML('username', 'username');
-    setElementInnerHTML('title', 'title', 'The NPC');
-    setElementInnerHTML('email', 'email');
-    setElementInnerHTML('discordid', 'discordid', 'None');
-    setElementInnerHTML('Experience', 'xp');
-    setElementInnerHTML('level', 'level');
-    setElementInnerHTML('tournamentsplayed', 'tournamentsplayed');
-    setElementInnerHTML('tournamentswon', 'tournamentswon');
-    setElementInnerHTML('tournamentslost', 'tournamentslost');
-    setElementInnerHTML('desc', 'desc', "No description provided");
-    setElementInnerHTML('matches', 'matchesplayed');
-    setElementInnerHTML('matches_won', 'matcheswon');
-    setElementInnerHTML('matches_lost', 'matcheslost');
-    setDashboardPlayerPfpAndBg();
-    setMatchHistory();
-    setMatchStatistics();
+function setDashboardStats(self = true) {
+    if (self === false) {
+        if (sessionStorage.getItem("profile") === null) {
+            return passUserTo("/404");
+        }
+        if (Object.keys(current_user).length === 0)
+            current_user = JSON.parse(sessionStorage.getItem("profile"));
+        DisplayProfileOptions();
+        checkProfileOnlineConnectivity();
+
+    }
+    setTextContentHTML('username', 'username', "", self);
+    setTextContentHTML('title', 'title', 'The NPC', self);
+    setTextContentHTML('email', 'email', "", self);
+    setTextContentHTML('discordid', 'discordid', 'None', self);
+    setTextContentHTML('Experience', 'xp', "0", self);
+    setTextContentHTML('level', 'level', "0", self);
+    setTextContentHTML('tournamentsplayed', 'tournamentsplayed', "0", self);
+    setTextContentHTML('tournamentswon', 'tournamentswon', "0", self);
+    setTextContentHTML('tournamentslost', 'tournamentslost', "0", self);
+    setTextContentHTML('desc', 'desc', "No description provided", self);
+    setTextContentHTML('matches', 'matchesplayed', "0", self);
+    setTextContentHTML('matches_won', 'matcheswon', "0", self);
+    setTextContentHTML('matches_lost', 'matcheslost', "0", self);
+    setDashboardPlayerPfpAndBg(self);
+    setMatchHistory(self);
+    setMatchStatistics(self);
 
     let player_id = document.getElementById("player_id");
-    player_id.innerHTML = `RP-ID-${sessionStorage.getItem('id')}`;
+    let player_id_value = self ? sessionStorage.getItem('id') : current_user['id'];
+    if (player_id_value)
+        player_id.textContent = `RP-ID-${player_id_value}`;
 
     let full_name = document.getElementById("full_name");
-    let first_name = sessionStorage.getItem('fname');
-    let last_name = sessionStorage.getItem('lname');
-    full_name.innerHTML = first_name + " " + last_name;
+    let first_name = self ? sessionStorage.getItem('fname') : current_user['fname'];
+    let last_name = self ? sessionStorage.getItem('lname') : current_user['lname'];
+    if (first_name && last_name)
+        full_name.textContent = first_name + " " + last_name;
     setPlayerRank();
 }
