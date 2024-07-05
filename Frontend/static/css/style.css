@@ -16,12 +16,12 @@ body {
     max-width: 100svw;
     line-height: normal;
 	/* BELOW IS TEMP FOR DEV ENV */
-    /* background: url('/static/img/general/BG.jpeg');
+    background: url('/static/img/general/BG.jpeg');
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    backdrop-filter: brightness(0.5); */
-	background-color: #000;
+    backdrop-filter: brightness(0.5);
+	/* background-color: #000; */
 }
 
 body::after {
@@ -823,4 +823,30 @@ input[type=number] {
 
 .cursor-not-allowed {
     cursor: not-allowed;
+}
+
+.uploadfile {
+    transition: all 0.25s ease-in-out;
+}
+
+.uploadfile:hover {
+    position: relative;
+    cursor: pointer;
+    filter: brightness(0.5);
+}
+
+.uploadfile:hover::before {
+    content: '';
+    background-image: url("/static/img/general/upload.png");
+    width: 50%;
+    height: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }

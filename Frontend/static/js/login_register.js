@@ -12,6 +12,9 @@
 *                        1337                       *
 *****************************************************/
 
+import { setLoadingOverlay, getCookie } from "./userdata.js";
+import { DisplayNavBar, scanLinks } from "./events.js";
+
 function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
@@ -59,7 +62,7 @@ function destroytoast(toasty) {
     }, 2000);
 }
 
-function passUserTo(path) {
+export function passUserTo(path) {
     if (path === '' || path === null || path === undefined)
             path = '/';
     const dashboard = document.createElement('a');
@@ -70,7 +73,7 @@ function passUserTo(path) {
     dashboard.remove();
 }
 
-function loginWith42() {
+export function loginWith42() {
     fetch("http://127.0.0.1:8001/userdata/42login")
     .then(response => {
         if (response.status === 200) {
@@ -85,7 +88,7 @@ function loginWith42() {
     });
 }
 
-function log_user_in() {
+export function log_user_in() {
     let username = document.getElementById('username').value;
     let password = document.getElementById('password').value;
     let toasty = toast('Logging in...', 'bg-primary');
@@ -168,7 +171,7 @@ function check_pass_strength(pass) {
     // }
 }
 
-function register_user() {
+export function register_user() {
     const inputs = document.querySelectorAll('input');
     const btn = document.querySelector('button');
     toast('Registering...', 'bg-primary');

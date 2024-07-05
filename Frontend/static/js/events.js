@@ -12,15 +12,23 @@
 *                        1337                       *
 *****************************************************/
 
+import { routes, router } from "./router.js";
+import { getCookie, fetchUserData, toast } from "./userdata.js";
+import { OnlineProfile, enableAccountSearchMenu } from "./Profiles.js";
+import { scan2fa } from "./TwoFactor.js";
+import { log_user_in, register_user, passUserTo } from "./login_register.js";
+import { notifications } from "./notification.js";
+import { DestroyConfirmationPopUp } from "./settings.js";
 
 
 let notificationHandler = null;
+export let SelfUser = undefined;
 
 function delete_cookie(name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
-function DisplayNavBar() {
+export function DisplayNavBar() {
     if (getCookie('access') === '') return;
     let navbar_logged_in = `
     <div id="retro_menu" class="nav_btn ms-3 position-relative">
@@ -137,6 +145,7 @@ function scanInput() {
 
 function linkClickHandler(e) {
     DestroyConfirmationPopUp();
+    console.log('Link Clicked')
     e.preventDefault();
     history.pushState(null, null, this.href);
     router();
@@ -150,7 +159,7 @@ function removeLinkHandlers(link) {
     link.removeEventListener('click', linkClickHandler);
 }
 
-function scanLinks() {
+export function scanLinks() {
     window.removeEventListener('popstate', router);
     document.querySelectorAll('a').forEach(removeLinkHandlers);
     window.addEventListener('popstate', router);
@@ -163,7 +172,7 @@ function copyToClipboard() {
     confirmOperartion('copy', copyText.parentElement);
 }
 
-function copyIDListener() {
+export function copyIDListener() {
     let cpyID = document.getElementById('cpyID');
     if (cpyID) {
         cpyID.removeEventListener('click', copyToClipboard);
@@ -171,7 +180,7 @@ function copyIDListener() {
     }
 }
 
-function displayTitle() {
+export function displayTitle() {
     let title = document.querySelector('.mainTitle');
     if (title) {
         setTimeout(() => {
@@ -180,7 +189,7 @@ function displayTitle() {
     }
 }
 
-function clearModals() {
+export function clearModals() {
     const modalContent = document.querySelector('#modalContent');
     Array.from(modalContent.children).forEach(content => {
         if (content.id !== 'account_finder') {
@@ -189,14 +198,14 @@ function clearModals() {
     });
 }
 
-function credentialsScan() {
+export function credentialsScan() {
     scan2fa();
     scanInput();
     if (getCookie('access') == '' || getCookie('2FA') == '')
         document.cookie = '';
 }
 
-function tokenCheck() {
+export function tokenCheck() {
     if (getCookie('access') === "") {
         if (window.location.pathname !== "/login" && window.location.pathname !== "/register" && window.location.pathname !== "/") {
             window.location.href = "/login";
@@ -211,7 +220,15 @@ function tokenCheck() {
     return true;
 }
 
-function loadEvents() {
+function OnOnlineServiceClose(service) {
+    service.ws.onclose = () => {
+        console.log('Online System has been closed.');
+        if (getCookie('access') !== '') service = new OnlineProfile(service.link);
+        else service = undefined;
+    };
+}
+
+export function loadEvents() {
     
     const origpath = window.location.pathname;
     const found_path = routes.find(route => route.path === origpath);
@@ -219,8 +236,10 @@ function loadEvents() {
     scanLinks();
     if (found_path !== undefined) {
         DisplayNavBar();
-        if (SelfUser == undefined && tokenCheck())
+        if (SelfUser == undefined && tokenCheck()) {
             SelfUser = new OnlineProfile("ws://127.0.0.1:8001/ws/online/");
+            OnOnlineServiceClose(SelfUser);
+        }
         found_path.func_arr.forEach(func => func());
     }
     if (!tokenCheck()) return;

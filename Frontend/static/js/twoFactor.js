@@ -1,3 +1,5 @@
+import { getCookie } from "./userdata.js";
+
 function initiateTwoFactorModal() {
     if (document.querySelector('.overlay') !== null) return;
     let overlay = document.createElement('div');
@@ -84,7 +86,7 @@ function accumulateCode() {
     }, '');
 }
 
-function scan2fa() {
+export function scan2fa() {
     if (getCookie('2fa') != '') {
         initiateTwoFactorModal();
     }

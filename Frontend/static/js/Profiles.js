@@ -1,4 +1,8 @@
-class OnlineProfile {
+import { getCookie, setLoadingOverlay, toast } from './userdata.js';
+import { passUserTo } from './login_register.js';
+import { current_user } from "./userdata.js";
+
+export class OnlineProfile {
     constructor(link) {
         this.link = link;
         this.intervalID = null;
@@ -49,18 +53,11 @@ class OnlineProfile {
             }
             console.log(data_content);
         };
-        this.ws.onclose = () => {
-            console.log('Online System has been closed.');
-            if (getCookie('access') !== '') SelfUser = new OnlineProfile(this.link);
-            else this.ws = null;
-        };
     }
 }
 
 let account_finder_active = false;
 let last_search_id = undefined;
-let current_user = {};
-let SelfUser = undefined;
 
 
 function Invite(id, type) {
@@ -99,7 +96,7 @@ function Invite(id, type) {
     });
 }
 
-function DisplayProfileOptions() {
+export function DisplayProfileOptions() {
     const ProfileOptions = document.getElementById('profileOptions');
 
     if (current_user == undefined || current_user == null) return;
@@ -107,7 +104,7 @@ function DisplayProfileOptions() {
     if (ProfileOptions) ProfileOptions.remove();
     if (current_user.id === parseInt(sessionStorage.getItem('id'))) return ;
 
-    console.log(current_user.id, parseInt(sessionStorage.getItem('id')));
+    console.log(current_user.id, "-", parseInt(sessionStorage.getItem('id')));
     const modalContent = document.getElementById('modalContent');
     const profileOptions = document.createElement('div');
     profileOptions.classList.add('d-flex', 'gap-2', 'align-items-center', 'justify-content-center', 'start-50', 'end-50', 'z-ultimate', 'position-sticky', 'transform-middle');
@@ -123,7 +120,7 @@ function DisplayProfileOptions() {
     modalContent.appendChild(profileOptions);
 }
 
-function spawnAccountSearchMenu() {
+export function spawnAccountSearchMenu() {
     const element = document.getElementById('account_finder');
     const input = element.querySelector('input');
     const modalContent = document.getElementById('modalContent');
@@ -293,7 +290,7 @@ function DetectOSAndReturnKey() {
     }
 }
 
-function enableAccountSearchMenu() {
+export function enableAccountSearchMenu() {
     if (getCookie('access') != '') {
         const modalContent = document.getElementById('modalContent');
         const div = document.createElement('div');

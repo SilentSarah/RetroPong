@@ -1,3 +1,5 @@
+import { getCookie, toast, setValuesToSessionStorage } from "./userdata.js";
+
 const updated_values = {};
 const pairs = {
     'd-sm-none': 'd-sm-flex',
@@ -32,7 +34,7 @@ function parseValue(key, value, sessionStorageValue) {
     return 0;
 }
 
-function switchTabsHandler() {
+export function switchTabsHandler() {
     const tabs = document.querySelectorAll('.tab-btn');
     const tabContents = document.querySelectorAll('.tab-content');
     const mobile_nav_btn = document.getElementById('mobile_nav_btn');
@@ -65,7 +67,7 @@ function switchTabsHandler() {
     });
 }
 
-function handleUpload(type) {
+export function handleUpload(type) {
     const fileUpload = document.createElement('input');
     fileUpload.type = 'file';
     fileUpload.accept = 'image/*';
@@ -131,7 +133,7 @@ function setSettingsValues(HTMLElements, values) {
 
 }
 
-function DestroyConfirmationPopUp() {
+export function DestroyConfirmationPopUp() {
     if (document.querySelector('.confirmation_popup') !== null) {
         document.querySelector('.confirmation_popup').classList.remove('open');
         setTimeout(() => {
@@ -171,7 +173,7 @@ function DisplayConfirmationPopUp() {
     }
 }
 
-function SaveChanges() {
+export function SaveChanges() {
     DestroyConfirmationPopUp();
     if (Object.keys(updated_values).length === 0){
         toast('No changes detected', 'bg-danger')
@@ -248,7 +250,7 @@ function initiateEventHandlers(updated_values) {
     });
 }
 
-function loadAccountDetailsInSettings(boolean = false) {
+export function loadAccountDetailsInSettings(boolean = false) {
     const HTMLElements = acquireHTMLValues();
     const values = acquireSessionData();
     setSettingsValues(HTMLElements, values);
@@ -289,7 +291,7 @@ function DeleteAccountPrompt() {
         }, 250);
 }
 
-function DeleteAccount() {
+export function DeleteAccount() {
     const btn = document.getElementById('D_account');
     btn.innerHTML = `<div class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>

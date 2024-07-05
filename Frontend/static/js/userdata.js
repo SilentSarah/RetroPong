@@ -12,10 +12,17 @@
 *                        1337                       *
 *****************************************************/
 
-function toast(message, color_class) {
+import { tokenCheck, SelfUser, DisplayNavBar } from "./events.js";
+import { SSChart } from "./SSChart.js";
+import { DisplayProfileOptions } from "./Profiles.js";
+import { passUserTo } from "./login_register.js";
+
+export let current_user = {};
+
+export function toast(message, color_class) {
     let div = document.createElement('div');
     div.id = 'login-toast';
-    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'position-absolute', 'z-5', 'slide-in-blurred-top');
+    div.classList.add('toast', 'align-items-center', color_class, 'border-0', 'position-sticky', 'z-ultimate', 'slide-in-blurred-top');
     div.setAttribute('role', 'alert');
     div.setAttribute('aria-live', 'assertive');
     div.setAttribute('aria-atomic', 'true');
@@ -37,11 +44,12 @@ function toast(message, color_class) {
     toast_content.appendChild(toast_body);
     toast_content.appendChild(close_btn);
 
-    let mainContent = document.getElementById('mainContent');
-    mainContent.appendChild(div);
+    let modalContent = document.getElementById('modalContent');
+    modalContent.appendChild(div);
     
     div.style.display = 'block';
-    div.style.top = '25px';
+    div.style.top = '125px';
+    div.style.left = 'calc(50vw - 150px)';
     destroytoast(div);
     return div;
 }
@@ -54,7 +62,7 @@ function destroytoast(toasty) {
         toasty.remove();
     }, 2000);
 }
-function getCookie(cname) {
+export function getCookie(cname) {
     let name = cname + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
@@ -74,7 +82,7 @@ function deleteCookie(name) {
     document.cookie = name + '=; Max-Age=-99999999;';
 }
 
-function setValuesToSessionStorage(data) {
+export function setValuesToSessionStorage(data) {
     for (const [key, value] of Object.entries(data)) {
         if (key === 'matchhistory' || key === 'matchstatistics') {
             sessionStorage.setItem(key, JSON.stringify(value));
@@ -88,7 +96,7 @@ function setValuesToSessionStorage(data) {
     }
 }
 
-function fetchUserData() {
+export function fetchUserData() {
     if (!tokenCheck()) return ;
     setLoadingOverlay(true);
     fetch("http://127.0.0.1:8001/userdata/",
@@ -122,6 +130,7 @@ function fetchUserData() {
             // clearInterval(fetchID);
             return ;
         }
+        console.error('Error:', error);
         setLoadingOverlay(false);
     });
 }
@@ -229,7 +238,7 @@ function setMatchStatistics(self = true) {
     });
 }
 
-function setLoadingOverlay(boolean = true) {
+export function setLoadingOverlay(boolean = true) {
     const modalContent = document.getElementById('modalContent');
     const loadingOverlay = document.createElement('div');
     loadingOverlay.id = 'loadingOverlay';
@@ -258,7 +267,7 @@ function checkProfileOnlineConnectivity() {
 
 }
 
-function setDashboardStats(self = true) {
+export function setDashboardStats(self = true) {
     if (self === false) {
         if (sessionStorage.getItem("profile") === null) {
             return passUserTo("/404");

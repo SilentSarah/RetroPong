@@ -19,7 +19,7 @@
  * @param {String} Title - Title Of The Chart
  * @param {String} Path - Path to the HTML file containing skeleton holders for the container
  */
-class SSChart {
+export class SSChart {
     /**
      * @param {Object} Data - Dictionary Containing Data to be used for the chart
      * @param {String} Title - Title Of The Chart

@@ -12,8 +12,16 @@
 *                        1337                       *
 *****************************************************/
 
-let fetchID;
-const routes = [
+import { clearModals, loadEvents, displayTitle, credentialsScan, copyIDListener } from "./events.js";
+import { log_user_in, register_user, loginWith42 } from "./login_register.js";
+import { setDashboardStats } from "./userdata.js";
+import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
+import { spawnAccountSearchMenu } from "./Profiles.js";
+import { handleUpload, SaveChanges, DeleteAccount } from "./settings.js"
+
+
+export let fetchID;
+export const routes = [
     {   path: '/404', 
         on: false,
         component: () => grabContent('/404.html'),
@@ -95,7 +103,7 @@ async function grabContent(path) {
     return data;
 }
 
-function router() {
+export function router() {
     const path = window.location.pathname;
     let route = routes.find(route => route.path === path);
     let mainContent = document.getElementById('mainContent');
@@ -128,3 +136,11 @@ function router() {
     }}, 750);
 }
 router();
+
+window.log_user_in = log_user_in;
+window.register_user = register_user;
+window.loginWith42 = loginWith42;
+window.spawnAccountSearchMenu = spawnAccountSearchMenu;
+window.handleUpload = handleUpload;
+window.SaveChanges = SaveChanges;
+window.DeleteAccount = DeleteAccount;

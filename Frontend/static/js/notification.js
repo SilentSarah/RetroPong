@@ -1,3 +1,7 @@
+
+
+import { getCookie } from './userdata.js';
+
 let delay = 0;
 let last_notification_id = undefined;
 const img_paths = {
@@ -141,7 +145,7 @@ function saveNotificationData(data) {
     }
 }
 
-class notifications {
+export class notifications {
     constructor() {
         this.delay = 0;
         this.notifications = new WebSocket("ws://127.0.0.1:8001/ws/notifications/");
