@@ -156,7 +156,7 @@ function eliminateAccountSearchMenu(element) {
     }, 250);
 }
 
-function DisplayProfileDetails(id) {
+export function DisplayProfileDetails(id) {
     console.log("Displaying Profile Details...", id)
     if (id == undefined || id == null) return;
     fetch ("http://127.0.0.1:8001/userdata/" + id, {

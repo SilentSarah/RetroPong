@@ -16,7 +16,7 @@ import { clearModals, loadEvents, displayTitle, credentialsScan, copyIDListener 
 import { log_user_in, register_user, loginWith42 } from "./login_register.js";
 import { setDashboardStats } from "./userdata.js";
 import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
-import { spawnAccountSearchMenu } from "./Profiles.js";
+import { spawnAccountSearchMenu, DisplayProfileDetails } from "./Profiles.js";
 import { handleUpload, SaveChanges, DeleteAccount, DeleteAccountPrompt } from "./settings.js"
 import { Verify2FA } from "./twoFactor.js";
 import { invokeActivity } from "./notification.js";
@@ -149,3 +149,4 @@ window.DeleteAccount = DeleteAccount;
 window.Verify2FA = Verify2FA;
 window.DeleteAccountPrompt = DeleteAccountPrompt;
 window.invokeActivity = invokeActivity;
+window.DisplayProfileDetails = DisplayProfileDetails;
