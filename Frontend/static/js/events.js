@@ -15,7 +15,7 @@
 import { routes, router } from "./router.js";
 import { getCookie, fetchUserData, toast } from "./userdata.js";
 import { OnlineProfile, enableAccountSearchMenu } from "./Profiles.js";
-import { scan2fa } from "./TwoFactor.js";
+import { scan2fa } from "./twoFactor.js";
 import { log_user_in, register_user, passUserTo } from "./login_register.js";
 import { notifications } from "./notification.js";
 import { DestroyConfirmationPopUp } from "./settings.js";
@@ -24,7 +24,7 @@ import { DestroyConfirmationPopUp } from "./settings.js";
 let notificationHandler = null;
 export let SelfUser = undefined;
 
-function delete_cookie(name) {
+export function delete_cookie(name) {
     document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 }
 
@@ -221,6 +221,7 @@ export function tokenCheck() {
 }
 
 function OnOnlineServiceClose(service) {
+    if (service === undefined) return;
     service.ws.onclose = () => {
         console.log('Online System has been closed.');
         if (getCookie('access') !== '') service = new OnlineProfile(service.link);
@@ -236,8 +237,8 @@ export function loadEvents() {
     scanLinks();
     if (found_path !== undefined) {
         DisplayNavBar();
-        if (SelfUser == undefined && tokenCheck()) {
-            SelfUser = new OnlineProfile("ws://127.0.0.1:8001/ws/online/");
+        if (SelfUser == undefined) {
+            tokenCheck() === true ? SelfUser = new OnlineProfile("ws://127.0.0.1:8001/ws/online/"):null;
             OnOnlineServiceClose(SelfUser);
         }
         found_path.func_arr.forEach(func => func());

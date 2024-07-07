@@ -112,6 +112,7 @@ export function fetchUserData() {
             return response.json();
         } else {
             deleteCookie("access");
+            deleteCookie("user_id");
             sessionStorage.clear();
             setLoadingOverlay(false);
         }

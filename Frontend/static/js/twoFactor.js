@@ -1,6 +1,9 @@
 import { getCookie } from "./userdata.js";
+import { delete_cookie, DisplayNavBar } from "./events.js";
+import { toast } from "./userdata.js";
+import { passUserTo } from "./login_register.js";
 
-function initiateTwoFactorModal() {
+export function initiateTwoFactorModal() {
     if (document.querySelector('.overlay') !== null) return;
     let overlay = document.createElement('div');
     overlay.classList.add('overlay', 'd-flex', 'align-items-center', 'justify-content-center');
@@ -92,7 +95,7 @@ export function scan2fa() {
     }
 }
 
-function Verify2FA() {
+export function Verify2FA() {
     const accumulated_code = accumulateCode();
     if (accumulated_code.length < 6) {
         toast('Please enter the full code before verifying.', 'bg-danger');

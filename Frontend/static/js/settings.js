@@ -1,4 +1,5 @@
 import { getCookie, toast, setValuesToSessionStorage } from "./userdata.js";
+import { delete_cookie } from "./events.js";
 
 const updated_values = {};
 const pairs = {
@@ -258,7 +259,7 @@ export function loadAccountDetailsInSettings(boolean = false) {
         initiateEventHandlers(updated_values);
 }
 
-function DeleteAccountPrompt() {
+export function DeleteAccountPrompt() {
         const overlay = document.createElement('div');
         overlay.classList.add('position-absolute', 'w-100', 'h-100', 'bg-black-transparent-0-5', 'z-20', 'overlay');
         document.body.appendChild(overlay);

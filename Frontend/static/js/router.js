@@ -17,7 +17,9 @@ import { log_user_in, register_user, loginWith42 } from "./login_register.js";
 import { setDashboardStats } from "./userdata.js";
 import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
 import { spawnAccountSearchMenu } from "./Profiles.js";
-import { handleUpload, SaveChanges, DeleteAccount } from "./settings.js"
+import { handleUpload, SaveChanges, DeleteAccount, DeleteAccountPrompt } from "./settings.js"
+import { Verify2FA } from "./twoFactor.js";
+import { invokeActivity } from "./notification.js";
 
 
 export let fetchID;
@@ -144,3 +146,6 @@ window.spawnAccountSearchMenu = spawnAccountSearchMenu;
 window.handleUpload = handleUpload;
 window.SaveChanges = SaveChanges;
 window.DeleteAccount = DeleteAccount;
+window.Verify2FA = Verify2FA;
+window.DeleteAccountPrompt = DeleteAccountPrompt;
+window.invokeActivity = invokeActivity;

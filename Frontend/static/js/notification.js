@@ -1,6 +1,7 @@
 
 
 import { getCookie } from './userdata.js';
+import { scanLinks } from './events.js';
 
 let delay = 0;
 let last_notification_id = undefined;
@@ -125,12 +126,12 @@ function invokeAction(notification_data, selected_notification) {
             break;
         case 'GAME':
             anchor.href = '/game';
-            localStorage.setItem('sender_id', notification_data.sender);
+            localStorage.setItem('inviter_id', notification_data.sender);
             break;
     }
 }
 
-function invokeActivity(notificationID) {
+export function invokeActivity(notificationID) {
     const notification = JSON.parse(localStorage.getItem(notificationID));
     const notification_data = constructNotificationData(notification);
     const selected_notification = document.querySelector(`#notification_content[notification_id="${notificationID}"]`);
