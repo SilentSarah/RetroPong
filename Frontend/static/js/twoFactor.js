@@ -128,3 +128,5 @@ export function Verify2FA() {
         console.error('Error:', error);
     });
 }
+
+window.Verify2FA = Verify2FA;

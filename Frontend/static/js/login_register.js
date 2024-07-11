@@ -237,3 +237,7 @@ export function register_user() {
         setLoadingOverlay(false);
     });
 }
+
+window.log_user_in = log_user_in;
+window.register_user = register_user;
+window.loginWith42 = loginWith42;

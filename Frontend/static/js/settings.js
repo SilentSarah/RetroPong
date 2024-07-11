@@ -318,5 +318,10 @@ export function DeleteAccount() {
         toast('An error occured', 'bg-danger');
         document.querySelector('.close_btn_2').click();
     });
-
 }
+
+
+window.handleUpload = handleUpload;
+window.SaveChanges = SaveChanges;
+window.DeleteAccount = DeleteAccount;
+window.DeleteAccountPrompt = DeleteAccountPrompt;

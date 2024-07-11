@@ -13,13 +13,9 @@
 *****************************************************/
 
 import { clearModals, loadEvents, displayTitle, credentialsScan, copyIDListener } from "./events.js";
-import { log_user_in, register_user, loginWith42 } from "./login_register.js";
 import { setDashboardStats } from "./userdata.js";
 import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
-import { spawnAccountSearchMenu, DisplayProfileDetails } from "./Profiles.js";
-import { handleUpload, SaveChanges, DeleteAccount, DeleteAccountPrompt } from "./settings.js"
-import { Verify2FA } from "./twoFactor.js";
-import { invokeActivity } from "./notification.js";
+import { renderGame } from "./Game/GameRenderer.js";
 
 
 export let fetchID;
@@ -56,7 +52,7 @@ export const routes = [
         path: '/game',
         on: false,
         component: () => grabContent('/static/content/game.html'),
-        func_arr: [() => initGameSocket()]
+        func_arr: [() => renderGame()]
     },
     {
         path: '/tournament',
@@ -138,15 +134,3 @@ export function router() {
     }}, 750);
 }
 router();
-
-window.log_user_in = log_user_in;
-window.register_user = register_user;
-window.loginWith42 = loginWith42;
-window.spawnAccountSearchMenu = spawnAccountSearchMenu;
-window.handleUpload = handleUpload;
-window.SaveChanges = SaveChanges;
-window.DeleteAccount = DeleteAccount;
-window.Verify2FA = Verify2FA;
-window.DeleteAccountPrompt = DeleteAccountPrompt;
-window.invokeActivity = invokeActivity;
-window.DisplayProfileDetails = DisplayProfileDetails;

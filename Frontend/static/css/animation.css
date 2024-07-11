@@ -49,3 +49,7 @@ img {
   animation:s3 1s infinite linear;
 }
 @keyframes s3 {to{transform: rotate(1turn)}}
+
+
+.glowbox{animation:glowbox 2s linear infinite alternate both}
+@keyframes glowbox{0%{box-shadow: rgba(255, 255, 255, 0.0) 0px 0px 4px;} 100%{box-shadow: rgba(255, 255, 255, .75) 0px 0px 15px;}}

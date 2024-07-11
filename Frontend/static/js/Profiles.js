@@ -321,3 +321,6 @@ export function enableAccountSearchMenu() {
         initiateAccountSearchMenuEvents();
     }
 }
+
+window.spawnAccountSearchMenu = spawnAccountSearchMenu;
+window.DisplayProfileDetails = DisplayProfileDetails;

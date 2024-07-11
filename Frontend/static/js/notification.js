@@ -177,3 +177,5 @@ export class notifications {
     }
 
 }
+
+window.invokeActivity = invokeActivity;
