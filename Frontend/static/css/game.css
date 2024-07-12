@@ -1,5 +1,5 @@
 .game-bg {
-    background: linear-gradient(68deg,#5a005a,#be00be,#300030,#0a0a0a);
+    background: linear-gradient(75deg,#5a005a,#be00be,#300030,#0a0a0a);
     background-size: 240% 240%;
     animation: gradient-animation 28s ease infinite;
 }

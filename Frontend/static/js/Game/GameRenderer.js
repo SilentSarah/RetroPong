@@ -1,11 +1,5 @@
-const retropong_gradient = ["#172573", "#6A66D9", "#F080F2", "#FFFFFF"];
-const sunrise_gradient = ["#ffa3ac", "#ffae97", "#ffba81", "#ffc56c", "#ffd156"];
-const pastel_gradient = ["#cbffe6", "#afe9ff", "#bfb9ff", "#ffcfea", "#feffbe"];
-const black_color = ["#000000"];
 const gamepfppath = "/static/img/pfp";
-const images = ["Default.png","DefaultBG.png","L7afouzli9.jpg","asekkak.jpeg","me.gif","test.jpeg"]
-
-const colors = [retropong_gradient, sunrise_gradient, pastel_gradient, black_color];
+let matchmaker_timerID = null;
 
 function renderStart(ctx) {
     ctx.fillStyle = "black";
@@ -47,7 +41,20 @@ function JoinRoom() {
     console.log("Join Room");
 }
 
+function startMatchTimer(timerObj) { 
+    const match_start_timer = document.getElementById('match-start-timer');
+    const timer_panel = document.getElementById('timer-panel');
+
+    match_start_timer.innerText = --timerObj.timer; 
+    if (timerObj.timer <= 0) {
+        timer_panel.innerText = "Starting...";
+        clearInterval(matchmaker_timerID);
+        matchmaker_timerID = null;
+    }
+}
+
 function AnimateTheMatchMaking() {
+    let timerObj = {timer: 3};
     const versus = document.getElementById('versus');
     const opponentBackgrounds = document.querySelectorAll('.ops');
     const opponents = document.querySelectorAll('.opponent');
@@ -57,7 +64,7 @@ function AnimateTheMatchMaking() {
     setTimeout(() => { matchmaker_info.forEach((info) => { info.classList.add("open"); }); }, 750);
     setTimeout(() => { opponents.forEach((opponent) => { opponent.classList.add("open", "glowbox"); }); }, 500);
     setTimeout(() => { versus.classList.add("open") }, 900);
-
+    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj)}, 1000) : clearInterval(matchmaker_timerID);
 }
 
 function sanitizeHTMLCode(html) {
@@ -80,11 +87,12 @@ function GenerateMatchInfoHTML(matchInfo) {
     match_info.innerHTML = `
     <p class="mminfo nokora text-white fw-bold fs-4 bg-black-transparent-0-5 rounded-5 border-transparent-0-5 p-3 mt-4 transition-all">${sanitizeHTMLCode(matchInfo.type)}</p>
     <p id="versus" class="text-pink-gradient text-glow text-center taprom w-25 transition-all w-100" style="font-size: 96px;">VS</p>
-    <p class="mminfo nokora text-white fw-bold fs-4 bg-black-transparent-0-5 rounded-5 border-transparent-0-5 p-3 transition-all">Round Starts in <span>3</span></p>`;
+    <p id="timer-panel" class="mminfo nokora text-white fw-bold fs-4 bg-black-transparent-0-5 rounded-5 border-transparent-0-5 p-3 transition-all">Round Starts in <span id="match-start-timer">3</span></p>`;
     return match_info;
 }
 
 function LeaveMatchMaker() {
+    matchmaker_timerID !== null ? clearInterval(matchmaker_timerID) : null;
     renderLobby();
 }
 
@@ -134,7 +142,7 @@ function CreateRoomHTML(room_mode = "Duo", room_id = "None", player_count = "-",
 	</div>`;
 
     const room_join_create = document.createElement('button');
-    room_join_create.classList.add("join_game_btn", "rounded-5", "border-none");
+    room_join_create.classList.add("rounded-5", "border-transparent-0-5", "bg-white-transparent-0-05", "px-3");
     room_join_create.innerHTML = `<img src="/static/img/game/${create ? "Join" : "Acess"}.png" width="22px" height="22px">`;
     room_join_create.onclick = create ? CreateRoom : JoinRoom;
 
@@ -151,8 +159,8 @@ function DisplayRoomOptions() {
     <div class="d-flex flex-column align-items-center justify-content-center gap-3 h-100 w-100 p-5">
 		<div class="w-100 h-100 mt-5 position-relative px-5">
 			<button
-				class="bg-white-transparent-0-15 border-transparent-0-5 rounded-5 position-absolute"
-				style="top: 1.6rem; right: 5rem;"
+				class="bg-white-transparent-0-15 border-transparent-0-5 rounded-5 position-absolute p-2"
+				style="top: 1.3rem; right: 5rem;"
 				onclick="renderLobby()">
                     <img src="/static/img/game/back.png" width="18px" height="18px">
                 </button>
@@ -187,10 +195,13 @@ function DisplayMatchTypes() {
     }
     game_container.innerHTML = "";
     game_container.appendChild(div);
-
 }
 
 function renderLobby() {
+    const lobby = document.createElement('div');
+    {
+        lobby.classList.add("d-flex", "flex-column", "align-items-center", "justify-content-center", "gap-3", "h-100", "w-100");
+    }
     const game_logo = document.createElement("h1");
     {
         game_logo.classList.add("text-center", "display-1", "taprom", "text-pink-gradient", "line-height-1", "text-glow");
@@ -204,7 +215,7 @@ function renderLobby() {
         div.classList.add("d-flex", "align-items-center", "justify-content-center", "gap-3", 'z-1')
         div.id = "lobby";
         div.innerHTML = `
-        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Versus" onclick="DisplayMatchTypes()">
+        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Versus" onclick="DisplayMatchMakerScreen()">
             <img src="/static/img/game/Versus.png" width="24px" height="24px">
             Versus
         </button>
@@ -218,8 +229,9 @@ function renderLobby() {
         </button>`;
     }
     game_container.innerHTML = "";
-    game_container.appendChild(game_logo);
-    game_container.appendChild(div);
+    lobby.appendChild(game_logo);
+    lobby.appendChild(div);
+    game_container.appendChild(lobby);
 }
 
 export function renderGame(state = "LOBBY") {
@@ -232,6 +244,7 @@ export function renderGame(state = "LOBBY") {
         "GAME": renderLiveGame,
         "GAMEEND": renderEnd,
     }
+    // DisplayRoomOptions();
     states[state](ctx, gameCanvas);
 }
 
