@@ -96,6 +96,14 @@ export function setValuesToSessionStorage(data) {
     }
 }
 
+export function clearUserDataLocally() {
+    sessionStorage.clear();
+    localStorage.clear();
+    deleteCookie("access");
+    deleteCookie("user_id");
+    deleteCookie("2fa");
+}
+
 export function fetchUserData() {
     if (!tokenCheck()) return ;
     setLoadingOverlay(true);
@@ -111,9 +119,7 @@ export function fetchUserData() {
         if (response.ok) {
             return response.json();
         } else {
-            deleteCookie("access");
-            deleteCookie("user_id");
-            sessionStorage.clear();
+            clearUserDataLocally();
             setLoadingOverlay(false);
         }
     })
@@ -128,7 +134,6 @@ export function fetchUserData() {
         sessionStorage.clear();
         if (error.message === 'Failed to fetch') {
             toast('Server is not responding, try again later.', 'bg-danger');
-            // clearInterval(fetchID);
             return ;
         }
         console.error('Error:', error);

@@ -81,7 +81,11 @@ function Invite(id, type) {
             'receiver': id
         })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+    })
     .then(data => {
         toast(data.message, "bg-success");
         Array.from(profileOptions.children).forEach(child => {
@@ -91,7 +95,11 @@ function Invite(id, type) {
         setLoadingOverlay(false);
     })
     .catch(error => {
-        console.error('Error:', error);
+        toast("An error occured while inviting this person.", "bg-danger");
+        Array.from(profileOptions.children).forEach(child => {
+            child.disabled = false;
+            child.classList.remove('opacity-75', 'cursor-not-allowed');
+        });
         setLoadingOverlay(false);
     });
 }
@@ -324,3 +332,4 @@ export function enableAccountSearchMenu() {
 
 window.spawnAccountSearchMenu = spawnAccountSearchMenu;
 window.DisplayProfileDetails = DisplayProfileDetails;
+window.Invite = Invite;

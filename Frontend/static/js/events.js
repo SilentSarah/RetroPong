@@ -13,7 +13,7 @@
 *****************************************************/
 
 import { routes, router } from "./router.js";
-import { getCookie, fetchUserData, toast } from "./userdata.js";
+import { getCookie, fetchUserData, toast, clearUserDataLocally } from "./userdata.js";
 import { OnlineProfile, enableAccountSearchMenu } from "./Profiles.js";
 import { scan2fa } from "./twoFactor.js";
 import { log_user_in, register_user, passUserTo } from "./login_register.js";
@@ -58,7 +58,7 @@ export function DisplayNavBar() {
         <img class="img img-shadow" src="./static/img/general/Rp.png" width="50px">
     </a>
     <div class="d-flex gap-2 me-3">
-        <div id="notification" href="" class="nav_btn position-relative">
+        <div id="notification" class="nav_btn position-relative" onclick="SetNotificationLight()">
             <img src="/static/img/general/Notfication.png" width="40px" class="position-relative" style="z-index: 12;">
             <div id="notification_light" class="d-none"></div>
             <div id="notification_menu" class="d-flex flex-column justify-content-between align-items-center gap-2 position-absolute">
@@ -91,9 +91,8 @@ export function DisplayNavBar() {
             }
         });
         document.getElementById('logout').addEventListener('click', function () {
-            sessionStorage.clear();
             destoryWebsockets();
-            delete_cookie('access');
+            clearUserDataLocally();
             window.location.href = '/';
         });
         let retro_menu = document.getElementById('retro_menu');

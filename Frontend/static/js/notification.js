@@ -4,7 +4,7 @@ import { getCookie } from './userdata.js';
 import { scanLinks } from './events.js';
 
 let delay = 0;
-let last_notification_id = undefined;
+export let last_notification_id = undefined;
 const img_paths = {
     'MESSAGE': '/static/img/general/Chat.png',
     'ACCOUNT': '/static/img/general/Account.png',
@@ -146,6 +146,19 @@ function saveNotificationData(data) {
     }
 }
 
+function SetNotificationLight(check = false) {
+    const notification_light = document.getElementById('notification_light');
+    const last_notification_id_saved = parseInt(localStorage.getItem('last_notification_id'));
+    if (check == true) {
+        if (last_notification_id_saved == null || last_notification_id_saved != last_notification_id)
+            notification_light.classList.replace('d-none', 'd-block');
+    }
+    else {
+        localStorage.setItem('last_notification_id', last_notification_id);
+        notification_light.classList.replace('d-block', 'd-none');
+    }
+}
+
 export class notifications {
     constructor() {
         this.delay = 0;
@@ -163,6 +176,7 @@ export class notifications {
             saveNotificationData(data);
             for (const [key, value] of Object.entries(data['Notifications']))
                 constructNotification(value, notifications_container);
+            SetNotificationLight(true);
         }    
         this.notifications.onclose = function(event) {
             const notifications_container = document.getElementById('notifications_container');
@@ -179,3 +193,4 @@ export class notifications {
 }
 
 window.invokeActivity = invokeActivity;
+window.SetNotificationLight = SetNotificationLight;

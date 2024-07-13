@@ -563,6 +563,7 @@ border-radius: 25px;
     position: absolute;
     top: 10%;
     right: 75%;
+    z-index: 12;
 }
 
 .connection_status {

@@ -1,4 +1,4 @@
-import { getCookie, toast, setValuesToSessionStorage } from "./userdata.js";
+import { getCookie, toast, setValuesToSessionStorage, fetchUserData } from "./userdata.js";
 import { delete_cookie } from "./events.js";
 
 const updated_values = {};
