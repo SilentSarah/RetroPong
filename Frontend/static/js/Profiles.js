@@ -228,8 +228,8 @@ function displayUsersOnTheSearchMenu(data) {
             </table>
         </div>`;
         search_result.appendChild(div);
-
     }
+    search_result.children[0].focus();
 }
 
 function findUsersData(search_term) {
@@ -274,6 +274,7 @@ function seachForUsers() {
 }
 
 function initiateAccountSearchMenuEvents() {
+    const search_result = document.getElementById('search_result');
     const account_finder = document.getElementById('account_finder');
     if (account_finder) {
         if (account_finder_active == false) {
@@ -281,6 +282,9 @@ function initiateAccountSearchMenuEvents() {
                 if ((e.key === 'k' && e.altKey === true || e.key === 'k' && e.metaKey === true) || e.key == "Escape") {
                     (e.key == "Escape" ? eliminateAccountSearchMenu : spawnAccountSearchMenu)(account_finder);
                     e.preventDefault();
+                } else if (e.key === 'Enter') {
+                    if (search_result.children.length > 0)
+                        search_result.children[0].click();
                 }
             };
         }
@@ -305,7 +309,7 @@ export function enableAccountSearchMenu() {
         div.classList.add('d-none', 'flex-column', 'bg-black-transparent-0-75', 'rounded-4', 'border-transparent-0-5', 'opacity-0' ,'p-2', 'justify-content-center', 'transition-all', 'backdrop-filter-blur', 'z-20', 'position-absolute', 'top-50', 'start-50', 'translate-middle');
         div.id = 'account_finder';
         div.innerHTML = `
-        <form class="w-100 d-flex flex-column mb-2">
+        <div class="w-100 d-flex flex-column mb-2">
             <div class="d-flex align-items-center justify-content-between">
             <label for="users_search" class="text-white nokora fs-5 fw-light opacity-75">Account Search</label>
             <div class="d-flex align-items-center mb-1 opacity-75">
@@ -314,7 +318,7 @@ export function enableAccountSearchMenu() {
             </div>
             </div>
             <input type="text" id="users_search" class="bg-white-transparent-0-25 border-transparent-0-5 px-2 text-white fs-5 fw-light" placeholder="Search for Someone">
-        </form>
+        </div>
         <div class="d-flex flex-column justify-content-start bg-white-transparent-0-15 rounded-3 p-2 border-transparent-0-5" style="height: 300px;">
             <div id="search_result" class="w-100 align-items-center p-1 d-flex flex-column gap-1 h-100 w-100 overflow-y-auto">
                 <p class="m-auto text-white fw-lighter fs-5">No user was found</p>

@@ -1,4 +1,12 @@
 import { LeaveMatchMaker, DisplayMatchMakerScreen } from "./MatchMaker.js";
+import { loadGameEngine } from "./GameEngine.js";
+
+export const modes = {
+    V_ONLINE: 0,
+    V_ROOMS: 0,
+    V_OFFLINE: 1,
+}
+
 
 function renderStart(ctx) {
     ctx.fillStyle = "black";
@@ -169,8 +177,10 @@ export function renderGame(state = "LOBBY") {
         "GAME": renderLiveGame,
         "GAMEEND": renderEnd,
     }
+    modes.V_OFFLINE = 1;
+    loadGameEngine();
     // DisplayRoomOptions();
-    states[state](ctx, gameCanvas);
+    // states[state](ctx, gameCanvas);
 }
 
 window.DisplayMatchTypes = DisplayMatchTypes;
