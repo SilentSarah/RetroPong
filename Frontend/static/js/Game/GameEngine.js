@@ -9,6 +9,7 @@ export const GameStates = {
 }
 
 const BALL_SPEED = 17;
+const BALL_SPEED_LIMIT = 25;
 const PADDLE_SPEED = 20;
 
 class Paddle {
@@ -100,7 +101,7 @@ function resetInGamePhysics(rPaddle, bPaddle, ball) {
     ball.posX = ball.cWidth / 2;
     ball.posY = ball.cHeight / 2;
 
-    rPaddle.y = (rPaddle.cHeight / 2) - (rPaddle.pHeight / 2);
+    rPaddle.drawPosY = (rPaddle.cHeight / 2) - (rPaddle.pHeight / 2);
     rPaddle.drawPosX = rPaddle.push_value;
     rPaddle.posY = rPaddle.drawPosY + rPaddle.pHeight / 2;
     rPaddle.posX = rPaddle.push_value;
@@ -110,7 +111,8 @@ function resetInGamePhysics(rPaddle, bPaddle, ball) {
     bPaddle.posY = bPaddle.drawPosY + bPaddle.pHeight / 2;
     bPaddle.posX = bPaddle.cWidth - (bPaddle.push_value + (bPaddle.pWidth / 2));
 
-    ball.xspeed = 17;
+    ball.xspeed = BALL_SPEED;
+    ball.yspeed = BALL_SPEED;
 }
 
 function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
@@ -123,6 +125,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.xspeed = ~ball.xspeed; + 1;
         ball.xspeed > 0 ? ball.xspeed += 1 : ball.xspeed -= 1;
         ball.yspeed > 0 ? ball.yspeed += 1 : ball.yspeed -= 1;
+        ball.xspeed = Math.min(ball.xspeed, BALL_SPEED_LIMIT);
+        ball.yspeed = Math.min(ball.yspeed, BALL_SPEED_LIMIT);
     }
 
     if (ball_hb.x < bPaddle_hb.x + bPaddle_hb.width &&
@@ -134,6 +138,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.xspeed = ~ball.xspeed + 1;
         ball.xspeed > 0 ? ball.xspeed += 1 : ball.xspeed -= 1;
         ball.yspeed > 0 ? ball.yspeed += 1 : ball.yspeed -= 1;
+        ball.xspeed = Math.min(ball.xspeed, BALL_SPEED_LIMIT);
+        ball.yspeed = Math.min(ball.yspeed, BALL_SPEED_LIMIT);
     }
 }
 
@@ -173,6 +179,8 @@ function ballPhysics(ball, rPaddle, bPaddle) {
     ball.posY += ball.yspeed;
     ball.drawPosX += ball.xspeed;
     ball.drawPosY += ball.yspeed;
+
+    console.log(ball.xspeed, ball.yspeed);
 }
 
 function generateRandomBallAngle() {
