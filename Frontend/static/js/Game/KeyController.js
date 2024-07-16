@@ -54,6 +54,14 @@ const controller = {
         tapped: false,
         func: () => func(),
     }, // 3  spec abilities for the player 2
+    "Escape": {
+        tapped: false,
+        func: () => func(),
+    }, // Escape to pause the game
+}
+
+function pauseMenu() {
+    
 }
 
 
@@ -76,6 +84,7 @@ function moveplayer(paddle, direction) {
 
 export function loadGameKeyHandlers() {
     document.addEventListener("keydown", function(e) {
+        console.log(e.key)
         if (controller[e.key]) controller[e.key].tapped = true;
     });
     document.addEventListener("keyup", function(e) {
@@ -85,6 +94,7 @@ export function loadGameKeyHandlers() {
 
 export function activateButtonFunctions(paddle) {
     Object.keys(controller).forEach(key => {
+        if (controller[key] === "Escape" && controller[key].tapped) return ;
         controller[key].tapped && controller[key].func(paddle)
     })
 }

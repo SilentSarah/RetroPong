@@ -7,10 +7,15 @@ export const GameStates = {
     in_progress: 0,
     finished: 0,
 }
-
+const maps = {
+    "RetroPong": ["#172573", "#6A66D9", "#F080F2", "#000000"],
+    "Sunrise": ["#FFA3AC", "#FFBA81", "#FFD156"],
+    "Midnight": ["#000000"],
+    "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
+}
 const BALL_SPEED = 17;
-const BALL_SPEED_LIMIT = 25;
-const PADDLE_SPEED = 20;
+const BALL_SPEED_LIMIT = 32;
+const PADDLE_SPEED = 25;
 
 class Paddle {
     constructor(canvasHTML, context, imagePath, cWidth, cHeight, side = LEFT_SIDE, loader) {
@@ -60,7 +65,6 @@ class Ball {
         this.type = BALL;
 
         this.image.onload = () => {
-            console.log("LOADING")
             loader(this);
         }
     }
@@ -93,6 +97,18 @@ function drawGameElements(rPaddle, bPaddle, ball) {
     ball.draw();
 }
 
+function generateGradient(ctx, width, height, chosenMap) {
+    const gradient = ctx.createLinearGradient(width / 2, 0, width / 2, height);
+    const savedColor = localStorage.getItem("chosenMap");
+    if (savedColor) chosenMap = savedColor;
+    const colorPack = Object.values(maps[chosenMap]);
+    colorPack.forEach((color, index) => {
+        gradient.addColorStop(index / colorPack.length, color);
+    });
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+}
+
 function resetInGamePhysics(rPaddle, bPaddle, ball) {
     GameStates.in_progress = 0;
     GameStates.starting = 1;
@@ -115,6 +131,15 @@ function resetInGamePhysics(rPaddle, bPaddle, ball) {
     ball.yspeed = BALL_SPEED;
 }
 
+function increaseBallSpeed(ball) {
+    ball.xspeed > 0 ? ball.xspeed += 0.75 : ball.xspeed -= 0.75;
+    ball.yspeed > 0 ? ball.yspeed += 0.75 : ball.yspeed -= 0.75;
+    ball.yspeed > BALL_SPEED_LIMIT ? ball.yspeed = BALL_SPEED_LIMIT : ball.yspeed;
+    ball.yspeed < -BALL_SPEED_LIMIT ? ball.yspeed = -BALL_SPEED_LIMIT : ball.yspeed;
+    ball.xspeed > BALL_SPEED_LIMIT ? ball.xspeed = BALL_SPEED_LIMIT : ball.xspeed;
+    ball.xspeed < -BALL_SPEED_LIMIT ? ball.xspeed = -BALL_SPEED_LIMIT : ball.xspeed;
+}
+
 function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
     if (ball_hb.x < rPaddle_hb.x + rPaddle_hb.width &&
         ball_hb.x + (ball_hb.width / 2) > rPaddle_hb.x &&
@@ -122,24 +147,18 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball_hb.y + ball_hb.height > rPaddle_hb.y) {
         ball.posX = rPaddle_hb.x + rPaddle_hb.width;
         ball.drawPosX = rPaddle_hb.x + rPaddle_hb.width;
-        ball.xspeed = ~ball.xspeed; + 1;
-        ball.xspeed > 0 ? ball.xspeed += 1 : ball.xspeed -= 1;
-        ball.yspeed > 0 ? ball.yspeed += 1 : ball.yspeed -= 1;
-        ball.xspeed = Math.min(ball.xspeed, BALL_SPEED_LIMIT);
-        ball.yspeed = Math.min(ball.yspeed, BALL_SPEED_LIMIT);
+        ball.xspeed = -ball.xspeed;
+        increaseBallSpeed(ball);
     }
-
+    
     if (ball_hb.x < bPaddle_hb.x + bPaddle_hb.width &&
         ball_hb.x + ball_hb.width > bPaddle_hb.x &&
         ball_hb.y < bPaddle_hb.y + bPaddle_hb.height &&
         ball_hb.y + ball_hb.height > bPaddle_hb.y) {
         ball.posX = bPaddle_hb.x - ball.bWidth;
         ball.drawPosX = bPaddle_hb.x - ball.bWidth;
-        ball.xspeed = ~ball.xspeed + 1;
-        ball.xspeed > 0 ? ball.xspeed += 1 : ball.xspeed -= 1;
-        ball.yspeed > 0 ? ball.yspeed += 1 : ball.yspeed -= 1;
-        ball.xspeed = Math.min(ball.xspeed, BALL_SPEED_LIMIT);
-        ball.yspeed = Math.min(ball.yspeed, BALL_SPEED_LIMIT);
+        ball.xspeed = -ball.xspeed;
+        increaseBallSpeed(ball);
     }
 }
 
@@ -170,7 +189,7 @@ function ballPhysics(ball, rPaddle, bPaddle) {
         resetInGamePhysics(rPaddle, bPaddle, ball);
     }
     if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {
-        ball.yspeed = ~ball.yspeed + 1;
+        ball.yspeed = -ball.yspeed;
     }
 
     collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb);
@@ -179,12 +198,13 @@ function ballPhysics(ball, rPaddle, bPaddle) {
     ball.posY += ball.yspeed;
     ball.drawPosX += ball.xspeed;
     ball.drawPosY += ball.yspeed;
-
     console.log(ball.xspeed, ball.yspeed);
+
 }
 
 function generateRandomBallAngle() {
-    ball.angle = Math.random() * Math.PI * 2;
+    ball.xspeed = Math.random() % 2 == 0 ? -BALL_SPEED : BALL_SPEED;
+    ball.yspeed = Math.random() % 2 == 0 ? -BALL_SPEED : BALL_SPEED;
 }
 
 function invokeStartMatchTimer(ctx, matchTimer, width, height) {
@@ -197,7 +217,6 @@ function invokeStartMatchTimer(ctx, matchTimer, width, height) {
     const correctW = (width / 2) - ((string.length * 64) / 5);
     ctx.fillStyle = "white";
     ctx.font = "64px Taprom";
-    console.log(width, height);
     ctx.fillText(`Round Starting in ${elapsed}`, correctW, height * 0.51);
     if (elapsed <= 0) {
         GameStates.starting = 0;
@@ -217,6 +236,7 @@ export function loadGameEngine(gameMode) {
     const drawGame = () => {
         if (!rPaddle || !bPaddle || !ball) return ;
         ctx.clearRect(0, 0, width, height);
+        generateGradient(ctx, width, height, "RetroPong");
         if (GameStates.starting) {
             invokeStartMatchTimer(ctx, matchTimer, width, height, ball);
         } else if (GameStates.in_progress) {
