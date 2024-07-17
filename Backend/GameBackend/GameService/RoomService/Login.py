@@ -31,6 +31,11 @@ class Auth:
             LOGGED_USERS.remove(user)
             return True
         return False
+    
+    @staticmethod
+    async def check_auth(ws_connection):
+        user = find_user(ws_connection=ws_connection)
+        return user
         
 
 async def verify_token(request: HttpRequest = None, token_from_ws = None) -> str:

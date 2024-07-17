@@ -1,12 +1,9 @@
 import json
-from .Room import Room
 from .Login import Auth
 from .Interpreter import Interpreter
 from channels.db import database_sync_to_async
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
-
-AVAILABLE_ROOMS : list[Room] = []
 
 class RoomConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
@@ -22,7 +19,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         
     async def receive(self, text_data):
         body = json.loads(text_data)
-        
+        await Interpreter.interpret(self, body)
         
     async def send_msg(self, message):
         await self.send_json({
