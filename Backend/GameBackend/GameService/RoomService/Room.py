@@ -1,4 +1,7 @@
+import json
+
 AVAILABLE_ROOMS : list = []
+
 class Room:
     def __init__(self):
         self.id: int
@@ -46,18 +49,31 @@ class Room:
     
 class RoomService:
     @staticmethod
-    async def create_room(ws, data) -> Room:
-        # room = Room()
-        # room.id = len(AVAILABLE_ROOMS)
-        # room.players = [player_id]
-        # room.score = [0, 0]
-        # room.winner = -1
-        # room.playerCount = 1
-        # room.status = 'waiting'
-        # AVAILABLE_ROOMS.append(room)
-        print("Creating room")
-        await ws.send_json({ 'message': 'Room created' })
-        return
+    async def create_room(ws, user, data: dict) -> Room:
+        try: 
+            room = Room()
+            room.id = len(AVAILABLE_ROOMS)
+            room.players = [user.id]
+            room.score = [0, 0]
+            room.winner = -1
+            room.playerCount = 1
+            room.status = 'waiting'
+            AVAILABLE_ROOMS.append(room)
+            response = room.__dict__
+            return await ws.send_json(
+                    { 
+                        "type": "rooms",
+                        'status': 'Room created',
+                        "room_data": response
+                    }
+                )
+        except Exception as e:
+            print(e)
+            return await ws.send_json(
+                                    {
+                                        'type': "rooms",
+                                        'status': 'Error creating room',
+                                    })
     
     @staticmethod
     def join_room(ws, data) -> Room:
