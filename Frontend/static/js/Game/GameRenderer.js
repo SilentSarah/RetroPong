@@ -173,14 +173,11 @@ export function renderGame(state = "LOBBY") {
     const states = {
         "LOBBY": renderLobby,
         "MATCHMAKING": renderMatchmaking,
-        "GAMESTART": renderStart,
-        "GAME": renderLiveGame,
-        "GAMEEND": renderEnd,
+        "GAME": loadGameEngine,
     }
-    modes.V_OFFLINE = 1;
-    loadGameEngine();
     // DisplayRoomOptions();
-    // states[state](ctx, gameCanvas);
+    states[state](ctx, gameCanvas);
+    // loadGameEngine("Local");
 }
 
 window.DisplayMatchTypes = DisplayMatchTypes;

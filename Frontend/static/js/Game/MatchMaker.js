@@ -1,10 +1,28 @@
+import { modes } from "./GameRenderer.js";
+import { loadGameEngine } from "./GameEngine.js";
+
 const gamepfppath = "/static/img/pfp";
 const matchmaker_details = {
 
 }
 let matchmaker_timerID = null;
 
-function startMatchTimer(timerObj) { 
+function runGameMode(type) {
+    const game_container = document.getElementById('game-container');
+    game_container.innerHTML = "";
+    if (type === "Local") {
+        modes.V_OFFLINE = 1;
+        loadGameEngine();
+    } else if (type === "Online") {
+        modes.V_ONLINE = 1;
+        loadGameEngine();
+    } else if (type === "Rooms") {
+        modes.V_ROOMS = 1;
+        loadGameEngine();
+    }
+}
+
+function startMatchTimer(timerObj, type) { 
     const match_start_timer = document.getElementById('match-start-timer');
     const timer_panel = document.getElementById('timer-panel');
 
@@ -14,10 +32,11 @@ function startMatchTimer(timerObj) {
         timer_panel.innerText = "Starting...";
         clearInterval(matchmaker_timerID);
         matchmaker_timerID = null;
+        runGameMode(type);
     }
 }
 
-function AnimateTheMatchMaking() {
+function AnimateTheMatchMaking(type) {
     let timerObj = {timer: 4};
     const versus = document.getElementById('versus');
     const opponentBackgrounds = document.querySelectorAll('.ops');
@@ -28,7 +47,7 @@ function AnimateTheMatchMaking() {
     setTimeout(() => { matchmaker_info.forEach((info) => { info.classList.add("open"); }); }, 900);
     setTimeout(() => { opponents.forEach((opponent) => { opponent.classList.add("open"); }); }, 750);
     setTimeout(() => { versus.classList.add("open") }, 1000);
-    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj);}, 1000) : clearInterval(matchmaker_timerID);
+    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type);}, 1000) : clearInterval(matchmaker_timerID);
 }
 
 function sanitizeHTMLCode(html) {
@@ -36,7 +55,9 @@ function sanitizeHTMLCode(html) {
     return html;
 }
 
-function GenerateUserHTML(user, color) {
+function GenerateUserHTML(user, color, type) {
+    console.log("GameMode:", type);
+    if (type === "Local") user = { username: "Player", pfp: `${gamepfppath}/Default.png` }
     const user_div = document.createElement('div');
     user_div.classList.add("d-flex", "flex-column", "align-items-center", "justify-content-center", "w-100", "h-100", color, "ops");
     user_div.innerHTML = `
@@ -60,8 +81,25 @@ function GenerateMatchInfoHTML(matchInfo) {
 
 export function LeaveMatchMaker() {
     matchmaker_timerID !== null ? (clearInterval(matchmaker_timerID), matchmaker_timerID = null) : null;
+    clearChosenGameMode();
     renderLobby();
 }
+
+function SetTheGameMode(type) {
+    const selection_modes = ["Local", "Rooms", "Online"];
+    selection_modes.forEach((mode, index) => {
+        if (mode === type) {
+            clearChosenGameMode();
+            modes[`V_${mode.toUpperCase()}`] = 1;
+            console.log(modes);
+        }
+    });
+}
+
+function clearChosenGameMode() {
+    Object.keys(modes).forEach((key) => modes[key] = 0);
+}
+
 
 export function DisplayMatchMakerScreen(type) {
     const game_container = document.getElementById('game-container');
@@ -73,11 +111,12 @@ export function DisplayMatchMakerScreen(type) {
     <button class="border-transparent-0-5 rounded-5 position-absolute z-1 bg-white-transparent-0-15 p-2" style="top: 1.75rem; left: 1.75rem;" onclick="LeaveMatchMaker()">
 		<img src="/static/img/game/Back.png" width="32px" height="32px">
 	</button>
-    ${GenerateUserHTML(fake_player, "bg_gradpink").outerHTML}
-    ${GenerateUserHTML(fake_player, "bg_gradblue").outerHTML}
+    ${GenerateUserHTML(fake_player, "bg_gradpink", type).outerHTML}
+    ${GenerateUserHTML(fake_player, "bg_gradblue", type).outerHTML}
     ${GenerateMatchInfoHTML({ type: `Versus ${type}` }).outerHTML}`;
 
+    SetTheGameMode(type);
     game_container.innerHTML = "";
     game_container.appendChild(div);
-    AnimateTheMatchMaking();
+    AnimateTheMatchMaking(type);
 }

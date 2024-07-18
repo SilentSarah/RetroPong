@@ -60,9 +60,7 @@ const controller = {
     }, // Escape to pause the game
 }
 
-function pauseMenu() {
-    
-}
+function pauseMenu() {}
 
 
 function moveplayer(paddle, direction) {
