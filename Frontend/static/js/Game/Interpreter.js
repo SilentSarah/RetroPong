@@ -21,11 +21,9 @@ export class Interpreter {
         const message = response.message;
         const data = response.data;
 
-        console.log("response before status check");
         if (!this.invokeStatus(status, message))
             return;
 
-        console.log("response after status check");
         this.invokeResponseAction(type, action, data);
     }
 
@@ -44,7 +42,6 @@ export class Interpreter {
     static invokeResponseAction(type, action, data) {
         switch (type) {
             case 'rooms':
-                console.log("i got into rooms response nig");
                 RoomManager.roomAction(action, data);
                 break;
             case 'game':

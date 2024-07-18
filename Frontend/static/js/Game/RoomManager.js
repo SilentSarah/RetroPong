@@ -18,9 +18,6 @@ export class RoomManager {
     }
 
     static roomAction(action, data) {
-        console.log("New action from response:");
-        console.log(action);
-        console.log(data);
         switch (action) {
             case 'list':
             case 'create':
@@ -42,7 +39,6 @@ export class RoomManager {
     }
 
     static listRooms(data) {
-        console.log("listing rooms with data:", data);
         const rooms_container = document.getElementById('rooms-container');
         rooms_container.innerHTML = '';
         data.forEach(room => {
@@ -52,7 +48,6 @@ export class RoomManager {
     }
 
     static CreateRoomHTML(room_data, create = false) {
-        console.log("Creating room with data:", room_data);
         let chosen_function = create ? CreateRoomWrapper : JoinRoomWrapper;
         const room = document.createElement('div');
         const room_id = !create ? room_data.id : 'NONE';
@@ -98,14 +93,11 @@ export class RoomManager {
             "action": action,
             "data": data
         }
-        console.log("Create Room called with payload:");
-        console.log(payload);
         GameConnector.send(payload);
     }
 }
 
 function CreateRoomWrapper() {
-    console.log("Create Room wrapper called");
     RoomManager.CreateRoom('rooms', 'create', {});
 }
 
