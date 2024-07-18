@@ -8,7 +8,7 @@ from .Login import LOGGED_USERS
 
 class RoomConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
-        if (await Auth.login(self.scope, self.channel_name) == False): 
+        if (await Auth.login(self.scope, self.channel_name, self) == False): 
             return await self.close() 
         else: 
             await self.accept()
@@ -39,8 +39,11 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         })
         
     async def broadcast(self, message):
-        for user in LOGGED_USERS:
-            await user.send_message_to_self(self, message)
+        try:
+            for user in LOGGED_USERS:
+                await user.send_message_to_self(self, message)
+        except Exception as e:
+            print(e)
         
     async def game_message(self, event):
         message = event['message']

@@ -1,13 +1,14 @@
 import requests
-from .Client import Client
-from django.http import HttpRequest
 from .models import User
+from .Client import Client
+from .Room import AVAILABLE_ROOMS
+from django.http import HttpRequest
 from asgiref.sync import sync_to_async
 
 LOGGED_USERS : list[Client] = []
 class Auth:
     @staticmethod
-    async def login(ws_data: dict, ws_connection):
+    async def login(ws_data: dict, ws_connection, ws):
         headers:list = ws_data.get('headers')
         if (headers is None): return False
         
@@ -24,6 +25,7 @@ class Auth:
         
         user = Client(id=user_id, channel_name=ws_connection)
         user.user_data = await sync_to_async(User.objects.get)(id=user_id)
+        user.ws = ws
         LOGGED_USERS.append(user)
         return True
     

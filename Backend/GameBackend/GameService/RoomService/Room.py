@@ -91,8 +91,8 @@ class RoomService:
         user.room.remove_player(user.id)
         if (user.room.get_player_count() == 0):
             AVAILABLE_ROOMS.remove(user.room)
+            del user.room
             
-        del user.room
         user.room = None
         return ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": 'You have left the room' })
     
