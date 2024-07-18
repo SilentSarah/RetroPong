@@ -18,12 +18,23 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         raise StopConsumer()
         
     async def receive(self, text_data):
-        body = json.loads(text_data)
-        await Interpreter.interpret(self, body)
+        try:
+            body = json.loads(text_data)
+            await Interpreter.interpret(self, body)
+        except Exception as e:
+            print("Error: ", e)
+            await self.send_json({ 'Error': 'Invalid request' })
         
     async def send_msg(self, message):
         await self.send_json({
             message
+        })
+        
+    async def send_message_status(self, type, status, message):
+        await self.send_json({
+            'type': type,
+            'status': status,
+            'message': message
         })
         
     async def game_message(self, event):

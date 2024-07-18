@@ -13,7 +13,8 @@ COMMANDS = [
 class Interpreter:
     @staticmethod
     async def interpret(ws, text_data: dict) -> str:
-        if (Auth.check_auth(ws.channel_name) is None):
+        user: Client = await Auth.check_auth(ws.channel_name)
+        if (user is None):
             await ws.send_json({ 'Error': 'You are not authenticated' })
             await ws.close()
             
@@ -28,9 +29,6 @@ class Interpreter:
         
         action_callable:callable = Interpreter.identify_action(request_func_list, action)
         if (action_callable is None): return await Interpreter.respond(ws, { 'Error': 'Invalid action' })
-        
-        user: Client = await Auth.check_auth(ws.channel_name)
-        if (user is None): return await Interpreter.respond(ws, { 'Error': 'You are not authenticated' })
         
         await Interpreter.execute_action(ws, action_callable, user, text_data)
         
