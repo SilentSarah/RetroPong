@@ -18,8 +18,7 @@ class GameConnection {
 }
 
 export function initiateGameConnection() {
-    if (interval != null) clearInterval(interval);
-    if (GameConnector != null) GameConnector.close();
+    if (GameConnector == null)
     GameConnector = new GameConnection("ws://127.0.0.1:8003/ws/game/");
     GameConnector.socket.onopen = function(event) {
 
@@ -32,6 +31,9 @@ export function initiateGameConnection() {
     }
     GameConnector.socket.onclose = function(event) {
         console.log("Connection closed, Reconnecting...");
-        interval = setInterval(() => initiateGameConnection(), 1000);
+        interval = setInterval(() => {
+            if (GameConnector != null) GameConnector.close();
+            if (interval != null) clearInterval(interval);
+        }, 1500);
     }
 }

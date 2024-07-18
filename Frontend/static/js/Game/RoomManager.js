@@ -42,9 +42,16 @@ export class RoomManager {
         const rooms_container = document.getElementById('rooms-container');
         rooms_container.innerHTML = '';
         data.forEach(room => {
-            rooms_container.appendChild(this.CreateRoomHTML(room));
+            const room_html = this.CreateRoomHTML(room);
+            rooms_container.appendChild(room_html);
+            setTimeout(() => {
+                room_html.classList.remove("opacity-0");
+            }, 250);
+
         });
-        rooms_container.appendChild(this.CreateRoomHTML("Solo", `None`, `${0}/2`, true));
+        const room_creation = this.CreateRoomHTML({}, true);
+        rooms_container.appendChild(room_creation);
+        setTimeout(() => room_creation.classList.remove("opacity-0"), 500);
     }
 
     static CreateRoomHTML(room_data, create = false) {
@@ -52,7 +59,7 @@ export class RoomManager {
         const room = document.createElement('div');
         const room_id = !create ? room_data.id : 'NONE';
         const player_count = !create ? room_data.playerCount : 0;
-        room.classList.add("room", "border-transparent-0-5", "gap-3", "px-2");
+        room.classList.add("room", "border-transparent-0-5", "gap-3", "px-2", "transition-all", "opacity-0");
         room.id = create ? "room-creation" : `room-id-${room_id}`;
         room.innerHTML = `
         <div class="room_tile border-transparent-0-5">
