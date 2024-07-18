@@ -1,26 +1,37 @@
+import { passUserTo } from '../login_register.js';
+import { Interpreter } from './Interpreter.js';
+export let GameConnector = null;
+let interval = null;
+
 class GameConnection {
     constructor(link) {
         this.link = link;
         this.socket = new WebSocket(link);
-        this.socket.onopen = function(event) {
-            console.log("Connection established");
-        }
-        this.socket.onmessage = function(event) {
-            console.log(event.data);
-        }
-        this.socket.onclose = function(event) {
-            console.log("Connection closed");
-        }
     }
-
     send(message) {
+        Interpreter.request_data = message;
         this.socket.send(JSON.stringify(message));
     }
-
     close() {
         this.socket.close();
     }
 }
 
-function initiateGameConnection() {
+export function initiateGameConnection() {
+    if (interval != null) clearInterval(interval);
+    if (GameConnector != null) GameConnector.close();
+    GameConnector = new GameConnection("ws://127.0.0.1:8003/ws/game/");
+    GameConnector.socket.onopen = function(event) {
+
+    }
+    GameConnector.socket.onmessage = function(event) {
+        const response = JSON.parse(event.data);
+        console.log("response in GameConnection.js", response);
+        Interpreter.interpretResponse(response);
+
+    }
+    GameConnector.socket.onclose = function(event) {
+        console.log("Connection closed, Reconnecting...");
+        interval = setInterval(() => initiateGameConnection(), 1000);
+    }
 }

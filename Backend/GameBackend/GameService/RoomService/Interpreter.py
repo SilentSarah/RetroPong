@@ -30,7 +30,7 @@ class Interpreter:
         action_callable:callable = Interpreter.identify_action(request_func_list, action)
         if (action_callable is None): return await Interpreter.respond(ws, { 'Error': 'Invalid action' })
         
-        await Interpreter.execute_action(ws, action_callable, user, text_data)
+        await Interpreter.execute_action(ws, action_callable, user, action, text_data)
         
     def identify_request(request: str) -> list[str, callable]:
         for command in COMMANDS:
@@ -50,5 +50,5 @@ class Interpreter:
         return True
     
     @staticmethod
-    async def execute_action(ws, action:callable, user: Client, data: dict):
-        return await action(ws, user, data)
+    async def execute_action(ws, action:callable, user: Client, req_action: str, data: dict):
+        return await action(ws, user, req_action, data)

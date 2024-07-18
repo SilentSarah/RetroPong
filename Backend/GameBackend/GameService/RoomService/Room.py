@@ -46,7 +46,7 @@ AVAILABLE_ROOMS : list[Room] = []
     
 class RoomService:
     @staticmethod
-    async def create_room(ws, user, data: dict):
+    async def create_room(ws, user, action, data: dict):
         try:
             if (RoomService.check_joined_room(user)):
                 return await ws.send_message_status("rooms", "fail", 'You are already in a room')
@@ -58,16 +58,14 @@ class RoomService:
             room.playerCount = 1
             room.status = 'waiting'
             user.room = room
-            print(f"User {user.id} created room {user.room.id}")
             AVAILABLE_ROOMS.append(room)
-            response = room.__dict__
-            return await ws.send_json({ "type": "rooms", 'status': 'success', "room_data": response })
+            return await RoomService.get_rooms(ws, user, action, data)
         except Exception as e:
             print(e)
             return await ws.send_message_status("rooms", "fail", 'Error creating room')
     
     @staticmethod
-    async def join_room(ws, user, data: dict):
+    async def join_room(ws, user, action, data: dict):
         if (RoomService.check_joined_room(user)):
             return await ws.send_message_status("rooms", "fail", 'You are already in a room')
         
@@ -83,10 +81,10 @@ class RoomService:
         room.add_player(user.id)
         user.room = room
         print(f"User {user.id} joined room {user.room.id}")
-        await ws.send_json({ "type": "rooms", 'status': 'success', "room_data": room.__dict__ })
+        await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room.__dict__ })
     
     @staticmethod
-    def leave_room(ws, user, data: dict):
+    def leave_room(ws, user, action, data: dict):
         if (RoomService.check_joined_room(user) == False):
             return ws.send_message_status("rooms", "fail", 'You are not in a room')
         
@@ -96,15 +94,15 @@ class RoomService:
             
         del user.room
         user.room = None
-        return ws.send_message_status("rooms", "success", 'You left the room successfully')
+        return ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": 'You have left the room' })
     
     @staticmethod
-    async def get_rooms(ws, user, data:dict) -> list[Room]:
+    async def get_rooms(ws, user, action, data:dict) -> list[Room]:
         room_data:list[dict] = []
         available_rooms: list[Room] = RoomService.get_available_rooms()
         for room in available_rooms:
             room_data.append(room.__dict__)
-        return await ws.send_json({ "type": "rooms", 'status': 'success', "rooms": room_data })
+        return await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room_data })
     
     # @staticmethod
     # def get_room(room_id: int) -> Room:

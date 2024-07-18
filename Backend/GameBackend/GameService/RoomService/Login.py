@@ -1,6 +1,8 @@
 import requests
 from .Client import Client
 from django.http import HttpRequest
+from .models import User
+from asgiref.sync import sync_to_async
 
 LOGGED_USERS : list[Client] = []
 class Auth:
@@ -21,6 +23,7 @@ class Auth:
         if (find_user(user_id=user_id) is not None): return False
         
         user = Client(id=user_id, channel_name=ws_connection)
+        user.user_data = await sync_to_async(User.objects.get)(id=user_id)
         LOGGED_USERS.append(user)
         return True
     

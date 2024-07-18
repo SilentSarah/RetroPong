@@ -4,6 +4,7 @@ from .Interpreter import Interpreter
 from channels.db import database_sync_to_async
 from channels.exceptions import StopConsumer
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
+from .Login import LOGGED_USERS
 
 class RoomConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
@@ -11,7 +12,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             return await self.close() 
         else: 
             await self.accept()
-            await self.send_json({ 'Announcement': 'You are connected to RetroPong GameServer' })
+            await self.send_json(json.dumps({ 'Announcement': 'You are connected to RetroPong GameServer' }))
         
     async def disconnect(self, close_code):
         await Auth.logout(self.channel_name)
@@ -36,6 +37,10 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             'status': status,
             'message': message
         })
+        
+    async def broadcast(self, message):
+        for user in LOGGED_USERS:
+            await user.send_message_to_self(self, message)
         
     async def game_message(self, event):
         message = event['message']

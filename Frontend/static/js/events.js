@@ -19,6 +19,7 @@ import { scan2fa } from "./twoFactor.js";
 import { log_user_in, register_user, passUserTo } from "./login_register.js";
 import { notifications } from "./notification.js";
 import { DestroyConfirmationPopUp } from "./settings.js";
+import { GameConnector } from "./Game/GameConnection.js";
 
 
 let notificationHandler = null;

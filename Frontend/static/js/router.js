@@ -16,6 +16,7 @@ import { clearModals, loadEvents, displayTitle, credentialsScan, copyIDListener 
 import { setDashboardStats } from "./userdata.js";
 import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
 import { renderGame } from "./Game/GameRenderer.js";
+import { initiateGameConnection } from "./Game/GameConnection.js";
 
 
 export let fetchID;
@@ -52,7 +53,7 @@ export const routes = [
         path: '/game',
         on: false,
         component: () => grabContent('/static/content/game.html'),
-        func_arr: [() => renderGame()]
+        func_arr: [() => initiateGameConnection(), () => renderGame()]
     },
     {
         path: '/tournament',
