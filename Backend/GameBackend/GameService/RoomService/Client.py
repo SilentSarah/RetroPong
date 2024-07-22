@@ -8,7 +8,5 @@ class Client:
         self.user_data: User = None
         self.ws = None
         
-    async def send_message_to_self(self, ws, message):
-        await ws.send_json({
-            message
-        })
+    async def send_message_to_self(self, message):
+        await self.ws.send_json(message)

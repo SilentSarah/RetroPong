@@ -1,11 +1,14 @@
+import uuid
+
 class Room:
     def __init__(self):
-        self.id: int
+        self.id: str
         self.players: list[int]
         self.score: list[int]
         self.winner: int
         self.playerCount: int
         self.status: str
+        self.owner: int
         
     def add_player(self, player_id: int):
         self.players.append(player_id)
@@ -51,18 +54,24 @@ class RoomService:
             if (RoomService.check_joined_room(user)):
                 return await ws.send_message_status("rooms", "fail", 'You are already in a room')
             room = Room()
-            room.id = len(AVAILABLE_ROOMS)
+            room.id = str(uuid.uuid4())
             room.players = [user.id]
             room.score = [0, 0]
             room.winner = -1
             room.playerCount = 1
             room.status = 'waiting'
+            room.owner = user.id
             user.room = room
             AVAILABLE_ROOMS.append(room)
-            return await RoomService.get_rooms(ws, user, action, data)
+            return await RoomService.broadcast_room_changes(ws)
         except Exception as e:
             print(e)
             return await ws.send_message_status("rooms", "fail", 'Error creating room')
+    
+    # @staticmethod
+    # def get_lowest_available_room_id() -> int:
+    #     room_ids = [room.get_id() for room in AVAILABLE_ROOMS]
+    #     return 0 if len(room_ids) == 0 else max(room_ids) + 1
     
     @staticmethod
     async def join_room(ws, user, action, data: dict):
@@ -71,38 +80,67 @@ class RoomService:
         
         room_id = data.get('room_id')
         if (room_id is None):
-            return await ws.send_message_status("rooms", "fail", 'Missing room_id identifier')
+            return await ws.send_message_status("rooms", "fail", 'Missing Room ID identifier')
         
-        room_id: int = int(room_id)
-        if (room_id < 0 or room_id >= len(AVAILABLE_ROOMS)):
+        room_id: str = room_id
+        room:Room = RoomService.get_room(room_id)
+        if (room is None):
             return await ws.send_message_status("rooms", "fail", 'Room id not found')
         
-        room:Room = AVAILABLE_ROOMS[room_id]
         room.add_player(user.id)
         user.room = room
         print(f"User {user.id} joined room {user.room.id}")
         await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room.__dict__ })
+        return await RoomService.broadcast_room_changes(ws)
     
     @staticmethod
-    def leave_room(ws, user, action, data: dict):
+    async def leave_room(ws, user, action, data: dict):
         if (RoomService.check_joined_room(user) == False):
-            return ws.send_message_status("rooms", "fail", 'You are not in a room')
+            return await ws.send_message_status("rooms", "fail", 'You are not in a room')
         
+        print("User Room", user.room)
+        # room_id: int = user.room.id
         user.room.remove_player(user.id)
         if (user.room.get_player_count() == 0):
             AVAILABLE_ROOMS.remove(user.room)
             del user.room
+        else:
+            user.room.owner = user.room.get_players()[0]
             
         user.room = None
-        return ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": 'You have left the room' })
+        await ws.send_json({
+            "request": "rooms", 
+            "action": action, 
+            'status': 'success', 
+            "message": 'You have left the room'
+        })
+        return await RoomService.broadcast_room_changes(ws)
+    
     
     @staticmethod
     async def get_rooms(ws, user, action, data:dict) -> list[Room]:
         room_data:list[dict] = []
-        available_rooms: list[Room] = RoomService.get_available_rooms()
-        for room in available_rooms:
+        for room in AVAILABLE_ROOMS:
             room_data.append(room.__dict__)
+        # await ws.broadcast({
+        #     "request": "rooms", 
+        #     "action": action, 
+        #     'status': 'success', 
+        #     "data": room_data
+        # })
         return await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room_data })
+    
+    @staticmethod
+    async def broadcast_room_changes(ws):
+        room_data:list[dict] = []
+        for room in AVAILABLE_ROOMS:
+            room_data.append(room.__dict__)
+        await ws.broadcast({
+            "request": "rooms", 
+            "action": "update", 
+            'status': 'success', 
+            "data": room_data
+        })
     
     # @staticmethod
     # def get_room(room_id: int) -> Room:
@@ -116,12 +154,14 @@ class RoomService:
     def get_available_rooms() -> list[Room]:
         return [room for room in AVAILABLE_ROOMS if room.get_player_count() < 2]
     
-    # @staticmethod
-    # def get_room_by_player(player_id: int) -> Room:
-    #     for room in AVAILABLE_ROOMS:
-    #         if player_id in room.get_players():
-    #             return room
-    #     return None
+
+    @staticmethod
+    def get_room(room_id: str) -> Room:
+        print("Room ID REQUEST: ", room_id, "Rooms: ", len(AVAILABLE_ROOMS))
+        for room in AVAILABLE_ROOMS:
+            if room.get_id() == room_id:
+                return room
+        return None
     
     @staticmethod
     def check_joined_room(user) -> bool:

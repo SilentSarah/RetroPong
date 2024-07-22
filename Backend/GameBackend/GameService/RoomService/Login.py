@@ -25,6 +25,7 @@ class Auth:
         
         user = Client(id=user_id, channel_name=ws_connection)
         user.user_data = await sync_to_async(User.objects.get)(id=user_id)
+        user.room = await Auth.restore_user_data(user)
         user.ws = ws
         LOGGED_USERS.append(user)
         return True
@@ -41,6 +42,13 @@ class Auth:
     async def check_auth(ws_connection):
         user = find_user(ws_connection=ws_connection)
         return user
+    
+    @staticmethod
+    async def restore_user_data(user: Client):
+        for room in AVAILABLE_ROOMS:
+            if (user.id in room.get_players()):
+                return room
+        return None
         
 
 async def verify_token(request: HttpRequest = None, token_from_ws = None) -> str:

@@ -41,7 +41,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
     async def broadcast(self, message):
         try:
             for user in LOGGED_USERS:
-                await user.send_message_to_self(self, message)
+                await user.send_message_to_self(message)
         except Exception as e:
             print(e)
         
