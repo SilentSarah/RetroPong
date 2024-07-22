@@ -68,11 +68,6 @@ class RoomService:
             print(e)
             return await ws.send_message_status("rooms", "fail", 'Error creating room')
     
-    # @staticmethod
-    # def get_lowest_available_room_id() -> int:
-    #     room_ids = [room.get_id() for room in AVAILABLE_ROOMS]
-    #     return 0 if len(room_ids) == 0 else max(room_ids) + 1
-    
     @staticmethod
     async def join_room(ws, user, action, data: dict):
         if (RoomService.check_joined_room(user)):
@@ -87,11 +82,14 @@ class RoomService:
         if (room is None):
             return await ws.send_message_status("rooms", "fail", 'Room id not found')
         
+        if (room.get_player_count() >= 2):
+            return await ws.send_message_status("rooms", "fail", 'Room is full')
+        
         room.add_player(user.id)
         user.room = room
-        print(f"User {user.id} joined room {user.room.id}")
         await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room.__dict__ })
-        return await RoomService.broadcast_room_changes(ws)
+        await RoomService.broadcast_room_changes(ws)
+        
     
     @staticmethod
     async def leave_room(ws, user, action, data: dict):
@@ -122,12 +120,6 @@ class RoomService:
         room_data:list[dict] = []
         for room in AVAILABLE_ROOMS:
             room_data.append(room.__dict__)
-        # await ws.broadcast({
-        #     "request": "rooms", 
-        #     "action": action, 
-        #     'status': 'success', 
-        #     "data": room_data
-        # })
         return await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room_data })
     
     @staticmethod
@@ -141,15 +133,7 @@ class RoomService:
             'status': 'success', 
             "data": room_data
         })
-    
-    # @staticmethod
-    # def get_room(room_id: int) -> Room:
-    #     return AVAILABLE_ROOMS[room_id]
-    
-    # @staticmethod
-    # def get_room_count() -> int:
-    #     return len(AVAILABLE_ROOMS)
-    
+
     @staticmethod
     def get_available_rooms() -> list[Room]:
         return [room for room in AVAILABLE_ROOMS if room.get_player_count() < 2]
