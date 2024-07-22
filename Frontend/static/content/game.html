@@ -1,13 +1,41 @@
-<div class="container px-0 border-pink rounded-3 position-relative overflow-y-hidden">
+<div class="container px-0 border-pink rounded-3 position-relative overflow-y-hidden" style="user-select: none;">
 	<div id="game-container" class="d-flex justify-content-center position-absolute flex-column w-100 h-100">
-		<div class="d-flex flex-column justify-content-center border-transparent-1 p-5 mx-auto bg-black-transparent-0-75 rounded-5 d-none">
+		<!-- <div class="d-flex flex-column justify-content-center border-transparent-1 p-5 mx-auto bg-black-transparent-0-75 rounded-5 d-none">
 			<h3 class="text-center fs-1 mb-3 taprom text-pink-gradient">Pause Menu</h3>
 			<div class="d-flex flex-column justidy-content-center align-items-center gap-3">
 				<button id="resume" onclick="exitMenu()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Resume</button>
 				<button id="settings" onclick="DisplayGameOptions()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Settings</button>
 				<button id="exit" onclick="exitGame()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Exit</button>
 			</div>
+		</div> -->
+	</div>
+	<div class="d-flex flex-column h-100 w-100">
+		<canvas id="game" class="w-100 bg-black-transparent-0-5 border-bottom" style="height: 80%;"></canvas>
+		<div class="d-flex jsutify-content-evenly bg-black-transparent-0-5 w-100" style="height: 20%;">
+			<div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 px-4 rounded-start-5">
+				<h3 id="op_1" class="text-center fs-2 mb-3 taprom text-white line-height-1">Player</h3>
+				<div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
+					<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
+					<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
+					<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
+				</div>
+			</div>
+			<div class="d-flex flex-column justify-content-center align-items-center w-100">
+				<h3 class="text-center fs-1 mb-3 taprom text-chrome text-glow">Score</h3>
+				<h3 id="lives" class="text-center fs-1 mb-3 taprom text-chrome text-glow w-100">
+					<span id="op_1_score">0</span>
+					-
+					<span id="op_2_score">0</span>
+				</h3>
+			</div>
+			<div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 px-4 rounded-start-5">
+				<h3 id="op_2" class="text-center fs-2 mb-3 taprom text-white line-height-1">Player</h3>
+				<div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
+					<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
+					<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
+					<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
+				</div>
+			</div>
 		</div>
 	</div>
-	<canvas id="game" class="w-100 h-100 bg-black-transparent-0-5"></canvas>
 </div>

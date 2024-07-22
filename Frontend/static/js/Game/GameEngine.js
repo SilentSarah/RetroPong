@@ -13,6 +13,8 @@ const maps = {
     "Midnight": ["#000000"],
     "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
 }
+
+const scores = [0, 0];
 const BALL_SPEED = 17;
 const BALL_SPEED_LIMIT = 32;
 const PADDLE_SPEED = 25;
@@ -24,8 +26,8 @@ class Paddle {
         this.image = new Image();
         this.cWidth = cWidth;
         this.cHeight = cHeight;
-        this.pHeight = cHeight * 0.115;
-        this.pWidth = cWidth * 0.035;
+        this.pHeight = cHeight * 0.125;
+        this.pWidth = cWidth * 0.030;
         this.push_value = 50;
         this.image.src = imagePath;
         this.drawPosY = (this.cHeight / 2) - (this.pHeight / 2);
@@ -40,7 +42,6 @@ class Paddle {
             loader(this);
         }
     }
-
     draw() {
         this.ctx.drawImage(this.image, this.drawPosX, this.drawPosY, this.pWidth, this.pHeight);
     }
@@ -54,8 +55,8 @@ class Ball {
         this.image.src = imagePath;
         this.cHeight = cHeight;
         this.cWidth = cWidth;
-        this.bHeight = cHeight * 0.0345;
-        this.bWidth = cWidth * 0.0225;
+        this.bHeight = 0.035 * this.cHeight;
+        this.bWidth = 0.0175 * this.cWidth;
         this.posX = (this.cWidth / 2);
         this.posY = (this.cHeight / 2);
         this.drawPosX = this.posX - (this.bWidth / 2);
@@ -112,23 +113,25 @@ function generateGradient(ctx, width, height, chosenMap) {
 function resetInGamePhysics(rPaddle, bPaddle, ball) {
     GameStates.in_progress = 0;
     GameStates.starting = 1;
-    ball.drawPosX = ball.cWidth / 2;
-    ball.drawPosY = ball.cHeight / 2;
-    ball.posX = ball.cWidth / 2;
-    ball.posY = ball.cHeight / 2;
+    setTimeout(() => {
+        ball.drawPosX = ball.cWidth / 2;
+        ball.drawPosY = ball.cHeight / 2;
+        ball.posX = ball.cWidth / 2;
+        ball.posY = ball.cHeight / 2;
 
-    rPaddle.drawPosY = (rPaddle.cHeight / 2) - (rPaddle.pHeight / 2);
-    rPaddle.drawPosX = rPaddle.push_value;
-    rPaddle.posY = rPaddle.drawPosY + rPaddle.pHeight / 2;
-    rPaddle.posX = rPaddle.push_value;
+        rPaddle.drawPosY = (rPaddle.cHeight / 2) - (rPaddle.pHeight / 2);
+        rPaddle.drawPosX = rPaddle.push_value;
+        rPaddle.posY = rPaddle.drawPosY + rPaddle.pHeight / 2;
+        rPaddle.posX = rPaddle.push_value;
 
-    bPaddle.drawPosY = (bPaddle.cHeight / 2) - (bPaddle.pHeight / 2);
-    bPaddle.drawPosX = bPaddle.cWidth - (bPaddle.push_value + bPaddle.pWidth);
-    bPaddle.posY = bPaddle.drawPosY + bPaddle.pHeight / 2;
-    bPaddle.posX = bPaddle.cWidth - (bPaddle.push_value + (bPaddle.pWidth / 2));
+        bPaddle.drawPosY = (bPaddle.cHeight / 2) - (bPaddle.pHeight / 2);
+        bPaddle.drawPosX = bPaddle.cWidth - (bPaddle.push_value + bPaddle.pWidth);
+        bPaddle.posY = bPaddle.drawPosY + bPaddle.pHeight / 2;
+        bPaddle.posX = bPaddle.cWidth - (bPaddle.push_value + (bPaddle.pWidth / 2));
 
-    ball.xspeed = BALL_SPEED;
-    ball.yspeed = BALL_SPEED;
+        ball.xspeed = BALL_SPEED;
+        ball.yspeed = BALL_SPEED;
+    }, 500);
 }
 
 function increaseBallSpeed(ball) {
@@ -186,6 +189,9 @@ function ballPhysics(ball, rPaddle, bPaddle) {
     }
 
     if (ball_hb.x <= 0 || ball_hb.x + ball_hb.width >= ball.cWidth) {
+        const scorer = ball_hb.x <= 0 ? 1 : 0;
+        scores[scorer]++;
+        document.querySelector("#op_" + (scorer + 1) + "_score").innerText = scores[scorer];
         resetInGamePhysics(rPaddle, bPaddle, ball);
     }
     if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {
@@ -198,7 +204,6 @@ function ballPhysics(ball, rPaddle, bPaddle) {
     ball.posY += ball.yspeed;
     ball.drawPosX += ball.xspeed;
     ball.drawPosY += ball.yspeed;
-    console.log(ball.xspeed, ball.yspeed);
 
 }
 
