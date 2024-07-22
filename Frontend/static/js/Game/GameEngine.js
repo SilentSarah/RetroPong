@@ -236,7 +236,7 @@ export function loadGameEngine(gameMode) {
     const drawGame = () => {
         if (!rPaddle || !bPaddle || !ball) return ;
         ctx.clearRect(0, 0, width, height);
-        generateGradient(ctx, width, height, "RetroPong");
+        generateGradient(ctx, width, height, "Midnight");
         if (GameStates.starting) {
             invokeStartMatchTimer(ctx, matchTimer, width, height, ball);
         } else if (GameStates.in_progress) {

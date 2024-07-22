@@ -1,18 +1,17 @@
 
 import { GameConnector } from './GameConnection.js';
+import { user_id } from '../userdata.js';
 
+let room_states = null;
 export class RoomManager {
 
     static processRoomRequest(action, data) {
         switch (action) {
             case 'list':
-                this.requestRoomList('rooms', action, data);
-                break;
             case 'create':
-                this.CreateRoom('rooms', action, data);
-                break;
+            case 'leave':
             case 'join':
-                this.joinRoom(data);
+                this.requestRoomService('rooms', action, data);
                 break;
         }
     }
@@ -23,91 +22,140 @@ export class RoomManager {
             case 'create':
                 this.listRooms(data);
                 break;
-            case 'join':
-                this.joinRoom(data);
+            case 'update':
+                this.updateRooms(data);
                 break;
         }
-    }
-
-    static requestRoomList(type, action, data) {
-        const payload = {
-            "request": type,
-            "action": action,
-            "data": data
-        }
-        GameConnector.send(payload);
     }
 
     static listRooms(data) {
         const rooms_container = document.getElementById('rooms-container');
         rooms_container.innerHTML = '';
+        const room_creation = this.CreateRoomHTML({}, true);
+        rooms_container.appendChild(room_creation);
         data.forEach(room => {
             const room_html = this.CreateRoomHTML(room);
             rooms_container.appendChild(room_html);
             setTimeout(() => {
                 room_html.classList.remove("opacity-0");
             }, 250);
-
         });
-        const room_creation = this.CreateRoomHTML({}, true);
-        rooms_container.appendChild(room_creation);
         setTimeout(() => room_creation.classList.remove("opacity-0"), 500);
+
+        room_states = data;
     }
 
     static CreateRoomHTML(room_data, create = false) {
-        let chosen_function = create ? CreateRoomWrapper : JoinRoomWrapper;
         const room = document.createElement('div');
         const room_id = !create ? room_data.id : 'NONE';
         const player_count = !create ? room_data.playerCount : 0;
+        const owner = parseInt(room_data.owner);
         room.classList.add("room", "border-transparent-0-5", "gap-3", "px-2", "transition-all", "opacity-0");
         room.id = create ? "room-creation" : `room-id-${room_id}`;
-        room.innerHTML = `
-        <div class="room_tile border-transparent-0-5">
-            <!-- Type -->
-            <div class="d-flex align-items-center gap-1">
-                <img src="/static/img/game/Mode.png" width="32px" height="32px">
-                <span class="text-white fs-5 fw-bold">${"Versus Online"}</span>
-            </div>
-            <!-- Player Count -->
-            <div class="d-flex align-items-center gap-1">
-                <img src="/static/img/game/people.png" width="32px" height="32px">
-                <span class="text-white fs-5 fw-bold">${player_count}</span>
-            </div>
-        </div>
-        <div class="line"></div>
-        <div class="room_tile border-transparent-0-5">
-            <!-- RoomID -->
-            <div class="d-flex align-items-center gap-1">
-                <img src="/static/img/game/RoomID.png" width="32px" height="32px">
-                <span class="text-white fs-5 fw-bold">${room_id}</span>
-            </div>
-        </div>`;
+        !create ? room.setAttribute('room-owner-id', owner): null;
+        !create ? room.setAttribute('room-id', room_id): null;
+        create ? room.setAttribute('Creator', true): null
+        room.innerHTML = `<div class="room_tile border-transparent-0-5">
+                                <!-- Type -->
+                                <div class="d-flex align-items-center gap-1">
+                                    <img src="/static/img/game/Mode.png" width="32px" height="32px">
+                                    <span class="text-white fs-5 fw-bold">${"Versus Online"}</span>
+                                </div>
+                                <!-- Player Count -->
+                                <div class="d-flex align-items-center gap-1">
+                                    <img src="/static/img/game/people.png" width="32px" height="32px">
+                                    <span id="pCount" class="text-white fs-5 fw-bold">${player_count}</span>
+                                </div>
+                            </div>
+                            <div class="line"></div>
+                            <div class="room_tile border-transparent-0-5">
+                                <!-- RoomID -->
+                                <div class="d-flex align-items-center gap-1">
+                                    <img src="/static/img/game/RoomID.png" width="32px" height="32px">
+                                    <span class="text-white fw-bold" style="font-size: 0.8rem;">${room_id}</span>
+                                </div>
+                            </div>`;
         const room_join_create = document.createElement('button');
+        let chosen_function = create ? CreateRoomWrapper : (owner == user_id ? LeaveRoomWrapper : JoinRoomWrapper.bind(null, room_id));
+        const button_text = create ? "Create" : (owner == user_id ? "Leave" : "Acess");
         room_join_create.classList.add("rounded-5", "border-transparent-0-5", "bg-white-transparent-0-05", "px-3");
-        room_join_create.innerHTML = `<img src="/static/img/game/${create ? "Join" : "Acess"}.png" width="22px" height="22px">`;
+        room_join_create.innerHTML = `<img src="/static/img/game/${button_text}.png" width='22px' height='22px'>`;
         room_join_create.onclick = chosen_function;
+        // else if (!create) room_join_create.disabled = true;
         room.children[2].appendChild(room_join_create);
+
+        // joined_room = owner == user_id ? room_id : null;
         return room;
     }
 
-    static JoinRoom(data) {
-        console.log(data);
+    static updateRooms(data) {
+        if (!data) return;
+        this.update_rooms_state(data);
     }
 
-    static CreateRoom(type, action, data) {
+    static requestRoomService(type, action, data, room_id = null) {
         const payload = {
             "request": type,
             "action": action,
             "data": data
         }
+        if (room_id != null) payload["room_id"] = room_id
         GameConnector.send(payload);
+    }
+
+    static update_rooms_state(data) {
+        for (const room_data of data) {
+            const existing_room = room_states.find(room => room.id == room_data.id);
+            if (existing_room != undefined) {
+                // console.log("Updating Room", existing_room);
+                const room_HTML = document.getElementById(`room-id-${room_data.id}`);
+                if (room_HTML != null) {
+                    // console.log("found the room", existing_room, room_HTML);
+                    room_HTML.querySelector("#pCount").innerText = room_data.playerCount;
+                    const button = room_HTML.querySelector("button");
+                    if (room_data.players.includes(user_id)) {
+                        button.onclick = LeaveRoomWrapper;
+                        button.innerHTML = `<img src="/static/img/game/Leave.png" width='22px' height='22px'>`;
+                    } else {
+                        button.onclick = JoinRoomWrapper.bind(null, room_data.id);
+                        button.innerHTML = `<img src="/static/img/game/Acess.png" width='22px' height='22px'>`;
+                    }
+                }
+            } else {
+                // console.log("Creating Room", room_data);
+                const room_HTML = this.CreateRoomHTML(room_data);
+                const rooms_container = document.getElementById('rooms-container');
+                rooms_container.appendChild(room_HTML);
+                setTimeout(() => {
+                    room_HTML.classList.remove("opacity-0");
+                }, 250);
+            }
+        }
+        for (const room of room_states) {
+            const found_room = data.find(r => r.id == room.id);
+            if (found_room == undefined) {
+                const room_HTML = document.getElementById(`room-id-${room.id}`);
+                if (room_HTML != null) {
+                    room_HTML.classList.add("opacity-0");
+                    setTimeout(() => {
+                        room_HTML.remove();
+                    }, 250);
+                }
+            }
+        }
+        room_states = data;
+        // console.log(room_states);
     }
 }
 
 function CreateRoomWrapper() {
-    RoomManager.CreateRoom('rooms', 'create', {});
+    RoomManager.requestRoomService('rooms', 'create', {});
 }
 
-function JoinRoomWrapper() {
-    RoomManager.JoinRoom();
+function JoinRoomWrapper(room_id) {
+    RoomManager.requestRoomService('rooms', 'join', {}, room_id);
+}
+
+function LeaveRoomWrapper() {
+    RoomManager.requestRoomService('rooms', 'leave', {});
 }

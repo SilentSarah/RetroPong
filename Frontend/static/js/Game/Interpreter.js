@@ -21,16 +21,16 @@ export class Interpreter {
         const message = response.message;
         const data = response.data;
 
-        if (!this.invokeStatus(status, message))
+        if (!this.invokeStatus(action, status, message))
             return;
 
         this.invokeResponseAction(type, action, data);
     }
 
-    static invokeStatus(status, message) {
+    static invokeStatus(action, status, message) {
         switch (status) {
             case 'success':
-                // toast(message, 'bg-success');
+                // !action || action ===  "update" ? toast(message, 'bg-success') : null;
                 return true;
             case 'fail':
                 toast(message, 'bg-danger');

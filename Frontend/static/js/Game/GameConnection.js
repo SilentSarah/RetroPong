@@ -1,4 +1,3 @@
-import { passUserTo } from '../login_register.js';
 import { Interpreter } from './Interpreter.js';
 export let GameConnector = null;
 let interval = null;

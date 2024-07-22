@@ -18,6 +18,7 @@ import { DisplayProfileOptions } from "./Profiles.js";
 import { passUserTo } from "./login_register.js";
 
 export let current_user = {};
+export let user_id = null;
 
 export function toast(message, color_class) {
     let div = document.createElement('div');
@@ -92,6 +93,8 @@ export function setValuesToSessionStorage(data) {
             sessionStorage.setItem('full_name', value);
         if (key === 'lname')
             sessionStorage.setItem('full_name', sessionStorage.getItem('full_name') + " " + value);
+        if (key === 'id')
+            user_id = parseInt(value);
         sessionStorage.setItem(key, value);
     }
 }
