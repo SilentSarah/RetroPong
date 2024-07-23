@@ -1,5 +1,6 @@
 from .Login import Auth
 from .Room import RoomService
+from .Game import GameService
 from .Client import Client
 
 COMMANDS = [
@@ -8,6 +9,14 @@ COMMANDS = [
         ('join', RoomService.join_room),  
         ('leave', RoomService.leave_room),  
         ('list', RoomService.get_rooms)
+    ]),
+    ("game", [
+        ('leave', GameService.leave_game),  
+        # ('pause', RoomService.pause_game),  
+        # ('resume', RoomService.resume_game),  
+        # ('restart', RoomService.restart_game),  
+        # ('move', RoomService.move_player),  
+        # ('shoot', RoomService.shoot_ball)
     ])
 ]
 class Interpreter:

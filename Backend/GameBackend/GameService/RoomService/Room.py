@@ -1,5 +1,5 @@
 import uuid
-
+from .Game import GameService
 class Room:
     def __init__(self):
         self.id: str
@@ -87,8 +87,13 @@ class RoomService:
         
         room.add_player(user.id)
         user.room = room
+        
         await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room.__dict__ })
         await RoomService.broadcast_room_changes(ws)
+        
+        if (room.get_player_count() == 2):
+            print("Room filled, starting round")
+            await GameService.start_game(room)
         
     
     @staticmethod
@@ -96,8 +101,6 @@ class RoomService:
         if (RoomService.check_joined_room(user) == False):
             return await ws.send_message_status("rooms", "fail", 'You are not in a room')
         
-        print("User Room", user.room)
-        # room_id: int = user.room.id
         user.room.remove_player(user.id)
         if (user.room.get_player_count() == 0):
             AVAILABLE_ROOMS.remove(user.room)
@@ -130,7 +133,7 @@ class RoomService:
         await ws.broadcast({
             "request": "rooms", 
             "action": "update", 
-            'status': 'success', 
+            'status': 'success',
             "data": room_data
         })
 

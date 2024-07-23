@@ -5,7 +5,7 @@ from .Room import AVAILABLE_ROOMS
 from django.http import HttpRequest
 from asgiref.sync import sync_to_async
 
-LOGGED_USERS : list[Client] = []
+LOGGED_USERS : list = []
 class Auth:
     @staticmethod
     async def login(ws_data: dict, ws_connection, ws):
@@ -27,6 +27,7 @@ class Auth:
         user.user_data = await sync_to_async(User.objects.get)(id=user_id)
         user.room = await Auth.restore_user_data(user)
         user.ws = ws
+        user.cookie = access_token
         LOGGED_USERS.append(user)
         return True
     
