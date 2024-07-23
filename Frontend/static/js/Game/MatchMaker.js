@@ -1,5 +1,6 @@
 import { modes } from "./GameRenderer.js";
 import { loadGameEngine } from "./GameEngine.js";
+import { Interpreter } from "./Interpreter.js";
 
 const gamepfppath = "/static/img/pfp";
 const matchmaker_details = {
@@ -47,7 +48,7 @@ function AnimateTheMatchMaking(type) {
     setTimeout(() => { matchmaker_info.forEach((info) => { info.classList.add("open"); }); }, 900);
     setTimeout(() => { opponents.forEach((opponent) => { opponent.classList.add("open"); }); }, 750);
     setTimeout(() => { versus.classList.add("open") }, 1000);
-    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type);}, 1000) : clearInterval(matchmaker_timerID);
+    // matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type);}, 1000) : clearInterval(matchmaker_timerID);
 }
 
 function sanitizeHTMLCode(html) {
@@ -81,6 +82,7 @@ function GenerateMatchInfoHTML(matchInfo) {
 
 export function LeaveMatchMaker() {
     matchmaker_timerID !== null ? (clearInterval(matchmaker_timerID), matchmaker_timerID = null) : null;
+    if (modes.V_ONLINE === 1) Interpreter.interpretRequest("game", "leave", {});
     clearChosenGameMode();
     renderLobby();
 }
@@ -96,23 +98,32 @@ function SetTheGameMode(type) {
     });
 }
 
-function clearChosenGameMode() {
+export function clearChosenGameMode() {
     Object.keys(modes).forEach((key) => modes[key] = 0);
 }
 
 
-export function DisplayMatchMakerScreen(type) {
-    const game_container = document.getElementById('game-container');
-    const fake_player = { username: "Searching...", pfp: `${gamepfppath}/Default.png` };
+export function DisplayMatchMakerScreen(type, data = null) {
+    let self_player;
+    let opponent_player;
     const div = document.createElement('div');
+    const game_container = document.getElementById('game-container');
+
+    if (data !== null) {
+        self_player = { username: data.self_data.username, pfp: data.self_data.profilepic };
+        opponent_player = { username: data.opponent_data.username, pfp: data.opponent_data.profilepic };
+    } else {
+        self_player = { username: "Player", pfp: `${gamepfppath}/Default.png` };
+        opponent_player = { username: "Opponent", pfp: `${gamepfppath}/Default.png` };
+    }
 
     div.classList.add("d-flex", "align-items-center", "h-100", "position-relative", "matchmaking_pattern", "overflow-y-hidden");
     div.innerHTML = `
     <button class="border-transparent-0-5 rounded-5 position-absolute z-1 bg-white-transparent-0-15 p-2" style="top: 1.75rem; left: 1.75rem;" onclick="LeaveMatchMaker()">
 		<img src="/static/img/game/Back.png" width="32px" height="32px">
 	</button>
-    ${GenerateUserHTML(fake_player, "bg_gradpink", type).outerHTML}
-    ${GenerateUserHTML(fake_player, "bg_gradblue", type).outerHTML}
+    ${GenerateUserHTML(!data ? fake_player : self_player, "bg_gradpink", type).outerHTML}
+    ${GenerateUserHTML(!data ? fake_player : opponent_player, "bg_gradblue", type).outerHTML}
     ${GenerateMatchInfoHTML({ type: `Versus ${type}` }).outerHTML}`;
 
     SetTheGameMode(type);

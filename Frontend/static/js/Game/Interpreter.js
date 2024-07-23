@@ -1,14 +1,17 @@
 import { toast } from "../userdata.js";
 import { RoomManager } from "./RoomManager.js";
+import { GameProcessor } from "./GameProcessor.js";
 
 export class Interpreter {
     static interpretRequest(type, action, data) {
 
+        console.log("Request:", type, action, data);
         switch (type) {
             case 'rooms':
                 RoomManager.processRoomRequest(action, data);
                 break;
             case 'game':
+                GameProcessor.gameRequestAction(action, data);
                 break
         }
     }
@@ -30,7 +33,7 @@ export class Interpreter {
     static invokeStatus(action, status, message) {
         switch (status) {
             case 'success':
-                // !action || action ===  "update" ? toast(message, 'bg-success') : null;
+                // action ===  "update" ? toast(message, 'bg-success') : null;
                 return true;
             case 'fail':
                 toast(message, 'bg-danger');
@@ -45,7 +48,7 @@ export class Interpreter {
                 RoomManager.roomAction(action, data);
                 break;
             case 'game':
-                // this.gameAction(action, data);
+                GameProcessor.gameAction(action, data);
                 break;
         }
     }

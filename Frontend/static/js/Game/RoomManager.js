@@ -1,6 +1,6 @@
 
 import { GameConnector } from './GameConnection.js';
-import { user_id } from '../userdata.js';
+import { setLoadingOverlay, toast, user_id } from '../userdata.js';
 
 let room_states = null;
 export class RoomManager {
@@ -26,6 +26,7 @@ export class RoomManager {
                 this.updateRooms(data);
                 break;
         }
+        unfreezeAllRoomActions();
     }
 
     static listRooms(data) {
@@ -122,7 +123,6 @@ export class RoomManager {
                     }
                 }
             } else {
-                // console.log("Creating Room", room_data);
                 const room_HTML = this.CreateRoomHTML(room_data);
                 const rooms_container = document.getElementById('rooms-container');
                 rooms_container.appendChild(room_HTML);
@@ -149,13 +149,37 @@ export class RoomManager {
 }
 
 function CreateRoomWrapper() {
+    toast("Creating Room...", 'bg-info');
+    freezeAllRoomActions();
     RoomManager.requestRoomService('rooms', 'create', {});
 }
 
 function JoinRoomWrapper(room_id) {
+    toast("Joining Room...", 'bg-info');
+    freezeAllRoomActions();
     RoomManager.requestRoomService('rooms', 'join', {}, room_id);
 }
 
 function LeaveRoomWrapper() {
+    toast("Leaving Room...", 'bg-info');
+    freezeAllRoomActions();
     RoomManager.requestRoomService('rooms', 'leave', {});
+}
+
+function freezeAllRoomActions() {
+    const rooms_container = document.getElementById('rooms-container');
+    for (const room of rooms_container.children) {
+        const room_btn = room.querySelector('button');
+        room_btn.disabled = true;
+        room_btn.classList.add("opacity-50");
+    }
+}
+
+function unfreezeAllRoomActions() {
+    const rooms_container = document.getElementById('rooms-container');
+    for (const room of rooms_container.children) {
+        const room_btn = room.querySelector('button');
+        room_btn.disabled = false;
+        room_btn.classList.remove("opacity-50");
+    }
 }

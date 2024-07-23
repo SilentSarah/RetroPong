@@ -208,8 +208,8 @@ function ballPhysics(ball, rPaddle, bPaddle) {
 }
 
 function generateRandomBallAngle() {
-    ball.xspeed = Math.random() % 2 == 0 ? -BALL_SPEED : BALL_SPEED;
-    ball.yspeed = Math.random() % 2 == 0 ? -BALL_SPEED : BALL_SPEED;
+    ball.xspeed = Math.random() >= 0.5 ? -BALL_SPEED : BALL_SPEED;
+    ball.yspeed = Math.random() >= 0.5 ? -BALL_SPEED : BALL_SPEED;
 }
 
 function invokeStartMatchTimer(ctx, matchTimer, width, height) {
@@ -219,7 +219,7 @@ function invokeStartMatchTimer(ctx, matchTimer, width, height) {
 
     const elapsed = time - parseInt((Date.now() - matchTimer.startdate) / 1000);
     const string = `Round Starting in ${elapsed}`;
-    const correctW = (width / 2) - ((string.length * 64) / 5);
+    const correctW = (width / 2) - ((string.length * 64) / 5.2);
     ctx.fillStyle = "white";
     ctx.font = "64px Taprom";
     ctx.fillText(`Round Starting in ${elapsed}`, correctW, height * 0.51);
@@ -229,6 +229,51 @@ function invokeStartMatchTimer(ctx, matchTimer, width, height) {
         matchTimer.startdate = null;
         generateRandomBallAngle();
     }
+}
+
+function loadGameDashboard() {
+    const game_utils = document.getElementById("game-utils");
+    const game = document.getElementById("game");
+
+    const div = document.createElement('div');
+    div.classList.add("d-flex", "jsutify-content-evenly", "bg-black-transparent-0-5", "w-100", "h-20");
+    const player1 = document.createElement('div');
+    player1.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "h-100", "w-100", "px-4", "rounded-start-5");
+    player1.innerHTML = `
+        <h3 id="op_1" class="text-center fs-2 mb-3 taprom text-white line-height-1">Player</h3>
+        <div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
+			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
+			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
+			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
+		</div>`;
+    
+    const score = document.createElement('div');
+    score.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "w-100");
+    score.innerHTML = `
+        <h3 class="text-center fs-1 mb-3 taprom text-chrome text-glow">Score</h3>
+        <h3 id="lives" class="text-center fs-1 mb-3 taprom text-chrome text-glow w-100">
+            <span id="op_1_score">0</span>
+            -
+            <span id="op_2_score">0</span>
+        </h3>`;
+    
+    const player2 = document.createElement('div');
+    player2.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "h-100", "w-100", "px-4", "rounded-start-5");
+    player2.innerHTML = `
+        <h3 id="op_2" class="text-center fs-2 mb-3 taprom text-white line-height-1">Player</h3>
+        <div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
+            <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
+            <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
+            <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
+        </div>`;
+
+    div.appendChild(player1);
+    div.appendChild(score);
+    div.appendChild(player2);
+
+    game_utils.appendChild(div);
+    game.classList.add("h-80");
+    game.classList.contains("border-transparent-0-5") ? null : game.classList.add("border-transparent-0-5");
 }
 
 export function loadGameEngine(gameMode) {
@@ -241,7 +286,7 @@ export function loadGameEngine(gameMode) {
     const drawGame = () => {
         if (!rPaddle || !bPaddle || !ball) return ;
         ctx.clearRect(0, 0, width, height);
-        generateGradient(ctx, width, height, "Midnight");
+        generateGradient(ctx, width, height, "Sunrise");
         if (GameStates.starting) {
             invokeStartMatchTimer(ctx, matchTimer, width, height, ball);
         } else if (GameStates.in_progress) {
@@ -263,7 +308,8 @@ export function loadGameEngine(gameMode) {
             ball = element;
         }
         if (rPaddle && bPaddle && ball) {
-            loadGameKeyHandlers()
+            loadGameKeyHandlers();
+            loadGameDashboard();
             drawGame();
         }
     }

@@ -1,11 +1,10 @@
 import { LeaveMatchMaker, DisplayMatchMakerScreen } from "./MatchMaker.js";
-import { loadGameEngine } from "./GameEngine.js";
 import { Interpreter } from "./Interpreter.js";
 
 export const modes = {
     V_ONLINE: 0,
     V_ROOMS: 0,
-    V_OFFLINE: 1,
+    V_OFFLINE: 0,
 }
 
 
@@ -40,62 +39,6 @@ function renderMatchmaking(ctx) {
     ctx.font = "30px Arial";
     ctx.fillText("Matchmaking", 10, 50);
 }
-
-function CreateRoom() {
-    console.log("Create Room");
-}
-
-function JoinRoom() {
-    console.log("Join Room");
-}
-
-// function CreateRoomHTML(room_mode = "Duo", room_id = "None", player_count = "-", create = false) {
-//     const room = document.createElement('div');
-//     room.classList.add("room", "border-transparent-0-5", "gap-3", "px-2");
-//     room.id = create ? "room-creation" : `room-id-${room_id}`;
-//     room.innerHTML = `
-// 	<div class="room_tile border-transparent-0-5">
-// 		<!-- Type -->
-// 		<div class="d-flex align-items-center gap-1">
-// 			<img src="/static/img/game/Mode.png" width="32px" height="32px">
-// 			<span class="text-white fs-5 fw-bold">${room_mode}</span>
-// 		</div>
-// 		<!-- Player Count -->
-// 		<div class="d-flex align-items-center gap-1">
-// 			<img src="/static/img/game/people.png" width="32px" height="32px">
-// 			<span class="text-white fs-5 fw-bold">${player_count}</span>
-// 		</div>
-// 	</div>
-// 	<div class="line"></div>
-// 	<div class="room_tile border-transparent-0-5">
-// 		<!-- RoomID -->
-// 		<div class="d-flex align-items-center gap-1">
-// 			<img src="/static/img/game/RoomID.png" width="32px" height="32px">
-// 			<span class="text-white fs-5 fw-bold">${room_id}</span>
-// 		</div>
-// 	</div>`;
-
-//     const room_join_create = document.createElement('button');
-//     room_join_create.classList.add("rounded-5", "border-transparent-0-5", "bg-white-transparent-0-05", "px-3");
-//     room_join_create.innerHTML = `<img src="/static/img/game/${create ? "Join" : "Acess"}.png" width="22px" height="22px">`;
-//     room_join_create.onclick = create ? CreateRoom : JoinRoom;
-
-//     room.children[2].appendChild(room_join_create);
-//     return room;
-// }
-
-// function ListAvailableRooms() {
-//     const payload = {
-//         "request": "rooms",
-//         "action": "list"
-//     }
-//     GameConnector.send(payload);
-//     GameConnector.socket.onmessage = (event) => {
-//         const response = JSON.parse(event.data);
-//         console.log(response);
-//         return response;
-//     }
-// }
 
 function DisplayRoomOptions() {
     const game_container = document.getElementById('game-container');
@@ -181,18 +124,8 @@ function renderLobby() {
     game_container.appendChild(lobby);
 }
 
-export function renderGame(state = "LOBBY") {
-    const gameCanvas = document.getElementById('game');
-    const ctx = gameCanvas.getContext('2d');
-    const states = {
-        "LOBBY": renderLobby,
-        "MATCHMAKING": renderMatchmaking,
-        "GAME": loadGameEngine,
-    }
-
-    // DisplayRoomOptions();
-    states[state](ctx, gameCanvas);
-    // loadGameEngine("Local");
+export function renderGame() {
+    renderLobby();
 }
 
 window.DisplayMatchTypes = DisplayMatchTypes;
