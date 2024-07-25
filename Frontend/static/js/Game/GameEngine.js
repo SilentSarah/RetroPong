@@ -1,3 +1,5 @@
+import { GameProcessor } from "./GameProcessor.js";
+import { modes } from "./GameRenderer.js";
 import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js";
 
 export const RIGHT_SIDE = 0, LEFT_SIDE = 1, BALL = 2;
@@ -55,8 +57,8 @@ class Ball {
         this.image.src = imagePath;
         this.cHeight = cHeight;
         this.cWidth = cWidth;
-        this.bHeight = 0.035 * this.cHeight;
-        this.bWidth = 0.0175 * this.cWidth;
+        this.bHeight = 0.03 * this.cHeight;
+        this.bWidth = 0.0165 * this.cWidth;
         this.posX = (this.cWidth / 2);
         this.posY = (this.cHeight / 2);
         this.drawPosX = this.posX - (this.bWidth / 2);
@@ -286,12 +288,12 @@ export function loadGameEngine(gameMode) {
     const drawGame = () => {
         if (!rPaddle || !bPaddle || !ball) return ;
         ctx.clearRect(0, 0, width, height);
-        generateGradient(ctx, width, height, "Sunrise");
+        generateGradient(ctx, width, height, "Midnight");
         if (GameStates.starting) {
             invokeStartMatchTimer(ctx, matchTimer, width, height, ball);
         } else if (GameStates.in_progress) {
             activateButtonFunctions(gameMode);
-            ballPhysics(ball, rPaddle, bPaddle);
+            // ballPhysics(ball, rPaddle, bPaddle);
             drawGameElements(rPaddle, bPaddle, ball);
         } else if (GameStates.finished) {
             
@@ -317,5 +319,17 @@ export function loadGameEngine(gameMode) {
     new Ball(gameCanvas, ctx, "/static/img/game/Ball.svg", width, height, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);
+
+    let updater = setInterval(() => { sendGameData(rPaddle, updater) }, 30);
+}
+
+function sendGameData(rPaddle, updater) {
+    if (GameStates.in_progress == 0) return ;
+    if (modes.V_OFFLINE == 1) {
+        updater ? clearInterval(updater) : null;
+        return ;
+    }
+    console.log("Sending data")
+    GameProcessor.gameRequestAction("update_paddle", { paddle: rPaddle });
 
 }

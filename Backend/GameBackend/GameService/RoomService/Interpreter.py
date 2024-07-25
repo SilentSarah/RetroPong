@@ -12,7 +12,7 @@ COMMANDS = [
     ]),
     ("game", [
         ('leave', GameService.leave_game),  
-        # ('pause', RoomService.pause_game),  
+        ('update_paddle', GameService.relay_paddle_position),  
         # ('resume', RoomService.resume_game),  
         # ('restart', RoomService.restart_game),  
         # ('move', RoomService.move_player),  

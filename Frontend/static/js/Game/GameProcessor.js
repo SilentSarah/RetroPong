@@ -1,12 +1,13 @@
 import { DisplayMatchMakerScreen, LeaveMatchMaker, clearChosenGameMode } from "./MatchMaker.js";
 import { GameConnector } from "./GameConnection.js";
 import { renderGame } from "./GameRenderer.js";
+import { bPaddle, rPaddle } from "./GameEngine.js";
 
 export class GameProcessor {
     static gameAction(action, data) {
         switch (action) {
-            case 'update':
-                this.updateGame(data);
+            case 'update_paddle':
+                this.update_paddle_pos(data);
                 break;
             case 'start':
                 this.startGame(data);
@@ -14,6 +15,8 @@ export class GameProcessor {
             case 'leave':
                 this.leaveGame(data);
                 break;
+            case 'restore':
+                this.restoreGame(data);
         }
     }
 
@@ -34,5 +37,15 @@ export class GameProcessor {
         clearChosenGameMode();
         LeaveMatchMaker();
         renderGame();
+    }
+
+    static update_paddle_pos(data) {
+        console.log("Red Paddle PosX", rPaddle.posX, " Blue Paddle PosX", bPaddle.posX);
+        bPaddle.posY = data.posY;
+        bPaddle.drawPosY = data.posY - bPaddle.height / 2;
+    }
+    static restoreGame(data) {
+        console.log("Restoring Game");
+        DisplayMatchMakerScreen("Online", data);
     }
 }

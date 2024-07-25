@@ -1,6 +1,7 @@
 
 import { modes } from "./GameRenderer.js";
 import { rPaddle, bPaddle, RIGHT_SIDE, GameStates } from "./GameEngine.js";
+import { GameProcessor } from "./GameProcessor.js";
 
 const UP = 1, DOWN = 2;
 

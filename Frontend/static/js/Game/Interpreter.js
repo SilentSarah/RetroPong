@@ -24,6 +24,7 @@ export class Interpreter {
         const message = response.message;
         const data = response.data;
 
+        console.log("Response:", type, action, status, message, data);
         if (!this.invokeStatus(action, status, message))
             return;
 
@@ -33,7 +34,7 @@ export class Interpreter {
     static invokeStatus(action, status, message) {
         switch (status) {
             case 'success':
-                // action ===  "update" ? toast(message, 'bg-success') : null;
+                action === "info" ? toast(message, 'bg-info') : null;
                 return true;
             case 'fail':
                 toast(message, 'bg-danger');
@@ -48,6 +49,7 @@ export class Interpreter {
                 RoomManager.roomAction(action, data);
                 break;
             case 'game':
+                console.log("Getting Response");
                 GameProcessor.gameAction(action, data);
                 break;
         }

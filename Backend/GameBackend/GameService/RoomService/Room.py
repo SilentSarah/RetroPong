@@ -153,3 +153,16 @@ class RoomService:
     @staticmethod
     def check_joined_room(user) -> bool:
         return user.room is not None
+    
+    @staticmethod
+    def remove_player(user):
+        if (user.room is not None):
+            user.room.remove_player(user.id)
+            if (user.room.get_player_count() == 0):
+                if (user.room in AVAILABLE_ROOMS):
+                    AVAILABLE_ROOMS.remove(user.room)
+                del user.room
+            else:
+                user.room.owner = user.room.get_players()[0]
+            user.room = None
+        return None

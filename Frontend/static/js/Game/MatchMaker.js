@@ -48,7 +48,7 @@ function AnimateTheMatchMaking(type) {
     setTimeout(() => { matchmaker_info.forEach((info) => { info.classList.add("open"); }); }, 900);
     setTimeout(() => { opponents.forEach((opponent) => { opponent.classList.add("open"); }); }, 750);
     setTimeout(() => { versus.classList.add("open") }, 1000);
-    // matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type);}, 1000) : clearInterval(matchmaker_timerID);
+    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type);}, 1000) : clearInterval(matchmaker_timerID);
 }
 
 function sanitizeHTMLCode(html) {
@@ -122,8 +122,8 @@ export function DisplayMatchMakerScreen(type, data = null) {
     <button class="border-transparent-0-5 rounded-5 position-absolute z-1 bg-white-transparent-0-15 p-2" style="top: 1.75rem; left: 1.75rem;" onclick="LeaveMatchMaker()">
 		<img src="/static/img/game/Back.png" width="32px" height="32px">
 	</button>
-    ${GenerateUserHTML(!data ? fake_player : self_player, "bg_gradpink", type).outerHTML}
-    ${GenerateUserHTML(!data ? fake_player : opponent_player, "bg_gradblue", type).outerHTML}
+    ${GenerateUserHTML(self_player, "bg_gradpink", type).outerHTML}
+    ${GenerateUserHTML(opponent_player, "bg_gradblue", type).outerHTML}
     ${GenerateMatchInfoHTML({ type: `Versus ${type}` }).outerHTML}`;
 
     SetTheGameMode(type);

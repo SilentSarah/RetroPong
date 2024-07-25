@@ -25,6 +25,8 @@ class Game:
         self.current_room = room
         self.player1 = find_user(user_id=room.get_players()[0])
         self.player2 = find_user(user_id=room.get_players()[1])
+        self.player1.game = self
+        self.player2.game = self
         self.player1_score: int = 0
         self.player2_score: int = 0
         self.winner: int = -1
@@ -32,6 +34,7 @@ class Game:
         self.startdate = datetime.now()
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
+        self.playerCount = room.playerCount
         
     def get_player1(self):
         return self.player1
@@ -74,8 +77,10 @@ class Game:
         self.player1.opponent = None
         self.player2.opponent = None
         self.player1.room = None
-        self.player2.room = None      
+        self.player2.room = None
         self.current_room = None
+        self.player1.game = None
+        self.player2.game = None
         
     async def generate_data_for_player(self, player_self, opponent):
         user_data = await self.get_player_data(player_self)
@@ -95,6 +100,14 @@ class Game:
         if (response.status_code == 200):
             return response.json()
         return None
+    
+    def link_players(self, player1, player2):
+        player1.opponent = player2
+        player2.opponent = player1
+        
+        self.player1 = player1 if player1.id == self.player1.id else player2
+        self.player2 = player2 if player2.id == self.player2.id else player1
+
 
 
 
@@ -105,10 +118,9 @@ class GameService:
     @staticmethod
     async def start_game(room):
         from .Room import AVAILABLE_ROOMS
-        print("Starting Game")
         game_instance = Game(room)
         await game_instance.start_game()
-        if (game_instance.status == "starting" or game_instance.status == "ended"):
+        if (game_instance.status == "starting"):
             AVAILABLE_ROOMS.remove(room)
             RUNNING_GAMES.append(game_instance)
             room = None
@@ -138,12 +150,60 @@ class GameService:
         
         
     @staticmethod
+    async def relay_paddle_position(ws, user, action, data:dict):
+        game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        opponent = game.get_player1() if user.id == game.get_player2().id else game.get_player2()
+        
+        data = data.get('data')
+        paddle_data = data.get('paddle')
+        if (paddle_data is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No paddle position found' })
+        
+        user_data = {
+            "posY": paddle_data.get("posY"),
+        }
+        
+        return await opponent.send_message_to_self({ "request": "game", "action": "update_paddle", 'status': 'success', "message": 'Opponent paddle position updated', "data": user_data })
+        
+    @staticmethod
     async def get_player_joined_game(user) -> Game:
         for game in RUNNING_GAMES:
             player1_id = game.get_player1().id
             player2_id = game.get_player2().id
-            if (user.id == player1_id or user.id == player2_id):
-                print(user.id, player1_id, player2_id)
-                return game
-        print("NO GAMES WERE PLAYED BY THIS USER", user.id)
+            if (game.status != "ended" or game.status != "fail"):
+                if (user.id == player1_id or user.id == player2_id):
+                    return game
+        return None
+    
+    @staticmethod
+    async def restore_game(user_id):
+        from .Login import find_user
+        user = find_user(user_id=user_id)
+        if (user is not None):
+            game = await GameService.get_player_joined_game(user)
+            if game is not None:
+                opponent = game.get_player1() if user.id == game.get_player2().id else game.get_player2()
+                game.link_players(user, opponent)
+                game_data = await game.generate_data_for_player(user, opponent)
+                game.playerCount += 1
+                await user.send_message_to_self(
+                                        { 
+                                            "request": "game", 
+                                            "action": "restore", 
+                                            'status': 'success', 
+                                            "message": 'Game restored', 
+                                            "data": game_data 
+                                        })
+                
+    @staticmethod
+    def remove_player(game: Game):
+        if (game is None): return
+        game.playerCount -= 1
+        print(game.playerCount )
+        if (game.playerCount == 0):
+            game.clean_up()
+            RUNNING_GAMES.remove(game)
         return None

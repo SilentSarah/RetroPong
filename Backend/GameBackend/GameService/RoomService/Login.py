@@ -1,6 +1,8 @@
 import requests
 from .models import User
 from .Client import Client
+from .Game import GameService
+from .Room import RoomService
 from .Room import AVAILABLE_ROOMS
 from django.http import HttpRequest
 from asgiref.sync import sync_to_async
@@ -10,18 +12,18 @@ class Auth:
     @staticmethod
     async def login(ws_data: dict, ws_connection, ws):
         headers:list = ws_data.get('headers')
-        if (headers is None): return False
+        if (headers is None): return False, None
         
         access_token_tuple = find_cookie_tuple(headers)
-        if (access_token_tuple is None): return False
+        if (access_token_tuple is None): return False, None
         
         access_token = extract_cookie_value(access_token_tuple, 'access')
-        if (access_token is None): return False
+        if (access_token is None): return False, None
         
         token, user_id = await verify_token(token_from_ws=access_token)
-        if (token is None or user_id is None): return False
+        if (token is None or user_id is None): return False, None
         
-        if (find_user(user_id=user_id) is not None): return False
+        if (find_user(user_id=user_id) is not None): return False, None
         
         user = Client(id=user_id, channel_name=ws_connection)
         user.user_data = await sync_to_async(User.objects.get)(id=user_id)
@@ -29,12 +31,14 @@ class Auth:
         user.ws = ws
         user.cookie = access_token
         LOGGED_USERS.append(user)
-        return True
+        return True, user_id
     
     @staticmethod
     async def logout(ws_connection):
         user = find_user(ws_connection=ws_connection)
         if (user is not None):
+            RoomService.remove_player(user)
+            GameService.remove_player(user.game)
             LOGGED_USERS.remove(user)
             return True
         return False
