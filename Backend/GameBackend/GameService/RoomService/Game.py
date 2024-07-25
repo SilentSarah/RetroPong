@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from datetime import datetime
 from requests import get
 
@@ -119,27 +118,32 @@ class GameService:
     
     @staticmethod
     async def leave_game(ws, user, action, data:dict):
-        game = GameService.get_player_joined_game(user)
+        game = await GameService.get_player_joined_game(user)
         if (game is None):
+            print("User not in game")
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
         user = game.get_player1() if user.id == game.get_player1().id else game.get_player2()
         opponent = game.get_player1() if user.id == game.get_player2().id else game.get_player2()
         
+        print("Leaving Game", game)
         RUNNING_GAMES.remove(game)
         game.clean_up()
         game = None
         return (
-                    await user.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'You have left the game' }),
-                    await opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' })
+                    await user.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'You have left the game' }),
+                    await opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' }),
+                    await opponent.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'Your opponent has left the game' })
                 )
         
         
     @staticmethod
-    def get_player_joined_game(user) -> Game:
+    async def get_player_joined_game(user) -> Game:
         for game in RUNNING_GAMES:
             player1_id = game.get_player1().id
             player2_id = game.get_player2().id
-            if (user.id == player1_id or user in player2_id):
+            if (user.id == player1_id or user.id == player2_id):
+                print(user.id, player1_id, player2_id)
                 return game
+        print("NO GAMES WERE PLAYED BY THIS USER", user.id)
         return None
