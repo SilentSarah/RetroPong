@@ -8,22 +8,22 @@ const matchmaker_details = {
 }
 let matchmaker_timerID = null;
 
-function runGameMode(type) {
+function runGameMode(type, self, opponent) {
     const game_container = document.getElementById('game-container');
     game_container.innerHTML = "";
     if (type === "Local") {
         modes.V_OFFLINE = 1;
-        loadGameEngine();
+        loadGameEngine(null, self, opponent);
     } else if (type === "Online") {
         modes.V_ONLINE = 1;
-        loadGameEngine();
+        loadGameEngine(null, self, opponent);
     } else if (type === "Rooms") {
         modes.V_ROOMS = 1;
-        loadGameEngine();
+        loadGameEngine(null, self, opponent);
     }
 }
 
-function startMatchTimer(timerObj, type) { 
+function startMatchTimer(timerObj, type, self, opponent) { 
     const match_start_timer = document.getElementById('match-start-timer');
     const timer_panel = document.getElementById('timer-panel');
 
@@ -33,11 +33,11 @@ function startMatchTimer(timerObj, type) {
         timer_panel.innerText = "Starting...";
         clearInterval(matchmaker_timerID);
         matchmaker_timerID = null;
-        runGameMode(type);
+        runGameMode(type, self, opponent);
     }
 }
 
-function AnimateTheMatchMaking(type) {
+function AnimateTheMatchMaking(type, self, opponent) {
     let timerObj = {timer: 4};
     const versus = document.getElementById('versus');
     const opponentBackgrounds = document.querySelectorAll('.ops');
@@ -48,10 +48,10 @@ function AnimateTheMatchMaking(type) {
     setTimeout(() => { matchmaker_info.forEach((info) => { info.classList.add("open"); }); }, 900);
     setTimeout(() => { opponents.forEach((opponent) => { opponent.classList.add("open"); }); }, 750);
     setTimeout(() => { versus.classList.add("open") }, 1000);
-    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type);}, 1000) : clearInterval(matchmaker_timerID);
+    matchmaker_timerID === null ? matchmaker_timerID = setInterval(() => {startMatchTimer(timerObj, type, self, opponent);}, 1000) : clearInterval(matchmaker_timerID);
 }
 
-function sanitizeHTMLCode(html) {
+export function sanitizeHTMLCode(html) {
     html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
     return html;
 }
@@ -110,8 +110,8 @@ export function DisplayMatchMakerScreen(type, data = null) {
     const game_container = document.getElementById('game-container');
 
     if (data !== null) {
-        self_player = { username: data.self_data.username, pfp: data.self_data.profilepic };
-        opponent_player = { username: data.opponent_data.username, pfp: data.opponent_data.profilepic };
+        self_player = { username: data.self_data.username, pfp: data.self_data.profilepic, score: data.self_score };
+        opponent_player = { username: data.opponent_data.username, pfp: data.opponent_data.profilepic, score: data.opponent_score };
     } else {
         self_player = { username: "Player", pfp: `${gamepfppath}/Default.png` };
         opponent_player = { username: "Opponent", pfp: `${gamepfppath}/Default.png` };
@@ -129,5 +129,5 @@ export function DisplayMatchMakerScreen(type, data = null) {
     SetTheGameMode(type);
     game_container.innerHTML = "";
     game_container.appendChild(div);
-    AnimateTheMatchMaking(type);
+    AnimateTheMatchMaking(type, self_player, opponent_player);
 }

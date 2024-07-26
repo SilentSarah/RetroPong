@@ -3,6 +3,7 @@ import { GameConnector } from './GameConnection.js';
 import { toast, user_id } from '../userdata.js';
 
 let room_states = null;
+let opponent = null;
 export class RoomManager {
 
     static processRoomRequest(action, data) {

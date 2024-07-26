@@ -92,8 +92,8 @@ class Game:
             "room_owner_id": self.owner,
             "self_data": user_data,
             "opponent_data": opponent_data,
-            "player1_score": self.player1_score,
-            "player2_score": self.player2_score,
+            "self_score": self.player1_score if player_self.id == self.player1.id else self.player2_score,
+            "opponent_score": self.player2_score if player_self.id == self.player1.id else self.player1_score,
             "status": self.status
         }
         
@@ -225,4 +225,55 @@ class GameService:
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No ball position found' })
         
         await opponent.send_message_to_self({ "request": "game", "action": "update_ball", 'status': 'success', "message": 'Ball position updated', "data": ball_pos })
+        
+        
+    @staticmethod
+    async def update_score(ws, user, action, data:dict):
+        game: Game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        if (user.id is not game.owner): return
+        loser_data: dict = data.get('data')
+        
+        print("Loser Data", loser_data)
+        loser = loser_data.get("loser")
+        if (loser is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No data was found' })
+        
+        
+        if (loser == game.player1.id):
+            game.player2_score += 1
+        elif (loser == game.player2.id):
+            game.player1_score += 1
+
+        current_top_score = game.player1_score if game.player1_score > game.player2_score else game.player2_score
+        
+        self_player_score = game.player1_score if user.id == game.player1.id else game.player2_score
+        opponent_score = game.player2_score if user.id == game.player1.id else game.player1_score
+        
+        score = {
+            "self_score": self_player_score,
+            "opponent_score": opponent_score
+        }
+        
+        opponent_score_data = {
+            "self_score": opponent_score,
+            "opponent_score": self_player_score
+        }
+        
+        self_user = game.player1 if user.id == game.player1.id else game.player2
+        opponent = game.player1 if user.id == game.player2.id else game.player2
+        
+        await self_user.send_message_to_self({ "request": "game", "action": "update_score", 'status': 'success', "message": 'Score updated', "data": score })
+        await opponent.send_message_to_self({ "request": "game", "action": "update_score", 'status': 'success', "message": 'Score updated', "data": opponent_score_data })
+        
+        # if (current_top_score == 7):
+        #     game.winner = game.player1.id if game.player1_score == 7 else game.player2.id
+        #     game.status = "ended"
+        #     await game.player1.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'Game ended', "data": { "winner": game.winner } })
+        #     await game.player2.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'Game ended', "data": { "winner": game.winner } })
+        #     GameService.remove_player(game)
+        #     game = None
+        
         

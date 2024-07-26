@@ -1,6 +1,9 @@
+import { user_id } from "../userdata.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { modes } from "./GameRenderer.js";
 import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js";
+import { sanitizeHTMLCode } from "./MatchMaker.js";
+import { opponent_id } from "./GameProcessor.js";
 
 export const RIGHT_SIDE = 0, LEFT_SIDE = 1, BALL = 2;
 export let rPaddle, bPaddle, ball;
@@ -16,7 +19,6 @@ const maps = {
     "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
 }
 
-const scores = [0, 0];
 const BALL_SPEED = 17;
 const BALL_SPEED_LIMIT = 32;
 const PADDLE_SPEED = 25;
@@ -193,9 +195,8 @@ function ballPhysics(ball, rPaddle, bPaddle) {
     }
 
     if (ball_hb.x <= 0 || ball_hb.x + ball_hb.width >= ball.cWidth) {
-        const scorer = ball_hb.x <= 0 ? 1 : 0;
-        scores[scorer]++;
-        document.querySelector("#op_" + (scorer + 1) + "_score").innerText = scores[scorer];
+        const loser = ball_hb.x <= 0 ? user_id : opponent_id;
+        GameProcessor.gameRequestAction("update_score", { loser: loser });
         resetInGamePhysics(rPaddle, bPaddle, ball);
     }
     if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {
@@ -235,7 +236,7 @@ function invokeStartMatchTimer(ctx, matchTimer, width, height) {
     }
 }
 
-function loadGameDashboard() {
+function loadGameDashboard(self, opponent) {
     const game_utils = document.getElementById("game-utils");
     const game = document.getElementById("game");
 
@@ -244,7 +245,7 @@ function loadGameDashboard() {
     const player1 = document.createElement('div');
     player1.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "h-100", "w-100", "px-4", "rounded-start-5");
     player1.innerHTML = `
-        <h3 id="op_1" class="text-center fs-2 mb-3 taprom text-white line-height-1">Player</h3>
+        <h3 id="op_1" class="text-center fs-2 mb-3 taprom text-white line-height-1">${sanitizeHTMLCode(self.username)}</h3>
         <div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
 			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
 			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
@@ -253,18 +254,19 @@ function loadGameDashboard() {
     
     const score = document.createElement('div');
     score.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "w-100");
+    score.id = "score-panel";
     score.innerHTML = `
         <h3 class="text-center fs-1 mb-3 taprom text-chrome text-glow">Score</h3>
         <h3 id="lives" class="text-center fs-1 mb-3 taprom text-chrome text-glow w-100">
-            <span id="op_1_score">0</span>
+            <span id="op_1_score">${self.score}</span>
             -
-            <span id="op_2_score">0</span>
+            <span id="op_2_score">${opponent.score}</span>
         </h3>`;
     
     const player2 = document.createElement('div');
     player2.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "h-100", "w-100", "px-4", "rounded-start-5");
     player2.innerHTML = `
-        <h3 id="op_2" class="text-center fs-2 mb-3 taprom text-white line-height-1">Player</h3>
+        <h3 id="op_2" class="text-center fs-2 mb-3 taprom text-white line-height-1">${sanitizeHTMLCode(opponent.username)}</h3>
         <div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
             <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
             <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
@@ -280,7 +282,7 @@ function loadGameDashboard() {
     game.classList.contains("border-transparent-0-5") ? null : game.classList.add("border-transparent-0-5");
 }
 
-export function loadGameEngine(gameMode) {
+export function loadGameEngine(gameMode, self, opponent) {
     const gameCanvas =  document.getElementById("game");
     const ctx = gameCanvas.getContext('2d');
     const dpi = window.devicePixelRatio;
@@ -313,7 +315,7 @@ export function loadGameEngine(gameMode) {
         }
         if (rPaddle && bPaddle && ball) {
             loadGameKeyHandlers();
-            loadGameDashboard();
+            loadGameDashboard(self, opponent);
             drawGame();
         }
     }

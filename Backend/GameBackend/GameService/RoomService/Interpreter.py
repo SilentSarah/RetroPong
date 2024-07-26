@@ -14,7 +14,7 @@ COMMANDS = [
         ('leave', GameService.leave_game),  
         ('update_paddle', GameService.relay_paddle_position),  
         ('update_ball', GameService.update_ball_position),  
-        # ('restart', RoomService.restart_game),  
+        ('update_score', GameService.update_score),  
         # ('move', RoomService.move_player),  
         # ('shoot', RoomService.shoot_ball)
     ])
