@@ -117,7 +117,6 @@ class RoomService:
         })
         return await RoomService.broadcast_room_changes(ws)
     
-    
     @staticmethod
     async def get_rooms(ws, user, action, data:dict) -> list[Room]:
         room_data:list[dict] = []
@@ -144,7 +143,6 @@ class RoomService:
 
     @staticmethod
     def get_room(room_id: str) -> Room:
-        print("Room ID REQUEST: ", room_id, "Rooms: ", len(AVAILABLE_ROOMS))
         for room in AVAILABLE_ROOMS:
             if room.get_id() == room_id:
                 return room

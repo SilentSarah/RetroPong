@@ -19,5 +19,5 @@ class Client:
         self.ball_data: GameBallData = None
         
     async def send_message_to_self(self, message):
-        await self.ws.send_json(message)
+        await self.ws.send_json(message) 
         

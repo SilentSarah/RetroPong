@@ -169,6 +169,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
 
 function ballPhysics(ball, rPaddle, bPaddle) {
 
+    if (localStorage.getItem("slave")) return; 
+
     const rPaddle_hb = {
         x: rPaddle.drawPosX,
         y: rPaddle.drawPosY,
@@ -293,7 +295,7 @@ export function loadGameEngine(gameMode) {
             invokeStartMatchTimer(ctx, matchTimer, width, height, ball);
         } else if (GameStates.in_progress) {
             activateButtonFunctions(gameMode);
-            // ballPhysics(ball, rPaddle, bPaddle);
+            ballPhysics(ball, rPaddle, bPaddle);
             drawGameElements(rPaddle, bPaddle, ball);
         } else if (GameStates.finished) {
             
@@ -315,12 +317,13 @@ export function loadGameEngine(gameMode) {
             drawGame();
         }
     }
+    
 
     new Ball(gameCanvas, ctx, "/static/img/game/Ball.svg", width, height, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);
 
-    let updater = setInterval(() => { sendGameData(rPaddle, updater) }, 30);
+    let updater = setInterval(() => { sendGameData(rPaddle, updater) }, 5);
 }
 
 function sendGameData(rPaddle, updater) {
@@ -329,7 +332,11 @@ function sendGameData(rPaddle, updater) {
         updater ? clearInterval(updater) : null;
         return ;
     }
-    console.log("Sending data")
+    const ball_data = {
+        posX: ball.posX / ball.cWidth,
+        posY: ball.posY / ball.cHeight
+    }
     GameProcessor.gameRequestAction("update_paddle", { paddle: rPaddle });
+    GameProcessor.gameRequestAction("update_ball", ball_data);
 
 }

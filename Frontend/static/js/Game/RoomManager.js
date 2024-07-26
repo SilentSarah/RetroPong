@@ -1,6 +1,6 @@
 
 import { GameConnector } from './GameConnection.js';
-import { setLoadingOverlay, toast, user_id } from '../userdata.js';
+import { toast, user_id } from '../userdata.js';
 
 let room_states = null;
 export class RoomManager {
@@ -82,10 +82,8 @@ export class RoomManager {
         room_join_create.classList.add("rounded-5", "border-transparent-0-5", "bg-white-transparent-0-05", "px-3");
         room_join_create.innerHTML = `<img src="/static/img/game/${button_text}.png" width='22px' height='22px'>`;
         room_join_create.onclick = chosen_function;
-        // else if (!create) room_join_create.disabled = true;
         room.children[2].appendChild(room_join_create);
 
-        // joined_room = owner == user_id ? room_id : null;
         return room;
     }
 
@@ -108,10 +106,8 @@ export class RoomManager {
         for (const room_data of data) {
             const existing_room = room_states.find(room => room.id == room_data.id);
             if (existing_room != undefined) {
-                // console.log("Updating Room", existing_room);
                 const room_HTML = document.getElementById(`room-id-${room_data.id}`);
                 if (room_HTML != null) {
-                    // console.log("found the room", existing_room, room_HTML);
                     room_HTML.querySelector("#pCount").innerText = room_data.playerCount;
                     const button = room_HTML.querySelector("button");
                     if (room_data.players.includes(user_id)) {
@@ -144,7 +140,6 @@ export class RoomManager {
             }
         }
         room_states = data;
-        // console.log(room_states);
     }
 }
 

@@ -66,27 +66,31 @@ function pauseMenu() {}
 
 function moveplayer(paddle, direction) {
     if (modes.V_OFFLINE == 0 && paddle.side == RIGHT_SIDE) return ;
-    if (GameStates.in_progress == 0) return ;
-    const paddleMidPointY = paddle.posY;
-    const paddleUpPointY = paddle.drawPosY;
-    const paddleLowerPointY = paddleMidPointY + paddle.pHeight / 2;
-    if (direction === UP) {
-        if (paddleUpPointY - paddle.speed < 0) return ;
-        paddle.posY -= paddle.speed;
-        paddle.drawPosY -= paddle.speed;
-    } else if (direction === DOWN) {
-        if (paddleLowerPointY + paddle.speed > paddle.cHeight) return ;
-        paddle.posY += paddle.speed;
-        paddle.drawPosY += paddle.speed;
+    else if (GameStates.in_progress == 0) return ;
+    else {
+        const paddleMidPointY = paddle.posY;
+        const paddleUpPointY = paddle.drawPosY;
+        const paddleLowerPointY = paddleMidPointY + paddle.pHeight / 2;
+        if (direction === UP) {
+            if (paddleUpPointY - paddle.speed < 0) return ;
+            paddle.posY -= paddle.speed;
+            paddle.drawPosY -= paddle.speed;
+        } else if (direction === DOWN) {
+            if (paddleLowerPointY + paddle.speed > paddle.cHeight) return ;
+            paddle.posY += paddle.speed;
+            paddle.drawPosY += paddle.speed;
+        }
     }
+    
 }
 
 export function loadGameKeyHandlers() {
     document.addEventListener("keydown", function(e) {
-        console.log(e.key)
+        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0) return;
         if (controller[e.key]) controller[e.key].tapped = true;
     });
     document.addEventListener("keyup", function(e) {
+        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0) return;
         if (controller[e.key]) controller[e.key].tapped = false;
     });
 }

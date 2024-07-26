@@ -24,7 +24,6 @@ export class Interpreter {
         const message = response.message;
         const data = response.data;
 
-        console.log("Response:", type, action, status, message, data);
         if (!this.invokeStatus(action, status, message))
             return;
 
@@ -49,7 +48,6 @@ export class Interpreter {
                 RoomManager.roomAction(action, data);
                 break;
             case 'game':
-                console.log("Getting Response");
                 GameProcessor.gameAction(action, data);
                 break;
         }

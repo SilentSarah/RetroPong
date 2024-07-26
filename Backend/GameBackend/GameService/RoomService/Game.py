@@ -35,6 +35,7 @@ class Game:
         self.player1.opponent = self.player2
         self.player2.opponent = self.player1
         self.playerCount = room.playerCount
+        self.owner = room.owner
         
     def get_player1(self):
         return self.player1
@@ -88,6 +89,7 @@ class Game:
         if (user_data is None or opponent_data is None):
             return None
         return {
+            "room_owner_id": self.owner,
             "self_data": user_data,
             "opponent_data": opponent_data,
             "player1_score": self.player1_score,
@@ -202,8 +204,25 @@ class GameService:
     def remove_player(game: Game):
         if (game is None): return
         game.playerCount -= 1
-        print(game.playerCount )
         if (game.playerCount == 0):
             game.clean_up()
             RUNNING_GAMES.remove(game)
         return None
+    
+    
+    @staticmethod
+    async def update_ball_position(ws, user, action, data:dict):
+        game: Game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        if (user.id is not game.owner): return
+        
+        opponent = game.player2 if game.player2.id != user.id else game.player1
+        
+        ball_pos = data.get('data')
+        if (ball_pos is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No ball position found' })
+        
+        await opponent.send_message_to_self({ "request": "game", "action": "update_ball", 'status': 'success', "message": 'Ball position updated', "data": ball_pos })
+        
