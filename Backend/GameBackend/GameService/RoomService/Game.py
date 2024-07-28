@@ -1,14 +1,13 @@
 from datetime import datetime
+from .GamePhysics import GamePhysics
 from requests import get
+import asyncio
 
 class GameBallData:
     def __init__(self, x: int, y: int, z: int):
         self.x = x
         self.y = y
-        self.screenheight = None
-        self.screenwidth = None
-        self.height = None
-        self.width = None
+        self.speed = 17
 
 class GamePlayerData:
     def __init__(self, x: int, y: int, z: int):
@@ -36,6 +35,8 @@ class Game:
         self.player2.opponent = self.player1
         self.playerCount = room.playerCount
         self.owner = room.owner
+        self.game_physics = GamePhysics(self)
+        self.readyCounter = 0
         
     def get_player1(self):
         return self.player1
@@ -110,7 +111,20 @@ class Game:
         self.player1 = player1 if player1.id == self.player1.id else player2
         self.player2 = player2 if player2.id == self.player2.id else player1
 
-
+    async def game_simulation(self):
+        await asyncio.sleep(4)
+        while (self.status == "started"):
+            self.game_physics.calculate_ball_physics()
+            await GameService.broadcast_game_changes(self)
+            await asyncio.sleep(0.016)
+            # if (self.player1_score == 10 or self.player2_score == 10):
+            #     self.status = "ended"
+            #     self.winner = self.player1.id if self.player1_score == 10 else self.player2.id
+            #     await self.player1.send_message_to_self({ "request": "game", "action": "end", "status": "success", "message": "Game ended", "data": { "winner": self.winner } })
+            #     await self.player2.send_message_to_self({ "request": "game", "action": "end", "status": "success", "message": "Game ended", "data": { "winner": self.winner } })
+            #     self.clean_up()
+            #     break
+        return None
 
 
 RUNNING_GAMES: list[Game] = []
@@ -128,6 +142,22 @@ class GameService:
             room = None
         elif (game_instance.status == "fail"):
             RUNNING_GAMES.remove(game_instance)
+        return None
+    
+    @staticmethod
+    async def ready_game(ws, user, action, data:dict):
+        game: Game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        game.readyCounter += 1 if game.readyCounter < 2 else 2
+        if (game.readyCounter == 2):
+            game.status = "started"
+            player1_data = await game.generate_data_for_player(game.player1, game.player2)
+            player2_data = await game.generate_data_for_player(game.player2, game.player1)
+            await game.player1.send_message_to_self({ "request": "game", "action": "ready", 'status': 'success', "message": 'Game started', "data": player1_data })
+            await game.player2.send_message_to_self({ "request": "game", "action": "ready", 'status': 'success', "message": 'Game started', "data": player2_data })
+            asyncio.create_task(game.game_simulation())
         return None
     
     @staticmethod
@@ -149,36 +179,6 @@ class GameService:
                     await opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' }),
                     await opponent.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'Your opponent has left the game' })
                 )
-        
-        
-    @staticmethod
-    async def relay_paddle_position(ws, user, action, data:dict):
-        game = await GameService.get_player_joined_game(user)
-        if (game is None):
-            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
-        
-        opponent = game.get_player1() if user.id == game.get_player2().id else game.get_player2()
-        
-        data = data.get('data')
-        paddle_data = data.get('paddle')
-        if (paddle_data is None):
-            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No paddle position found' })
-        
-        user_data = {
-            "posY": paddle_data.get("posY"),
-        }
-        
-        return await opponent.send_message_to_self({ "request": "game", "action": "update_paddle", 'status': 'success', "message": 'Opponent paddle position updated', "data": user_data })
-        
-    @staticmethod
-    async def get_player_joined_game(user) -> Game:
-        for game in RUNNING_GAMES:
-            player1_id = game.get_player1().id
-            player2_id = game.get_player2().id
-            if (game.status != "ended" or game.status != "fail"):
-                if (user.id == player1_id or user.id == player2_id):
-                    return game
-        return None
     
     @staticmethod
     async def restore_game(user_id):
@@ -199,6 +199,77 @@ class GameService:
                                             "message": 'Game restored', 
                                             "data": game_data 
                                         })
+                await user.send_message_to_self(
+                                        { 
+                                            "request": "game", 
+                                            "action": "ready", 
+                                            'status': 'success', 
+                                            "message": 'Game restored', 
+                                            "data": game_data 
+                                        })
+    
+    @staticmethod
+    async def generate_game_changes(game: Game, player):
+        ball_data = game.game_physics.generate_ball_data()
+        if player == game.game_physics.paddle_1.owner:
+            paddle_data = game.game_physics.generate_paddle_data(player)
+            opponent_paddle_data = game.game_physics.generate_paddle_data(game.game_physics.paddle_2.owner)
+        else:
+            paddle_data = game.game_physics.generate_paddle_data(player)
+            opponent_paddle_data = game.game_physics.generate_paddle_data(game.game_physics.paddle_1.owner)
+            ball_data['x'] = 1 - ball_data['x']
+            paddle_data['x'] = 1 - paddle_data['x']
+        payload = {
+            "request": "game",
+            "action": "update",
+            "status": "success",
+            "data": {
+                "ball_data": ball_data,
+                "paddle_data": paddle_data,
+                "opponent_paddle_data": opponent_paddle_data
+            }
+        }
+        return payload
+    
+    @staticmethod
+    async def move_player(ws, user, action, data:dict):
+        game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        if (game.status != "started"):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'Game not started' })
+        
+        raw_Data = data.get('data')
+        if (raw_Data is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No direction found' })
+        
+        direction = raw_Data.get('direction')
+        if (direction is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No direction found' })
+        
+        player = game.get_player1() if user.id == game.get_player1().id else game.get_player2()
+        game.game_physics.move_paddle(player, direction)
+        return None
+                
+    @staticmethod
+    async def broadcast_game_changes(game: Game):
+        ball_data_for_player_1 = await GameService.generate_game_changes(game, game.game_physics.paddle_1.owner)
+        ball_data_for_player_2 = await GameService.generate_game_changes(game, game.game_physics.paddle_2.owner)
+        
+        await game.player1.send_message_to_self(ball_data_for_player_1)
+        await game.player2.send_message_to_self(ball_data_for_player_2)
+        return 
+                
+    @staticmethod
+    async def get_player_joined_game(user) -> Game:
+        for game in RUNNING_GAMES:
+            player1_id = game.get_player1().id
+            player2_id = game.get_player2().id
+            if (game.status != "ended" or game.status != "fail"):
+                if (user.id == player1_id or user.id == player2_id):
+                    return game
+        return None
                 
     @staticmethod
     def remove_player(game: Game):
@@ -208,72 +279,3 @@ class GameService:
             game.clean_up()
             RUNNING_GAMES.remove(game)
         return None
-    
-    
-    @staticmethod
-    async def update_ball_position(ws, user, action, data:dict):
-        game: Game = await GameService.get_player_joined_game(user)
-        if (game is None):
-            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
-        
-        if (user.id is not game.owner): return
-        
-        opponent = game.player2 if game.player2.id != user.id else game.player1
-        
-        ball_pos = data.get('data')
-        if (ball_pos is None):
-            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No ball position found' })
-        
-        await opponent.send_message_to_self({ "request": "game", "action": "update_ball", 'status': 'success', "message": 'Ball position updated', "data": ball_pos })
-        
-        
-    @staticmethod
-    async def update_score(ws, user, action, data:dict):
-        game: Game = await GameService.get_player_joined_game(user)
-        if (game is None):
-            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
-        
-        if (user.id is not game.owner): return
-        loser_data: dict = data.get('data')
-        
-        print("Loser Data", loser_data)
-        loser = loser_data.get("loser")
-        if (loser is None):
-            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No data was found' })
-        
-        
-        if (loser == game.player1.id):
-            game.player2_score += 1
-        elif (loser == game.player2.id):
-            game.player1_score += 1
-
-        current_top_score = game.player1_score if game.player1_score > game.player2_score else game.player2_score
-        
-        self_player_score = game.player1_score if user.id == game.player1.id else game.player2_score
-        opponent_score = game.player2_score if user.id == game.player1.id else game.player1_score
-        
-        score = {
-            "self_score": self_player_score,
-            "opponent_score": opponent_score
-        }
-        
-        opponent_score_data = {
-            "self_score": opponent_score,
-            "opponent_score": self_player_score
-        }
-        
-        self_user = game.player1 if user.id == game.player1.id else game.player2
-        opponent = game.player1 if user.id == game.player2.id else game.player2
-        
-        await self_user.send_message_to_self({ "request": "game", "action": "update_score", 'status': 'success', "message": 'Score updated', "data": score })
-        await opponent.send_message_to_self({ "request": "game", "action": "update_score", 'status': 'success', "message": 'Score updated', "data": opponent_score_data })
-        
-        # if (current_top_score == 7):
-        #     game.winner = game.player1.id if game.player1_score == 7 else game.player2.id
-        #     game.status = "ended"
-        #     await game.player1.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'Game ended', "data": { "winner": game.winner } })
-        #     await game.player2.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'Game ended', "data": { "winner": game.winner } })
-        #     GameService.remove_player(game)
-        #     game = None
-        
-        
