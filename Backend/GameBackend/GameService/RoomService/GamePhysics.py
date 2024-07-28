@@ -33,8 +33,8 @@ class GamePhysics:
         self.screen_width = 1920
         self.screen_height = 1080
         self.ball = BallPosition(self.screen_width / 2, self.screen_height / 2, 0.03 * self.screen_height, 0.0165 * self.screen_width)
-        self.paddle_1 = PaddlePosition(game.player1, 25, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
-        self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 25, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
+        self.paddle_1 = PaddlePosition(game.player1, 75, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
+        self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 75, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
         
     def calculate_ball_physics(self):
         self.ball.x += self.ball.xspeed

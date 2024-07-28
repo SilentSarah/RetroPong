@@ -219,6 +219,7 @@ class GameService:
             opponent_paddle_data = game.game_physics.generate_paddle_data(game.game_physics.paddle_1.owner)
             ball_data['x'] = 1 - ball_data['x']
             paddle_data['x'] = 1 - paddle_data['x']
+            opponent_paddle_data['x'] = 1 - opponent_paddle_data['x']
         payload = {
             "request": "game",
             "action": "update",
