@@ -2,6 +2,7 @@
 import { modes } from "./GameRenderer.js";
 import { rPaddle, bPaddle, RIGHT_SIDE, GameStates } from "./GameEngine.js";
 import { GameProcessor } from "./GameProcessor.js";
+import { events } from "./GameEvents.js";
 
 const UP = 1, DOWN = 2;
 
@@ -81,7 +82,8 @@ function moveplayer(paddle, direction) {
             paddle.drawPosY += paddle.speed;
         }
     }
-    
+    events.paddle_move_up = direction === UP ? 1 : 0;
+    events.paddle_move_down = direction === DOWN ? 1 : 0;
 }
 
 export function loadGameKeyHandlers() {

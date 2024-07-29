@@ -107,6 +107,10 @@ class Game:
     def link_players(self, player1, player2):
         player1.opponent = player2
         player2.opponent = player1
+        player1.game = self
+        player2.game = self
+        self.game_physics.paddle_1.owner = player1
+        self.game_physics.paddle_2.owner = player2
         
         self.player1 = player1 if player1.id == self.player1.id else player2
         self.player2 = player2 if player2.id == self.player2.id else player1
@@ -116,7 +120,7 @@ class Game:
         while (self.status == "started"):
             self.game_physics.calculate_ball_physics()
             await GameService.broadcast_game_changes(self)
-            await asyncio.sleep(0.016)
+            await asyncio.sleep(0.010)
             # if (self.player1_score == 10 or self.player2_score == 10):
             #     self.status = "ended"
             #     self.winner = self.player1.id if self.player1_score == 10 else self.player2.id

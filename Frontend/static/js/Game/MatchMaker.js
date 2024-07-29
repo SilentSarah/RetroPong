@@ -1,6 +1,7 @@
 import { modes } from "./GameRenderer.js";
 import { loadGameEngine } from "./GameEngine.js";
 import { Interpreter } from "./Interpreter.js";
+import { GameProcessor } from "./GameProcessor.js";
 
 const gamepfppath = "/static/img/pfp";
 const matchmaker_details = {
@@ -33,7 +34,8 @@ function startMatchTimer(timerObj, type, self, opponent) {
         timer_panel.innerText = "Starting...";
         clearInterval(matchmaker_timerID);
         matchmaker_timerID = null;
-        runGameMode(type, self, opponent);
+        if (modes.V_OFFLINE === 1) runGameMode(type, self, opponent);
+        else if (modes.V_ONLINE === 1) GameProcessor.gameRequestAction("ready", {});
     }
 }
 

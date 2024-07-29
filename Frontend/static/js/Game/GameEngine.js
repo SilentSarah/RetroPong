@@ -1,9 +1,11 @@
 import { user_id } from "../userdata.js";
 import { GameProcessor } from "./GameProcessor.js";
-import { modes } from "./GameRenderer.js";
+import { modes, renderGame } from "./GameRenderer.js";
 import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js";
 import { sanitizeHTMLCode } from "./MatchMaker.js";
-import { opponent_id } from "./GameProcessor.js";
+import { opponent_data } from "./GameProcessor.js";
+import { OnGameChange } from "./GameEvents.js";
+import { ballPhysics, generateRandomBallAngle } from "./GamePhysics.js";
 
 export const RIGHT_SIDE = 0, LEFT_SIDE = 1, BALL = 2;
 export let rPaddle, bPaddle, ball;
@@ -12,6 +14,7 @@ export const GameStates = {
     in_progress: 0,
     finished: 0,
 }
+const scores = [0, 0];
 const maps = {
     "RetroPong": ["#172573", "#6A66D9", "#F080F2", "#000000"],
     "Sunrise": ["#FFA3AC", "#FFBA81", "#FFD156"],
@@ -19,9 +22,10 @@ const maps = {
     "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
 }
 
-const BALL_SPEED = 17;
-const BALL_SPEED_LIMIT = 32;
-const PADDLE_SPEED = 25;
+export const BALL_SPEED = 6;
+export const BALL_SPPED_INCREASE = 1;
+export const BALL_SPEED_LIMIT = 20;
+export const PADDLE_SPEED = 17;
 
 class Paddle {
     constructor(canvasHTML, context, imagePath, cWidth, cHeight, side = LEFT_SIDE, loader) {
@@ -30,7 +34,7 @@ class Paddle {
         this.image = new Image();
         this.cWidth = cWidth;
         this.cHeight = cHeight;
-        this.pHeight = cHeight * 0.125;
+        this.pHeight = cHeight * 0.150;
         this.pWidth = cWidth * 0.030;
         this.push_value = 50;
         this.image.src = imagePath;
@@ -40,7 +44,8 @@ class Paddle {
         this.posX = side === LEFT_SIDE ? this.push_value : this.cWidth - (this.push_value + (this.pWidth / 2));
         this.type = side;
         this.speed = PADDLE_SPEED;
-        this.angle = (Math.PI / 2)
+        this.angle = (Math.PI / 2);
+        this.score = 0;
 
         this.image.onload = () => { 
             loader(this);
@@ -114,107 +119,48 @@ function generateGradient(ctx, width, height, chosenMap) {
     ctx.fillRect(0, 0, width, height);
 }
 
-function resetInGamePhysics(rPaddle, bPaddle, ball) {
-    GameStates.in_progress = 0;
-    GameStates.starting = 1;
-    setTimeout(() => {
-        ball.drawPosX = ball.cWidth / 2;
-        ball.drawPosY = ball.cHeight / 2;
-        ball.posX = ball.cWidth / 2;
-        ball.posY = ball.cHeight / 2;
-
-        rPaddle.drawPosY = (rPaddle.cHeight / 2) - (rPaddle.pHeight / 2);
-        rPaddle.drawPosX = rPaddle.push_value;
-        rPaddle.posY = rPaddle.drawPosY + rPaddle.pHeight / 2;
-        rPaddle.posX = rPaddle.push_value;
-
-        bPaddle.drawPosY = (bPaddle.cHeight / 2) - (bPaddle.pHeight / 2);
-        bPaddle.drawPosX = bPaddle.cWidth - (bPaddle.push_value + bPaddle.pWidth);
-        bPaddle.posY = bPaddle.drawPosY + bPaddle.pHeight / 2;
-        bPaddle.posX = bPaddle.cWidth - (bPaddle.push_value + (bPaddle.pWidth / 2));
-
-        ball.xspeed = BALL_SPEED;
-        ball.yspeed = BALL_SPEED;
-    }, 500);
+function clearGameDashboard() {
+    const game_utils = document.getElementById("game-utils");
+    const game = document.getElementById("game");
+    game_utils.children[1].remove();
+    game.classList.remove("h-80");
 }
 
-function increaseBallSpeed(ball) {
-    ball.xspeed > 0 ? ball.xspeed += 0.75 : ball.xspeed -= 0.75;
-    ball.yspeed > 0 ? ball.yspeed += 0.75 : ball.yspeed -= 0.75;
-    ball.yspeed > BALL_SPEED_LIMIT ? ball.yspeed = BALL_SPEED_LIMIT : ball.yspeed;
-    ball.yspeed < -BALL_SPEED_LIMIT ? ball.yspeed = -BALL_SPEED_LIMIT : ball.yspeed;
-    ball.xspeed > BALL_SPEED_LIMIT ? ball.xspeed = BALL_SPEED_LIMIT : ball.xspeed;
-    ball.xspeed < -BALL_SPEED_LIMIT ? ball.xspeed = -BALL_SPEED_LIMIT : ball.xspeed;
-}
+export function processLocalScore(ball_x_pos) {
+    if (modes.V_OFFLINE == 1) {
+        const op_1_score = document.getElementById("op_1_score");
+        const op_2_score = document.getElementById("op_2_score");
+        const GameContainer = document.getElementById("game-container");
+        if (ball_x_pos <= 0) {
+            scores[1] += 1;
+            bPaddle.score += 1;
+            op_2_score.innerText = `${bPaddle.score}`;
+            GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Blue Paddle Scored!</p>`;
 
-function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
-    if (ball_hb.x < rPaddle_hb.x + rPaddle_hb.width &&
-        ball_hb.x + (ball_hb.width / 2) > rPaddle_hb.x &&
-        ball_hb.y < rPaddle_hb.y + rPaddle_hb.height &&
-        ball_hb.y + ball_hb.height > rPaddle_hb.y) {
-        ball.posX = rPaddle_hb.x + rPaddle_hb.width;
-        ball.drawPosX = rPaddle_hb.x + rPaddle_hb.width;
-        ball.xspeed = -ball.xspeed;
-        increaseBallSpeed(ball);
+        } else {
+            scores[0] += 1;
+            rPaddle.score += 1;
+            op_1_score.innerText = `${rPaddle.score}`;
+            GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Red Paddle Scored!</p>`;
+        }
+        if (scores[0] >= 3 || scores[1] >= 3) {
+            GameStates.finished = 0;
+            GameStates.in_progress = 0;
+            GameContainer.innerHTML = "";
+            GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
+            setTimeout(() => {
+                clearGameDashboard();
+                renderGame();
+            }, 2500);
+        } else {
+            GameStates.starting = 1;
+            GameStates.in_progress = 0;
+            setTimeout(() => {
+                GameContainer.innerText = "";
+                DisplayMatchStartTimer();
+            }, 1500);
+        }
     }
-    
-    if (ball_hb.x < bPaddle_hb.x + bPaddle_hb.width &&
-        ball_hb.x + ball_hb.width > bPaddle_hb.x &&
-        ball_hb.y < bPaddle_hb.y + bPaddle_hb.height &&
-        ball_hb.y + ball_hb.height > bPaddle_hb.y) {
-        ball.posX = bPaddle_hb.x - ball.bWidth;
-        ball.drawPosX = bPaddle_hb.x - ball.bWidth;
-        ball.xspeed = -ball.xspeed;
-        increaseBallSpeed(ball);
-    }
-}
-
-function ballPhysics(ball, rPaddle, bPaddle) {
-
-    if (localStorage.getItem("slave")) return; 
-
-    const rPaddle_hb = {
-        x: rPaddle.drawPosX,
-        y: rPaddle.drawPosY,
-        width: rPaddle.pWidth,
-        height: rPaddle.pHeight,
-    }
-
-    const bPaddle_hb = {
-        x: bPaddle.drawPosX,
-        y: bPaddle.drawPosY,
-        width: bPaddle.pWidth,
-        height: bPaddle.pHeight,
-    }
-
-    const ball_hb = {
-        x: ball.drawPosX,
-        y: ball.drawPosY,
-        width: ball.bWidth,
-        height: ball.bHeight,
-    }
-
-    if (ball_hb.x <= 0 || ball_hb.x + ball_hb.width >= ball.cWidth) {
-        const loser = ball_hb.x <= 0 ? user_id : opponent_id;
-        GameProcessor.gameRequestAction("update_score", { loser: loser });
-        resetInGamePhysics(rPaddle, bPaddle, ball);
-    }
-    if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {
-        ball.yspeed = -ball.yspeed;
-    }
-
-    collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb);
-
-    ball.posX += ball.xspeed;
-    ball.posY += ball.yspeed;
-    ball.drawPosX += ball.xspeed;
-    ball.drawPosY += ball.yspeed;
-
-}
-
-function generateRandomBallAngle() {
-    ball.xspeed = Math.random() >= 0.5 ? -BALL_SPEED : BALL_SPEED;
-    ball.yspeed = Math.random() >= 0.5 ? -BALL_SPEED : BALL_SPEED;
 }
 
 function invokeStartMatchTimer(ctx, matchTimer, width, height) {
@@ -282,22 +228,54 @@ function loadGameDashboard(self, opponent) {
     game.classList.contains("border-transparent-0-5") ? null : game.classList.add("border-transparent-0-5");
 }
 
+export function DisplayMatchStartTimer() {
+    let timeObj = { time: 3 };
+
+    GameStates.starting = 1;
+    GameStates.in_progress = 0;
+    const GameContainer = document.getElementById("game-container");
+    const timer = setInterval(() => {
+        GameContainer.innerHTML = "";
+        const p = document.createElement('p');
+        p.classList.add("text-white", "fs-1", "taprom", "text-pink-gradient", "w-100", "h-100", "d-flex", "justify-content-center", "align-items-center", "mb-5");
+        p.innerText = `Match Starting in ${timeObj.time}`;
+        GameContainer.appendChild(p);
+        if (timeObj.time <= 0) {
+            clearInterval(timer);
+            GameStates.starting = 0;
+            GameStates.in_progress = 1;
+            GameContainer.innerHTML = "";
+            generateRandomBallAngle();
+        }
+        timeObj.time -= 1;
+    }, 1000);
+}
+
+function checkGameVisibility() {
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === "hidden") {
+            GameProcessor.gameRequestAction("inactive", { user_id: user_id });
+        } else {
+        }
+    });
+}
+
 export function loadGameEngine(gameMode, self, opponent) {
     const gameCanvas =  document.getElementById("game");
     const ctx = gameCanvas.getContext('2d');
     const dpi = window.devicePixelRatio;
     const [width, height] = fix_dpi(gameCanvas, dpi);
-    let matchTimer = {startdate: null};
-    
+
     const drawGame = () => {
         if (!rPaddle || !bPaddle || !ball) return ;
-        ctx.clearRect(0, 0, width, height);
         generateGradient(ctx, width, height, "Midnight");
         if (GameStates.starting) {
-            invokeStartMatchTimer(ctx, matchTimer, width, height, ball);
+    
         } else if (GameStates.in_progress) {
+            if (modes.V_OFFLINE == 1) {
+                ballPhysics(ball, rPaddle, bPaddle);
+            }
             activateButtonFunctions(gameMode);
-            ballPhysics(ball, rPaddle, bPaddle);
             drawGameElements(rPaddle, bPaddle, ball);
         } else if (GameStates.finished) {
             
@@ -317,6 +295,8 @@ export function loadGameEngine(gameMode, self, opponent) {
             loadGameKeyHandlers();
             loadGameDashboard(self, opponent);
             drawGame();
+            DisplayMatchStartTimer();
+            OnGameChange();
         }
     }
     
@@ -325,20 +305,57 @@ export function loadGameEngine(gameMode, self, opponent) {
     new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);
 
-    let updater = setInterval(() => { sendGameData(rPaddle, updater) }, 5);
+    // const gameUpdater = setInterval(
+    // () => { 
+    //     if (GameStates.in_progress)
+    //         // sendGameData(rPaddle, gameUpdater);
+    //     else if (GameStates.finished) 
+    //         clearInterval(gameUpdater) 
+    // }, 5);
+    // let updater = setInterval(() => { sendGameData(rPaddle, updater); requestBallPosUpdate(width, height) }, 5);
+    // checkGameVisibility();
+    // grabPlayerData(width, height);
 }
 
-function sendGameData(rPaddle, updater) {
-    if (GameStates.in_progress == 0) return ;
-    if (modes.V_OFFLINE == 1) {
-        updater ? clearInterval(updater) : null;
-        return ;
-    }
+// function sendGameData(rPaddle, updater) {
+//     if (!GameStates.in_progress) return;
+//     if (modes.V_OFFLINE == 1) {
+//         updater ? clearInterval(updater) : null;
+//         return ;
+//     }
+//     // const ball_data = {
+//     //     posX: ball.posX / ball.cWidth,
+//     //     posY: ball.posY / ball.cHeight
+//     // }
+//     GameProcessor.gameRequestAction("update_paddle", { paddle: rPaddle });
+//     // GameProcessor.gameRequestAction("update_ball", ball_data);
+// }
+
+function requestBallPosUpdate(width, height) {
+    if (modes.V_OFFLINE == 1) return ;
     const ball_data = {
-        posX: ball.posX / ball.cWidth,
-        posY: ball.posY / ball.cHeight
+        screenW: width,
+        screenH: height,
     }
-    GameProcessor.gameRequestAction("update_paddle", { paddle: rPaddle });
     GameProcessor.gameRequestAction("update_ball", ball_data);
-
 }
+
+function grabPlayerData(width, height) {
+        const screen_data = {
+            screenW: width,
+            screenH: height,
+            paddleH: rPaddle.pHeight,
+            paddleW: rPaddle.pWidth,
+            paddleX: rPaddle.PosX,
+            paddleY: rPaddle.posY,
+        }
+        GameProcessor.gameRequestAction('register_data', screen_data);
+}
+
+// function upload_ball_data(ball) {
+//     const ball_data = {
+//         posX: ball.posX,
+//         posY: ball.posY,
+//     }
+//     GameProcessor.gameRequestAction("update_ball", ball_data);
+// }

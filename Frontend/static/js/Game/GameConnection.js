@@ -1,6 +1,7 @@
 import { Interpreter } from './Interpreter.js';
 export let GameConnector = null;
 let interval = null;
+export const TICK_RATE = 10;
 
 class GameConnection {
     constructor(link) {
@@ -24,7 +25,6 @@ export function initiateGameConnection() {
     }
     GameConnector.socket.onmessage = function(event) {
         const response = JSON.parse(event.data);
-        console.log("response in GameConnection.js", response);
         Interpreter.interpretResponse(response);
 
     }
