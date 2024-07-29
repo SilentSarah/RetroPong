@@ -1,13 +1,15 @@
 from typing import TYPE_CHECKING
-from math import sqrt
+import random
 
 if TYPE_CHECKING:
     from .Game import Game
 
 
-BALL_SPEED = 10
+BALL_SPEED = 12
 PADDLE_SPEED = 17
-BALL_LIMIT = 17
+BALL_LIMIT = 25
+VIRTUAL_WIDTH = 1920
+VIRTUAL_HEIGHT = 1080
 
 class PaddlePosition:
     def __init__(self, owner, x, y, paddle_height, paddle_width):
@@ -19,6 +21,9 @@ class PaddlePosition:
         self.radius = paddle_height / 2
         self.yspeed = PADDLE_SPEED
         
+    def reset_data(self):
+        self.y = VIRTUAL_HEIGHT / 2
+        
 class BallPosition:
     def __init__(self, x, y, radius):
         self.x = x
@@ -27,12 +32,23 @@ class BallPosition:
         self.diameter = self.radius * 2
         self.xspeed = BALL_SPEED
         self.yspeed = BALL_SPEED
+        
+    def reset_data(self):
+        self.x = VIRTUAL_WIDTH / 2
+        self.y = VIRTUAL_HEIGHT / 2
+        self.generate_random_angle()
+    
+    def generate_random_angle(self):
+        speeds = [BALL_SPEED, -BALL_SPEED]
+        self.xspeed = speeds[random.randint(0, 1)]
+        self.yspeed = speeds[random.randint(0, 1)]
+        
 
 class GamePhysics:
     def __init__(self, game):
         self.game: Game = game
-        self.screen_width = 1920
-        self.screen_height = 1080
+        self.screen_width = VIRTUAL_WIDTH
+        self.screen_height = VIRTUAL_HEIGHT
         self.ball = BallPosition(self.screen_width / 2, self.screen_height / 2, 0.015 * self.screen_height)
         self.paddle_1 = PaddlePosition(game.player1, 75, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
         self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 75, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
@@ -50,13 +66,19 @@ class GamePhysics:
 
         if self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2 and self.ball.y >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.y <= self.paddle_1.y + self.paddle_1.height / 2:
             self.ball.xspeed *= -1
-        elif self.ball.y - self.ball.radius <= self.paddle_1.y + self.paddle_1.height / 2 and self.ball.y + self.ball.radius >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2:
-            self.ball.yspeed *= -1
-        elif self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2 and self.ball.y >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.y <= self.paddle_2.y + self.paddle_2.height / 2:
+            self.ball.yspeed *= -1  
+            self.increase_ball_speed()
+        if self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2 and self.ball.y >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.y <= self.paddle_2.y + self.paddle_2.height / 2:
             self.ball.xspeed *= -1
-        elif self.ball.y - self.ball.radius <= self.paddle_2.y + self.paddle_2.height / 2 and self.ball.y + self.ball.radius >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2:
             self.ball.yspeed *= -1
-
+            self.increase_ball_speed()
+            
+        if self.ball.y - self.ball.radius <= self.paddle_1.y + self.paddle_1.height / 2 and self.ball.y + self.ball.radius >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2:
+            self.ball.yspeed *= -1
+            self.increase_ball_speed()
+        if self.ball.y - self.ball.radius <= self.paddle_2.y + self.paddle_2.height / 2 and self.ball.y + self.ball.radius >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2:
+            self.ball.yspeed *= -1
+            self.increase_ball_speed()
             
     def generate_ball_data(self):
         return {
@@ -97,7 +119,11 @@ class GamePhysics:
             self.paddle_2.y = 0
         elif self.paddle_2.y + self.paddle_2.height / 2 > self.screen_height:
             self.paddle_2.y = self.screen_height - self.paddle_2.height / 2
-        print(f"left paddle posY: {self.paddle_1.y}", f"left paddle posY: {self.paddle_1.height}")
             
-    def calculate_distance(self, x1, y1, x2, y2):
-        return sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    def increase_ball_speed(self):
+        self.ball.xspeed += 1 if self.ball.xspeed > 0 else -1
+        self.ball.yspeed += 1 if self.ball.yspeed > 0 else -1
+        if self.ball.xspeed > BALL_LIMIT: self.ball.xspeed = BALL_LIMIT
+        if self.ball.yspeed > BALL_LIMIT: self.ball.yspeed = BALL_LIMIT
+        if self.ball.xspeed < -BALL_LIMIT: self.ball.xspeed = -BALL_LIMIT
+        if self.ball.yspeed < -BALL_LIMIT: self.ball.yspeed = -BALL_LIMIT
