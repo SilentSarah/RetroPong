@@ -101,7 +101,7 @@ export function log_user_in() {
         username: username,
         password: password
     };
-    setLoadingOverlay(true);
+    // setLoadingOverlay(true);
     fetch('http://127.0.0.1:8000/auth/', {
         method: 'POST',
         credentials: 'include',
@@ -111,7 +111,7 @@ export function log_user_in() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        setLoadingOverlay(false);
+        // setLoadingOverlay(false);
         if (response.status >= 400 && response.status < 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
@@ -207,7 +207,7 @@ export function register_user() {
         "uFname": uFname,
         "uLname": uLname,
     }
-    setLoadingOverlay(true);
+    // setLoadingOverlay(true);
     fetch('http://127.0.0.1:8001/userdata/create', {
         method: 'POST',
         credentials: 'include',
@@ -217,7 +217,7 @@ export function register_user() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        setLoadingOverlay(false);
+        // setLoadingOverlay(false);
         if (response.status === 201) {
             toast('Registration successful, Redirecting...', 'bg-success');
             DisplayNavBar();
@@ -234,7 +234,7 @@ export function register_user() {
     .catch((error) => {
         console.error('Error:', error);
         unblock_inputs(inputs);
-        setLoadingOverlay(false);
+        // setLoadingOverlay(false);
     });
 }
 

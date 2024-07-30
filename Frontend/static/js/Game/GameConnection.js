@@ -1,7 +1,7 @@
 import { Interpreter } from './Interpreter.js';
 export let GameConnector = null;
 let interval = null;
-export const TICK_RATE = 10;
+export const TICK_RATE = 1 / 60;
 
 class GameConnection {
     constructor(link) {

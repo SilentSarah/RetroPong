@@ -5,8 +5,8 @@ if TYPE_CHECKING:
     from .Game import Game
 
 
-BALL_SPEED = 12
-PADDLE_SPEED = 17
+BALL_SPEED = 15
+PADDLE_SPEED = 15   
 BALL_LIMIT = 25
 VIRTUAL_WIDTH = 1920
 VIRTUAL_HEIGHT = 1080
@@ -50,8 +50,8 @@ class GamePhysics:
         self.screen_width = VIRTUAL_WIDTH
         self.screen_height = VIRTUAL_HEIGHT
         self.ball = BallPosition(self.screen_width / 2, self.screen_height / 2, 0.015 * self.screen_height)
-        self.paddle_1 = PaddlePosition(game.player1, 75, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
-        self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 75, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.030))
+        self.paddle_1 = PaddlePosition(game.player1, 20, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
+        self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 23, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
         
     def calculate_ball_physics(self):
         self.ball.x += self.ball.xspeed
@@ -59,11 +59,16 @@ class GamePhysics:
         self.check_collision()
         
     def check_collision(self):
+        
         if self.ball.y - self.ball.radius <= 0 or self.ball.y + self.ball.radius >= self.screen_height:
             self.ball.yspeed *= -1
         if self.ball.x <= 0 or self.ball.x + self.ball.diameter >= self.screen_width:
             self.ball.xspeed *= -1
-
+            if (self.ball.x <= 0):
+                self.ball.reset_data()
+                self.paddle_1.reset_data()
+                self.paddle_2.reset_data()
+        
         if self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2 and self.ball.y >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.y <= self.paddle_1.y + self.paddle_1.height / 2:
             self.ball.xspeed *= -1
             self.ball.yspeed *= -1  
@@ -79,6 +84,15 @@ class GamePhysics:
         if self.ball.y - self.ball.radius <= self.paddle_2.y + self.paddle_2.height / 2 and self.ball.y + self.ball.radius >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2:
             self.ball.yspeed *= -1
             self.increase_ball_speed()
+            
+        if (self.check_if_point_is_inside_area(self.ball.x, self.ball.y, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
+            self.ball.xspeed *= -1
+            self.increase_ball_speed()
+        if (self.check_if_point_is_inside_area(self.ball.x, self.ball.y, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)):
+            self.ball.xspeed *= -1
+            self.increase_ball_speed()
+
+        
             
     def generate_ball_data(self):
         return {
@@ -127,3 +141,6 @@ class GamePhysics:
         if self.ball.yspeed > BALL_LIMIT: self.ball.yspeed = BALL_LIMIT
         if self.ball.xspeed < -BALL_LIMIT: self.ball.xspeed = -BALL_LIMIT
         if self.ball.yspeed < -BALL_LIMIT: self.ball.yspeed = -BALL_LIMIT
+        
+    def check_if_point_is_inside_area(self, x, y, x1, y1, x2, y2):
+        return x >= x1 and x <= x2 and y >= y1 and y <= y2

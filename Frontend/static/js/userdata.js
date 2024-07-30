@@ -109,7 +109,7 @@ export function clearUserDataLocally() {
 
 export function fetchUserData() {
     if (!tokenCheck()) return ;
-    setLoadingOverlay(true);
+    // setLoadingOverlay(true);
     fetch("http://127.0.0.1:8001/userdata/",
     { 
         method: 'GET',
@@ -123,15 +123,15 @@ export function fetchUserData() {
             return response.json();
         } else {
             clearUserDataLocally();
-            setLoadingOverlay(false);
+            // setLoadingOverlay(false);
         }
     })
     .then(data => {
         setValuesToSessionStorage(data);
         if (window.location.pathname === "/dashboard")
             setDashboardStats();
-        DisplayNavBar();
-        setLoadingOverlay(false);
+        // DisplayNavBar();
+        // setLoadingOverlay(false);
     })
     .catch((error) => {
         sessionStorage.clear();
@@ -140,7 +140,7 @@ export function fetchUserData() {
             return ;
         }
         console.error('Error:', error);
-        setLoadingOverlay(false);
+        // setLoadingOverlay(false);
     });
 }
 

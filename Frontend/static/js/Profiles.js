@@ -69,7 +69,7 @@ function Invite(id, type) {
         child.classList.add('opacity-75', 'cursor-not-allowed');
     });
     console.log("Inviting...", id, type);
-    setLoadingOverlay(true);
+    // setLoadingOverlay(true);
     fetch ("http://127.0.0.1:8001/userdata/invite", {
         method: 'POST',
         headers: {
@@ -92,7 +92,7 @@ function Invite(id, type) {
             child.disabled = false;
             child.classList.remove('opacity-75', 'cursor-not-allowed');
         });
-        setLoadingOverlay(false);
+        // setLoadingOverlay(false);
     })
     .catch(error => {
         toast("An error occured while inviting this person.", "bg-danger");
@@ -100,7 +100,7 @@ function Invite(id, type) {
             child.disabled = false;
             child.classList.remove('opacity-75', 'cursor-not-allowed');
         });
-        setLoadingOverlay(false);
+        // setLoadingOverlay(false);
     });
 }
 
