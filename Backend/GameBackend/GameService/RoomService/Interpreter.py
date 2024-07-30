@@ -14,7 +14,7 @@ COMMANDS = [
         ('leave', GameService.leave_game),
         ('ready', GameService.ready_game),
         ('move', GameService.move_player),  
-        # ('shoot', RoomService.shoot_ball)
+        ('ready_game', GameService.ready_in_game),
     ])
 ]
 class Interpreter:

@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from time import sleep
 import random
 
 if TYPE_CHECKING:
@@ -20,6 +21,7 @@ class PaddlePosition:
         self.height = paddle_height
         self.radius = paddle_height / 2
         self.yspeed = PADDLE_SPEED
+        self.ready = False
         
     def reset_data(self):
         self.y = VIRTUAL_HEIGHT / 2
@@ -52,22 +54,38 @@ class GamePhysics:
         self.ball = BallPosition(self.screen_width / 2, self.screen_height / 2, 0.015 * self.screen_height)
         self.paddle_1 = PaddlePosition(game.player1, 20, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
         self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 23, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
+        self.state = "running"
         
-    def calculate_ball_physics(self):
+    async def calculate_ball_physics(self):
         self.ball.x += self.ball.xspeed
         self.ball.y += self.ball.yspeed
-        self.check_collision()
+        await self.check_collision()
         
-    def check_collision(self):
+    def reset_game_data(self):
+        self.ball.reset_data()
+        self.paddle_1.reset_data()
+        self.paddle_2.reset_data()
         
+    async def set_score_for_player(self):
+        from .Game import GameService
+        scorer = None
+        if (self.ball.x <= 0):
+            scorer = self.paddle_2.owner
+            self.game.player2_score += 1
+        elif (self.ball.x + self.ball.diameter >= self.screen_width):
+            scorer = self.paddle_1.owner
+            self.game.player1_score += 1
+        self.game.latest_scorer = scorer.id
+        await GameService.update_score(self.game)
+        self.reset_game_data()
+        
+    async def check_collision(self):
         if self.ball.y - self.ball.radius <= 0 or self.ball.y + self.ball.radius >= self.screen_height:
             self.ball.yspeed *= -1
         if self.ball.x <= 0 or self.ball.x + self.ball.diameter >= self.screen_width:
-            self.ball.xspeed *= -1
-            if (self.ball.x <= 0):
-                self.ball.reset_data()
-                self.paddle_1.reset_data()
-                self.paddle_2.reset_data()
+            await self.set_score_for_player()
+            self.state = "score"
+            return
         
         if self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2 and self.ball.y >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.y <= self.paddle_1.y + self.paddle_1.height / 2:
             self.ball.xspeed *= -1

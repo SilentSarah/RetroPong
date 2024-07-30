@@ -105,7 +105,7 @@ export function clearChosenGameMode() {
 }
 
 
-export function DisplayMatchMakerScreen(type, data = null) {
+export function DisplayMatchMakerScreen(type, data = null, restore = false) {
     let self_player;
     let opponent_player;
     const div = document.createElement('div');

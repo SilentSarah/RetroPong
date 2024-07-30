@@ -16,12 +16,9 @@ export class GameProcessor {
             case 'update_paddle':
                 this.update_paddle_pos(data);
                 break;
-            // case 'update_ball':
-            //     this.update_ball_pos(data);
-            //     break;
-            // case 'update_score':
-            //     this.update_score(data);
-            //     break;
+            case 'score':
+                this.update_score(data);
+                break ;
             case 'start':
                 this.startGame(data);
                 break;
@@ -78,29 +75,26 @@ export class GameProcessor {
         bPaddle.drawPosY = data.posY - bPaddle.pHeight / 2;
     }
 
-    // static update_score(data) {
-    //     const my_score = data.self_score;
-    //     const op_score = data.opponent_score;
+    static update_score(data) {
+        const my_score = data.score.self_score;
+        const op_score = data.score.opponent_score;
 
-    //     const my_score_html = document.getElementById('op_1_score');
-    //     const op_score_html = document.getElementById('op_2_score');
+        const my_score_html = document.getElementById('op_1_score');
+        const op_score_html = document.getElementById('op_2_score');
 
-    //     my_score_html.innerText = my_score;
-    //     op_score_html.innerText = op_score;
-    //     GameStates.in_progress = 0;
-    //     GameStates.starting = 1;
-    //     // this.displayScorer(data);
-    //     // setTimeout(() => DisplayMatchStartTimer(), 1500);
-    //     DisplayMatchStartTimer();
-    // }
+        my_score_html.innerText = my_score;
+        op_score_html.innerText = op_score;
+        this.displayScorer(data);
+        setTimeout(() => DisplayMatchStartTimer(true), 1500);
+    }
 
-    // static update_ball_pos(data) {
-    //     data.posX = 1 - data.posX; // Inversion
-    //     ball.posY = data.posY * ball.cHeight;
-    //     ball.posX = data.posX * ball.cWidth;
-    //     ball.drawPosY = ball.posY - ball.bHeight / 2;
-    //     ball.drawPosX = ball.posX - ball.bWidth / 2;
-    // }
+    static update_ball_pos(data) {
+        data.posX = 1 - data.posX; // Inversion
+        ball.posY = data.posY * ball.cHeight;
+        ball.posX = data.posX * ball.cWidth;
+        ball.drawPosY = ball.posY - ball.bHeight / 2;
+        ball.drawPosX = ball.posX - ball.bWidth / 2;
+    }
 
     static upadateGameElementPositions(data) {
         if (data.paddle_data) {
@@ -145,8 +139,8 @@ export class GameProcessor {
 
     static displayScorer(data) {
         const scorer_data = {
-            scorer_username: data.scorer,
-            pfp: data.scorer_id === user_id ? sessionStorage.getItem("profilepic") : opponent_data.profilepic
+            scorer_username: data.score.scorer_id === user_id ? sessionStorage.getItem("username") : opponent_data.username,
+            pfp: data.score.scorer_id === user_id ? sessionStorage.getItem("profilepic") : opponent_data.profilepic
         }
         const game_container = document.getElementById('game-container');
         game_container.innerHTML = "";
@@ -158,3 +152,5 @@ export class GameProcessor {
         game_container.appendChild(scorer_div);
     }
 }
+
+// I NEED TO WORK ON SENDING READY STATE BACK TO THE SERVER SO IT CAN RESUME THE ROUND

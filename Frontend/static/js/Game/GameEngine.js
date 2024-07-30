@@ -228,7 +228,7 @@ function loadGameDashboard(self, opponent) {
     game.classList.contains("border-transparent-0-5") ? null : game.classList.add("border-transparent-0-5");
 }
 
-export function DisplayMatchStartTimer() {
+export function DisplayMatchStartTimer(mid_game) {
     let timeObj = { time: 3 };
 
     GameStates.starting = 1;
@@ -246,6 +246,7 @@ export function DisplayMatchStartTimer() {
             GameStates.in_progress = 1;
             GameContainer.innerHTML = "";
             generateRandomBallAngle();
+            if (mid_game) GameProcessor.gameRequestAction('ready_game', {});
         }
         timeObj.time -= 1;
     }, 1000);

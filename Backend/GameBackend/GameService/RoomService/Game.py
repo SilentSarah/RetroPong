@@ -37,6 +37,7 @@ class Game:
         self.owner = room.owner
         self.game_physics = GamePhysics(self)
         self.readyCounter = 0
+        self.latest_scorer = None
         
     def get_player1(self):
         return self.player1
@@ -109,17 +110,27 @@ class Game:
         player2.opponent = player1
         player1.game = self
         player2.game = self
-        self.game_physics.paddle_1.owner = player1
-        self.game_physics.paddle_2.owner = player2
+        
+        p1_owner_id = self.game_physics.paddle_1.owner.id
+        p2_owner_id = self.game_physics.paddle_2.owner.id
+        
+        self.game_physics.paddle_1.owner = player1 if player1.id == p1_owner_id else player2
+        self.game_physics.paddle_2.owner = player2 if player2.id == p2_owner_id else player1
         
         self.player1 = player1 if player1.id == self.player1.id else player2
         self.player2 = player2 if player2.id == self.player2.id else player1
+        
+        if (player1.id == p1_owner_id):
+            self.game_physics.paddle_1.ready = True
+        else:
+            self.game_physics.paddle_2.ready = True
 
     async def game_simulation(self):
         await asyncio.sleep(4)
         while (self.status == "started"):
-            self.game_physics.calculate_ball_physics()
-            await GameService.broadcast_game_changes(self)
+            if (self.game_physics.state == "running"):
+                await self.game_physics.calculate_ball_physics()
+                await GameService.broadcast_game_changes(self)
             await asyncio.sleep(1 / 60)
             # if (self.player1_score == 10 or self.player2_score == 10):
             #     self.status = "ended"
@@ -264,7 +275,43 @@ class GameService:
         
         await game.player1.send_message_to_self(ball_data_for_player_1)
         await game.player2.send_message_to_self(ball_data_for_player_2)
-        return 
+        return None
+    
+    @staticmethod
+    async def update_score(game: Game):
+        player_1_data = {
+            "scorer_id": game.latest_scorer,
+            "self_score": game.player1_score,
+            "opponent_score": game.player2_score
+        }
+        player_2_data = {
+            "scorer_id": game.latest_scorer,
+            "self_score": game.player2_score,
+            "opponent_score": game.player1_score
+        }
+        await game.player1.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_1_data } })
+        await game.player2.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_2_data } })
+        return None
+    
+    @staticmethod
+    async def ready_in_game(ws, user, action, data:dict):
+        game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        if (game.status != "started"):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'Game not started' })
+        
+        game_physics = game.game_physics
+        paddle_1 = game_physics.paddle_1
+        paddle_2 = game_physics.paddle_2
+        
+        paddle_1.ready = True if paddle_1.owner == user else paddle_1.ready
+        paddle_2.ready = True if paddle_2.owner == user else paddle_2.ready
+        
+        if (paddle_1.ready and paddle_2.ready):
+            game_physics.state = "running"
+        return None
                 
     @staticmethod
     async def get_player_joined_game(user) -> Game:
