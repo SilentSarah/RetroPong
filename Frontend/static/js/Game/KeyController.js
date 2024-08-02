@@ -19,17 +19,17 @@ const controller = {
 
     "i": {
         tapped: false,
-        func: () => func(),
+        func: () => activate_special_ability("railshot"),
     }, // i spec ability for the player 1
 
     "o": {
         tapped: false,
-        func: () => func(),
+        func: () => activate_special_ability("guard"),
     }, // o spec ability for the player 1
 
     "p": {
         tapped: false,
-        func: () => func(),
+        func: () => activate_special_ability("speedup"),
     }, // p spec ability for the player 1
 
     "ArrowUp": {
@@ -84,6 +84,14 @@ function moveplayer(paddle, direction) {
     }
     events.paddle_move_up = direction === UP ? 1 : 0;
     events.paddle_move_down = direction === DOWN ? 1 : 0;
+}
+
+function activate_special_ability(ability) {
+    if (modes.V_ONLINE) {
+        GameProcessor.gameRequestAction('ability', ability);
+    } else if (modes.V_OFFLINE) {
+        
+    }
 }
 
 export function loadGameKeyHandlers() {

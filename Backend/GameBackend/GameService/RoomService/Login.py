@@ -38,7 +38,7 @@ class Auth:
         user = find_user(ws_connection=ws_connection)
         if (user is not None):
             RoomService.remove_player(user)
-            GameService.remove_player(user.game)
+            GameService.remove_player(user.game, user)
             LOGGED_USERS.remove(user)
             return True
         return False

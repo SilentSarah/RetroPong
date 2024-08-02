@@ -7,38 +7,38 @@ export const modes = {
     V_OFFLINE: 0,
 }
 
-
-function renderStart(ctx) {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 800, 600);
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.fillText("Game Starting", 10, 50);
+function DisplayMatchSeekScreen() {
+    const game_utils = document.getElementById('game-utils');
+    const GameContainer = document.getElementById('game-container');
+    const div = document.createElement('div');
+    div.id = "matchseek";
+    div.classList.add("overlay", "d-flex", "flex-column", "justify-content-between", "w-100", "h-100", "fade_in");
+    div.innerHTML = `
+    <div class="ms-auto my-1 me-1 rounded-pill d-flex align-items-center justify-content-evenly gap-2 p-2 border-transparent-0-5 bg-black-transparent-0-05"
+        style="height:65px; width:max-content;">
+        <div class="bg-success rounded-circle" style="height: 20px; width: 20px;"></div>
+        <p class="text-white fw-bold nokora fs-5 m-0 p-0">Users Connected</p>
+        <span id="users-connected" class="text-white fw-bold nokora fs-5 m-0 p-0">1</span>
+    </div>
+    <h2 class="text-chrome text-glow line-height-1 backdrop-filter-brightness my-auto text-center taprom display-5">Looking for Players...</h2>
+    <div class="d-flex justify-content-center gap-3">
+        <button id="exit" onclick="exitMatchSeekScreen()" class="text-white
+            p-2 mb-5 rounded-circle bg-white-transparent-0-15 border-transparent-0-5">
+            <img src="/static/img/game/Back.png" width="32px" height="32px">
+        </button>
+    </div>`;
+    GameContainer.innerHTML = "";
+    game_utils.appendChild(div);
+    // MAKE SURE TO SEND THE SERVER A REQUEST TO FIND A MATCH
 }
 
-function renderEnd(ctx) {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 800, 600);
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.fillText("Game Over", 10, 50);
+function exitMatchSeekScreen() {
+    const matchseek = document.getElementById('matchseek');
+    matchseek.remove();
+    // SEND A REQUEST TO THE SERVER TO LEAVE THE MATCHMAKING QUEUE
+    renderLobby();
 }
 
-function renderLiveGame(ctx) {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 800, 600);
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.fillText("Live Game", 10, 50);
-}
-
-function renderMatchmaking(ctx) {
-    ctx.fillStyle = "black";
-    ctx.fillRect(0, 0, 800, 600);
-    ctx.fillStyle = "white";
-    ctx.font = "30px Arial";
-    ctx.fillText("Matchmaking", 10, 50);
-}
 
 function DisplayRoomOptions() {
     const game_container = document.getElementById('game-container');
@@ -105,7 +105,7 @@ function renderLobby() {
         div.classList.add("d-flex", "align-items-center", "justify-content-center", "gap-3", 'z-1')
         div.id = "lobby";
         div.innerHTML = `
-        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Versus" onclick="DisplayMatchMakerScreen('Online')">
+        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Versus" onclick="DisplayMatchSeekScreen()">
             <img src="/static/img/game/Versus.png" width="24px" height="24px">
             Versus
         </button>
@@ -133,3 +133,5 @@ window.renderLobby = renderLobby;
 window.DisplayRoomOptions = DisplayRoomOptions;
 window.LeaveMatchMaker = LeaveMatchMaker;
 window.DisplayMatchMakerScreen = DisplayMatchMakerScreen;
+window.DisplayMatchSeekScreen = DisplayMatchSeekScreen;
+window.exitMatchSeekScreen  = exitMatchSeekScreen;

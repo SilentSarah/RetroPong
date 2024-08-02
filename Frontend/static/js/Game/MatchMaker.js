@@ -1,5 +1,5 @@
 import { modes } from "./GameRenderer.js";
-import { loadGameEngine } from "./GameEngine.js";
+import { GameStates, loadGameEngine } from "./GameEngine.js";
 import { Interpreter } from "./Interpreter.js";
 import { GameProcessor } from "./GameProcessor.js";
 
@@ -28,6 +28,10 @@ function startMatchTimer(timerObj, type, self, opponent) {
     const match_start_timer = document.getElementById('match-start-timer');
     const timer_panel = document.getElementById('timer-panel');
 
+    if (!match_start_timer || !timer_panel) {
+        clearInterval(matchmaker_timerID);
+        return;
+    }
     match_start_timer.innerText = --timerObj.timer;
     console.log(timerObj.timer);
     if (timerObj.timer <= 0) {
@@ -102,6 +106,7 @@ function SetTheGameMode(type) {
 
 export function clearChosenGameMode() {
     Object.keys(modes).forEach((key) => modes[key] = 0);
+    Object.keys(GameStates).forEach((key) => GameStates[key] = 0);
 }
 
 

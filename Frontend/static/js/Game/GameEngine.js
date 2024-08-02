@@ -26,6 +26,7 @@ export const BALL_SPEED = 6;
 export const BALL_SPPED_INCREASE = 1;
 export const BALL_SPEED_LIMIT = 20;
 export const PADDLE_SPEED = 17;
+export let animReqID = null;
 
 class Paddle {
     constructor(canvasHTML, context, imagePath, cWidth, cHeight, side = LEFT_SIDE, loader) {
@@ -119,10 +120,10 @@ function generateGradient(ctx, width, height, chosenMap) {
     ctx.fillRect(0, 0, width, height);
 }
 
-function clearGameDashboard() {
-    const game_utils = document.getElementById("game-utils");
+export function clearGameDashboard() {
+    const game_dashboards = document.querySelectorAll("#game-dashboard");
     const game = document.getElementById("game");
-    game_utils.children[1].remove();
+    game_dashboards.forEach((element) => { element.remove()});
     game.classList.remove("h-80");
 }
 
@@ -182,20 +183,28 @@ function invokeStartMatchTimer(ctx, matchTimer, width, height) {
     }
 }
 
+export function clearCanvasScreen() {
+    ball.ctx.fillStyle = "black";
+    ball.ctx.fillRect(0, 0, ball.cWidth, ball.cHeight);
+}
+
 function loadGameDashboard(self, opponent) {
+
+    clearGameDashboard();
+    
     const game_utils = document.getElementById("game-utils");
     const game = document.getElementById("game");
-
     const div = document.createElement('div');
     div.classList.add("d-flex", "jsutify-content-evenly", "bg-black-transparent-0-5", "w-100", "h-20");
+    div.id = "game-dashboard";
     const player1 = document.createElement('div');
     player1.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "h-100", "w-100", "px-4", "rounded-start-5");
     player1.innerHTML = `
         <h3 id="op_1" class="text-center fs-2 mb-3 taprom text-white line-height-1">${sanitizeHTMLCode(self.username)}</h3>
-        <div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
-			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
-			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
-			<img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
+        <div id="player_1_sa" class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
+			<img id="railshot" class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
+			<img id="guard" class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
+			<img id="speedup" class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
 		</div>`;
     
     const score = document.createElement('div');
@@ -228,7 +237,7 @@ function loadGameDashboard(self, opponent) {
     game.classList.contains("border-transparent-0-5") ? null : game.classList.add("border-transparent-0-5");
 }
 
-export function DisplayMatchStartTimer(mid_game) {
+export function DisplayMatchStartTimer(ready_state) {
     let timeObj = { time: 3 };
 
     GameStates.starting = 1;
@@ -246,7 +255,7 @@ export function DisplayMatchStartTimer(mid_game) {
             GameStates.in_progress = 1;
             GameContainer.innerHTML = "";
             generateRandomBallAngle();
-            if (mid_game) GameProcessor.gameRequestAction('ready_game', {});
+            if (modes.V_ONLINE && ready_state) GameProcessor.gameRequestAction('ready_game', {});
         }
         timeObj.time -= 1;
     }, 1000);
@@ -259,6 +268,12 @@ function checkGameVisibility() {
         } else {
         }
     });
+}
+
+export function unloadGameElements() {
+    rPaddle = null;
+    bPaddle = null;
+    ball = null;
 }
 
 export function loadGameEngine(gameMode, self, opponent) {
@@ -279,9 +294,10 @@ export function loadGameEngine(gameMode, self, opponent) {
             activateButtonFunctions(gameMode);
             drawGameElements(rPaddle, bPaddle, ball);
         } else if (GameStates.finished) {
-            
+            clearCanvasScreen();
+            window.cancelAnimationFrame(animReqID);
         }
-        window.requestAnimationFrame(drawGame);
+        animReqID = window.requestAnimationFrame(drawGame);
     }
 
     const loader = (element) => {
@@ -296,7 +312,7 @@ export function loadGameEngine(gameMode, self, opponent) {
             loadGameKeyHandlers();
             loadGameDashboard(self, opponent);
             drawGame();
-            DisplayMatchStartTimer();
+            DisplayMatchStartTimer(true);
             OnGameChange();
         }
     }
@@ -305,58 +321,4 @@ export function loadGameEngine(gameMode, self, opponent) {
     new Ball(gameCanvas, ctx, "/static/img/game/Ball.svg", width, height, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
     new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);
-
-    // const gameUpdater = setInterval(
-    // () => { 
-    //     if (GameStates.in_progress)
-    //         // sendGameData(rPaddle, gameUpdater);
-    //     else if (GameStates.finished) 
-    //         clearInterval(gameUpdater) 
-    // }, 5);
-    // let updater = setInterval(() => { sendGameData(rPaddle, updater); requestBallPosUpdate(width, height) }, 5);
-    // checkGameVisibility();
-    // grabPlayerData(width, height);
 }
-
-// function sendGameData(rPaddle, updater) {
-//     if (!GameStates.in_progress) return;
-//     if (modes.V_OFFLINE == 1) {
-//         updater ? clearInterval(updater) : null;
-//         return ;
-//     }
-//     // const ball_data = {
-//     //     posX: ball.posX / ball.cWidth,
-//     //     posY: ball.posY / ball.cHeight
-//     // }
-//     GameProcessor.gameRequestAction("update_paddle", { paddle: rPaddle });
-//     // GameProcessor.gameRequestAction("update_ball", ball_data);
-// }
-
-function requestBallPosUpdate(width, height) {
-    if (modes.V_OFFLINE == 1) return ;
-    const ball_data = {
-        screenW: width,
-        screenH: height,
-    }
-    GameProcessor.gameRequestAction("update_ball", ball_data);
-}
-
-function grabPlayerData(width, height) {
-        const screen_data = {
-            screenW: width,
-            screenH: height,
-            paddleH: rPaddle.pHeight,
-            paddleW: rPaddle.pWidth,
-            paddleX: rPaddle.PosX,
-            paddleY: rPaddle.posY,
-        }
-        GameProcessor.gameRequestAction('register_data', screen_data);
-}
-
-// function upload_ball_data(ball) {
-//     const ball_data = {
-//         posX: ball.posX,
-//         posY: ball.posY,
-//     }
-//     GameProcessor.gameRequestAction("update_ball", ball_data);
-// }

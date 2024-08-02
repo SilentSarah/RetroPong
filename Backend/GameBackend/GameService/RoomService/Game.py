@@ -1,6 +1,7 @@
 from datetime import datetime
 from .GamePhysics import GamePhysics
 from requests import get
+from .models import User, MatchHistory
 import asyncio
 
 class GameBallData:
@@ -38,6 +39,8 @@ class Game:
         self.game_physics = GamePhysics(self)
         self.readyCounter = 0
         self.latest_scorer = None
+        self.player1_last_disconnected = None
+        self.player2_last_disconnected = None
         
     def get_player1(self):
         return self.player1
@@ -121,24 +124,33 @@ class Game:
         self.player2 = player2 if player2.id == self.player2.id else player1
         
         if (player1.id == p1_owner_id):
+            self.player1_last_disconnected = None
             self.game_physics.paddle_1.ready = True
         else:
+            self.player2_last_disconnected = None
             self.game_physics.paddle_2.ready = True
+
+    async def check_disconnected_users(self):
+        if (self.player1_last_disconnected is not None):
+            last_disconnected = datetime.now().timestamp() - self.player1_last_disconnected
+            if (last_disconnected >= 10):
+                await GameService.end_game(self, self.player1)
+
+        if (self.player2_last_disconnected is not None):
+            last_disconnected = datetime.now().timestamp() - self.player2_last_disconnected
+            if (last_disconnected >= 10):
+                await GameService.end_game(self, self.player2)
+        return None
 
     async def game_simulation(self):
         await asyncio.sleep(4)
         while (self.status == "started"):
             if (self.game_physics.state == "running"):
                 await self.game_physics.calculate_ball_physics()
+                self.game_physics.check_active_abilities()
                 await GameService.broadcast_game_changes(self)
+            await self.check_disconnected_users()
             await asyncio.sleep(1 / 60)
-            # if (self.player1_score == 10 or self.player2_score == 10):
-            #     self.status = "ended"
-            #     self.winner = self.player1.id if self.player1_score == 10 else self.player2.id
-            #     await self.player1.send_message_to_self({ "request": "game", "action": "end", "status": "success", "message": "Game ended", "data": { "winner": self.winner } })
-            #     await self.player2.send_message_to_self({ "request": "game", "action": "end", "status": "success", "message": "Game ended", "data": { "winner": self.winner } })
-            #     self.clean_up()
-            #     break
         return None
 
 
@@ -267,6 +279,28 @@ class GameService:
         player = game.get_player1() if user.id == game.get_player1().id else game.get_player2()
         game.game_physics.move_paddle(player, direction)
         return None
+    
+    async def use_ability(ws, user, action, data: dict):
+        game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        if (game.status != "started"):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'Game not started' })
+        
+        ability = data.get('data')
+        if (ability is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'No ability found' })
+        
+        if (user.id == game.game_physics.paddle_1.owner.id):
+            paddle_1_sa = game.game_physics.paddle_1.special_abilities
+            state = paddle_1_sa.activate_special_ability(ability)
+        else:
+            paddle_2_sa = game.game_physics.paddle_2.special_abilities
+            state = paddle_2_sa.activate_special_ability(ability)
+        
+        if (state):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "data": ability })
                 
     @staticmethod
     async def broadcast_game_changes(game: Game):
@@ -289,6 +323,8 @@ class GameService:
             "self_score": game.player2_score,
             "opponent_score": game.player1_score
         }
+        game.game_physics.paddle_1.ready = False
+        game.game_physics.paddle_2.ready = False
         await game.player1.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_1_data } })
         await game.player2.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_2_data } })
         return None
@@ -312,6 +348,63 @@ class GameService:
         if (paddle_1.ready and paddle_2.ready):
             game_physics.state = "running"
         return None
+    
+
+    @staticmethod 
+    async def end_game(game: Game, disconnected_user=None):
+        from asgiref.sync import sync_to_async
+        game.status = "ended"
+        winner = game.player1 if game.player1_score >= 7 else game.player2
+        loser = game.player1 if game.player1.id != winner.id else game.player2
+        game.winner = [game.latest_scorer]
+        
+        if disconnected_user is not None:
+            winner = game.player1 if game.player1.id != disconnected_user.id else game.player2
+            loser = game.player1 if game.player1.id != winner.id else game.player2
+            game.winner = [loser.id]
+        
+        loser_score = min(game.player1_score, game.player2_score)
+        winner_score = max(game.player1_score, game.player2_score)
+        
+        match = MatchHistory(matchtype="solo", 
+                            fOpponent=game.player1.id, 
+                            sOpponent=game.player2.id, 
+                            mStartDate=datetime.now(), 
+                            Score=[winner_score, loser_score], 
+                            Winners=[winner.id])
+        await sync_to_async(match.save)()
+        
+        winner.user_data.level += winner.user_data.level / 0.15
+        winner.user_data.xp += 35
+        winner.user_data.matchesplayed += 1
+        winner.user_data.matcheswon += 1
+        await sync_to_async(winner.user_data.save)()
+        
+        loser.user_data.level += winner.user_data.level / 0.125
+        loser.user_data.xp += 17
+        loser.user_data.matchesplayed += 1
+        loser.user_data.matcheslost += 1
+        await sync_to_async(loser.user_data.save)()
+        
+        data = {
+            "winner": winner.id,
+            "loser": loser.id,
+            "winner_score": game.player1_score if winner.id == game.player1.id else game.player2_score,
+            "loser_score": game.player2_score if winner.id == game.player1.id else game.player1_score,
+            "winner_exp_earned": 35,
+            "loser_exp_earned": 17,
+            "winner_xp": winner.user_data.xp,
+            "loser_xp": loser.user_data.xp
+        }
+        
+        await winner.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have won the game', "data": data })
+        await loser.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have lost the game', "data": data })
+        
+        winner.room = None
+        loser.room = None
+        game.clean_up()
+        RUNNING_GAMES.remove(game)
+        return None
                 
     @staticmethod
     async def get_player_joined_game(user) -> Game:
@@ -324,10 +417,17 @@ class GameService:
         return None
                 
     @staticmethod
-    def remove_player(game: Game):
-        if (game is None): return
-        game.playerCount -= 1
-        if (game.playerCount == 0):
-            game.clean_up()
-            RUNNING_GAMES.remove(game)
+    def remove_player(game: Game, user):
+        try:
+            if (game is None): return
+            if (user.id == game.player1.id):
+                game.player1_last_disconnected = datetime.now().timestamp()
+            else:
+                game.player2_last_disconnected = datetime.now().timestamp()
+            game.playerCount -= 1
+            if (game.playerCount == 0):
+                game.clean_up()
+                RUNNING_GAMES.remove(game)
+        except Exception as e:
+            print("Error: ", e)
         return None

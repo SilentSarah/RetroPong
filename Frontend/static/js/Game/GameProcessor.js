@@ -1,8 +1,8 @@
 import { DisplayMatchMakerScreen, LeaveMatchMaker, clearChosenGameMode } from "./MatchMaker.js";
 import { GameConnector } from "./GameConnection.js";
 import { renderGame } from "./GameRenderer.js";
-import { bPaddle, ball, GameStates, DisplayMatchStartTimer, rPaddle, loadGameEngine } from "./GameEngine.js";
-import { user_id } from "../userdata.js";
+import { bPaddle, ball, GameStates, DisplayMatchStartTimer, rPaddle, loadGameEngine, clearGameDashboard, clearCanvasScreen, animReqID, unloadGameElements } from "./GameEngine.js";
+import { user_id, user_data } from "../userdata.js";
 import { modes } from "./GameRenderer.js";
 
 export let opponent_data = null;
@@ -23,7 +23,6 @@ export class GameProcessor {
                 this.startGame(data);
                 break;
             case 'ready':
-                console.log("Game is ready");
                 this.startIgEngine(data);
                 break
             case 'leave':
@@ -31,6 +30,12 @@ export class GameProcessor {
                 break;
             case 'restore':
                 this.restoreGame(data);
+                break;
+            case 'end':
+                this.showEndGameScreen(data);
+            case 'ability':
+                this.disableAbility(data);
+                break;
         }
     }
 
@@ -42,6 +47,50 @@ export class GameProcessor {
             data: data
         }
         GameConnector.send(payload);
+    }
+
+    static disableAbility(data) {
+        const ability = data;
+        if (!ability) return;
+        
+        const ability_html = document.getElementById(`${ability}`);
+        ability_html.classList.add("opacity-50");
+    }
+
+    static showEndGameScreen(data) {
+        const game_container = document.getElementById('game-container');
+        game_container.innerHTML = "";
+        const end_div = document.createElement('div');
+        end_div.classList.add("d-flex", "flex-column", "align-items-center", "justify-content-evenly", "gap-3", "border-pink", "rounded-4", "bg-white-transparent-0-15", "glowbox", "p-4", "position-absolute", "start-50", "top-50", "translate-middle");
+        end_div.innerHTML = `
+        <p class="text-white text-center nokora text-success display-5 fw-bold m-0">You Won!</p>
+        <img class="object-fit-cover rounded-3 border" src="${user_data.profilepic}" width="128px" height="128px">
+        <div class="d-flex flex-column align-items-center justify-content-between h-100">
+            <div class="d-flex justify-content-between align-items-center gap-3 border-top border-bottom p-2 w-100">
+                <p class="text-white nokora display-6 fw-light m-0">Earned XP:</p>
+                <div class="d-flex align-items-center gap-2">
+                    <p class="text-white nokora display-6 fw-light m-0">${data.winner === user_id ? data.winner_exp_earned : data.loser_exp_earned}</p>
+                    <img src="/static/img/dashboard_utils/XP.png" width="32px" height="32px">
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-center gap-3 border-top border-bottom p-2 w-100">
+                <p class="text-white nokora display-6 fw-light m-0">Total XP:</p>
+                <div class="d-flex align-items-center gap-2">
+                    <p class="text-white nokora display-6 fw-light m-0">${data.winner === user_id ? data.winner_xp : data.loser_xp}</p>
+                    <img src="/static/img/dashboard_utils/XP.png" width="32px" height="32px">
+                </div>
+            </div>
+            <p class="text-white nokora fw-bold fs-3 m-0 my-3">Returning back to lobby</p>
+        </div>
+        `; 
+        game_container.appendChild(end_div);
+        clearCanvasScreen();
+        GameStates.finished = true;
+        setTimeout(() => {
+            clearGameDashboard();
+            clearChosenGameMode();
+            renderGame();
+        }, 3500);
     }
 
     static startGame(data) {
@@ -78,10 +127,12 @@ export class GameProcessor {
     static update_score(data) {
         const my_score = data.score.self_score;
         const op_score = data.score.opponent_score;
+        const player_1_sa = document.getElementById('player_1_sa');
 
         const my_score_html = document.getElementById('op_1_score');
         const op_score_html = document.getElementById('op_2_score');
 
+        for (const child of player_1_sa.children) child.classList.remove("opacity-50");
         my_score_html.innerText = my_score;
         op_score_html.innerText = op_score;
         this.displayScorer(data);

@@ -55,5 +55,3 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json({
             'message': message
         })
-        
-        

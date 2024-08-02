@@ -19,6 +19,7 @@ import { passUserTo } from "./login_register.js";
 
 export let current_user = {};
 export let user_id = null;
+export let user_data = null;
 
 export function toast(message, color_class) {
     let div = document.createElement('div');
@@ -84,6 +85,7 @@ function deleteCookie(name) {
 }
 
 export function setValuesToSessionStorage(data) {
+    user_data = data;
     for (const [key, value] of Object.entries(data)) {
         if (key === 'matchhistory' || key === 'matchstatistics') {
             sessionStorage.setItem(key, JSON.stringify(value));
@@ -210,8 +212,7 @@ function createMatchHistoryElement(matchHistory, match, self = true) {
     </div>
     <img src="${match_data.opponent_pfp == "" ? '/static/img/pfp/Default.png': match_data.opponent_pfp}" onclick="DisplayProfileDetails(${match_data.opponent_id})" width="70px" height="70px" class="border-transparent-0-5 rounded-1 object-fit-cover hover-cursor">
     `;
-    matchHistory.appendChild(div);
-    
+    matchHistory.insertBefore(div, matchHistory.firstChild);
 }
 
 function setMatchHistory(self = true) {

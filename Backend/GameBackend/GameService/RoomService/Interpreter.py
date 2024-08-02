@@ -15,6 +15,7 @@ COMMANDS = [
         ('ready', GameService.ready_game),
         ('move', GameService.move_player),  
         ('ready_game', GameService.ready_in_game),
+        ('ability', GameService.use_ability),
     ])
 ]
 class Interpreter:
