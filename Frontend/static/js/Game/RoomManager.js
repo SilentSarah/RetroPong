@@ -14,9 +14,11 @@ export class RoomManager {
             case 'join':
                 this.requestRoomService('rooms', action, data);
                 break;
+            case 'matchseek':
+                this.update_player_count(data);
+                break;
         }
     }
-
     static roomAction(action, data) {
         switch (action) {
             case 'list':
@@ -26,8 +28,35 @@ export class RoomManager {
             case 'update':
                 this.updateRooms(data);
                 break;
+            case 'rapid_leave':
+                this.updatePlayerCount(data);
+                break;
+            case 'rapid_join':
+                this.hideMatchSeekScreen();
+                break;
         }
         unfreezeAllRoomActions();
+    }
+
+    static hideMatchSeekScreen() {
+        console.log("Match Found! Joining...");
+        const matchseek = document.getElementById('matchseek');
+        if (!matchseek) return ;
+
+        const matchseekAnn = document.getElementById('seekAnnounce');
+        matchseekAnn.innerText = "Match Found! Joining...";
+        setTimeout(() => {
+            matchseek.remove();
+        }, 1000);
+    }
+
+
+    static updatePlayerCount(data) {
+        console.log("Updating Player Count", data.online_players);
+        const users_connected = document.getElementById('users-connected');
+        if (!users_connected) return;
+
+        users_connected.innerText = data.online_players;
     }
 
     static listRooms(data) {

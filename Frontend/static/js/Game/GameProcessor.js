@@ -33,6 +33,7 @@ export class GameProcessor {
                 break;
             case 'end':
                 this.showEndGameScreen(data);
+                break;
             case 'ability':
                 this.disableAbility(data);
                 break;

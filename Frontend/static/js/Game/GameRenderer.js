@@ -1,5 +1,7 @@
 import { LeaveMatchMaker, DisplayMatchMakerScreen } from "./MatchMaker.js";
 import { Interpreter } from "./Interpreter.js";
+import { GameProcessor } from "./GameProcessor.js";
+import { RoomManager } from "./RoomManager.js";
 
 export const modes = {
     V_ONLINE: 0,
@@ -20,21 +22,24 @@ function DisplayMatchSeekScreen() {
         <p class="text-white fw-bold nokora fs-5 m-0 p-0">Users Connected</p>
         <span id="users-connected" class="text-white fw-bold nokora fs-5 m-0 p-0">1</span>
     </div>
-    <h2 class="text-chrome text-glow line-height-1 backdrop-filter-brightness my-auto text-center taprom display-5">Looking for Players...</h2>
+    <h2 id="seekAnnounce" class="text-chrome text-glow line-height-1 backdrop-filter-brightness my-auto text-center taprom display-5">Looking for Players...</h2>
     <div class="d-flex justify-content-center gap-3">
         <button id="exit" onclick="exitMatchSeekScreen()" class="text-white
             p-2 mb-5 rounded-circle bg-white-transparent-0-15 border-transparent-0-5">
             <img src="/static/img/game/Back.png" width="32px" height="32px">
         </button>
     </div>`;
+    modes.V_ONLINE = 1;
     GameContainer.innerHTML = "";
     game_utils.appendChild(div);
+    RoomManager.requestRoomService("rooms", "rapid_join", {});
     // MAKE SURE TO SEND THE SERVER A REQUEST TO FIND A MATCH
 }
 
 function exitMatchSeekScreen() {
     const matchseek = document.getElementById('matchseek');
     matchseek.remove();
+    RoomManager.requestRoomService("rooms", "rapid_leave", {});
     // SEND A REQUEST TO THE SERVER TO LEAVE THE MATCHMAKING QUEUE
     renderLobby();
 }

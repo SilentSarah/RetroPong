@@ -46,6 +46,7 @@ class Room:
         return self.id
 
 AVAILABLE_ROOMS : list[Room] = []
+MATCHMAKER_QUEUE : list = []
     
 class RoomService:
     @staticmethod
@@ -116,6 +117,65 @@ class RoomService:
             "message": 'You have left the room'
         })
         return await RoomService.broadcast_room_changes(ws)
+    
+    @staticmethod
+    async def rapid_join(ws, user, action, data: dict):
+        if (RoomService.check_joined_room(user)):
+            return await ws.send_message_status("rooms", "fail", 'You are already in a room')
+        
+        MATCHMAKER_QUEUE.append(user)
+        print("New Player has joined, size:", MATCHMAKER_QUEUE.__len__())
+        await RoomService.update_matchseek_player_count()
+        if (len(MATCHMAKER_QUEUE) >= 2):
+            client1 = MATCHMAKER_QUEUE[0]
+            client2 = MATCHMAKER_QUEUE[1]
+            await client1.ws.send_json({ "request": "rooms", "action": "rapid_join", 'status': 'success', "message": 'Match found' })
+            await client2.ws.send_json({ "request": "rooms", "action": "rapid_join", 'status': 'success', "message": 'Match found' })
+            room = Room()
+            room.id = str(uuid.uuid4())
+            room.players = [MATCHMAKER_QUEUE[0].id, MATCHMAKER_QUEUE[1].id]
+            room.score = [0, 0]
+            room.winner = -1
+            room.playerCount = 2
+            room.status = 'waiting'
+            room.owner = MATCHMAKER_QUEUE[0].id
+            MATCHMAKER_QUEUE[0].room = room
+            MATCHMAKER_QUEUE[1].room = room
+            AVAILABLE_ROOMS.append(room)
+            MATCHMAKER_QUEUE.remove(MATCHMAKER_QUEUE[0])
+            MATCHMAKER_QUEUE.remove(MATCHMAKER_QUEUE[0])
+            await GameService.start_game(room)
+            
+    @staticmethod
+    async def update_matchseek_player_count():
+        for user in MATCHMAKER_QUEUE:
+            await user.ws.send_json({
+                "request": "rooms", 
+                "action": "matchseek", 
+                'status': 'success', 
+                "data": {
+                    "online_players":len(MATCHMAKER_QUEUE)
+                }
+            })
+            
+    @staticmethod
+    async def check_if_user_in_matchseek(user):
+        return user in MATCHMAKER_QUEUE
+            
+    @staticmethod
+    async def rapid_leave(ws, user, action, data: dict):
+        if (RoomService.check_if_user_in_matchseek(user) == False):
+            return await ws.send_message_status("rooms", "fail", 'You are not in the matchseek queue')
+        
+        print("Player has left, size:", MATCHMAKER_QUEUE.__len__())
+        MATCHMAKER_QUEUE.remove(user)
+        await ws.send_json({
+            "request": "rooms", 
+            "action": action, 
+            'status': 'success', 
+            "message": 'You have left the room'
+        })
+        return await RoomService.update_matchseek_player_count()
     
     @staticmethod
     async def get_rooms(ws, user, action, data:dict) -> list[Room]:

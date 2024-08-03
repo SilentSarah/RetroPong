@@ -8,7 +8,9 @@ COMMANDS = [
         ('create', RoomService.create_room),  
         ('join', RoomService.join_room),  
         ('leave', RoomService.leave_room),  
-        ('list', RoomService.get_rooms)
+        ('list', RoomService.get_rooms),
+        ('rapid_join', RoomService.rapid_join),
+        ('rapid_leave', RoomService.rapid_leave),
     ]),
     ("game", [
         ('leave', GameService.leave_game),
