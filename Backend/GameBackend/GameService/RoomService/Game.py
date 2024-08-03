@@ -374,13 +374,13 @@ class GameService:
                             Winners=[winner.id])
         await sync_to_async(match.save)()
         
-        winner.user_data.level += winner.user_data.level / 0.15
+        winner.user_data.level += winner.user_data.level * 0.15
         winner.user_data.xp += 35
         winner.user_data.matchesplayed += 1
         winner.user_data.matcheswon += 1
         await sync_to_async(winner.user_data.save)()
         
-        loser.user_data.level += winner.user_data.level / 0.125
+        loser.user_data.level += winner.user_data.level * 0.125
         loser.user_data.xp += 17
         loser.user_data.matchesplayed += 1
         loser.user_data.matcheslost += 1

@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 from time import sleep
 import random
 from datetime import datetime
+import math
 
 if TYPE_CHECKING:
     from .Game import Game
@@ -179,10 +180,11 @@ class GamePhysics:
         if self.ball.y - self.ball.radius <= 0 or self.ball.y + self.ball.radius >= self.screen_height:
             self.ball.yspeed *= -1
         if self.ball.x <= 0 or self.ball.x + self.ball.diameter >= self.screen_width:
-            self.ball.xspeed *= -1
-            # await self.set_score_for_player()
-            # self.state = "score"
-            return
+            if ((self.paddle_1.special_abilities.check_special_ability("guard") and self.ball.x <= 0) or (self.ball.x + self.ball.diameter >= self.screen_width and self.paddle_2.special_abilities.check_special_ability("guard"))):
+                self.ball.xspeed *= -1
+            else:
+                await self.set_score_for_player()
+                self.state = "score"
         
         if self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2 and self.ball.y >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.y <= self.paddle_1.y + self.paddle_1.height / 2:
             self.ball.xspeed *= -1
@@ -196,7 +198,7 @@ class GamePhysics:
             self.ball.yspeed *= -1
             self.increase_ball_speed()
             if (self.paddle_2.special_abilities.check_special_ability("railshot")):
-                pass
+                self.paddle_2.special_abilities.railshot_physics(self.ball)
             
         if self.ball.y - self.ball.radius <= self.paddle_1.y + self.paddle_1.height / 2 and self.ball.y + self.ball.radius >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2:
             self.ball.yspeed *= -1
@@ -208,7 +210,7 @@ class GamePhysics:
             self.ball.yspeed *= -1
             self.increase_ball_speed()
             if (self.paddle_2.special_abilities.check_special_ability("railshot")):
-                pass
+                self.paddle_2.special_abilities.railshot_physics(self.ball)
             
         if (self.check_if_point_is_inside_area(self.ball.x, self.ball.y, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
             self.ball.xspeed *= -1
@@ -220,7 +222,7 @@ class GamePhysics:
             self.ball.xspeed *= -1
             self.increase_ball_speed()
             if (self.paddle_2.special_abilities.check_special_ability("railshot")):
-                pass
+                self.paddle_2.special_abilities.railshot_physics(self.ball)
 
         
             
