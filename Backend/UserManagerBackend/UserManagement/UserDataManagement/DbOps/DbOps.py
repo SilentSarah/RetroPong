@@ -61,11 +61,13 @@ class DbOps:
                 return matches_played
             four_day_matches = []
             for i in range(4):
-                four_day_matches.append(matches.filter(mStartDate__range=[today - datetime.timedelta(days=i+1), today - datetime.timedelta(days=i)]))
+                start_date = (today - datetime.timedelta(days=i)).replace(hour=0, minute=0, second=0, microsecond=0).isoformat()
+                end_date = (today - datetime.timedelta(days=i)).replace(hour=23, minute=59, second=59, microsecond=999999).isoformat()
+                four_day_matches.append(matches.filter(mStartDate__range=[start_date, end_date]))
             i = 0
             for day_matches in four_day_matches:
                 date = (today - datetime.timedelta(days=i)).strftime('%d/%m')
-                match_count = day_matches.count()
+                match_count = len(day_matches)
                 matches_played["Matches Played"][date] = match_count
                 i += 1
             return matches_played
