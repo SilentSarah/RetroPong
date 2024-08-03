@@ -5,7 +5,7 @@ import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js
 import { sanitizeHTMLCode } from "./MatchMaker.js";
 import { opponent_data } from "./GameProcessor.js";
 import { OnGameChange } from "./GameEvents.js";
-import { ballPhysics, generateRandomBallAngle } from "./GamePhysics.js";
+import { ballPhysics, generateRandomBallAngle, resetInGamePhysics } from "./GamePhysics.js";
 
 export const RIGHT_SIDE = 0, LEFT_SIDE = 1, BALL = 2;
 export let rPaddle, bPaddle, ball;
@@ -22,10 +22,10 @@ const maps = {
     "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
 }
 
-export const BALL_SPEED = 6;
+export const BALL_SPEED = 4;
 export const BALL_SPPED_INCREASE = 1;
-export const BALL_SPEED_LIMIT = 20;
-export const PADDLE_SPEED = 17;
+export const BALL_SPEED_LIMIT = 11;
+export const PADDLE_SPEED = 7;
 export let animReqID = null;
 
 class Paddle {
@@ -144,12 +144,15 @@ export function processLocalScore(ball_x_pos) {
             op_1_score.innerText = `${rPaddle.score}`;
             GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Red Paddle Scored!</p>`;
         }
-        if (scores[0] >= 3 || scores[1] >= 3) {
+        if (scores[0] >= 7 || scores[1] >= 7) {
             GameStates.finished = 0;
             GameStates.in_progress = 0;
             GameContainer.innerHTML = "";
             GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
             setTimeout(() => {
+                resetInGamePhysics(rPaddle, bPaddle, ball);
+                scores.forEach((score, i) => scores[i] = 0);
+                unloadGameElements();
                 clearGameDashboard();
                 renderGame();
             }, 2500);
@@ -318,7 +321,7 @@ export function loadGameEngine(gameMode, self, opponent) {
     }
     
 
-    new Ball(gameCanvas, ctx, "/static/img/game/Ball.svg", width, height, loader);
-    new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
-    new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);
+    ball = new Ball(gameCanvas, ctx, "/static/img/game/Ball.svg", width, height, loader);
+    rPaddle = new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
+    bPaddle = new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);
 }

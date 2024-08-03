@@ -42,7 +42,7 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.drawPosX = rPaddle_hb.x + rPaddle_hb.width;
         ball.xspeed = -ball.xspeed;
         events.ball_hit_paddle = 1;
-        // increaseBallSpeed(ball);
+        increaseBallSpeed(ball);
     }
     
     if (ball_hb.x < bPaddle_hb.x + bPaddle_hb.width &&
@@ -53,7 +53,7 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.drawPosX = bPaddle_hb.x - ball.bWidth;
         ball.xspeed = -ball.xspeed;
         events.ball_hit_paddle = 1;
-        // increaseBallSpeed(ball);
+        increaseBallSpeed(ball);
     }
 }
 
@@ -84,8 +84,8 @@ export function ballPhysics(ball, rPaddle, bPaddle) {
 
     if (ball_hb.x <= 0 || ball_hb.x + ball_hb.width >= ball.cWidth) {
         events.ball_hit_score_zone = 1;
-        // resetInGamePhysics(rPaddle, bPaddle, ball);
-        // processLocalScore(ball_hb.x);
+        resetInGamePhysics(rPaddle, bPaddle, ball);
+        processLocalScore(ball_hb.x);
         ball.xspeed = -ball.xspeed;
     }
     if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {

@@ -24,6 +24,10 @@ export function initiateGameConnection() {
 
     }
     GameConnector.socket.onmessage = function(event) {
+        if (window.location.pathname !== "/game")  {
+            GameConnector.close();
+            return;
+        }
         const response = JSON.parse(event.data);
         Interpreter.interpretResponse(response);
 

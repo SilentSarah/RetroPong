@@ -12,7 +12,7 @@ let matchmaker_timerID = null;
 function runGameMode(type, self, opponent) {
     const game_container = document.getElementById('game-container');
     game_container.innerHTML = "";
-    if (type === "Local") {
+    if (type === "Offline") {
         modes.V_OFFLINE = 1;
         loadGameEngine(null, self, opponent);
     } else if (type === "Online") {
@@ -37,6 +37,7 @@ function startMatchTimer(timerObj, type, self, opponent) {
     if (timerObj.timer <= 0) {
         timer_panel.innerText = "Starting...";
         clearInterval(matchmaker_timerID);
+        console.log(modes);
         matchmaker_timerID = null;
         if (modes.V_OFFLINE === 1) runGameMode(type, self, opponent);
         else if (modes.V_ONLINE === 1) GameProcessor.gameRequestAction("ready", {});
@@ -94,7 +95,7 @@ export function LeaveMatchMaker() {
 }
 
 function SetTheGameMode(type) {
-    const selection_modes = ["Local", "Rooms", "Online"];
+    const selection_modes = ["Offline", "Rooms", "Online"];
     selection_modes.forEach((mode, index) => {
         if (mode === type) {
             clearChosenGameMode();
@@ -120,8 +121,8 @@ export function DisplayMatchMakerScreen(type, data = null, restore = false) {
         self_player = { username: data.self_data.username, pfp: data.self_data.profilepic, score: data.self_score };
         opponent_player = { username: data.opponent_data.username, pfp: data.opponent_data.profilepic, score: data.opponent_score };
     } else {
-        self_player = { username: "Player", pfp: `${gamepfppath}/Default.png` };
-        opponent_player = { username: "Opponent", pfp: `${gamepfppath}/Default.png` };
+        self_player = { username: "Player", pfp: `${gamepfppath}/Default.png`, score: 0 };
+        opponent_player = { username: "Opponent", pfp: `${gamepfppath}/Default.png`, score: 0 };
     }
 
     div.classList.add("d-flex", "align-items-center", "h-100", "position-relative", "matchmaking_pattern", "overflow-y-hidden");

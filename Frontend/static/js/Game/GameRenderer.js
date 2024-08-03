@@ -118,7 +118,7 @@ function renderLobby() {
             <img src="/static/img/game/Rooms.png" width="24px" height="24px">
             Rooms
         </button>
-        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Local" onclick="DisplayMatchMakerScreen('Local')">
+        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Local" onclick="DisplayMatchMakerScreen('Offline')">
             <img src="/static/img/game/Local.png" width="32px" height="32px">
             Local
         </button>`;

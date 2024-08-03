@@ -168,9 +168,10 @@ export class SSChart {
 
         for (let i = 0; i < this.ExtractedData.length; i++) {
             let bar = document.createElement('div');
-            bar.classList.add("bg-pink", "border-top", "border-start", "border-end", "rounded-top-1");
+            bar.classList.add("bg-pink", "border-top", "border-start", "border-end", "rounded-top-1", "transition-all");
+            bar.style.height = "0px";
+            bar.style.width = "25px";
             bar.style.height = this.ExtractedData[i][1] > 120 ? "180px":`${this.ExtractedData[i][1] * BarStatsContainer.clientHeight / 120}px`;
-            bar.style.width = `25px`;
             bar.setAttribute('Matches', this.ExtractedData[i][1]);
             bar.setAttribute('ClickedOn', 'false')
             BarStatsContainer.appendChild(bar);

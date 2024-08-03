@@ -52,7 +52,7 @@ export class RoomManager {
 
 
     static updatePlayerCount(data) {
-        console.log("Updating Player Count", data.online_players);
+        if (!data) return;
         const users_connected = document.getElementById('users-connected');
         if (!users_connected) return;
 

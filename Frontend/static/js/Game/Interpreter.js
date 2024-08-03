@@ -24,8 +24,9 @@ export class Interpreter {
         const message = response.message;
         const data = response.data;
 
-        if (!this.invokeStatus(action, status, message))
-            return;
+        if (window.location.pathname !== "/game") return;
+
+        if (!this.invokeStatus(action, status, message)) return;
 
         this.invokeResponseAction(type, action, data);
     }
