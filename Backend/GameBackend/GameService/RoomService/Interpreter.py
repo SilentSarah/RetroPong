@@ -14,6 +14,7 @@ COMMANDS = [
     ]),
     ("game", [
         ('leave', GameService.leave_game),
+        ('exit', GameService.exit_game),
         ('ready', GameService.ready_game),
         ('move', GameService.move_player),  
         ('ready_game', GameService.ready_in_game),

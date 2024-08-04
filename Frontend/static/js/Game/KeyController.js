@@ -1,6 +1,6 @@
 
 import { classic, modes } from "./GameRenderer.js";
-import { rPaddle, bPaddle, RIGHT_SIDE, GameStates, game_sounds, gameSoundSettings, setGameBackdrop, resetGameResourcesAndData } from "./GameEngine.js";
+import { rPaddle, bPaddle, RIGHT_SIDE, GameStates, game_sounds, gameSoundSettings, setGameBackdrop, resetGameResourcesAndData, timer_match } from "./GameEngine.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { events } from "./GameEvents.js";
 
@@ -67,13 +67,17 @@ function exitGame() {
     const pause_menu_html = document.getElementById("pause-menu");
     if (pause_menu_html) pause_menu_html.remove();
 
+    GameStates.finished = 1;
     GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
     if (modes.V_OFFLINE) {
         GameStates.in_progress = 0;
-        setTimeout(() => resetGameResourcesAndData(), 2500);
+        clearInterval(timer_match);
     } else if (modes.V_ONLINE) {
+        GameStates.in_progress = 0;
+        clearInterval(timer_match);
         GameProcessor.gameRequestAction('exit', {});
     }
+    setTimeout(() => resetGameResourcesAndData(), 2500);
 }
 
 function exitMenu() {

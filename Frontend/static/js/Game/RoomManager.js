@@ -202,6 +202,7 @@ function freezeAllRoomActions() {
 
 function unfreezeAllRoomActions() {
     const rooms_container = document.getElementById('rooms-container');
+    if (rooms_container == null) return ;
     for (const room of rooms_container.children) {
         const room_btn = room.querySelector('button');
         room_btn.disabled = false;

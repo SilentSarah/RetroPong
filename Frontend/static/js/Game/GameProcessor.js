@@ -1,8 +1,8 @@
 import { DisplayMatchMakerScreen, LeaveMatchMaker, clearChosenGameMode } from "./MatchMaker.js";
 import { GameConnector } from "./GameConnection.js";
 import { renderGame } from "./GameRenderer.js";
-import { bPaddle, ball, GameStates, DisplayMatchStartTimer, rPaddle, loadGameEngine, clearGameDashboard, clearCanvasScreen, animReqID, unloadGameElements } from "./GameEngine.js";
-import { user_id, user_data } from "../userdata.js";
+import { bPaddle, ball, GameStates, DisplayMatchStartTimer, rPaddle, loadGameEngine, clearGameDashboard, clearCanvasScreen, animReqID, unloadGameElements, timer_match } from "./GameEngine.js";
+import { user_id, user_data, toast } from "../userdata.js";
 import { modes } from "./GameRenderer.js";
 import { resetInGamePhysics } from "./GamePhysics.js";
 
@@ -38,6 +38,9 @@ export class GameProcessor {
             case 'ability':
                 this.disableAbility(data);
                 break;
+            case 'exit':
+                this.exitLiveGame(data);
+                break;
         }
     }
 
@@ -49,6 +52,19 @@ export class GameProcessor {
             data: data
         }
         GameConnector.send(payload);
+    }
+
+    static exitLiveGame(data) {
+        toast("Opponent has left the game", "bg-info");
+        setTimeout(() => {
+            GameStates.finished = true;
+            clearInterval(timer_match);
+            clearCanvasScreen();
+            resetInGamePhysics();
+            clearGameDashboard();
+            clearChosenGameMode();
+            renderGame();
+        }, 2500);
     }
 
     static disableAbility(data) {

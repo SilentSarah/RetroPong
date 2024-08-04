@@ -22,6 +22,7 @@ const maps = {
     "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
 }
 
+export let timer_match = null
 export let game_sounds = true;
 export let selectedBg = "Midnight";
 export const BALL_SPEED = 4;
@@ -301,7 +302,12 @@ export function DisplayMatchStartTimer(ready_state) {
     GameStates.starting = 1;
     GameStates.in_progress = 0;
     const GameContainer = document.getElementById("game-container");
-    const timer = setInterval(() => {
+    const timer = timer_match = setInterval(() => {
+        if (GameStates.finished) {
+            clearInterval(timer);
+            renderGame();
+            return ;
+        }
         GameContainer.innerHTML = "";
         const p = document.createElement('p');
         const text_color = (localStorage.getItem("chosenMap") ?? selectedBg) === "Midnight" ? "text-white" : "text-black";
@@ -313,7 +319,7 @@ export function DisplayMatchStartTimer(ready_state) {
             GameStates.starting = 0;
             GameStates.in_progress = 1;
             GameContainer.innerHTML = "";
-            generateRandomBallAngle();
+            if (modes.V_OFFLINE) generateRandomBallAngle();
             if (modes.V_ONLINE && ready_state) GameProcessor.gameRequestAction('ready_game', {});
         }
         timeObj.time -= 1;

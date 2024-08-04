@@ -5,6 +5,7 @@ import { events } from "./GameEvents.js";
 
 
 export function resetInGamePhysics(rPaddle, bPaddle, ball) {
+    if (!ball || !rPaddle || !bPaddle) return;
     ball.drawPosX = ball.cWidth / 2;
     ball.drawPosY = ball.cHeight / 2;
     ball.posX = ball.cWidth / 2;

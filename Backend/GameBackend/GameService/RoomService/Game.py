@@ -206,6 +206,23 @@ class GameService:
                     await opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' }),
                     await opponent.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'Your opponent has left the game' })
                 )
+        
+    @staticmethod
+    async def exit_game(ws, user, action, data:dict):
+        game = await GameService.get_player_joined_game(user)
+        if (game is None):
+            return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
+        
+        
+        if (game.player1_score > 0 or game.player2_score > 0):
+            return await GameService.end_game(game, user)
+        else:
+            await user.opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' })
+            game.status = "fail"
+            game.clean_up()
+            RUNNING_GAMES.remove(game)
+            game = None
+
     
     @staticmethod
     async def restore_game(user_id):
@@ -380,11 +397,12 @@ class GameService:
         winner.user_data.matcheswon += 1
         await sync_to_async(winner.user_data.save)()
         
-        loser.user_data.level += winner.user_data.level * 0.125
-        loser.user_data.xp += 17
-        loser.user_data.matchesplayed += 1
-        loser.user_data.matcheslost += 1
-        await sync_to_async(loser.user_data.save)()
+        if (disconnected_user is None):
+            loser.user_data.level += winner.user_data.level * 0.125
+            loser.user_data.xp += 17
+            loser.user_data.matchesplayed += 1
+            loser.user_data.matcheslost += 1
+            await sync_to_async(loser.user_data.save)()
         
         data = {
             "winner": winner.id,
@@ -398,7 +416,8 @@ class GameService:
         }
         
         await winner.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have won the game', "data": data })
-        await loser.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have lost the game', "data": data })
+        if (disconnected_user is None):
+            await loser.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have lost the game', "data": data })
         
         winner.room = None
         loser.room = None
