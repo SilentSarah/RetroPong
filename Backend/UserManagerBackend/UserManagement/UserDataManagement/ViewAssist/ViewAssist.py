@@ -182,12 +182,18 @@ class ViewAssist:
             first_name = None
             last_name = None
         password = request.POST.get('password')
+        email = request.POST.get('email')
         if (password is not None):
             if (re.match(r'[A-Za-z0-9]{8,}', password) is None):
                 password_hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
             raise Exception("Invalid password")
-        else:
-            password_hashed = None
+        if (email is not None):
+            if (re.match(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', email) is None):
+                raise Exception("Invalid email")
+            if (User.objects.filter(uemail=email).exists()):
+                
+                raise Exception("Email already exists")
+        password_hashed = None
         data =  {
             "ufname": first_name,
             "ulname": last_name,

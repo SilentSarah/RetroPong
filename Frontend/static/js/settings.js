@@ -211,18 +211,21 @@ export function SaveChanges() {
         },
         body: form,
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok)
+            throw new Error('An Error has occured');
+        toast('Changes saved', 'bg-success');
+        return response.json()
+    })
     .then (response => {
         for (const key of Object.entries(updated_values))
             delete updated_values[key];
-        toast('Changes saved', 'bg-success');
         setValuesToSessionStorage(response);
         loadAccountDetailsInSettings();
-        // fetchID = setInterval(fetchUserData, 5000);
         fetchUserData();
     })
     .catch((error) => {
-        console.log(error);
+        toast(error, 'bg-danger');
     })
 }
 

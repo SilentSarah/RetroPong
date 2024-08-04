@@ -4,6 +4,7 @@ import { renderGame } from "./GameRenderer.js";
 import { bPaddle, ball, GameStates, DisplayMatchStartTimer, rPaddle, loadGameEngine, clearGameDashboard, clearCanvasScreen, animReqID, unloadGameElements } from "./GameEngine.js";
 import { user_id, user_data } from "../userdata.js";
 import { modes } from "./GameRenderer.js";
+import { resetInGamePhysics } from "./GamePhysics.js";
 
 export let opponent_data = null;
 
@@ -88,6 +89,7 @@ export class GameProcessor {
         clearCanvasScreen();
         GameStates.finished = true;
         setTimeout(() => {
+            resetInGamePhysics();
             clearGameDashboard();
             clearChosenGameMode();
             renderGame();
