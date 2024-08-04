@@ -5,6 +5,7 @@ import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js
 import { sanitizeHTMLCode } from "./MatchMaker.js";
 import { OnGameChange } from "./GameEvents.js";
 import { ballPhysics, generateRandomBallAngle, resetInGamePhysics } from "./GamePhysics.js";
+import { SpecialAbilities } from "./SpecialAbilities.js";
 
 export const RIGHT_SIDE = 0, LEFT_SIDE = 1, BALL = 2;
 export let rPaddle, bPaddle, ball;
@@ -64,6 +65,7 @@ class Paddle {
         this.speed = PADDLE_SPEED;
         this.angle = (Math.PI / 2);
         this.score = 0;
+        this.special_abilities = new SpecialAbilities();
 
         this.image.onload = () => { 
             loader(this);
@@ -205,6 +207,8 @@ export function processLocalScore(ball_x_pos) {
             GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Red Paddle Scored!</p>`;
             playSound("win_round");
         }
+        rPaddle.special_abilities.reset_all_special_abilities();
+        bPaddle.special_abilities.reset_all_special_abilities();
         if (scores[0] >= 7 || scores[1] >= 7) {
             GameStates.finished = 0;
             GameStates.in_progress = 0;
@@ -276,10 +280,10 @@ function loadGameDashboard(self, opponent) {
     player2.classList.add("d-flex", "flex-column", "justify-content-center", "align-items-center", "h-100", "w-100", "px-4", "rounded-start-5");
     player2.innerHTML = `
         <h3 id="op_2" class="text-center fs-2 mb-3 taprom text-white line-height-1">${sanitizeHTMLCode(opponent.username)}</h3>
-        <div class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
-            <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
-            <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
-            <img class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
+        <div id="player_2_sa" class="d-flex align-items-center justify-content-evenly bg-white-transparent-0-05 gap-4 rounded-pill border-transparent-0-5 p-3">
+            <img id="railshot2" class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/explosion.png" width="48px" height="48px">
+            <img id="guard2" class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/defence.png" width="48px" height="48px">
+            <img id="speedup2" class="border-transparent-0-5 rounded-5 shadow-lg p-1" src="/static/img/game/speedup.png" width="48px" height="48px">
         </div>`;
 
     div.appendChild(player1);

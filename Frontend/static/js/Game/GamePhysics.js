@@ -41,10 +41,14 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.posX = rPaddle_hb.x + rPaddle_hb.width;
         ball.drawPosX = rPaddle_hb.x + rPaddle_hb.width;
         ball.xspeed = -ball.xspeed;
-        let sound = sounds.ball_hit.cloneNode();
-        sound.play();
         events.ball_hit_paddle = 1;
+        playSound("ball_hit");
         increaseBallSpeed(ball);
+        if (rPaddle.special_abilities.check_special_ability("railshot")) {
+            ball.xspeed = ball.xspeed * 2.75;
+            ball.yspeed = ball.yspeed * 2.75;
+            rPaddle.special_abilities.disable_special_ability("railshot");
+        }
     }
     
     if (ball_hb.x < bPaddle_hb.x + bPaddle_hb.width &&
@@ -54,16 +58,18 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.posX = bPaddle_hb.x - ball.bWidth;
         ball.drawPosX = bPaddle_hb.x - ball.bWidth;
         ball.xspeed = -ball.xspeed;
-        let sound = sounds.ball_hit.cloneNode();
-        sound.play();
+        playSound("ball_hit");
         events.ball_hit_paddle = 1;
         increaseBallSpeed(ball);
+        if (bPaddle.special_abilities.check_special_ability("railshot")) {
+            ball.xspeed = ball.xspeed * 2.75;
+            ball.yspeed = ball.yspeed * 2.75;
+            bPaddle.special_abilities.disable_special_ability("railshot");
+        }
     }
 }
 
 export function ballPhysics(ball, rPaddle, bPaddle) {
-
-    if (localStorage.getItem("slave")) return; 
 
     const rPaddle_hb = {
         x: rPaddle.drawPosX,
@@ -87,10 +93,29 @@ export function ballPhysics(ball, rPaddle, bPaddle) {
     }
 
     if (ball_hb.x <= 0 || ball_hb.x + ball_hb.width >= ball.cWidth) {
-        events.ball_hit_score_zone = 1;
-        resetInGamePhysics(rPaddle, bPaddle, ball);
-        processLocalScore(ball_hb.x);
-        ball.xspeed = -ball.xspeed;
+        if (ball_hb.x <= 0) {
+            if (rPaddle.special_abilities.check_special_ability("guard")) {
+                playSound("ball_hit");
+                ball.xspeed = -ball.xspeed;
+            }
+            else {
+                processLocalScore(ball_hb.x);
+                resetInGamePhysics(rPaddle, bPaddle, ball);
+                events.ball_hit_score_zone = 1;
+            }
+        } else {
+            if (bPaddle.special_abilities.check_special_ability("guard"))
+            {
+                playSound("ball_hit");
+                ball.xspeed = -ball.xspeed;
+            }
+            else {
+                processLocalScore(ball_hb.x);
+                resetInGamePhysics(rPaddle, bPaddle, ball);
+                events.ball_hit_score_zone = 1;
+            }
+        }
+        
     }
     if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {
         events.ball_hit_top_bottom = 1;

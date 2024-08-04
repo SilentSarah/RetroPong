@@ -1,5 +1,5 @@
 
-import { modes } from "./GameRenderer.js";
+import { classic, modes } from "./GameRenderer.js";
 import { rPaddle, bPaddle, RIGHT_SIDE, GameStates, game_sounds, gameSoundSettings, setGameBackdrop, resetGameResourcesAndData } from "./GameEngine.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { events } from "./GameEvents.js";
@@ -19,17 +19,17 @@ const controller = {
 
     "i": {
         tapped: false,
-        func: () => activate_special_ability("railshot"),
+        func: () => activate_special_ability(rPaddle, "railshot"),
     }, // i spec ability for the player 1
 
     "o": {
         tapped: false,
-        func: () => activate_special_ability("guard"),
+        func: () => activate_special_ability(rPaddle, "guard"),
     }, // o spec ability for the player 1
 
     "p": {
         tapped: false,
-        func: () => activate_special_ability("speedup"),
+        func: () => activate_special_ability(rPaddle, "speedup"),
     }, // p spec ability for the player 1
 
     "ArrowUp": {
@@ -44,17 +44,17 @@ const controller = {
 
     "1": {
         tapped: false,
-        func: () => func(),
+        func: () => activate_special_ability(bPaddle, "railshot"),
     }, // 1  spec abilities for the player 2
 
     "2": {
         tapped: false,
-        func: () => func(),
+        func: () => activate_special_ability(bPaddle, "guard"),
     }, // 2  spec abilities for the player 2
 
     "3": {
         tapped: false,
-        func: () => func(),
+        func: () => activate_special_ability(bPaddle, "speedup"),
     }, // 3  spec abilities for the player 2
     "Escape": {
         tapped: false,
@@ -66,7 +66,7 @@ function exitGame() {
     const GameContainer = document.getElementById("game-container");
     const pause_menu_html = document.getElementById("pause-menu");
     if (pause_menu_html) pause_menu_html.remove();
-    
+
     GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
     if (modes.V_OFFLINE) {
         GameStates.in_progress = 0;
@@ -145,41 +145,61 @@ function moveplayer(paddle, direction) {
         const paddleLowerPointY = paddleMidPointY + paddle.pHeight / 2;
         if (direction === UP) {
             if (paddleUpPointY - paddle.speed < 0) return ;
-            paddle.posY -= paddle.speed;
-            paddle.drawPosY -= paddle.speed;
+            if (paddle.special_abilities.check_special_ability("speedup")) {
+                paddle.posY -= paddle.speed * 1.25;
+                paddle.drawPosY -= paddle.speed * 1.25;
+            } else {
+                paddle.posY -= paddle.speed;
+                paddle.drawPosY -= paddle.speed;
+            }
         } else if (direction === DOWN) {
             if (paddleLowerPointY + paddle.speed > paddle.cHeight) return ;
-            paddle.posY += paddle.speed;
-            paddle.drawPosY += paddle.speed;
+            if (paddle.special_abilities.check_special_ability("speedup")) {
+                paddle.posY += paddle.speed * 1.25;
+                paddle.drawPosY += paddle.speed * 1.25;
+            } else {
+                paddle.posY += paddle.speed;
+                paddle.drawPosY += paddle.speed;
+            }
         }
     }
     events.paddle_move_up = direction === UP ? 1 : 0;
     events.paddle_move_down = direction === DOWN ? 1 : 0;
 }
 
-function activate_special_ability(ability) {
+function activate_special_ability(paddle, ability) {
     if (modes.V_ONLINE) {
         GameProcessor.gameRequestAction('ability', ability);
     } else if (modes.V_OFFLINE) {
-        
+        paddle.special_abilities.activate_special_ability(ability);
     }
 }
 
 export function loadGameKeyHandlers() {
     document.addEventListener("keydown", function(e) {
-        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0) return;
-        if (controller[e.key]) controller[e.key].tapped = true;
+        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0
+            || ["1", "2", "3", "i", "o", "p"].includes(e.key) && modes.V_OFFLINE && classic === true) {
+            return ;
+        }
+        if (controller[e.key]) {
+            controller[e.key].tapped = true;
+        }
     });
     document.addEventListener("keyup", function(e) {
-        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0) return;
-        if (controller[e.key]) controller[e.key].tapped = false;
+        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0
+            || ["1", "2", "3", "i", "o", "p"].includes(e.key) && modes.V_OFFLINE && classic === true) {
+        return ;
+    }
+        if (controller[e.key]) {
+            controller[e.key].tapped = false;
+        }
     });
 }
 
 export function activateButtonFunctions(paddle) {
     Object.keys(controller).forEach(key => {
         if (controller[key] === "Escape" && controller[key].tapped) return ;
-        controller[key].tapped && controller[key].func(paddle)
+        controller[key].tapped && controller[key].func(paddle);
     })
 }
 

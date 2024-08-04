@@ -3,6 +3,8 @@ import { Interpreter } from "./Interpreter.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { RoomManager } from "./RoomManager.js";
 
+
+export let classic;
 export const modes = {
     V_ONLINE: 0,
     V_ROOMS: 0,
@@ -92,6 +94,34 @@ function DisplayMatchTypes() {
     game_container.appendChild(div);
 }
 
+function LoadOfflineMode(mode) {
+    if (mode === "Classic") classic = true; 
+    else if (mode === "Rp") classic = false;
+    DisplayMatchMakerScreen('Offline');
+}
+
+export function resetOfflineMode() {
+    classic = undefined;
+}
+
+function renderOfflineModes() {
+    const game_container = document.getElementById('game-container');
+    const div = document.createElement('div');
+    {
+        div.classList.add("d-flex", "flex-column", "w-100", "h-100", "justify-content-center", "align-items-center", "gap-2");
+        div.id = "offline-modes";
+        div.innerHTML = `
+        <button onclick="LoadOfflineMode('Classic')" class="btn-retro bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 p-2 nokora">Classic</button>
+        <button onclick="LoadOfflineMode('Rp')" class="btn-retro bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 p-2 fs-4"><span class="text-pink-gradient taprom">Rp</span></button>
+        <button onclick="renderLobby()" class="btn-retro bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 p-2 fs-4 nokora">
+            <img src="/static/img/game/Back.png" width="28px" height="28px">
+        </button>
+        `;
+    }
+    game_container.innerHTML = "";
+    game_container.appendChild(div);
+}
+
 function renderLobby() {
     const lobby = document.createElement('div');
     {
@@ -118,7 +148,7 @@ function renderLobby() {
             <img src="/static/img/game/Rooms.png" width="24px" height="24px">
             Rooms
         </button>
-        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Local" onclick="DisplayMatchMakerScreen('Offline')">
+        <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Local" onclick="renderOfflineModes()">
             <img src="/static/img/game/Local.png" width="32px" height="32px">
             Local
         </button>`;
@@ -140,3 +170,5 @@ window.LeaveMatchMaker = LeaveMatchMaker;
 window.DisplayMatchMakerScreen = DisplayMatchMakerScreen;
 window.DisplayMatchSeekScreen = DisplayMatchSeekScreen;
 window.exitMatchSeekScreen  = exitMatchSeekScreen;
+window.renderOfflineModes = renderOfflineModes;
+window.LoadOfflineMode = LoadOfflineMode;

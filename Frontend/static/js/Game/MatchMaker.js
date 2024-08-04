@@ -1,4 +1,4 @@
-import { modes } from "./GameRenderer.js";
+import { modes, resetOfflineMode } from "./GameRenderer.js";
 import { GameStates, loadGameEngine } from "./GameEngine.js";
 import { Interpreter } from "./Interpreter.js";
 import { GameProcessor } from "./GameProcessor.js";
@@ -108,6 +108,7 @@ function SetTheGameMode(type) {
 export function clearChosenGameMode() {
     Object.keys(modes).forEach((key) => modes[key] = 0);
     Object.keys(GameStates).forEach((key) => GameStates[key] = 0);
+    resetOfflineMode();
 }
 
 
