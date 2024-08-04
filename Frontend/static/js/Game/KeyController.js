@@ -125,9 +125,18 @@ function pauseMenu() {
     pause_menu.innerHTML = `
         <h3 class="text-center fs-1 mb-3 taprom text-pink-gradient">Pause Menu</h3>
         <div class="d-flex flex-column justidy-content-center align-items-center gap-3">
-            <button id="resume" onclick="exitMenu()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Resume</button>
-            <button id="settings" onclick="DisplayGameOptions()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Settings</button>
-            <button id="exit" onclick="exitGame()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Exit</button>
+            <button id="resume" onclick="exitMenu()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">
+                <img src="/static/img/game/resume.png" width="24px" height="24px">
+                Resume
+            </button>
+            <button id="settings" onclick="DisplayGameOptions()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">
+                <img src="/static/img/game/settingsgame.png" width="24px" height="24px">
+                Settings
+            </button>
+            <button id="exit" onclick="exitGame()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">
+                <img src="/static/img/game/leave.png" width="24px" height="24px">
+                Exit
+            </button>
         </div>
     `;
     game_container.appendChild(pause_menu);
