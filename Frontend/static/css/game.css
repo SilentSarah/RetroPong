@@ -1,3 +1,10 @@
+
+:root {
+    --midnight: linear-gradient(180deg, #282828 0%, #000000 100%);
+    --pastel: linear-gradient(180deg, #CBFFE6 0%, #BFB9FF 50.27%, #FFCFEA 100%);
+    --sunrise: linear-gradient(180deg, #FFA3AC 0%, #FFBA81 50.27%, #FFD156 100%);
+}
+
 .game-bg {
     background: linear-gradient(75deg,#5a005a,#be00be,#300030,#0a0a0a);
     background-size: 240% 240%;
@@ -135,4 +142,45 @@
     100% {
         background-position: 0% 50%;
     }
+}
+
+.sounds_btn {
+    width: 200px;
+    height: 45px;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #86DD5D 0%, #024F00 100%);
+    border: none;
+    transition: all 0.5s ease-out;
+}
+
+.sound_off {
+    background: linear-gradient(180deg, #dd5d5d 0%, #4f0000 100%);
+}
+
+.sound_on {
+    background: linear-gradient(180deg, #86DD5D 0%, #024F00 100%);
+}
+
+.backdrop_btn {
+    width: 180px;
+    height: 180px;
+    border-radius: 15px;
+    border: none;
+    transition: all 0.5s ease-out;
+}
+
+.backdrop_btn:first-child {
+    background: var(--midnight);
+}
+
+.backdrop_btn:nth-child(2) {
+    background: var(--sunrise);
+}
+
+.backdrop_btn:last-child {
+    background: var(--pastel);
+}
+
+.backdrop_btn:hover {
+    transform: scale3d(1.05, 1.05, 1.05) translate3d(0, -5px, 5px);
 }

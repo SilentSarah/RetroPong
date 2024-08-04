@@ -1,6 +1,6 @@
 
 import { modes } from "./GameRenderer.js";
-import { rPaddle, bPaddle, RIGHT_SIDE, GameStates } from "./GameEngine.js";
+import { rPaddle, bPaddle, RIGHT_SIDE, GameStates, game_sounds, gameSoundSettings, setGameBackdrop, resetGameResourcesAndData } from "./GameEngine.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { events } from "./GameEvents.js";
 
@@ -58,11 +58,82 @@ const controller = {
     }, // 3  spec abilities for the player 2
     "Escape": {
         tapped: false,
-        func: () => func(),
+        func: () => pauseMenu(),
     }, // Escape to pause the game
 }
 
-function pauseMenu() {}
+function exitGame() {
+    const GameContainer = document.getElementById("game-container");
+    const pause_menu_html = document.getElementById("pause-menu");
+    if (pause_menu_html) pause_menu_html.remove();
+    
+    GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
+    if (modes.V_OFFLINE) {
+        GameStates.in_progress = 0;
+        setTimeout(() => resetGameResourcesAndData(), 2500);
+    } else if (modes.V_ONLINE) {
+        GameProcessor.gameRequestAction('exit', {});
+    }
+}
+
+function exitMenu() {
+    const pause_menu_html = document.getElementById("pause-menu");
+    if (pause_menu_html) pause_menu_html.remove();
+    if (modes.V_OFFLINE && !GameStates.in_progress) GameStates.in_progress = 1;
+}
+
+function DisplayGameOptions() {
+    const game_options_html = document.getElementById("game-options");
+    if (game_options_html) return ;
+
+    const pause_menu = document.getElementById("pause-menu");
+    const game_container = document.getElementById("game-utils");
+    const game_options = document.createElement("div");
+    game_options.classList.add("d-flex", "flex-column", "rounded-5", "border-transparent-0-5", "bg-black-transparent-0-05", "backdrop-filter-blur", "start-50", "top-50", "translate-middle", "position-absolute", "p-3");
+    game_options.id = "game-options";
+    game_options.style.width = "max-content";
+    game_options.innerHTML = `
+        <h2 class="text-white fw-bold nokora text-center">Settings</h2>
+        <div class="d-flex flex-column justify-content-between align-items-center bg-white-transparent-0-05 py-3 px-2 border-transparent-0-5 w-100 rounded-5 gap-2 mb-3">
+            <h3 class="text-white nokora fw-bold">Game Sounds</h3>
+            <button class="sounds_btn text-shadow fw-bold text-white fs-4 ${game_sounds ? 'sound_on': 'sound_off'}" onclick="gameSoundSettings()">${game_sounds ? "ON":"OFF"}</button>
+        </div>
+        <div class="d-flex flex-column justify-content-between align-items-center bg-white-transparent-0-05 py-3 px-2 border-transparent-0-5 w-100 rounded-5 gap-2 mb-3">
+            <h3 class="text-white nokora fw-bold">Backdrop</h3>
+            <div class="d-flex gap-2 align-items-center px-2">
+                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Midnight')">Midnight</button>
+                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Sunrise')">Sunrise</button>
+                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Pastel')">Pastel</button>
+            </div>
+        </div>
+        <button class="border-transparent-0-5 rounded-5 bg-black-transparent-0-05 p-2 text-white fw-bold fs-4" onclick="pauseMenu()">
+            <img src="/static/img/game/Back.png" width="32px" height="32px">
+        </button>`;
+    game_container.appendChild(game_options);
+    pause_menu.remove();
+}
+
+function pauseMenu() {
+    const pause_menu_html = document.getElementById("pause-menu");
+    if (pause_menu_html) return ;
+
+    const game_options_html = document.getElementById("game-options");
+    const game_container = document.getElementById("game-utils");
+    const pause_menu = document.createElement("div");
+    pause_menu.classList.add("d-flex", "flex-column", "justify-content-center", "border-transparent-1", "p-5", "start-50", "top-50", "translate-middle", "bg-black-transparent-0-75", "rounded-5", "position-absolute");
+    pause_menu.id = "pause-menu";
+    pause_menu.innerHTML = `
+        <h3 class="text-center fs-1 mb-3 taprom text-pink-gradient">Pause Menu</h3>
+        <div class="d-flex flex-column justidy-content-center align-items-center gap-3">
+            <button id="resume" onclick="exitMenu()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Resume</button>
+            <button id="settings" onclick="DisplayGameOptions()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Settings</button>
+            <button id="exit" onclick="exitGame()" class="text-white btn-retro fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">Exit</button>
+        </div>
+    `;
+    game_container.appendChild(pause_menu);
+    game_options_html ? game_options_html.remove(): null;
+    if (modes.V_OFFLINE && GameStates.in_progress) GameStates.in_progress = 0;
+}
 
 
 function moveplayer(paddle, direction) {
@@ -111,3 +182,10 @@ export function activateButtonFunctions(paddle) {
         controller[key].tapped && controller[key].func(paddle)
     })
 }
+
+window.exitMenu = exitMenu;
+window.DisplayGameOptions = DisplayGameOptions;
+window.gameSoundSettings = gameSoundSettings;
+window.setGameBackdrop = setGameBackdrop;
+window.pauseMenu = pauseMenu;
+window.exitGame = exitGame;

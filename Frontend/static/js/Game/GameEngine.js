@@ -3,7 +3,6 @@ import { GameProcessor } from "./GameProcessor.js";
 import { modes, renderGame } from "./GameRenderer.js";
 import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js";
 import { sanitizeHTMLCode } from "./MatchMaker.js";
-import { opponent_data } from "./GameProcessor.js";
 import { OnGameChange } from "./GameEvents.js";
 import { ballPhysics, generateRandomBallAngle, resetInGamePhysics } from "./GamePhysics.js";
 
@@ -16,17 +15,35 @@ export const GameStates = {
 }
 const scores = [0, 0];
 const maps = {
-    "RetroPong": ["#172573", "#6A66D9", "#F080F2", "#000000"],
-    "Sunrise": ["#FFA3AC", "#FFBA81", "#FFD156"],
+    "RetroPong": ["#282828", "#000000", "#000000", "#000000"],
+    "Sunrise": ["#000000","#FFA3AC", "#FFBA81", "#FFD156", "#FFD178" , "#1B1B1B"],
     "Midnight": ["#000000"],
     "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
 }
 
+export let game_sounds = true;
+export let selectedBg = "Midnight";
 export const BALL_SPEED = 4;
 export const BALL_SPPED_INCREASE = 1;
 export const BALL_SPEED_LIMIT = 11;
 export const PADDLE_SPEED = 7;
 export let animReqID = null;
+
+class Sounds {
+    constructor() {
+        this.ball_hit = new Audio("/static/audio/Game/BallCollision.wav");
+        this.win_round = new Audio("/static/audio/Game/Cheer1.wav");
+        this.lose_round = new Audio("/static/audio/Game/LosingPlayer.wav");
+        this.win_game = new Audio("/static/audio/Game/EndGame.wav");
+
+        this.ball_hit.volume = 1;
+        this.win_round.volume = 0.25;
+        this.lose_round.volume = 0.25;
+        this.win_game.volume = 0.25;
+    }
+}
+
+export let sounds = null;
 
 class Paddle {
     constructor(canvasHTML, context, imagePath, cWidth, cHeight, side = LEFT_SIDE, loader) {
@@ -85,6 +102,18 @@ class Ball {
     }
 }
 
+export function setGameBackdrop(map) {
+    selectedBg = map;
+    localStorage.setItem("chosenMap", map);
+}
+
+export function gameSoundSettings() {
+    const sounds_btn = document.querySelector(".sounds_btn");
+    game_sounds ? game_sounds = false : game_sounds = true;
+    game_sounds ? sounds_btn.innerHTML = "ON" : sounds_btn.innerHTML = "OFF";
+    game_sounds ? (sounds_btn.classList.remove("sound_off"), sounds_btn.classList.add("sound_on")) : (sounds_btn.classList.remove("sound_on"), sounds_btn.classList.add("sound_off"));
+    // localStorage.setItem("game_sounds", game_sounds);
+}
 
 function fix_dpi(canvas, dpi) {
     let style = {
@@ -106,6 +135,36 @@ function drawGameElements(rPaddle, bPaddle, ball) {
     rPaddle.draw();
     bPaddle.draw();
     ball.draw();
+}
+
+export function playSound(sound) {
+    if (!game_sounds) return ;  
+    switch (sound) {
+        case "ball_hit":
+            const sound_1 = sounds.ball_hit.cloneNode();
+            sound_1.autoplay = true;
+            sound_1.volume = 0.75;
+            sound_1.play();
+            break;
+        case "win_round":
+            const sound_2 = sounds.win_round.cloneNode();
+            sound_2.autoplay = true;
+            sound_2.volume = 0.4;
+            sound_2.play();
+            break;
+        case "lose_round":
+            const sound_3 = sounds.lose_round.cloneNode();
+            sound_3.autoplay = true;
+            sound_3.volume = 0.4;
+            sound_3.play();
+            break;
+        case "win_game":
+            const sound_4 = sounds.win_game.cloneNode();
+            sound_4.autoplay = true;
+            sound_4.volume = 0.4;
+            sound_4.play();
+            break;
+    }
 }
 
 function generateGradient(ctx, width, height, chosenMap) {
@@ -137,18 +196,21 @@ export function processLocalScore(ball_x_pos) {
             bPaddle.score += 1;
             op_2_score.innerText = `${bPaddle.score}`;
             GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Blue Paddle Scored!</p>`;
+            playSound("win_round");
 
         } else {
             scores[0] += 1;
             rPaddle.score += 1;
             op_1_score.innerText = `${rPaddle.score}`;
             GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Red Paddle Scored!</p>`;
+            playSound("win_round");
         }
         if (scores[0] >= 7 || scores[1] >= 7) {
             GameStates.finished = 0;
             GameStates.in_progress = 0;
             GameContainer.innerHTML = "";
             GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
+            playSound("win_game");
             setTimeout(() => {
                 resetInGamePhysics(rPaddle, bPaddle, ball);
                 scores.forEach((score, i) => scores[i] = 0);
@@ -167,23 +229,12 @@ export function processLocalScore(ball_x_pos) {
     }
 }
 
-function invokeStartMatchTimer(ctx, matchTimer, width, height) {
-    const time = 3;
-    if (!matchTimer.startdate)
-        matchTimer.startdate = Date.now();
-
-    const elapsed = time - parseInt((Date.now() - matchTimer.startdate) / 1000);
-    const string = `Round Starting in ${elapsed}`;
-    const correctW = (width / 2) - ((string.length * 64) / 5.2);
-    ctx.fillStyle = "white";
-    ctx.font = "64px Taprom";
-    ctx.fillText(`Round Starting in ${elapsed}`, correctW, height * 0.51);
-    if (elapsed <= 0) {
-        GameStates.starting = 0;
-        GameStates.in_progress = 1;
-        matchTimer.startdate = null;
-        generateRandomBallAngle();
-    }
+export function resetGameResourcesAndData() {
+    resetInGamePhysics(rPaddle, bPaddle, ball);
+    scores.forEach((score, i) => scores[i] = 0);
+    unloadGameElements();
+    clearGameDashboard();
+    renderGame();
 }
 
 export function clearCanvasScreen() {
@@ -249,7 +300,8 @@ export function DisplayMatchStartTimer(ready_state) {
     const timer = setInterval(() => {
         GameContainer.innerHTML = "";
         const p = document.createElement('p');
-        p.classList.add("text-white", "fs-1", "taprom", "text-pink-gradient", "w-100", "h-100", "d-flex", "justify-content-center", "align-items-center", "mb-5");
+        const text_color = (localStorage.getItem("chosenMap") ?? selectedBg) === "Midnight" ? "text-white" : "text-black";
+        p.classList.add(text_color, "fs-1", "taprom", "w-100", "h-100", "d-flex", "justify-content-center", "align-items-center", "mb-5");
         p.innerText = `Match Starting in ${timeObj.time}`;
         GameContainer.appendChild(p);
         if (timeObj.time <= 0) {
@@ -264,19 +316,12 @@ export function DisplayMatchStartTimer(ready_state) {
     }, 1000);
 }
 
-function checkGameVisibility() {
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === "hidden") {
-            GameProcessor.gameRequestAction("inactive", { user_id: user_id });
-        } else {
-        }
-    });
-}
 
 export function unloadGameElements() {
     rPaddle = null;
     bPaddle = null;
     ball = null;
+    sounds = null;
 }
 
 export function loadGameEngine(gameMode, self, opponent) {
@@ -287,7 +332,7 @@ export function loadGameEngine(gameMode, self, opponent) {
 
     const drawGame = () => {
         if (!rPaddle || !bPaddle || !ball) return ;
-        generateGradient(ctx, width, height, "Midnight");
+        generateGradient(ctx, width, height, selectedBg);
         if (GameStates.starting) {
     
         } else if (GameStates.in_progress) {
@@ -320,7 +365,7 @@ export function loadGameEngine(gameMode, self, opponent) {
         }
     }
     
-
+    sounds = new Sounds();
     ball = new Ball(gameCanvas, ctx, "/static/img/game/Ball.svg", width, height, loader);
     rPaddle = new Paddle(gameCanvas, ctx, "/static/img/game/RedPaddle.svg", width, height, LEFT_SIDE, loader);
     bPaddle = new Paddle(gameCanvas, ctx, "/static/img/game/BluePaddle.svg", width, height, RIGHT_SIDE, loader);

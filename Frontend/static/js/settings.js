@@ -174,6 +174,11 @@ function DisplayConfirmationPopUp() {
     }
 }
 
+function validateEmail(email) {
+    var re = /\S+@\S+\.\S+/;
+    return re.test(email);
+}
+
 export function SaveChanges() {
     DestroyConfirmationPopUp();
     if (Object.keys(updated_values).length === 0){
@@ -182,6 +187,10 @@ export function SaveChanges() {
     }
     if (updated_values.Password && check_pass_strength(updated_values.Password) === false) {
         toast('Password too weak', 'bg-danger');
+        return ;
+    }
+    if (updated_values.email && validateEmail(updated_values.email) === false) {
+        toast('Invalid Email', 'bg-danger');
         return ;
     }
     for (const [key, value] of Object.entries(updated_values)) {

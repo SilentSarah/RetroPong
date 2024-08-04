@@ -1,4 +1,4 @@
-import { BALL_SPEED, BALL_SPPED_INCREASE, BALL_SPEED_LIMIT } from "./GameEngine.js";
+import { BALL_SPEED, BALL_SPPED_INCREASE, BALL_SPEED_LIMIT, sounds, playSound } from "./GameEngine.js";
 import { processLocalScore } from "./GameEngine.js";
 import { ball, rPaddle, bPaddle } from "./GameEngine.js";
 import { events } from "./GameEvents.js";
@@ -41,6 +41,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.posX = rPaddle_hb.x + rPaddle_hb.width;
         ball.drawPosX = rPaddle_hb.x + rPaddle_hb.width;
         ball.xspeed = -ball.xspeed;
+        let sound = sounds.ball_hit.cloneNode();
+        sound.play();
         events.ball_hit_paddle = 1;
         increaseBallSpeed(ball);
     }
@@ -52,6 +54,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         ball.posX = bPaddle_hb.x - ball.bWidth;
         ball.drawPosX = bPaddle_hb.x - ball.bWidth;
         ball.xspeed = -ball.xspeed;
+        let sound = sounds.ball_hit.cloneNode();
+        sound.play();
         events.ball_hit_paddle = 1;
         increaseBallSpeed(ball);
     }
@@ -91,6 +95,7 @@ export function ballPhysics(ball, rPaddle, bPaddle) {
     if (ball_hb.y <= 0 || ball_hb.y + ball_hb.height >= ball.cHeight) {
         events.ball_hit_top_bottom = 1;
         ball.yspeed = -ball.yspeed;
+        playSound("ball_hit");
     }
 
     collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb);
