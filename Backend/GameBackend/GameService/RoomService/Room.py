@@ -170,6 +170,11 @@ class RoomService:
         if (len(MATCHMAKER_QUEUE) >= 2):
             client1 = MATCHMAKER_QUEUE[0]
             client2 = MATCHMAKER_QUEUE[1]
+            if (client1 == client2):
+                MATCHMAKER_QUEUE.remove(client1)
+                MATCHMAKER_QUEUE.remove(client2)
+                print("Detected same user")
+                return await ws.send_message_status("rooms", "fail", 'You are already in the queue')
             await client1.ws.send_json({ "request": "rooms", "action": "rapid_join", 'status': 'success', "message": 'Match found' })
             await client2.ws.send_json({ "request": "rooms", "action": "rapid_join", 'status': 'success', "message": 'Match found' })
             room = Room()
