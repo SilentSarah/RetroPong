@@ -1,4 +1,5 @@
 import { Interpreter } from './Interpreter.js';
+import { checkInvitations } from './RoomManager.js';
 export let GameConnector = null;
 let interval = null;
 export const TICK_RATE = 1 / 60;
@@ -18,14 +19,15 @@ class GameConnection {
 }
 
 export function initiateGameConnection() {
-    if (GameConnector == null)
+    if (GameConnector == null || GameConnector.socket.readyState != 2)
     GameConnector = new GameConnection("ws://127.0.0.1:8003/ws/game/");
     GameConnector.socket.onopen = function(event) {
-
+        checkInvitations();
     }
     GameConnector.socket.onmessage = function(event) {
         if (window.location.pathname !== "/game")  {
             GameConnector.close();
+            GameConnector = null;
             return;
         }
         const response = JSON.parse(event.data);

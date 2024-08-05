@@ -3,7 +3,7 @@ from .models import User
 from .Client import Client
 from .Game import GameService
 from .Room import RoomService
-from .Room import AVAILABLE_ROOMS
+from .Room import AVAILABLE_ROOMS, MATCHMAKER_QUEUE
 from django.http import HttpRequest
 from asgiref.sync import sync_to_async
 
@@ -27,9 +27,9 @@ class Auth:
         
         user = Client(id=user_id, channel_name=ws_connection)
         user.user_data = await sync_to_async(User.objects.get)(id=user_id)
-        user.room = await Auth.restore_user_data(user)
-        user.ws = ws
         user.cookie = access_token
+        user.ws = ws
+        user.room = await Auth.restore_user_data(user)
         LOGGED_USERS.append(user)
         return True, user_id
     
@@ -37,9 +37,20 @@ class Auth:
     async def logout(ws_connection):
         user = find_user(ws_connection=ws_connection)
         if (user is not None):
-            RoomService.remove_player(user)
-            GameService.remove_player(user.game, user)
-            LOGGED_USERS.remove(user)
+            try:
+                if (user.opponent is not None and user.game is not None and user.opponent.game is not None): 
+                    await user.opponent.send_message_to_self({
+                        "request":"game",
+                        "action":"info",
+                        "status":"success",
+                        "message":"Your opponent has left the game waiting for 10s"
+                    })
+                RoomService.remove_player(user)
+                GameService.remove_player(user.game, user)
+                LOGGED_USERS.remove(user)
+                MATCHMAKER_QUEUE.remove(user)
+            except Exception as e:
+                print(e)
             return True
         return False
     

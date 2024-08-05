@@ -323,6 +323,23 @@ class DbOps:
                         nDate=datetime.datetime.now()
                     )
                     invite_notification.save()
+            if (invite_type == "game"):
+                from ..WebOps.WebOps import WebOps
+                response = WebOps.request_endpoint(f"http://127.0.0.1:8003/room/create/{invitee_id}", "POST", {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {token}"
+                })
+                if (response.status_code != 201):
+                    print(response.content.decode('utf-8'))
+                    return False
+                invite_notification = Notification(
+                        nType=invite_type.upper(),
+                        nContent=f"Invited you to match",
+                        nReciever=invitee_id,
+                        nSender=user_id,
+                        nDate=datetime.datetime.now()
+                )
+                invite_notification.save()
             return True
         except Exception as e:
             print("DbOps: ", e)

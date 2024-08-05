@@ -3,6 +3,7 @@ import { processLocalScore } from "./GameEngine.js";
 import { ball, rPaddle, bPaddle } from "./GameEngine.js";
 import { events } from "./GameEvents.js";
 
+const RAILSHOT_BOOST = 2
 
 export function resetInGamePhysics(rPaddle, bPaddle, ball) {
     if (!ball || !rPaddle || !bPaddle) return;
@@ -46,8 +47,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         playSound("ball_hit");
         increaseBallSpeed(ball);
         if (rPaddle.special_abilities.check_special_ability("railshot")) {
-            ball.xspeed = ball.xspeed * 2.75;
-            ball.yspeed = ball.yspeed * 2.75;
+            ball.xspeed = ball.xspeed * RAILSHOT_BOOST;
+            ball.yspeed = ball.yspeed * RAILSHOT_BOOST;
             rPaddle.special_abilities.disable_special_ability("railshot");
         }
     }
@@ -63,8 +64,8 @@ function collisionDetection(ball, rPaddle_hb, bPaddle_hb, ball_hb) {
         events.ball_hit_paddle = 1;
         increaseBallSpeed(ball);
         if (bPaddle.special_abilities.check_special_ability("railshot")) {
-            ball.xspeed = ball.xspeed * 2.75;
-            ball.yspeed = ball.yspeed * 2.75;
+            ball.xspeed = ball.xspeed * RAILSHOT_BOOST;
+            ball.yspeed = ball.yspeed * RAILSHOT_BOOST;
             bPaddle.special_abilities.disable_special_ability("railshot");
         }
     }

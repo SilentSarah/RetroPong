@@ -11,6 +11,7 @@ COMMANDS = [
         ('list', RoomService.get_rooms),
         ('rapid_join', RoomService.rapid_join),
         ('rapid_leave', RoomService.rapid_leave),
+        ('private_invite', RoomService.private_invite),
     ]),
     ("game", [
         ('leave', GameService.leave_game),

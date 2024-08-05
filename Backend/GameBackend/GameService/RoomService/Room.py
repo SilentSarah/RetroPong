@@ -1,5 +1,7 @@
 import uuid
 from .Game import GameService
+from .PrivateQueue import *
+
 class Room:
     def __init__(self):
         self.id: str
@@ -50,7 +52,7 @@ MATCHMAKER_QUEUE : list = []
     
 class RoomService:
     @staticmethod
-    async def create_room(ws, user, action, data: dict):
+    async def create_room(ws, user, action, data: dict) -> Room:
         try:
             if (RoomService.check_joined_room(user)):
                 return await ws.send_message_status("rooms", "fail", 'You are already in a room')
@@ -64,10 +66,51 @@ class RoomService:
             room.owner = user.id
             user.room = room
             AVAILABLE_ROOMS.append(room)
-            return await RoomService.broadcast_room_changes(ws)
+            await RoomService.broadcast_room_changes(ws)
+            return room
         except Exception as e:
             print(e)
             return await ws.send_message_status("rooms", "fail", 'Error creating room')
+        
+    @staticmethod 
+    async def private_invite(ws, user, action, data: dict):
+        from .Login import find_user
+        if (RoomService.check_joined_room(user)):
+            return await ws.send_message_status("rooms", "fail", 'You are already in a room')
+        
+        data = data.get('data')
+        if (data is None):
+            return await ws.send_message_status("rooms", "fail", 'Missing data identifier')
+        
+        inviter_id = data.get('inviter_id')
+        if (inviter_id is None):
+            return await ws.send_message_status("rooms", "fail", 'Missing inviter_id identifier')
+        
+        inviter_id = int(inviter_id)
+        private_session = get_existing_invite(inviter_id)
+        if (private_session is None):
+            return await ws.send_message_status("rooms", "fail", 'Invite not found')
+        
+        inviter = find_user(user_id=inviter_id)
+        if (inviter is None):
+            return await ws.send_message_status("rooms", "fail", 'Friend is not Online')
+        
+        if (RoomService.check_joined_room(inviter)):
+            return await ws.send_message_status("rooms", "fail", 'Inviter is already in a room')
+        
+        PRIVATE_QUEUE.remove(private_session)
+        room = Room()
+        room.id = str(uuid.uuid4())
+        room.players = [user.id, inviter_id]
+        room.score = [0, 0]
+        room.winner = -1
+        room.playerCount = 2
+        room.status = 'waiting'
+        room.owner = user.id
+        user.room = room
+        inviter.room = room
+        AVAILABLE_ROOMS.append(room)
+        return await GameService.start_game(room)
     
     @staticmethod
     async def join_room(ws, user, action, data: dict):
@@ -100,7 +143,7 @@ class RoomService:
     @staticmethod
     async def leave_room(ws, user, action, data: dict):
         if (RoomService.check_joined_room(user) == False):
-            return await ws.send_message_status("rooms", "fail", 'You are not in a room')
+            return await user.ws.send_message_status("rooms", "fail", 'You are not in a room')
         
         user.room.remove_player(user.id)
         if (user.room.get_player_count() == 0):
@@ -110,7 +153,7 @@ class RoomService:
             user.room.owner = user.room.get_players()[0]
             
         user.room = None
-        await ws.send_json({
+        await user.ws.send_json({
             "request": "rooms", 
             "action": action, 
             'status': 'success', 
@@ -124,8 +167,6 @@ class RoomService:
             return await ws.send_message_status("rooms", "fail", 'You are already in a room')
         
         MATCHMAKER_QUEUE.append(user)
-        print("New Player has joined, size:", MATCHMAKER_QUEUE.__len__())
-        await RoomService.update_matchseek_player_count()
         if (len(MATCHMAKER_QUEUE) >= 2):
             client1 = MATCHMAKER_QUEUE[0]
             client2 = MATCHMAKER_QUEUE[1]
@@ -134,6 +175,7 @@ class RoomService:
             room = Room()
             room.id = str(uuid.uuid4())
             room.players = [MATCHMAKER_QUEUE[0].id, MATCHMAKER_QUEUE[1].id]
+            
             room.score = [0, 0]
             room.winner = -1
             room.playerCount = 2
@@ -149,7 +191,8 @@ class RoomService:
     @staticmethod
     async def update_matchseek_player_count():
         for user in MATCHMAKER_QUEUE:
-            await user.ws.send_json({
+            print("user found", user.id)
+            await user.send_message_to_self({
                 "request": "rooms", 
                 "action": "matchseek", 
                 'status': 'success', 

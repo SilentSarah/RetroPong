@@ -5,6 +5,7 @@ import { bPaddle, ball, GameStates, DisplayMatchStartTimer, rPaddle, loadGameEng
 import { user_id, user_data, toast } from "../userdata.js";
 import { modes } from "./GameRenderer.js";
 import { resetInGamePhysics } from "./GamePhysics.js";
+import { RoomManager } from "./RoomManager.js";
 
 export let opponent_data = null;
 
@@ -113,6 +114,7 @@ export class GameProcessor {
     }
 
     static startGame(data) {
+        RoomManager.hideMatchSeekScreen();
         GameProcessor.setRoomOwnership(data);
         DisplayMatchMakerScreen("Online", data);
     }
@@ -192,6 +194,7 @@ export class GameProcessor {
     }
 
     static restoreGame(data) {
+        RoomManager.hideMatchSeekScreen();
         GameProcessor.setRoomOwnership(data);
         DisplayMatchMakerScreen("Online", data);
     }

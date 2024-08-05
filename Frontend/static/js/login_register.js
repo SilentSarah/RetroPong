@@ -15,6 +15,7 @@
 import { setLoadingOverlay, getCookie } from "./userdata.js";
 import { DisplayNavBar, scanLinks } from "./events.js";
 import { initiateTwoFactorModal } from "./twoFactor.js";
+import { GameConnector } from "./Game/GameConnection.js";
 
 function toast(message, color_class) {
     let div = document.createElement('div');

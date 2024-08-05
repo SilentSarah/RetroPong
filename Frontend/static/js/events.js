@@ -234,6 +234,7 @@ export function loadEvents() {
     const origpath = window.location.pathname;
     const found_path = routes.find(route => route.path === origpath);
 
+    if (origpath != '/game') GameConnector ? GameConnector.close() : null;
     scanLinks();
     if (found_path !== undefined) {
         DisplayNavBar();

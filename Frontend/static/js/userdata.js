@@ -62,7 +62,7 @@ function settoastmsg(toast, message, color_class) {
 function destroytoast(toasty) {
     setTimeout(() => {
         toasty.remove();
-    }, 2000);
+    }, 2500);
 }
 export function getCookie(cname) {
     let name = cname + "=";

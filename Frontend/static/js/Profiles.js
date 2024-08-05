@@ -1,6 +1,7 @@
 import { getCookie, setLoadingOverlay, toast } from './userdata.js';
 import { passUserTo } from './login_register.js';
 import { current_user } from "./userdata.js";
+import { DisplayMatchSeekScreen } from './Game/GameRenderer.js';
 
 export class OnlineProfile {
     constructor(link) {
@@ -92,6 +93,10 @@ function Invite(id, type) {
             child.disabled = false;
             child.classList.remove('opacity-75', 'cursor-not-allowed');
         });
+        if (type === "game") {
+            localStorage.setItem('invitee_id', id);
+            setTimeout(() => passUserTo('/game'), 1000);
+        } 
         // setLoadingOverlay(false);
     })
     .catch(error => {

@@ -1,3 +1,7 @@
+import { rPaddle } from "./GameEngine.js";
+
+export const SPEED_BOOST = 1.5
+
 export class SpecialAbilities {
     constructor() {
         this.railshot = {

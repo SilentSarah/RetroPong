@@ -2,6 +2,7 @@
 
 import { getCookie } from './userdata.js';
 import { scanLinks } from './events.js';
+import { passUserTo } from './login_register.js';
 
 let delay = 0;
 export let last_notification_id = undefined;
@@ -125,7 +126,7 @@ function invokeAction(notification_data, selected_notification) {
             anchor.remove();
             break;
         case 'GAME':
-            anchor.href = '/game';
+            passUserTo('/game');
             localStorage.setItem('inviter_id', notification_data.sender);
             break;
     }

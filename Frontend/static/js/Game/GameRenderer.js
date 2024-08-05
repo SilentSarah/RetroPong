@@ -11,19 +11,19 @@ export const modes = {
     V_OFFLINE: 0,
 }
 
-function DisplayMatchSeekScreen() {
+export function DisplayMatchSeekScreen(invite = false) {
     const game_utils = document.getElementById('game-utils');
     const GameContainer = document.getElementById('game-container');
     const div = document.createElement('div');
     div.id = "matchseek";
     div.classList.add("overlay", "d-flex", "flex-column", "justify-content-between", "w-100", "h-100", "fade_in");
     div.innerHTML = `
-    <div class="ms-auto my-1 me-1 rounded-pill d-flex align-items-center justify-content-evenly gap-2 p-2 border-transparent-0-5 bg-black-transparent-0-05"
+    <!-- <div class="ms-auto my-1 me-1 rounded-pill d-flex align-items-center justify-content-evenly gap-2 p-2 border-transparent-0-5 bg-black-transparent-0-05"
         style="height:65px; width:max-content;">
         <div class="bg-success rounded-circle" style="height: 20px; width: 20px;"></div>
         <p class="text-white fw-bold nokora fs-5 m-0 p-0">Users Connected</p>
         <span id="users-connected" class="text-white fw-bold nokora fs-5 m-0 p-0">1</span>
-    </div>
+    </div> -->
     <h2 id="seekAnnounce" class="text-chrome text-glow line-height-1 backdrop-filter-brightness my-auto text-center taprom display-5">Looking for Players...</h2>
     <div class="d-flex justify-content-center gap-3">
         <button id="exit" onclick="exitMatchSeekScreen()" class="text-white
@@ -34,15 +34,13 @@ function DisplayMatchSeekScreen() {
     modes.V_ONLINE = 1;
     GameContainer.innerHTML = "";
     game_utils.appendChild(div);
-    RoomManager.requestRoomService("rooms", "rapid_join", {});
-    // MAKE SURE TO SEND THE SERVER A REQUEST TO FIND A MATCH
+    if (!invite) RoomManager.requestRoomService("rooms", "rapid_join", {});
 }
 
 function exitMatchSeekScreen() {
     const matchseek = document.getElementById('matchseek');
     matchseek.remove();
     RoomManager.requestRoomService("rooms", "rapid_leave", {});
-    // SEND A REQUEST TO THE SERVER TO LEAVE THE MATCHMAKING QUEUE
     renderLobby();
 }
 

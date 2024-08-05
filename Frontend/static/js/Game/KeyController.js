@@ -3,6 +3,7 @@ import { classic, modes } from "./GameRenderer.js";
 import { rPaddle, bPaddle, RIGHT_SIDE, GameStates, game_sounds, gameSoundSettings, setGameBackdrop, resetGameResourcesAndData, timer_match } from "./GameEngine.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { events } from "./GameEvents.js";
+import { SPEED_BOOST } from "./SpecialAbilities.js";
 
 const UP = 1, DOWN = 2;
 
@@ -129,15 +130,15 @@ function pauseMenu() {
     pause_menu.innerHTML = `
         <h3 class="text-center fs-1 mb-3 taprom text-pink-gradient">Pause Menu</h3>
         <div class="d-flex flex-column justidy-content-center align-items-center gap-3">
-            <button id="resume" onclick="exitMenu()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">
+            <button id="resume" onclick="exitMenu()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 nokora bg-white-transparent-0-15 border-transparent-0-5">
                 <img src="/static/img/game/resume.png" width="24px" height="24px">
                 Resume
             </button>
-            <button id="settings" onclick="DisplayGameOptions()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">
+            <button id="settings" onclick="DisplayGameOptions()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 nokora bg-white-transparent-0-15 border-transparent-0-5">
                 <img src="/static/img/game/settingsgame.png" width="24px" height="24px">
                 Settings
             </button>
-            <button id="exit" onclick="exitGame()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 fs-5 nokora bg-white-transparent-0-15 border-transparent-0-5">
+            <button id="exit" onclick="exitGame()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 nokora bg-white-transparent-0-15 border-transparent-0-5">
                 <img src="/static/img/game/leave.png" width="24px" height="24px">
                 Exit
             </button>
@@ -159,8 +160,8 @@ function moveplayer(paddle, direction) {
         if (direction === UP) {
             if (paddleUpPointY - paddle.speed < 0) return ;
             if (paddle.special_abilities.check_special_ability("speedup")) {
-                paddle.posY -= paddle.speed * 1.25;
-                paddle.drawPosY -= paddle.speed * 1.25;
+                paddle.posY -= paddle.speed * SPEED_BOOST;
+                paddle.drawPosY -= paddle.speed * SPEED_BOOST;
             } else {
                 paddle.posY -= paddle.speed;
                 paddle.drawPosY -= paddle.speed;
@@ -168,8 +169,8 @@ function moveplayer(paddle, direction) {
         } else if (direction === DOWN) {
             if (paddleLowerPointY + paddle.speed > paddle.cHeight) return ;
             if (paddle.special_abilities.check_special_ability("speedup")) {
-                paddle.posY += paddle.speed * 1.25;
-                paddle.drawPosY += paddle.speed * 1.25;
+                paddle.posY += paddle.speed * SPEED_BOOST;
+                paddle.drawPosY += paddle.speed * SPEED_BOOST;
             } else {
                 paddle.posY += paddle.speed;
                 paddle.drawPosY += paddle.speed;
@@ -184,7 +185,7 @@ function activate_special_ability(paddle, ability) {
     if (modes.V_ONLINE) {
         GameProcessor.gameRequestAction('ability', ability);
     } else if (modes.V_OFFLINE) {
-        paddle.special_abilities.activate_special_ability(ability);
+        paddle.special_abilities.activate_special_ability(ability, (paddle === rPaddle ? "left":"right"));
     }
 }
 

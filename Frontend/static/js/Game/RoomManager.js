@@ -1,6 +1,7 @@
 
 import { GameConnector } from './GameConnection.js';
 import { toast, user_id } from '../userdata.js';
+import { DisplayMatchSeekScreen } from './GameRenderer.js';
 
 let room_states = null;
 let opponent = null;
@@ -15,7 +16,7 @@ export class RoomManager {
                 this.requestRoomService('rooms', action, data);
                 break;
             case 'matchseek':
-                this.update_player_count(data);
+                this.updatePlayerCount(data);
                 break;
         }
     }
@@ -208,4 +209,15 @@ function unfreezeAllRoomActions() {
         room_btn.disabled = false;
         room_btn.classList.remove("opacity-50");
     }
+}
+
+export function checkInvitations() {
+    const inviter_id = localStorage.getItem('inviter_id');
+    const invitee_id = localStorage.getItem('invitee_id');
+    if (!inviter_id && !invitee_id) return ;
+
+    localStorage.removeItem('inviter_id');
+    localStorage.removeItem('invitee_id');
+    DisplayMatchSeekScreen(true);
+    if (inviter_id) RoomManager.requestRoomService('rooms', 'private_invite', { inviter_id: inviter_id });
 }
