@@ -14,4 +14,6 @@ urlpatterns=[
     #channel
     path('channel/<int:channel_id>/', get_channel_messages, name='channel_list'),
     path('channel/send/<int:channel_id>/<int:user_id>/', Send_message_channel, name='channel_list'),
+    #generate notfications
+    path('notification', Generate_notification, name='gen_notification'),
 ]

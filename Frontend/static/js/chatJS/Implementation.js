@@ -136,10 +136,20 @@ async function SendInvite(target_user_id) {
     ws.send(JSON.stringify({ "message": "invite", "id": userId, "contact_id": target_user_id, "conversation_id": "" }))
 }
 
+// create notification
+async function createNotification(value, receiver, sender, token) {
+    const content = {
+        "nType": "MESSAGE",
+        "nContent": value,
+        "nReciever": receiver,
+        "nSender": sender
+    }
+    await fetchData(`http://127.0.0.1:8002/chat/notification}`, 'POST', token, { "notification": content })
+}
+
 //send message
 const ClickSend = async (value, target_user_id) => {
     const Cinput = document.getElementById('Cinput');
-    const CsendBtn = document.getElementById('CsendBtn');
     const { userId, token } = GetUserIdToken();
     let data = []
 
@@ -147,6 +157,7 @@ const ClickSend = async (value, target_user_id) => {
         return
     Cinput.value = ""
     Cinput.focus()
+    createNotification(value, target_user_id, userId, token)
     LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'))
     ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation }))
     data = await fetchData(`http://127.0.0.1:8002/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })

@@ -52,6 +52,7 @@ const GetUserIdToken=()=>{
 
 // load message in real time 
 function LoadMessageRealTime(value, profilepic, username) {
+    console.log(profilepic)
     const CcontentConver = document.getElementById('CcontentConver');
     if (CcontentConver === null) return;
 
@@ -60,4 +61,21 @@ function LoadMessageRealTime(value, profilepic, username) {
             { "profilepic": profilepic, "username": username }
     })
     CcontentConver.scrollTop = CcontentConver.scrollHeight
+}
+
+
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for(let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }

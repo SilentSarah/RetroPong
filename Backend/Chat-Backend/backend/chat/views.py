@@ -1,5 +1,6 @@
  
 from django.shortcuts import render
+from django.views.decorators.http import require_http_methods
 from django.http import *
 import requests
 from .models import *
@@ -210,3 +211,19 @@ def Send_message_channel(request, channel_id, user_id):
         except:
             return JsonResponse({"status":"Not found this channel"}, status=404)
     return JsonResponse({"status":"Not found this channel"}, status=404)
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def Generate_notification(request):
+    auth_token = request.headers.get('Authorization')
+    body =  request.body
+    request = requests.Session()
+    request.headers['Authorization'] = f"{auth_token}"
+    response = request.post('http://127.0.0.1:8001/userdata/notify', data=body)
+    if(response.status_code == 200):
+        print(response.status_code)
+        return JsonResponse({"status":"success"}, status=200)
+    else:
+        print(response.status_code)
+        return JsonResponse({"status":"somthing wrong!"}, status=404)
