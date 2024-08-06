@@ -317,7 +317,7 @@ class DbOps:
                 if (message != "Already sent invitation"):
                     invite_notification = Notification(
                         nType=invite_type.upper(),
-                        nContent=f"Invited you to match by" if invite_type == "game" else f"{user.uusername} sent you a friend request",
+                        nContent="Sent you a friend request",
                         nReciever=invitee_id,
                         nSender=user_id,
                         nDate=datetime.datetime.now()
@@ -334,7 +334,7 @@ class DbOps:
                     return False
                 invite_notification = Notification(
                         nType=invite_type.upper(),
-                        nContent=f"Invited you to match",
+                        nContent=f"Invited you to a match",
                         nReciever=invitee_id,
                         nSender=user_id,
                         nDate=datetime.datetime.now()
