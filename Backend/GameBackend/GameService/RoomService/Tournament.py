@@ -22,6 +22,9 @@ class Tournament:
     def __init__(self, name):
         self.id: str = str(uuid.uuid4())
         self.name: str = name
+        self.lvl: float = 1
+        self.prize: int = 256
+        self.joined_players: int = 0
         self.matches_count: int = 0
         self.parent_match = TournamentMatch()
         
