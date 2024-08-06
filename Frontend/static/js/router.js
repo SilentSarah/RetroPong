@@ -17,6 +17,7 @@ import { setDashboardStats } from "./userdata.js";
 import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
 import { renderGame } from "./Game/GameRenderer.js";
 import { initiateGameConnection } from "./Game/GameConnection.js";
+import { TournamentMenu } from "./Game/Tournament_misc.js";
 
 
 export let fetchID;
@@ -56,16 +57,6 @@ export const routes = [
         func_arr: [() => initiateGameConnection(), () => renderGame()]
     },
     {
-        path: '/tournament',
-        on: false,
-        component: () => grabContent('/static/content/tournament.html'),
-    },
-    { // For testing only >>>
-        path: '/info',
-        on: false,
-        component: () => grabContent('/static/content/info.html')
-    },
-    {
         path: '/settings',
         on: false,
         component: () => grabContent('/static/content/settings.html'),
@@ -82,6 +73,13 @@ export const routes = [
         on: false,
         component: () => grabContent('/static/content/dashboard.html'),
         func_arr: [() => copyIDListener(), () =>  setDashboardStats(false)]
+    },
+    {
+        path:'/tournament',
+        on: false,
+        component: () => grabContent('/static/content/tournament.html'),
+        func_arr: [() => TournamentMenu()]
+
     },
 ]
 
