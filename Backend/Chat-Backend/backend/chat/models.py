@@ -18,8 +18,8 @@ class User(models.Model):
     ABlockedBy = ArrayField(models.IntegerField(), db_column='ABlockedBy', default=list)
 
 
-    uprofilepic = models.CharField(db_column='uProfilePic', max_length=100, default="")
-    uprofilebgpic = models.CharField(db_column='uProfileBgPic', max_length=100, default="")
+    uprofilepic = models.ImageField(db_column='uProfilePic', upload_to='profile_pics/', default="/static/img/pfp/Default.png")
+    uprofilebgpic = models.ImageField(db_column='uProfileBgPic', upload_to='profile_bg_pics/', default="")
     udesc = models.CharField(db_column='uDesc', max_length=100, default="") 
     
     isOnline = models.BooleanField(db_column='online', default=False)
@@ -84,7 +84,7 @@ class Channel(models.Model):
 
     
     def __str__(self):
-        return self.chName
+        return str(self.chID)
 
 class ChannelMessage(models.Model):
     id = models.AutoField(primary_key=True)

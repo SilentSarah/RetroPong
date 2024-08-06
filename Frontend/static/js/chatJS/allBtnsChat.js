@@ -147,15 +147,19 @@ async function fetchDataChat(target_user_id)
     return await DataChatFetching(target_user_id)
 }
 
+async function fetchDataMessagesChannel(){
+    const  {userId, token} = GetUserIdToken();
+
+    const channel_message = await fetchData(`http://127.0.0.1:8002/chat/channel/${channelObj?.chID}`, 'GET', token)
+    handleChannel(channel_message)
+}
+
 async function implementBtns(target, target_user_id) {
     const page_discussion = document.getElementById('page_discussion');
     const page_chat = document.getElementById('page_chat');
     const page_discover = document.getElementById('page_discover');
     const page_channel = document.getElementById('page_channel');
     // channel
-
-    
-   
     const Cback = document.getElementById('contact_user');
     const  {userId, token} = GetUserIdToken();
 
@@ -183,14 +187,12 @@ async function implementBtns(target, target_user_id) {
         page_discussion.classList.add('d-none');
         page_discover.classList.add('d-none');
         page_channel.classList.remove('d-none');
-        const channel_message = await fetchData(`http://127.0.0.1:8002/chat/channel/${channelObj.chID}`, 'GET', token)
-        handleChannel(channel_message)
+        fetchDataMessagesChannel()
     }
 }
 
 function handleChannel(channel_message)
 {
-    console.log(channel_message)
     const chUser = document.getElementById('chUser');
     const chMessages = document.getElementById('chMessages');
     const chTitle = document.getElementById('chTitle');
@@ -203,7 +205,7 @@ function handleChannel(channel_message)
         chUser.innerHTML = channel_message?.data?.users?.map(user => member(user)).join('')
         chMessages.innerHTML = channel_message?.data?.messages?.map(msg => message_channel(msg,channel_message?.data?.users?.find(user=> user.id === msg.cmSender))).join('')
         AddListener()
-        console.log("object")
+        chMessages.scrollTop = chMessages.scrollHeight
     }
 }
 
@@ -219,9 +221,9 @@ function AddListener()
             return
         chInput.value = ""
         chInput.focus()
-        console.log(channelObj)
-        const data = await fetchData(`http://localhost:8002/chat/channel/send/${channelObj.chID}/${userId}/`,'POST',token,{"content":value}) 
+        const data = await fetchData(`http://localhost:8002/chat/channel/send/${channelObj.chID}/${userId}/`,'POST',token,{"content":value})
         console.log(data)
+        fetchDataMessagesChannel()
     })
 }
  

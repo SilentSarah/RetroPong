@@ -20,6 +20,7 @@ function Websocket() {
             setTimeout(() => { Websocket() }, 2000)
         }
         ws.onmessage = function (event) {
+            console.log("111", event)
             let data = JSON.parse(event.data)
             if (data.message === "statusOnlinePing")
                 storeDataWs = data
@@ -47,6 +48,7 @@ async function UserContactFetching() {
         LoadDataSuggestion(data.data)
         type = localStorage.getItem('type')
         LoadDataFriend(type ? type : 'online')
+        console.log(data)
         LoadChannel(data.data?.channel)
     }
     else
@@ -122,7 +124,6 @@ function LoadChannel(channel) {
         channelObj = channel[0]
         channel_general.classList.remove('d-none')
     }
-    // console.log(channel[0].chName)
     if(channel_title)
         if (channel[0])
             channel_title.innerHTML = channel[0].chName
@@ -183,7 +184,6 @@ async function SendMessage(target_user_id) {
 loadDataChat = (data, target_user_id) => {
     const CinfoUser = document.getElementById('CinfoUser');
     const CcontentConver = document.getElementById('CcontentConver');
-    const Cback = document.getElementById('contact_user');
     const Cinput = document.getElementById('Cinput');
 
     conversation = data?.conversation_id
@@ -196,15 +196,15 @@ loadDataChat = (data, target_user_id) => {
     Cinput.focus()
 }
 
-setInterval(() => {
-    const circleStatus = document.getElementById('circleStatus')
+// setInterval(() => {
+//     const circleStatus = document.getElementById('circleStatus')
 
-    if (storeDataUser.id === storeDataWs.id)
-        if (storeDataWs.status && circleStatus) {
-            circleStatus.classList.remove('offline')
-            circleStatus.classList.add('online')
-        } else if (circleStatus) {
-            circleStatus.classList.remove('online')
-            circleStatus.classList.add('offline')
-        }
-}, 1000)
+//     if (storeDataUser.id === storeDataWs.id)
+//         if (storeDataWs.status && circleStatus) {
+//             circleStatus.classList.remove('offline')
+//             circleStatus.classList.add('online')
+//         } else if (circleStatus) {
+//             circleStatus.classList.remove('online')
+//             circleStatus.classList.add('offline')
+//         }
+// }, 1000)

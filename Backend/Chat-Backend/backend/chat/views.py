@@ -227,3 +227,35 @@ def Generate_notification(request):
     else:
         print(response.status_code)
         return JsonResponse({"status":"somthing wrong!"}, status=404)
+
+
+#endpoint to add id to channel array
+@csrf_exempt
+@require_http_methods(["POST"])
+def insert_id_to_channel(request):
+    token, user_id = verify_token(request)
+    if token is None or user_id is None:
+        return JsonResponse({"status": "Unauthorized"}, status=401)
+    
+    try:
+        data = json.loads(request.body)
+        channel_id = 1  # You might want to use a dynamic channel ID
+        channel = Channel.objects.get(chID=channel_id)
+
+        # Assuming chMembers is a JSONField or similar list field
+        if not isinstance(data, dict) or "id" not in data:
+            return JsonResponse({"status": "Invalid data"}, status=400)
+        
+        member_id = int(data["id"])
+        if member_id not in channel.chMembers:
+            channel.chMembers.append(member_id)
+            channel.save()
+            return JsonResponse({"status": "Insert id to channel"}, status=200)
+        else:
+            return JsonResponse({"status": "ID already exists in channel"}, status=400)
+    
+    except Channel.DoesNotExist:
+        return JsonResponse({"status": "Channel not found"}, status=404)
+
+
+    
