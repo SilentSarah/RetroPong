@@ -3,6 +3,28 @@ from django.db.models import Q
 import requests
 import json
 from django.http import JsonResponse
+from django.contrib.sites.models import Site
+
+def gen_img_link(user: User) -> str:
+    site = Site.objects.get_current().domain
+    return f"http://{site}{user.uprofilepic.url}"
+
+def process_users(queryset, is_filter, filter_ids):
+    
+    if is_filter:
+        user_data = User.objects.filter(id__in=filter_ids).values(
+            'id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc'
+        )
+    else:
+        user_data = queryset.values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc')
+    user_data = list(user_data)
+
+    for user in user_data:
+        if user['uprofilepic']:
+            # Update the profilepic URL using gen_img_link
+            user['uprofilepic'] = gen_img_link(User(id=user['id']))
+
+    return user_data
 
 
 class JsonObj:
@@ -13,24 +35,20 @@ class JsonObj:
     def user_info(user):
         otherUsers = User.objects.exclude(Q(id__in=user.AFriends) | Q(id__in=user.ARequests) | Q(id__in=user.ABlocked) | Q(id__in=user.ABlockedBy) | Q(id=user.id))
         invitation = [x.id for x in otherUsers if Invitation.objects.filter(Q(iSender=user.id) & Q(iReceiver=x.id))]
-        channel = Channel.objects.filter(chMembers__contains=[user.id])
-        # print("channel", channel[0].values())
+        channel = Channel.objects.filter()
         return {
             "id": user.id,
             "username": user.uUsername,
             "email": user.uEmail,
             "fname": user.uFname,
             "lname": user.uLname,
-            "otherUser": list(otherUsers.values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
-            "friends": list(User.objects.filter(id__in=user.AFriends).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
-            "requests": list(User.objects.filter(id__in=user.ARequests).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
-            "blocked": list(User.objects.filter(id__in=user.ABlocked).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
-            "blockedby": list(User.objects.filter(id__in=user.ABlockedBy).values('id', 'uUsername', 'uFname', 'uLname', 'uEmail', 'uprofilepic', 'uprofilebgpic', 'udesc','isOnline')),
-            "profilepic": user.uprofilepic,
-            "profilebgpic": user.uprofilebgpic,
-            "desc": user.udesc,
-            "invitation": invitation,
-            "isOnline": user.isOnline,
+            "otherUser": process_users(otherUsers,False, ""),
+            "friends":process_users(User, True, user.AFriends),
+            "requests":process_users(User, True, user.ARequests),
+            "blocked":process_users(User, True, user.ABlocked),
+            "profilepic":gen_img_link(user),
+            "invitation":invitation,
+            "desc":user.udesc,
             "channel": list(channel.values())
         }
 
@@ -43,8 +61,8 @@ class JsonObj:
             "email": user.uEmail,
             "fname": user.uFname,
             "lname": user.uLname,
-            "profilepic": user.uprofilepic,
-            "profilebgpic": user.uprofilebgpic,
+            "profilepic":gen_img_link(user),
+            "profilebgpic":gen_img_link(user),
             "desc": user.udesc,
             "isOnline": user.isOnline
         }             
@@ -93,3 +111,7 @@ def conversationExist(request, id, contact_id):
         messagesArray.append(JsonObj.messages(x, checkUser(x.mSender,id, contact_id, contact_user, current_user)))
     # print("conversationExist", conversation.id)
     return JsonResponse({"comment":"Already exist conversation!","users":[contact_user, current_user],"messages":messagesArray,"conversation_id": conversation[0].id }, status=200)
+
+
+
+
