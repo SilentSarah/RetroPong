@@ -1,4 +1,4 @@
-<div class="container d-flex w-100 rounded-4 p-0 m-0 overflow-hidden position-relative">
+<div class="Ccontainer container d-flex flex-column border-pink d-flex w-100 rounded-4 p-0 m-0 position-relative">
     <div class="Tmenu">
         <div class="Titems">
             <div class="Titem" id="btnToTournament">
@@ -48,60 +48,52 @@
                     <li>PROFANITY IS NOT ALLOWED</li>
                 </ul>
             </div>
+            <button class="btn-retro bg-bubblegum text-white fw-bold nokora mt-3" onclick="joinCurrentTournament()">
+                <img src="/static/img/game/Acess.png" width="28px" height="28px">
+            </button>
         </div>
     </div>
 
-    <div class="Tclasses" id="Tclasses">
-        <div class="round-0">
-            <div class="square"></div>
-            <hr class="hr0">
-        </div>
-        <div class="round-1">
-            <div class="wrap-1">
-                <div class="square"></div>
-                <div class="square"></div>
-                <hr class="hr1">
-                <hr class="hr2">
-                <hr class="hr3">
-            </div>
-        </div>
-        <div class="round-2">
-            <div class="wrap-2">
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <hr class="hr4">
-                <hr class="hr5">
-                <hr class="hr6">
-                <hr class="hr7">
-                <hr class="hr8">
-                <hr class="hr9">
-                
-            </div>
-        </div>
-            <div class="round-3">
-            <div class="wrap-3">
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <div class="square"></div>
-                <hr class="hr10">
-                <hr class="hr11">
-                <hr class="hr12">
-                <hr class="hr13">
-                <hr class="hr14">
-            </div>
-        </div>
-     </div>
 
-
-    <div class="Tglacie">
-        <img src="static/img/general/GlacierTournament.png" alt="Glacier">
+    <div id="tournament-map" class="h-100 w-100 d-flex overflow-auto bg-black-transparent-0-75 d-none">
+        <div id="round-3" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly">
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+        <div id="round-2" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly">
+            <div class="match d-flex flex-column gap-5">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-5">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+        <div id="round-1" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly">
+            <div class="match d-flex flex-column gap-5">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+        <div id="round-0" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly">
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
     </div>
-
 </div>

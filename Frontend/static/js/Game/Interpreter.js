@@ -1,6 +1,7 @@
 import { toast } from "../userdata.js";
 import { RoomManager } from "./RoomManager.js";
 import { GameProcessor } from "./GameProcessor.js";
+import { TournamentManager } from "../Tournament/TournamentManager.js";
 
 export class Interpreter {
     static interpretRequest(type, action, data) {
@@ -13,6 +14,9 @@ export class Interpreter {
             case 'game':
                 GameProcessor.gameRequestAction(action, data);
                 break
+            case 'tournament':
+                TournamentManager.requestTournamentAction(action, data);
+                break;
         }
     }
 
@@ -24,7 +28,7 @@ export class Interpreter {
         const message = response.message;
         const data = response.data;
 
-        if (window.location.pathname !== "/game") return;
+        // if (window.location.pathname !== "/game") return;
 
         if (!this.invokeStatus(action, status, message)) return;
 
@@ -50,6 +54,9 @@ export class Interpreter {
                 break;
             case 'game':
                 GameProcessor.gameAction(action, data);
+                break;
+            case 'tournament':
+                TournamentManager.tournamentAction(action, data);
                 break;
         }
     }

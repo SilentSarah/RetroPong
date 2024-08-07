@@ -18,6 +18,7 @@ import { loadAccountDetailsInSettings, switchTabsHandler } from "./settings.js";
 import { renderGame } from "./Game/GameRenderer.js";
 import { initiateGameConnection } from "./Game/GameConnection.js";
 import { TournamentMenu } from "./Game/Tournament_misc.js";
+import { InitiateTournamentConnection } from "./Tournament/TournamentConnector.js";
 
 
 export let fetchID;
@@ -78,7 +79,7 @@ export const routes = [
         path:'/tournament',
         on: false,
         component: () => grabContent('/static/content/tournament.html'),
-        func_arr: [() => TournamentMenu()]
+        func_arr: [() => TournamentMenu(), () => InitiateTournamentConnection()]
 
     },
 ]

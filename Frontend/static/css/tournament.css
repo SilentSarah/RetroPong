@@ -181,6 +181,7 @@
     height: 80px;
     border: 3px solid #E2DC5A;
     border-radius: 15px;
+    overflow: hidden;
 }
 
 .round-1{
