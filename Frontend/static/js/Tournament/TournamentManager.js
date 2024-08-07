@@ -36,7 +36,7 @@ export class TournamentManager {
                         player1.style.backgroundPosition = 'center';
                     }
                     if (match_data.player2 && Object.keys(match_data.player2).length > 0) {
-                        player2.style.backgroundImage = `url(${match_data.player1.image})`;
+                        player2.style.backgroundImage = `url(${match_data.player2.image})`;
                         player2.style.backgroundSize = 'cover';
                         player2.style.backgroundPosition = 'center';
                     }
