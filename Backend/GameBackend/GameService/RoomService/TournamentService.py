@@ -24,6 +24,10 @@ class TournamentService:
             "message":"You've joined the tournament"
         })
         await broadcast_tournament_changes(tournament_map)
+        if (tournament.joined_players == 2):
+            await broadcast_tournament_message("bonkers!")
+            # Start the hypothetical tournament
+            
         
         
     @staticmethod
