@@ -84,6 +84,18 @@ async def broadcast_tournament_changes(data: dict):
                 "status":"success",
                 "data": data
             })
+            
+async def broadcast_tournament_message(message: str):
+    from .Login import LOGGED_USERS
+    for user in LOGGED_USERS:
+            print("Sending to player: ", user.id)
+            await user.send_message_to_self({
+                "request":"tournament",
+                "action":"info",
+                "status":"success",
+                "message": message
+            })
+
 
 
 TOURNAMENTS : list[Tournament] = []
