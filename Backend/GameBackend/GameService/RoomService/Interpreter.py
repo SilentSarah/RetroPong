@@ -20,11 +20,15 @@ COMMANDS = [
         ('move', GameService.move_player),  
         ('ready_game', GameService.ready_in_game),
         ('ability', GameService.use_ability),
-    ])
+    ]),
+    ("tournament", [
+        ('join', GameService.leave_game),
+        ('leave', GameService.exit_game),  
+    ]),
 ]
 class Interpreter:
     @staticmethod
-    async def interpret(ws, text_data: dict) -> str:
+    async def interpret(ws, text_data: dict, tournament_request = False) -> str:
         user: Client = await Auth.check_auth(ws.channel_name)
         if (user is None):
             await ws.send_json({ 'Error': 'You are not authenticated' })
@@ -32,6 +36,7 @@ class Interpreter:
             
         request:str = text_data.get('request')
         if request is None: return await Interpreter.respond(ws, { 'Error': 'No request found' })
+        if request != 'tournament' and tournament_request: return await Interpreter.respond(ws, { 'Error': 'Invalid request' })
         
         request_func_list: list[tuple[str, callable]] = Interpreter.identify_request(request)
         if (request_func_list is None): return await Interpreter.respond(ws, { 'Error': 'Invalid request' })

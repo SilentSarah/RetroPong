@@ -12,7 +12,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         is_logged_in, user_id = await Auth.login(self.scope, self.channel_name, self)
         if (is_logged_in == False): 
             return await self.close() 
-        else: 
+        else:
             await self.accept()
             await self.send_json({ 'Announcement': 'You are connected to RetroPong GameServer' })
             await GameService.restore_game(user_id)
@@ -55,3 +55,29 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         await self.send_json({
             'message': message
         })
+        
+class TournamentConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        is_logged_in, user_id = await Auth.login(self.scope, self.channel_name, self)
+        if (is_logged_in == False): 
+            return await self.close() 
+        else: 
+            await self.accept()
+            await self.send_json({ 'Announcement': 'You are connected to RetroPong Tournament System' })
+            await GameService.restore_game(user_id)
+        pass
+    
+    async def disconnect(self, close_code):
+        pass
+    
+    async def receive(self, text_data):
+        try:
+            body = json.loads(text_data)
+            await Interpreter.interpret(self, body, True)
+        except Exception as e:
+            print("Error: ", e)
+            await self.send_json({ 'Error': 'Invalid request' })
+        pass
+    
+    async def send_msg(self, message):
+        pass
