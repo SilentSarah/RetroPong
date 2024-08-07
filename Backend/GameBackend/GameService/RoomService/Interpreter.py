@@ -1,6 +1,7 @@
 from .Login import Auth
 from .Room import RoomService
 from .Game import GameService
+from .TournamentService import TournamentService
 from .Client import Client
 
 COMMANDS = [
@@ -22,7 +23,7 @@ COMMANDS = [
         ('ability', GameService.use_ability),
     ]),
     ("tournament", [
-        ('join', GameService.leave_game),
+        ('join', TournamentService.join_tournament),
         ('leave', GameService.exit_game),  
     ]),
 ]
@@ -36,7 +37,7 @@ class Interpreter:
             
         request:str = text_data.get('request')
         if request is None: return await Interpreter.respond(ws, { 'Error': 'No request found' })
-        if request != 'tournament' and tournament_request: return await Interpreter.respond(ws, { 'Error': 'Invalid request' })
+        if request != 'tournament' and tournament_request == True: return await Interpreter.respond(ws, { 'Error': 'Invalid request' })
         
         request_func_list: list[tuple[str, callable]] = Interpreter.identify_request(request)
         if (request_func_list is None): return await Interpreter.respond(ws, { 'Error': 'Invalid request' })
@@ -47,6 +48,7 @@ class Interpreter:
         action_callable:callable = Interpreter.identify_action(request_func_list, action)
         if (action_callable is None): return await Interpreter.respond(ws, { 'Error': 'Invalid action' })
         
+        print("Request: ", request, "Action: ", action)
         await Interpreter.execute_action(ws, action_callable, user, action, text_data)
         
     def identify_request(request: str) -> list[str, callable]:
