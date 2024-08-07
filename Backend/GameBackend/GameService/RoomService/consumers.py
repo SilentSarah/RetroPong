@@ -68,7 +68,8 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
         pass
     
     async def disconnect(self, close_code):
-        pass
+        await Auth.logout(self.channel_name)
+        raise StopConsumer()
     
     async def receive(self, text_data):
         try:

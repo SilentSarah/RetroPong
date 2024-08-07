@@ -74,22 +74,16 @@ def find_player_in_tree(root, player):
 
     return False
 
-async def broadcast_tournament_changes(match: Tournament, data: dict):
-    if (match is None):
-        return 
-    
-    for player in [match.room.player1, match.room.player2]:
-        if player is not None:
-            await player.send_message_to_self({
+async def broadcast_tournament_changes(data: dict):
+    from .Login import LOGGED_USERS
+    for user in LOGGED_USERS:
+            print("Sending to player: ", user.id)
+            await user.send_message_to_self({
                 "request":"tournament",
-                "action":"join",
+                "action":"update",
                 "status":"success",
                 "data": data
             })
-            
-    await broadcast_tournament_changes(match.left, data)
-    await broadcast_tournament_changes(match.right, data)
-    return 
 
 
 TOURNAMENTS : list[Tournament] = []

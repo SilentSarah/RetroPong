@@ -16,26 +16,19 @@ async def setup_player_data(player):
         return {
             "id": player.user_data.id,
             "username": player.user_data.uusername,
-            "image": "http://{}{}".format(site, player.user_data.uprofilepic)
+            "image": "http://{}/{}".format(site, player.user_data.uprofilepic)
         }
 
     return await sync_to_async(get_user_data)()
 
     
-def generate_match_data(match_data: dict, match: TournamentMatch, depth: int):
-    winner = match.room.winner.id if match.room.winner is not None else None
-    match_data.update(
-        {
-            depth: {
-                match.id: {
-                    "player1": setup_player_data(match.room.player1),
-                    "player2": setup_player_data(match.room.player1),
-                    "winner": winner
-                }
-            }
-        }
-    )
-    return 
+async def generate_match_data(match: TournamentMatch):
+    winner = match.winner.id if match.winner is not None else None
+    return {
+        "player1": await setup_player_data(match.room.player1),
+        "player2": await setup_player_data(match.room.player2),
+        "winner": winner
+    }
     
 def find_matches(required_depth: int):
     match_data = {}
@@ -82,10 +75,7 @@ async def generate_tournament_map(match: Tournament):
             tournament_map[current_depth] = {}
 
         tournament_map[current_depth].update({
-            root.id: {
-                "player1": await setup_player_data(root.room.player1),
-                "player2": await setup_player_data(root.room.player2)
-            }
+            root.id: await generate_match_data(root)
         })
         
         await extract_data(root.left, current_depth + 1, depth)

@@ -24,7 +24,7 @@ COMMANDS = [
     ]),
     ("tournament", [
         ('join', TournamentService.join_tournament),
-        ('leave', GameService.exit_game),  
+        ('list', TournamentService.get_tournament_update),
     ]),
 ]
 class Interpreter:

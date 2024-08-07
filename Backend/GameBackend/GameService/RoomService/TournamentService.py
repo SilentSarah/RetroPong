@@ -17,6 +17,24 @@ class TournamentService:
         fill_nodes_at_depth(match, user)
         tournament_map = await generate_tournament_map(match)
         # print_tree(tournament.parent_match, 10, 0)
-        await ws.send_json({ 'Success': 'You have joined the tournament' })
-        await broadcast_tournament_changes(match, tournament_map)
+        await user.send_message_to_self({
+            "request":"tournament",
+            "action":"info",
+            "status":"success",
+            "message":"You've joined the tournament"
+        })
+        await broadcast_tournament_changes(tournament_map)
         
+        
+    @staticmethod
+    async def get_tournament_update(ws, user, action, text_data):
+        tournament: Tournament = TOURNAMENTS[0]
+        match: TournamentMatch = tournament.parent_match
+        tournament_map = await generate_tournament_map(match)
+        await ws.send_json(
+            {
+                "request":"tournament",
+                "action":action,
+                "status":"success",
+                "data": tournament_map
+            })
