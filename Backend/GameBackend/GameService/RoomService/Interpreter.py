@@ -1,4 +1,4 @@
-from .Login import Auth
+from .Login import *
 from .Room import RoomService
 from .Game import GameService
 from .TournamentService import TournamentService
@@ -30,7 +30,7 @@ COMMANDS = [
 class Interpreter:
     @staticmethod
     async def interpret(ws, text_data: dict, tournament_request = False) -> str:
-        user: Client = await Auth.check_auth(ws.channel_name)
+        user: Client = await Auth.check_auth(ws.channel_name) if tournament_request == False else find_user_tournament(ws.channel_name)
         if (user is None):
             await ws.send_json({ 'Error': 'You are not authenticated' })
             await ws.close()
@@ -48,7 +48,6 @@ class Interpreter:
         action_callable:callable = Interpreter.identify_action(request_func_list, action)
         if (action_callable is None): return await Interpreter.respond(ws, { 'Error': 'Invalid action' })
         
-        print("Request: ", request, "Action: ", action)
         await Interpreter.execute_action(ws, action_callable, user, action, text_data)
         
     def identify_request(request: str) -> list[str, callable]:

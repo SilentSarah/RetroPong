@@ -22,12 +22,12 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         raise StopConsumer()
         
     async def receive(self, text_data):
-        try:
+        # try:
             body = json.loads(text_data)
             await Interpreter.interpret(self, body)
-        except Exception as e:
-            print("Error: ", e)
-            await self.send_json({ 'Error': 'Invalid request' })
+        # except Exception as e:
+        #     print("Error: ", e)
+        #     await self.send_json({ 'Error': 'Invalid request' })
         
     async def send_msg(self, message):
         await self.send_json({
@@ -58,7 +58,7 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         
 class TournamentConsumer(AsyncJsonWebsocketConsumer):
     async def connect(self):
-        is_logged_in, user_id = await Auth.login(self.scope, self.channel_name, self)
+        is_logged_in, user_id = await Auth.login(self.scope, self.channel_name, self, True)
         if (is_logged_in == False): 
             return await self.close() 
         else: 
@@ -68,17 +68,16 @@ class TournamentConsumer(AsyncJsonWebsocketConsumer):
         pass
     
     async def disconnect(self, close_code):
-        await Auth.logout(self.channel_name)
+        await Auth.logout(self.channel_name, True)
         raise StopConsumer()
     
     async def receive(self, text_data):
-        try:
+        # try:
             body = json.loads(text_data)
             await Interpreter.interpret(self, body, True)
-        except Exception as e:
-            print("Error: ", e)
-            await self.send_json({ 'Error': 'Invalid request' })
-        pass
+        # except Exception as e:
+        #     print("Error: ", e)
+        #     await self.send_json({ 'Error': 'Invalid request' })
     
     async def send_msg(self, message):
         pass

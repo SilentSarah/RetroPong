@@ -1,19 +1,32 @@
 import uuid
 from .Game import GameService
 from .PrivateQueue import *
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .Client import Client
 
 class Room:
-    def __init__(self):
-        self.id: str
-        self.players: list[int]
-        self.score: list[int]
-        self.winner: int
-        self.playerCount: int
-        self.status: str
-        self.owner: int
+    
+    player1 = None
+    player2 = None
+    
+    def __init__(self, is_tournament: bool = False, match_tournament = None, player1 = None, player2 = None):
+        self.id: str = str(uuid.uuid4())
+        self.players: list = []
+        self.score: list[int] = [0, 0]
+        self.winner: int = None
+        self.playerCount: int = 0
+        self.status: str = "waiting"
+        self.owner: Client = None
+        self.player1 = player1
+        self.player2 = player2
+        self.is_tournament: bool = is_tournament
+        self.match_tournament = match_tournament
         
-    def add_player(self, player_id: int):
-        self.players.append(player_id)
+        
+    def add_player(self, player: int):
+        self.players.append(player)
         self.playerCount += 1
         
     def remove_player(self, player_id: int):
@@ -62,10 +75,12 @@ class RoomService:
             room.score = [0, 0]
             room.winner = -1
             room.playerCount = 1
+            room.player1 = user
             room.status = 'waiting'
-            room.owner = user.id
+            room.owner = user
             user.room = room
             AVAILABLE_ROOMS.append(room)
+            print(f"Room created {room.id}, room owner: {room.owner}")
             await RoomService.broadcast_room_changes(ws)
             return room
         except Exception as e:
@@ -106,7 +121,9 @@ class RoomService:
         room.winner = -1
         room.playerCount = 2
         room.status = 'waiting'
-        room.owner = user.id
+        room.owner = user
+        room.player1 = inviter
+        room.player2 = user
         user.room = room
         inviter.room = room
         AVAILABLE_ROOMS.append(room)
@@ -132,7 +149,11 @@ class RoomService:
         room.add_player(user.id)
         user.room = room
         
-        await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room.__dict__ })
+        if (room.player1 is None): room.player1 = user
+        if (room.player2 is None): room.player2 = user
+        
+        room_data = RoomService.serialize_room(room)
+        await ws.send_json({ "request": "rooms", "action": action, 'status': 'success', "data": room_data })
         await RoomService.broadcast_room_changes(ws)
         
         if (room.get_player_count() == 2):
@@ -179,18 +200,18 @@ class RoomService:
             await client2.ws.send_json({ "request": "rooms", "action": "rapid_join", 'status': 'success', "message": 'Match found' })
             room = Room()
             room.id = str(uuid.uuid4())
-            room.players = [MATCHMAKER_QUEUE[0].id, MATCHMAKER_QUEUE[1].id]
+            room.players = [client1.id, client2.id]
             
             room.score = [0, 0]
             room.winner = -1
             room.playerCount = 2
             room.status = 'waiting'
-            room.owner = MATCHMAKER_QUEUE[0].id
-            MATCHMAKER_QUEUE[0].room = room
-            MATCHMAKER_QUEUE[1].room = room
+            room.owner = client1
+            client1.room = room
+            client2.room = room
             AVAILABLE_ROOMS.append(room)
-            MATCHMAKER_QUEUE.remove(MATCHMAKER_QUEUE[0])
-            MATCHMAKER_QUEUE.remove(MATCHMAKER_QUEUE[0])
+            MATCHMAKER_QUEUE.remove(client1)
+            MATCHMAKER_QUEUE.remove(client2)
             await GameService.start_game(room)
             
     @staticmethod
@@ -234,15 +255,31 @@ class RoomService:
     
     @staticmethod
     async def broadcast_room_changes(ws):
-        room_data:list[dict] = []
+        rooms_data:list[dict] = []
         for room in AVAILABLE_ROOMS:
-            room_data.append(room.__dict__)
+            room_data = RoomService.serialize_room(room)
+            rooms_data.append(room_data)
         await ws.broadcast({
             "request": "rooms", 
             "action": "update", 
             'status': 'success',
-            "data": room_data
+            "data": rooms_data
         })
+        
+    @staticmethod
+    def serialize_room(room: Room):
+        room_data = {
+            "id": room.id,
+            "players": room.players,
+            "score": room.score,
+            "winner": room.winner,
+            "playerCount": room.playerCount,
+            "status": room.status,
+            "owner": room.owner.id,
+            "player1": room.player1.id if room.player1 is not None else None,
+            "player2": room.player2.id if room.player2 is not None else None
+        }
+        return room_data
 
     @staticmethod
     def get_available_rooms() -> list[Room]:

@@ -1,6 +1,11 @@
 from .TournamentMatch import *
 from asgiref.sync import sync_to_async
 from django.contrib.sites.models import Site
+from .Room import *
+from .Game import *
+import copy
+
+RUNNING_GAME_TOURNAMENTS: list[Game] = []
 
 async def setup_player_data(player):
     if player is None:
@@ -84,3 +89,57 @@ async def generate_tournament_map(match: Tournament):
     
     await extract_data(match, 0, 4)
     return tournament_map
+
+async def check_game_statuses():
+    print("Checking game statuses")
+    while True:
+        for game in RUNNING_GAME_TOURNAMENTS:
+            print("Games length:", len(RUNNING_GAME_TOURNAMENTS))
+            if (game.current_room.is_tournament == True):
+                print("found a game instance for tournament:", game.current_room.match_tournament.id)
+                if game.status == "ended":
+                    print("Game has ended:", game.current_room.match_tournament.id)
+                    game.current_room.match_tournament.winner = game.winner()
+                    game.current_room.match_tournament.parent.room.player1 = game.winner()
+                    RUNNING_GAME_TOURNAMENTS.remove(game) if game in RUNNING_GAME_TOURNAMENTS else None
+        await asyncio.sleep(1)
+
+async def match_players_against_each_other(match: TournamentMatch, ):
+    if match is None:
+        return
+    
+    if (match.room.player1 is not None and match.room.player2 is not None and match.winner is None):
+        player1 = match.room.player1
+        player2 = match.room.player2
+        
+        await asyncio.sleep(10)
+        print("Allocating resources for a game session")
+        room = Room(True, match, player1, player2)
+        room.add_player(player1.id)
+        room.add_player(player2.id)
+        room.owner = player1
+        room.status = "started"
+        game = await GameService.start_game(room)
+        RUNNING_GAME_TOURNAMENTS.append(game)
+        print(f"Match Session has been created for {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
+
+    
+    await asyncio.gather(
+        match_players_against_each_other(match.left),
+        match_players_against_each_other(match.right)
+    )
+    
+async def disconnect_opponents(match: TournamentMatch):
+    if match is None:
+        return
+    
+    from .Login import LOGGED_USERS
+    if (match.room.player1 is not None):
+        LOGGED_USERS.remove(match.room.player1)
+    if (match.room.player2 is not None):
+        LOGGED_USERS.remove(match.room.player2)
+    
+
+async def start_tournament(tournament: Tournament):
+    print("Tournament Started")
+    await match_players_against_each_other(tournament.parent_match)

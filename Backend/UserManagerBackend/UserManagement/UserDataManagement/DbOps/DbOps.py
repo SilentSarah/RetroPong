@@ -237,7 +237,7 @@ class DbOps:
         bg_url = user_data_copy.get('uProfilebgpic')
         pfp_response = requests.get(DEFAULT_PFP_LINK) if pfp_url is None else requests.get(pfp_url)
         bg_response = requests.get(DEFAULT_BG_LINK) if bg_url is None else requests.get(bg_url)
-
+        print("User Image created and loaded")
         new_user = User(
             uusername=user_data_copy.get('uUsername'),
             upassword=user_data_copy.get('uPassword'),

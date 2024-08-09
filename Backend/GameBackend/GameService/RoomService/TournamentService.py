@@ -16,7 +16,6 @@ class TournamentService:
         tournament.joined_players += 1
         fill_nodes_at_depth(match, user)
         tournament_map = await generate_tournament_map(match)
-        # print_tree(tournament.parent_match, 10, 0)
         await user.send_message_to_self({
             "request":"tournament",
             "action":"info",
@@ -24,10 +23,10 @@ class TournamentService:
             "message":"You've joined the tournament"
         })
         await broadcast_tournament_changes(tournament_map)
-        if (tournament.joined_players == 2):
-            await broadcast_tournament_message("bonkers!")
-            # Start the hypothetical tournament
-            
+        if (tournament.joined_players == 8):
+            await broadcast_tournament_message("Tournament is starting after 1 minute")
+            await broadcast_tournament_action("start", {})
+            await start_tournament(tournament)
         
         
     @staticmethod

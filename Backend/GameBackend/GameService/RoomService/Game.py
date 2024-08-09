@@ -23,10 +23,10 @@ class Game:
     def __init__(self, room):
         from .Login import find_user
         self.current_room = room
-        self.player1 = find_user(user_id=room.get_players()[0])
-        self.player2 = find_user(user_id=room.get_players()[1])
-        self.player1.game = self
-        self.player2.game = self
+        self.player1 = room.player1 if room.player1 is not None else find_user(user_id=room.get_players()[0])
+        self.player2 = room.player2 if room.player2 is not None else find_user(user_id=room.get_players()[1])
+        self.player1.game = self if self.player1 is not None else None
+        self.player2.game = self if self.player2 is not None else None
         self.player1_score: int = 0
         self.player2_score: int = 0
         self.winner: int = -1
@@ -74,9 +74,12 @@ class Game:
             return (await self.player1.send_message_to_self({ "action": "game", "status": "fail", "message": "Failed to get player data" }), 
                     await self.player2.send_message_to_self({ "action": "game", "status": "fail", "message": "Failed to get player data" }),
                     self.clean_up())
-            
+
         await self.player1.send_message_to_self({ "request": "game", "action": "start", "status": "success", "message": "Game started", "data": first_player_data })
         await self.player2.send_message_to_self({ "request": "game", "action": "start", "status": "success", "message": "Game started", "data": second_player_data })
+        print("sent info to player 1 name", self.player1.user_data.uusername)
+        print("sent info to player 2 name", self.player2.user_data.uusername)
+        
             
     def clean_up(self):
         self.status = "ended"
@@ -89,13 +92,24 @@ class Game:
         self.player2.game = None
         
     async def generate_data_for_player(self, player_self, opponent):
-        user_data = await self.get_player_data(player_self)
-        opponent_data = await self.get_player_data(opponent)
-        if (user_data is None or opponent_data is None):
-            return None
+        from django.contrib.sites.models import Site
+        from django.forms.models import model_to_dict
+        from asgiref.sync import sync_to_async
+        
+        domain = await sync_to_async(Site.objects.get_current)()
+        self_data = {
+            "id": player_self.user_data.id,
+            "username": player_self.user_data.uusername,
+            "profilepic": 'http://{}/{}'.format(domain, player_self.user_data.uprofilepic.url)
+        }
+        opponent_data = {
+            "id": opponent.user_data.id,
+            "username": opponent.user_data.uusername,
+            "profilepic": 'http://{}/{}'.format(domain, opponent.user_data.uprofilepic.url)
+        }
         return {
-            "room_owner_id": self.owner,
-            "self_data": user_data,
+            "room_owner_id": self.owner.id,
+            "self_data": self_data,
             "opponent_data": opponent_data,
             "self_score": self.player1_score if player_self.id == self.player1.id else self.player2_score,
             "opponent_score": self.player2_score if player_self.id == self.player1.id else self.player1_score,
@@ -144,6 +158,7 @@ class Game:
 
     async def game_simulation(self):
         await asyncio.sleep(4)
+        print("Game Status:", self.status, f"opponents: {self.player1.user_data.uusername} {self.player2.user_data.uusername}")
         while (self.status == "started"):
             if (self.game_physics.state == "running"):
                 await self.game_physics.calculate_ball_physics()
@@ -164,12 +179,12 @@ class GameService:
         game_instance = Game(room)
         await game_instance.start_game()
         if (game_instance.status == "starting"):
-            AVAILABLE_ROOMS.remove(room)
+            AVAILABLE_ROOMS.remove(room) if room in AVAILABLE_ROOMS else None
             RUNNING_GAMES.append(game_instance)
             room = None
         elif (game_instance.status == "fail"):
-            RUNNING_GAMES.remove(game_instance)
-        return None
+            RUNNING_GAMES.remove(game_instance) if game_instance in RUNNING_GAMES else None
+        return game_instance
     
     @staticmethod
     async def ready_game(ws, user, action, data:dict):
@@ -177,6 +192,7 @@ class GameService:
         if (game is None):
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
+        print(f"recieved ready status from player: {user.user_data.uusername}")
         game.readyCounter += 1 if game.readyCounter < 2 else 2
         if (game.readyCounter == 2):
             game.status = "started"
@@ -391,18 +407,46 @@ class GameService:
                             Winners=[winner.id])
         await sync_to_async(match.save)()
         
-        winner.user_data.level += winner.user_data.level * 0.15
-        winner.user_data.xp += 35
-        winner.user_data.matchesplayed += 1
-        winner.user_data.matcheswon += 1
-        await sync_to_async(winner.user_data.save)()
-        
-        if (disconnected_user is None):
-            loser.user_data.level += winner.user_data.level * 0.125
-            loser.user_data.xp += 17
-            loser.user_data.matchesplayed += 1
-            loser.user_data.matcheslost += 1
-            await sync_to_async(loser.user_data.save)()
+        if (game.current_room.is_tournament == True):
+            match = game.current_room.match_tournament
+            parent = match.parent
+            match.winner = winner
+            if (parent is not None):
+                if (parent.room.player1 is None): parent.room.player1 = winner
+                elif (parent.room.player2 is None): parent.room.player2 = winner
+                await winner.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'You have won round' })
+                
+                if (parent.room.player1 is not None and parent.room.player2 is not None):
+                    from .Tournament import match_players_against_each_other, broadcast_tournament_message, TOURNAMENTS, Tournament 
+                    await asyncio.sleep(15)
+                    print("starting another match")
+                    await match_players_against_each_other(match.parent)
+                    
+                if (parent.parent is None):
+                    await broadcast_tournament_message(f"{winner.user_data.uusername} has won the tournament")
+                    winner.user_data.level += winner.user_data.level * 0.015
+                    winner.user_data.xp += 256
+                    winner.user_data.matchesplayed += 1
+                    winner.user_data.matcheswon += 1
+                    await sync_to_async(winner.user_data.save)()
+
+                    tournament = Tournament("RetroPong")
+                    TOURNAMENTS.clear()
+                    TOURNAMENTS.append(tournament)
+                    
+        else:
+            winner.user_data.level += winner.user_data.level * 0.15
+            winner.user_data.xp += 35
+            winner.user_data.matchesplayed += 1
+            winner.user_data.matcheswon += 1
+            await sync_to_async(winner.user_data.save)()
+
+            if (disconnected_user is None):
+                loser.user_data.level += winner.user_data.level * 0.125
+                loser.user_data.xp += 17
+                loser.user_data.matchesplayed += 1
+                loser.user_data.matcheslost += 1
+                await sync_to_async(loser.user_data.save)()
         
         data = {
             "winner": winner.id,
