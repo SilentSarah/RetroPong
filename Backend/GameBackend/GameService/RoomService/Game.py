@@ -63,6 +63,9 @@ class Game:
     def get_startdate(self) -> datetime:
         return self.startdate
     
+    async def set_game_status(self, status: str):
+        self.status = status
+    
     async def start_game(self):
         first_player_data = await self.generate_data_for_player(self.player1, self.player2)
         second_player_data = await self.generate_data_for_player(self.player2, self.player1)
@@ -184,7 +187,6 @@ class GameService:
             room = None
         elif (game_instance.status == "fail"):
             RUNNING_GAMES.remove(game_instance) if game_instance in RUNNING_GAMES else None
-        return game_instance
     
     @staticmethod
     async def ready_game(ws, user, action, data:dict):
@@ -195,6 +197,7 @@ class GameService:
         print(f"recieved ready status from player: {user.user_data.uusername}")
         game.readyCounter += 1 if game.readyCounter < 2 else 2
         if (game.readyCounter == 2):
+            print(f"Both players are ready {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
             game.status = "started"
             player1_data = await game.generate_data_for_player(game.player1, game.player2)
             player2_data = await game.generate_data_for_player(game.player2, game.player1)
@@ -358,6 +361,7 @@ class GameService:
         }
         game.game_physics.paddle_1.ready = False
         game.game_physics.paddle_2.ready = False
+        # print(f"Setting ready to false for players: {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
         await game.player1.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_1_data } })
         await game.player2.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_2_data } })
         return None
@@ -369,17 +373,20 @@ class GameService:
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
         if (game.status != "started"):
+            print(f"Game status: {game.status}")
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'Game not started' })
         
         game_physics = game.game_physics
         paddle_1 = game_physics.paddle_1
         paddle_2 = game_physics.paddle_2
         
-        paddle_1.ready = True if paddle_1.owner == user else paddle_1.ready
-        paddle_2.ready = True if paddle_2.owner == user else paddle_2.ready
+        paddle_1.ready = True if paddle_1.owner.id == user.id else paddle_1.ready
+        paddle_2.ready = True if paddle_2.owner.id == user.id else paddle_2.ready
         
+        # print(f"{user.user_data.uusername} is ready, {paddle_2.owner.user_data.uusername} is ready? {paddle_2.ready}, Scores: {game.player1_score} {game.player2_score}")
         if (paddle_1.ready and paddle_2.ready):
-            game_physics.state = "running"
+            print(f"{game.player1.user_data.uusername} {game.player2.user_data.uusername} are ready, Scores: {game.player1_score} {game.player2_score}")
+            await game.game_physics.set_state("running")
         return None
     
 
@@ -474,6 +481,9 @@ class GameService:
         for game in RUNNING_GAMES:
             player1_id = game.get_player1().id
             player2_id = game.get_player2().id
+            # print(f"Game ID: {game.current_room.id} \n \
+            #         \t\t Player 1: {game.get_player1().user_data.uusername}\n \
+            #         \t\t Player 2: {game.get_player2().user_data.uusername}\n")
             if (game.status != "ended" or game.status != "fail"):
                 if (user.id == player1_id or user.id == player2_id):
                     return game

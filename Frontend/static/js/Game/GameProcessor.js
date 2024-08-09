@@ -82,7 +82,7 @@ export class GameProcessor {
         const end_div = document.createElement('div');
         end_div.classList.add("d-flex", "flex-column", "align-items-center", "justify-content-evenly", "gap-3", "border-pink", "rounded-4", "bg-white-transparent-0-15", "glowbox", "p-4", "position-absolute", "start-50", "top-50", "translate-middle");
         end_div.innerHTML = `
-        <p class="text-white text-center nokora text-success display-5 fw-bold m-0">You Won!</p>
+        <p class="text-white text-center nokora text-success display-5 fw-bold m-0">You ${data.winner === user_id ? "Win": "Lose"}!</p>
         <img class="object-fit-cover rounded-3 border" src="${user_data.profilepic}" width="128px" height="128px">
         <div class="d-flex flex-column align-items-center justify-content-between h-100">
             <div class="d-flex justify-content-between align-items-center gap-3 border-top border-bottom p-2 w-100">
@@ -114,6 +114,8 @@ export class GameProcessor {
     }
 
     static startGame(data) {
+        modes.V_ONLINE = true;
+        console.log(`Starting Game, ${modes}`);
         RoomManager.hideMatchSeekScreen();
         GameProcessor.setRoomOwnership(data);
         DisplayMatchMakerScreen("Online", data);
@@ -157,6 +159,7 @@ export class GameProcessor {
         my_score_html.innerText = my_score;
         op_score_html.innerText = op_score;
         this.displayScorer(data);
+        console.log("Score Updated MAaaaaaane");
         setTimeout(() => DisplayMatchStartTimer(true), 1500);
     }
 
@@ -194,6 +197,7 @@ export class GameProcessor {
     }
 
     static restoreGame(data) {
+        modes.V_ONLINE = true;
         RoomManager.hideMatchSeekScreen();
         GameProcessor.setRoomOwnership(data);
         DisplayMatchMakerScreen("Online", data);

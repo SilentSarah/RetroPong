@@ -320,7 +320,10 @@ export function DisplayMatchStartTimer(ready_state) {
             GameStates.in_progress = 1;
             GameContainer.innerHTML = "";
             if (modes.V_OFFLINE) generateRandomBallAngle();
-            if (modes.V_ONLINE && ready_state) GameProcessor.gameRequestAction('ready_game', {});
+            if (modes.V_ONLINE && ready_state) {
+                console.log("Sending Ready Game Request");
+                GameProcessor.gameRequestAction('ready_game', {});
+            }
         }
         timeObj.time -= 1;
     }, 1000);

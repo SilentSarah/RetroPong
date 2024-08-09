@@ -104,30 +104,32 @@ async def check_game_statuses():
                     RUNNING_GAME_TOURNAMENTS.remove(game) if game in RUNNING_GAME_TOURNAMENTS else None
         await asyncio.sleep(1)
 
-async def match_players_against_each_other(match: TournamentMatch, ):
+async def match_players_against_each_other(match: TournamentMatch):
     if match is None:
         return
     
+    tasks = []
     if (match.room.player1 is not None and match.room.player2 is not None and match.winner is None):
         player1 = match.room.player1
         player2 = match.room.player2
         
-        await asyncio.sleep(10)
         print("Allocating resources for a game session")
         room = Room(True, match, player1, player2)
         room.add_player(player1.id)
         room.add_player(player2.id)
         room.owner = player1
         room.status = "started"
-        game = await GameService.start_game(room)
-        RUNNING_GAME_TOURNAMENTS.append(game)
-        print(f"Match Session has been created for {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
+        await asyncio.sleep(15)
+        
+        game_task = asyncio.create_task(GameService.start_game(room))
+        tasks.append(game_task)
+        print(f"Match Session has been created for {match.room.player1.user_data.uusername} {match.room.player2.user_data.uusername}")
 
+    left_task = match_players_against_each_other(match.left)
+    right_task = match_players_against_each_other(match.right)
+    tasks.extend([left_task, right_task])
     
-    await asyncio.gather(
-        match_players_against_each_other(match.left),
-        match_players_against_each_other(match.right)
-    )
+    await asyncio.gather(*tasks)
     
 async def disconnect_opponents(match: TournamentMatch):
     if match is None:
@@ -135,8 +137,10 @@ async def disconnect_opponents(match: TournamentMatch):
     
     from .Login import LOGGED_USERS
     if (match.room.player1 is not None):
+        match.room.player1.ws.close()
         LOGGED_USERS.remove(match.room.player1)
     if (match.room.player2 is not None):
+        match.room.player2.ws.close()
         LOGGED_USERS.remove(match.room.player2)
     
 

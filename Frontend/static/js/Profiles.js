@@ -10,7 +10,6 @@ export class OnlineProfile {
         this.userConnectionData = {};
         this.ws = new WebSocket(link);
         this.checkProfile = (profile_id) => {
-            console.log("Checking Profile: ", profile_id);
             const data = {
                 "Authorization": "Bearer " + getCookie('access'),
                 "viewed_user": profile_id
@@ -39,7 +38,6 @@ export class OnlineProfile {
                 (status.classList.add("bg-offline"), status.classList.remove("bg-online"));
             }
 
-            console.log("Online Status: ", this.userConnectionData.online);
         }
         this.ws.onopen = () => {
             const auth_data = { "Authorization": "Bearer " + getCookie('access')};
@@ -52,7 +50,6 @@ export class OnlineProfile {
                 this.displayOnlineStatus(this.userConnectionData.viewed_user);
                 clearInterval(this.intervalID);
             }
-            console.log(data_content);
         };
     }
 }
@@ -69,7 +66,6 @@ function Invite(id, type) {
         child.disabled = true;
         child.classList.add('opacity-75', 'cursor-not-allowed');
     });
-    console.log("Inviting...", id, type);
     // setLoadingOverlay(true);
     fetch ("http://127.0.0.1:8001/userdata/invite", {
         method: 'POST',
@@ -117,7 +113,6 @@ export function DisplayProfileOptions() {
     if (ProfileOptions) ProfileOptions.remove();
     if (current_user.id === parseInt(sessionStorage.getItem('id'))) return ;
 
-    console.log(current_user.id, "-", parseInt(sessionStorage.getItem('id')));
     const modalContent = document.getElementById('modalContent');
     const profileOptions = document.createElement('div');
     profileOptions.classList.add('d-flex', 'gap-2', 'align-items-center', 'justify-content-center', 'start-50', 'end-50', 'z-ultimate', 'position-sticky', 'transform-middle');
@@ -170,7 +165,6 @@ function eliminateAccountSearchMenu(element) {
 }
 
 export function DisplayProfileDetails(id) {
-    console.log("Displaying Profile Details...", id)
     if (id == undefined || id == null) return;
     fetch ("http://127.0.0.1:8001/userdata/" + id, {
         method: 'GET',

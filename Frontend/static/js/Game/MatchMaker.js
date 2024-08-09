@@ -94,7 +94,7 @@ export function LeaveMatchMaker() {
     renderLobby();
 }
 
-function SetTheGameMode(type) {
+export function SetTheGameMode(type) {
     const selection_modes = ["Offline", "Rooms", "Online"];
     selection_modes.forEach((mode, index) => {
         if (mode === type) {

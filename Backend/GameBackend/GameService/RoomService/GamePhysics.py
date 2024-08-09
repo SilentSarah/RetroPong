@@ -148,6 +148,9 @@ class GamePhysics:
         self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 23, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
         self.state = "running"
         
+    async def set_state(self, state):
+        self.state = state
+        
     async def calculate_ball_physics(self):
         self.ball.x += self.ball.xspeed
         self.ball.y += self.ball.yspeed

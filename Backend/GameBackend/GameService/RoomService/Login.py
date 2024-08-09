@@ -31,6 +31,12 @@ class Auth:
         if (from_tournament is False):
             if (find_user(user_id=user_id) is not None): return False, None
             LOGGED_USERS.append(user)
+            
+            tournament_user = find_user_tournament(user_id=user_id)
+            if (tournament_user is not None): 
+                print("Changing tournament to game route")
+                change_ws_connection(tournament_user, user)
+            
             user.room = await Auth.restore_user_data(user)
         else:
             if (find_user_tournament(user_id=user_id) is not None): return False, None
@@ -55,6 +61,9 @@ class Auth:
                         "status":"success",
                         "message":"Your opponent has left the game waiting for 10s"
                     })
+                if (user.game is not None and user.game.game_physics is not None):
+                    user.game.game_physics.paddle_1 = False if user.game.game_physics.paddle_1.owner.id == user.id else user.game.game_physics.paddle_1
+                    user.game.game_physics.paddle_2 = False if user.game.game_physics.paddle_2.owner.id == user.id else user.game.game_physics.paddle_2
                 RoomService.remove_player(user)
                 GameService.remove_player(user.game, user)
                 LOGGED_USERS.remove(user) if find_user(ws_connection=ws_connection) else None
@@ -122,3 +131,5 @@ def find_user_tournament(ws_connection = None, user_id:int = None) -> Client:
             return user
     return None
 
+def change_ws_connection(old_user: Client, new_user: Client):
+    old_user.ws = new_user.ws

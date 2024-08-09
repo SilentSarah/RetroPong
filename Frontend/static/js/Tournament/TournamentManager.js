@@ -1,3 +1,5 @@
+import { SetTheGameMode, clearChosenGameMode } from "../Game/MatchMaker.js";
+import { passUserTo } from "../login_register.js";
 import { user_id } from "../userdata.js";
 import { TournamentConnection } from "./TournamentConnector.js";
 
@@ -16,7 +18,16 @@ export class TournamentManager {
             case "list":
                 this.listTournamentUpdates(data);
                 break;
+            case "start":
+                this.initiateTournamentGame();
+                break;
         }
+    }
+
+    static initiateTournamentGame() {
+        clearChosenGameMode();
+        SetTheGameMode("Online");
+        passUserTo("/game");
     }
 
     static listTournamentUpdates(data) {
