@@ -53,7 +53,7 @@ def print_tree(root, space=0, level=0):
     print()
     for i in range(10, space):
         print(end=" ")
-    print(f'Room Players: {root.room.player1.id if root.room.player1 else None} {root.room.player2.id if root.room.player2 else None} (L{level})')
+    print(f'Room Players: {root.room.player1.user_data.uusername if root.room.player1 else None} {root.room.player2.user_data.uusername if root.room.player2 else None} (L{level})')
 
     print_tree(root.left, space, level + 1)
     

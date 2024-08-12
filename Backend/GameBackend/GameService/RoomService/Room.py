@@ -236,8 +236,7 @@ class RoomService:
         if (RoomService.check_if_user_in_matchseek(user) == False):
             return await ws.send_message_status("rooms", "fail", 'You are not in the matchseek queue')
         
-        print("Player has left, size:", MATCHMAKER_QUEUE.__len__())
-        MATCHMAKER_QUEUE.remove(user)
+        MATCHMAKER_QUEUE.remove(user) if user in MATCHMAKER_QUEUE else None
         await ws.send_json({
             "request": "rooms", 
             "action": action, 

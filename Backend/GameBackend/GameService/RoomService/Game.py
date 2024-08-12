@@ -189,13 +189,15 @@ class GameService:
             RUNNING_GAMES.remove(game_instance) if game_instance in RUNNING_GAMES else None
     
     @staticmethod
-    async def ready_game(ws, user, action, data:dict):
+    async def ready_game(ws, user, action, data:dict ):
         game: Game = await GameService.get_player_joined_game(user)
         if (game is None):
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
-        print(f"recieved ready status from player: {user.user_data.uusername}")
         game.readyCounter += 1 if game.readyCounter < 2 else 2
+        opponent_name = game.player1.user_data.uusername if user.id == game.player2.id else game.player2.user_data.uusername
+        print(f"recieved ready status from player: {user.user_data.uusername} match counter: {game.readyCounter}")
+        print(f"Waiting for opponent {opponent_name}, total ready count: {game.readyCounter}")
         if (game.readyCounter == 2):
             print(f"Both players are ready {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
             game.status = "started"
@@ -262,14 +264,17 @@ class GameService:
                                             "message": 'Game restored', 
                                             "data": game_data 
                                         })
-                await user.send_message_to_self(
-                                        { 
-                                            "request": "game", 
-                                            "action": "ready", 
-                                            'status': 'success', 
-                                            "message": 'Game restored', 
-                                            "data": game_data 
-                                        })
+                if (game.readyCounter == 2):
+                    loop = asyncio.get_event_loop()
+                    loop.call_later(2,
+                        await user.send_message_to_self(
+                            { 
+                                "request": "game", 
+                                "action": "ready", 
+                                'status': 'success', 
+                                "message": 'Game restored', 
+                                "data": game_data 
+                            }))
     
     @staticmethod
     async def generate_game_changes(game: Game, player):
@@ -383,7 +388,6 @@ class GameService:
         paddle_1.ready = True if paddle_1.owner.id == user.id else paddle_1.ready
         paddle_2.ready = True if paddle_2.owner.id == user.id else paddle_2.ready
         
-        # print(f"{user.user_data.uusername} is ready, {paddle_2.owner.user_data.uusername} is ready? {paddle_2.ready}, Scores: {game.player1_score} {game.player2_score}")
         if (paddle_1.ready and paddle_2.ready):
             print(f"{game.player1.user_data.uusername} {game.player2.user_data.uusername} are ready, Scores: {game.player1_score} {game.player2_score}")
             await game.game_physics.set_state("running")
@@ -401,7 +405,7 @@ class GameService:
         if disconnected_user is not None:
             winner = game.player1 if game.player1.id != disconnected_user.id else game.player2
             loser = game.player1 if game.player1.id != winner.id else game.player2
-            game.winner = [loser.id]
+            game.winner = winner
         
         loser_score = min(game.player1_score, game.player2_score)
         winner_score = max(game.player1_score, game.player2_score)
@@ -419,14 +423,22 @@ class GameService:
             parent = match.parent
             match.winner = winner
             if (parent is not None):
-                if (parent.room.player1 is None): parent.room.player1 = winner
-                elif (parent.room.player2 is None): parent.room.player2 = winner
+                if (parent.room.player1 is None): 
+                    parent.room.player1 = winner
+                    print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player1)}")
+                elif (parent.room.player2 is None): 
+                    parent.room.player2 = winner
+                    print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player2)}")
                 await winner.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'You have won round' })
                 
                 if (parent.room.player1 is not None and parent.room.player2 is not None):
-                    from .Tournament import match_players_against_each_other, broadcast_tournament_message, TOURNAMENTS, Tournament 
-                    await asyncio.sleep(15)
+                    from .Tournament import match_players_against_each_other, broadcast_tournament_message, TOURNAMENTS, Tournament, print_tree
+                    print("--------|Parent match has been filled|----------")
+                    print(f"Parent match players: {parent.room.player1.user_data.uusername} {parent.room.player2.user_data.uusername}")
                     print("starting another match")
+                    print("------------------------------------------------")
+                    print("-----------|Tree Status|------------")
+                    print_tree(parent, 5, 0)
                     await match_players_against_each_other(match.parent)
                     
                 if (parent.parent is None):
@@ -495,8 +507,10 @@ class GameService:
             if (game is None): return
             if (user.id == game.player1.id):
                 game.player1_last_disconnected = datetime.now().timestamp()
+                game.game_physics.paddle_1.ready = False
             else:
                 game.player2_last_disconnected = datetime.now().timestamp()
+                game.game_physics.paddle_2.ready = False
             game.playerCount -= 1
             if (game.playerCount == 0):
                 game.clean_up()

@@ -61,9 +61,9 @@ class Auth:
                         "status":"success",
                         "message":"Your opponent has left the game waiting for 10s"
                     })
-                if (user.game is not None and user.game.game_physics is not None):
-                    user.game.game_physics.paddle_1 = False if user.game.game_physics.paddle_1.owner.id == user.id else user.game.game_physics.paddle_1
-                    user.game.game_physics.paddle_2 = False if user.game.game_physics.paddle_2.owner.id == user.id else user.game.game_physics.paddle_2
+                # if (user.game is not None and user.game.game_physics is not None):
+                #     user.game.game_physics.paddle_1 = False if user.game.game_physics.paddle_1.owner.id == user.id else user.game.game_physics.paddle_1
+                #     user.game.game_physics.paddle_2 = False if user.game.game_physics.paddle_2.owner.id == user.id else user.game.game_physics.paddle_2
                 RoomService.remove_player(user)
                 GameService.remove_player(user.game, user)
                 LOGGED_USERS.remove(user) if find_user(ws_connection=ws_connection) else None
@@ -83,6 +83,7 @@ class Auth:
     async def restore_user_data(user: Client):
         for room in AVAILABLE_ROOMS:
             if (user.id in room.get_players()):
+                print("User found in room, restoring data")
                 return room
         return None
         
