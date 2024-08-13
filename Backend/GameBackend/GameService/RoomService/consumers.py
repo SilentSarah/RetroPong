@@ -56,28 +56,28 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
             'message': message
         })
         
-class TournamentConsumer(AsyncJsonWebsocketConsumer):
-    async def connect(self):
-        is_logged_in, user_id = await Auth.login(self.scope, self.channel_name, self, True)
-        if (is_logged_in == False): 
-            return await self.close() 
-        else: 
-            await self.accept()
-            await self.send_json({ 'Announcement': 'You are connected to RetroPong Tournament System' })
-            await GameService.restore_game(user_id)
-        pass
+# class TournamentConsumer(AsyncJsonWebsocketConsumer):
+#     async def connect(self):
+#         is_logged_in, user_id = await Auth.login(self.scope, self.channel_name, self, True)
+#         if (is_logged_in == False): 
+#             return await self.close() 
+#         else: 
+#             await self.accept()
+#             await self.send_json({ 'Announcement': 'You are connected to RetroPong Tournament System' })
+#             await GameService.restore_game(user_id)
+#         pass
     
-    async def disconnect(self, close_code):
-        await Auth.logout(self.channel_name, True)
-        raise StopConsumer()
+#     async def disconnect(self, close_code):
+#         await Auth.logout(self.channel_name, True)
+#         raise StopConsumer()
     
-    async def receive(self, text_data):
-        # try:
-            body = json.loads(text_data)
-            await Interpreter.interpret(self, body, True)
-        # except Exception as e:
-        #     print("Error: ", e)
-        #     await self.send_json({ 'Error': 'Invalid request' })
+#     async def receive(self, text_data):
+#         # try:
+#             body = json.loads(text_data)
+#             await Interpreter.interpret(self, body, True)
+#         # except Exception as e:
+#         #     print("Error: ", e)
+#         #     await self.send_json({ 'Error': 'Invalid request' })
     
-    async def send_msg(self, message):
-        pass
+#     async def send_msg(self, message):
+#         pass

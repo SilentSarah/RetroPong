@@ -1,11 +1,12 @@
-import { SetTheGameMode, clearChosenGameMode } from "../Game/MatchMaker.js";
+import { SetTheGameMode, clearChosenGameMode } from "./MatchMaker.js";
 import { passUserTo } from "../login_register.js";
 import { user_id } from "../userdata.js";
-import { TournamentConnection } from "./TournamentConnector.js";
+import { GameConnector } from "./GameConnection.js";
 
 export class TournamentManager {
     static requestTournamentAction(action, data) {
-        TournamentConnection.send({
+        if (GameConnector == null) console.error("GameConnector is not initialized");
+        GameConnector.send({
             "request": "tournament",
             "action": action,
             "data": data
@@ -13,6 +14,7 @@ export class TournamentManager {
     }
 
     static tournamentAction(action, data) {
+        if (window.location.pathname !== "/tournament") return;
         switch (action) {
             case "update":
             case "list":
@@ -31,9 +33,10 @@ export class TournamentManager {
     }
 
     static listTournamentUpdates(data) {
+        console.log("listing tournament updates")
         const tournament_map = document.getElementById('tournament-map');
         for (const [round_id, match_list] of Object.entries(data)) {
-            const rounds = tournament_map.querySelector('#round-' + round_id);
+            const rounds = tournament_map.querySelector('#round-' + (+round_id + 1));
             if (rounds) {
                 const matches = rounds.querySelectorAll('.match');
                 Object.entries(match_list).forEach(([match_id, match_data], index) => {
@@ -61,6 +64,15 @@ export class TournamentManager {
                 });
             }
         }
+        if (data.winner) {
+            const round_0 = tournament_map.querySelector('#round-0');
+            const final_match = round_0.querySelector('.match');
+            const winner = final_match.querySelector('.player2');
+
+            winner.style.backgroundImage = `url(${data.winner.image})`;
+            winner.style.backgroundSize = 'cover';
+            winner.style.backgroundPosition = 'center';
+        }
         TournamentManager.checkIfAlreadyInTournament(data);
     }
 
@@ -72,33 +84,31 @@ export class TournamentManager {
                     if (Object.keys(match_data.player1).length >= 0) {
                         if (match_data.player1.id === user_id) {
                             tournament_join_btn.classList.contains('d-none') ? null : tournament_join_btn.classList.add('d-none');
-                            console.log("found the player in the tournament");
                             return;
                         }
                     } if (Object.keys(match_data.player2).length >= 0) {
                         if (match_data.player2.id === user_id) {
                             tournament_join_btn.classList.contains('d-none') ? null : tournament_join_btn.classList.add('d-none');
-                            console.log("found the ")
                             return;
                         }
                     }
                 }
             }
         }
-        console.log("player wasn't found in tournament");
     }
 
     static joinTournament() {
-        TournamentConnection.send({
-            request: "tournament",
-            action: "join",
-            data: {}
-        });
+        this.requestTournamentAction("join", {});
     }
 }
 
 function joinCurrentTournament() {
     TournamentManager.joinTournament();
+}
+
+export function listTournamentMembers() {
+    if (!GameConnector || GameConnector.socket.readyState != 1) return;
+    TournamentManager.requestTournamentAction("list", {});
 }
 
 

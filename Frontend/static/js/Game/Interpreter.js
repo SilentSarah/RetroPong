@@ -1,12 +1,11 @@
 import { toast } from "../userdata.js";
 import { RoomManager } from "./RoomManager.js";
 import { GameProcessor } from "./GameProcessor.js";
-import { TournamentManager } from "../Tournament/TournamentManager.js";
+import { TournamentManager } from "./TournamentManager.js";
 
 export class Interpreter {
     static interpretRequest(type, action, data) {
 
-        console.log("Request:", type, action, data);
         switch (type) {
             case 'rooms':
                 RoomManager.processRoomRequest(action, data);
@@ -27,8 +26,6 @@ export class Interpreter {
         const status = response.status;
         const message = response.message;
         const data = response.data;
-
-        // if (window.location.pathname !== "/game") return;
 
         if (!this.invokeStatus(action, status, message)) return;
 

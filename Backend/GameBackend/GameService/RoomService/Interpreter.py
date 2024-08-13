@@ -29,16 +29,14 @@ COMMANDS = [
 ]
 class Interpreter:
     @staticmethod
-    async def interpret(ws, text_data: dict, tournament_request = False) -> str:
-        user: Client = await Auth.check_auth(ws.channel_name) if tournament_request == False else find_user_tournament(ws.channel_name)
+    async def interpret(ws, text_data: dict) -> str:
+        user: Client = await Auth.check_auth(ws.channel_name)
         if (user is None):
             await ws.send_json({ 'Error': 'You are not authenticated' })
             await ws.close()
             
         request:str = text_data.get('request')
-        if request is None: return await Interpreter.respond(ws, { 'Error': 'No request found' })
-        if request != 'tournament' and tournament_request == True: return await Interpreter.respond(ws, { 'Error': 'Invalid request' })
-        
+        if request is None: return await Interpreter.respond(ws, { 'Error': 'No request found' })        
         request_func_list: list[tuple[str, callable]] = Interpreter.identify_request(request)
         if (request_func_list is None): return await Interpreter.respond(ws, { 'Error': 'Invalid request' })
         

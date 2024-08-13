@@ -11,6 +11,7 @@ export let opponent_data = null;
 
 export class GameProcessor {
     static gameAction(action, data) {
+        if (window.location.pathname !== "/game") return;
         switch (action) {
             case 'update':
                 this.upadateGameElementPositions(data);
@@ -102,6 +103,7 @@ export class GameProcessor {
             <p class="text-white nokora fw-bold fs-3 m-0 my-3">Returning back to lobby</p>
         </div>
         `; 
+        console.log("ROUND HAS ENDED");
         game_container.appendChild(end_div);
         clearCanvasScreen();
         GameStates.finished = true;
@@ -115,7 +117,7 @@ export class GameProcessor {
 
     static startGame(data) {
         modes.V_ONLINE = true;
-        console.log(`Starting Game, ${modes}`);
+        console.log(`Starting New Game, oppoenent: ${data.opponent_data.username}`);
         RoomManager.hideMatchSeekScreen();
         GameProcessor.setRoomOwnership(data);
         DisplayMatchMakerScreen("Online", data);
@@ -133,6 +135,7 @@ export class GameProcessor {
             pfp: data.opponent_data.profilepic,
             score: data.opponent_score
         }
+        console.log("Starting In-Game Engine");
         loadGameEngine(null, self_data, opponent_data);
     }
 
@@ -229,5 +232,3 @@ export class GameProcessor {
         game_container.appendChild(scorer_div);
     }
 }
-
-// I NEED TO WORK ON SENDING READY STATE BACK TO THE SERVER SO IT CAN RESUME THE ROUND

@@ -1,6 +1,5 @@
 
 import uuid
-
 class Tournament:
     def __init__(self, name):
         self.id: str = str(uuid.uuid4())
@@ -11,6 +10,7 @@ class Tournament:
         self.joined_players: int = 0
         self.matches_count: int = 0
         self.parent_match = None
+        self.winner = None
 
 
 class TRoom:
@@ -28,7 +28,7 @@ class TournamentMatch:
         self.right: TournamentMatch = None
         
 def generate_match_tree(count: int):
-    if count >= 4:
+    if count >= 3:
         return None
     
     match = TournamentMatch()
@@ -75,7 +75,7 @@ def find_player_in_tree(root, player):
     return False
 
 async def broadcast_tournament_changes(data: dict):
-    from .Login import TOURNAMENT_USERS
+    from .Tournament import TOURNAMENT_USERS
     for user in TOURNAMENT_USERS:
             print("Sending to player: ", user.id)
             await user.send_message_to_self({
@@ -86,7 +86,7 @@ async def broadcast_tournament_changes(data: dict):
             })
             
 async def broadcast_tournament_message(message: str):
-    from .Login import TOURNAMENT_USERS
+    from .Tournament import TOURNAMENT_USERS
     for user in TOURNAMENT_USERS:
             await user.send_message_to_self({
                 "request":"tournament",
@@ -96,7 +96,7 @@ async def broadcast_tournament_message(message: str):
             })
 
 async def broadcast_tournament_action(action: str, data: dict):
-    from .Login import TOURNAMENT_USERS
+    from .Tournament import TOURNAMENT_USERS
     for user in TOURNAMENT_USERS:
             await user.send_message_to_self({
                 "request":"tournament",

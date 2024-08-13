@@ -1,4 +1,4 @@
-import { BALL_SPEED, BALL_SPPED_INCREASE, BALL_SPEED_LIMIT, sounds, playSound } from "./GameEngine.js";
+import { BALL_SPEED, BALL_SPPED_INCREASE, BALL_SPEED_LIMIT, sounds, playSound, PADDLE_SPEED } from "./GameEngine.js";
 import { processLocalScore } from "./GameEngine.js";
 import { ball, rPaddle, bPaddle } from "./GameEngine.js";
 import { events } from "./GameEvents.js";
@@ -24,6 +24,8 @@ export function resetInGamePhysics(rPaddle, bPaddle, ball) {
 
     ball.xspeed = BALL_SPEED;
     ball.yspeed = BALL_SPEED;
+    rPaddle.speed = PADDLE_SPEED
+    bPaddle.speed = PADDLE_SPEED
 }
 
 export function increaseBallSpeed(ball) {

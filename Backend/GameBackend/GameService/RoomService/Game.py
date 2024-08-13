@@ -398,60 +398,17 @@ class GameService:
     async def end_game(game: Game, disconnected_user=None):
         from asgiref.sync import sync_to_async
         game.status = "ended"
-        winner = game.player1 if game.player1_score >= 7 else game.player2
-        loser = game.player1 if game.player1.id != winner.id else game.player2
-        game.winner = [game.latest_scorer]
-        
-        if disconnected_user is not None:
-            winner = game.player1 if game.player1.id != disconnected_user.id else game.player2
-            loser = game.player1 if game.player1.id != winner.id else game.player2
-            game.winner = winner
+        winner, loser = generate_winner(game, disconnected_user)
         
         loser_score = min(game.player1_score, game.player2_score)
         winner_score = max(game.player1_score, game.player2_score)
         
-        match = MatchHistory(matchtype="solo", 
-                            fOpponent=game.player1.id, 
-                            sOpponent=game.player2.id, 
-                            mStartDate=datetime.now(), 
-                            Score=[winner_score, loser_score], 
-                            Winners=[winner.id])
+        match = MatchHistory(matchtype="solo", fOpponent=game.player1.id, sOpponent=game.player2.id, mStartDate=datetime.now(), Score=[winner_score, loser_score], Winners=[winner.id])
         await sync_to_async(match.save)()
         
         if (game.current_room.is_tournament == True):
-            match = game.current_room.match_tournament
-            parent = match.parent
-            match.winner = winner
-            if (parent is not None):
-                if (parent.room.player1 is None): 
-                    parent.room.player1 = winner
-                    print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player1)}")
-                elif (parent.room.player2 is None): 
-                    parent.room.player2 = winner
-                    print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player2)}")
-                await winner.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'You have won round' })
-                
-                if (parent.room.player1 is not None and parent.room.player2 is not None):
-                    from .Tournament import match_players_against_each_other, broadcast_tournament_message, TOURNAMENTS, Tournament, print_tree
-                    print("--------|Parent match has been filled|----------")
-                    print(f"Parent match players: {parent.room.player1.user_data.uusername} {parent.room.player2.user_data.uusername}")
-                    print("starting another match")
-                    print("------------------------------------------------")
-                    print("-----------|Tree Status|------------")
-                    print_tree(parent, 5, 0)
-                    await match_players_against_each_other(match.parent)
-                    
-                if (parent.parent is None):
-                    await broadcast_tournament_message(f"{winner.user_data.uusername} has won the tournament")
-                    winner.user_data.level += winner.user_data.level * 0.015
-                    winner.user_data.xp += 256
-                    winner.user_data.matchesplayed += 1
-                    winner.user_data.matcheswon += 1
-                    await sync_to_async(winner.user_data.save)()
-
-                    tournament = Tournament("RetroPong")
-                    TOURNAMENTS.clear()
-                    TOURNAMENTS.append(tournament)
+            print("game is in tournament")
+            return await check_if_match_inside_tournament(game, winner, loser, disconnected_user)
                     
         else:
             winner.user_data.level += winner.user_data.level * 0.15
@@ -467,16 +424,7 @@ class GameService:
                 loser.user_data.matcheslost += 1
                 await sync_to_async(loser.user_data.save)()
         
-        data = {
-            "winner": winner.id,
-            "loser": loser.id,
-            "winner_score": game.player1_score if winner.id == game.player1.id else game.player2_score,
-            "loser_score": game.player2_score if winner.id == game.player1.id else game.player1_score,
-            "winner_exp_earned": 35,
-            "loser_exp_earned": 17,
-            "winner_xp": winner.user_data.xp,
-            "loser_xp": loser.user_data.xp
-        }
+        data = generate_end_game_data(winner, loser, game, False, False)
         
         await winner.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have won the game', "data": data })
         if (disconnected_user is None):
@@ -514,7 +462,113 @@ class GameService:
             game.playerCount -= 1
             if (game.playerCount == 0):
                 game.clean_up()
-                RUNNING_GAMES.remove(game)
+                RUNNING_GAMES.remove(game) if game in RUNNING_GAMES else None
         except Exception as e:
             print("Error: ", e)
         return None
+    
+
+def generate_end_game_data(winner, loser, game, tournament: bool = False, tournament_end: bool = False):
+    data = {
+            "winner": winner.id,
+            "loser": loser.id,
+            "winner_score": game.player1_score if winner.id == game.player1.id else game.player2_score,
+            "loser_score": game.player2_score if winner.id == game.player1.id else game.player1_score,
+            "winner_exp_earned": 35 if tournament == False else 256 if tournament and tournament_end else 0,
+            "loser_exp_earned": 17 if tournament == False else 256 if tournament and tournament_end else 0,
+            "winner_xp": winner.user_data.xp,
+            "loser_xp": loser.user_data.xp
+        }
+    return data
+
+
+def generate_winner(game, disconnected_user):
+    winner = game.player1 if game.player1_score >= 7 else game.player2
+    loser = game.player1 if game.player1.id != winner.id else game.player2
+    game.winner = [game.latest_scorer]
+    
+    if disconnected_user is not None:
+        winner = game.player1 if game.player1.id != disconnected_user.id else game.player2
+        loser = game.player1 if game.player1.id != winner.id else game.player2
+        game.winner = winner
+        
+    return winner, loser
+
+def clear_running_task(match_id: str):
+    from .Tournament import RUNNING_GAME_TASKS, TournamentTask
+    for task in RUNNING_GAME_TASKS:
+        tournament_task: TournamentTask = task
+        if (tournament_task.match_id == match_id):
+            print(f"Deleting Match ID: {tournament_task.match_id}")
+            try:
+                tournament_task.task.cancel()
+                try:
+                    tournament_task.task.result() 
+                except (asyncio.CancelledError, asyncio.InvalidStateError):
+                    print("Previous match was cleared")
+                    pass
+            except Exception as e:
+                print(e)
+
+async def promote_tournament_matches_winners(parent, match, game, winner, loser, disconnected_user):
+    from .Tournament import match_players_against_each_other, RUNNING_GAME_TASKS
+    
+    if (parent.room.player1 is None): 
+        parent.room.player1 = winner
+        print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player1)}")
+    elif (parent.room.player2 is None): 
+        parent.room.player2 = winner
+        print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player2)}")
+    
+    if (parent.room.player1 is not None and parent.room.player2 is not None):
+        print("Clearing Resources:")
+        
+        await asyncio.sleep(10)
+        clear_running_task(game.current_room.id)
+        await match_players_against_each_other(match.parent)
+    
+            
+            
+async def check_if_match_inside_tournament(game: Game, winner, loser, disconnected_user: bool):
+    from asgiref.sync import sync_to_async
+    from .Tournament import broadcast_tournament_message, TOURNAMENTS, Tournament
+    match = game.current_room.match_tournament
+    parent = match.parent
+    match.winner = winner
+    
+    data = generate_end_game_data(winner, loser, game, True, False)
+    
+    await winner.send_message_to_self({ "request": "game", "action": "info", 'status': 'success', "message": 'You have won round' })
+    await winner.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have won the game', "data": data })
+    if (disconnected_user is None):
+        await loser.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have lost the game', "data": data })
+    
+    
+    if (parent is not None):
+        await promote_tournament_matches_winners(parent, match, game, winner, loser, disconnected_user)
+        
+    elif (parent is None):
+        TOURNAMENTS[0].winner = winner
+        print(f'{winner.user_data.uusername} has won the tournament')
+        await broadcast_tournament_message(f"{winner.user_data.uusername} has won the tournament")
+        winner.user_data.level += winner.user_data.level * 0.015
+        winner.user_data.xp += 256
+        winner.user_data.matchesplayed += 1
+        winner.user_data.matcheswon += 1
+        winner.user_data.utournamentswon += 1
+        await sync_to_async(winner.user_data.save)()
+        await winner.send_message_to_self({ "request": "game", "action": "end", 'status': 'success', "message": 'You have won the tournament', "data": data })
+        
+        loop = asyncio.get_event_loop()
+        loop.call_later(60, restart_the_tournament)
+        
+    game.clean_up()
+    RUNNING_GAMES.remove(game)
+    print("Cleared Game for running games list")
+    
+
+def restart_the_tournament():
+    from .Tournament import TOURNAMENTS, Tournament
+    tournament = Tournament("RetroPong")
+    TOURNAMENTS.clear()
+    TOURNAMENTS.append(tournament)

@@ -3,9 +3,18 @@ from asgiref.sync import sync_to_async
 from django.contrib.sites.models import Site
 from .Room import *
 from .Game import *
-import copy
 
 RUNNING_GAME_TOURNAMENTS: list[Game] = []
+TOURNAMENT_USERS: list = []
+
+class TournamentTask:
+    match_id: str
+    task = None
+    def __init__(self, match_id: str, task):
+        self.match_id = match_id
+        self.task = task
+        
+RUNNING_GAME_TASKS: list[TournamentTask] = []
 
 async def setup_player_data(player):
     if player is None:
@@ -48,7 +57,7 @@ def find_matches(required_depth: int):
     return match_data
 
 
-def fill_nodes_at_depth(root, player, depth = 3):
+def fill_nodes_at_depth(root, player, depth = 2):
     if root is None:
         return 
     
@@ -56,10 +65,12 @@ def fill_nodes_at_depth(root, player, depth = 3):
         if (root.room.player1 is None):
             print("Place Found")
             root.room.player1 = player
+            TOURNAMENT_USERS.append(player)
             return True
         elif (root.room.player2 is None):
             print("Place Found")
             root.room.player2 = player
+            TOURNAMENT_USERS.append(player)
             return True
     
     if (fill_nodes_at_depth(root.left, player, depth - 1)):
@@ -122,6 +133,7 @@ async def match_players_against_each_other(match: TournamentMatch):
         await asyncio.sleep(15)
         
         game_task = asyncio.create_task(GameService.start_game(room))
+        RUNNING_GAME_TASKS.append(TournamentTask(room.id, game_task))
         tasks.append(game_task)
         print(f"Match Session has been created for {match.room.player1.user_data.uusername} {match.room.player2.user_data.uusername}")
 

@@ -8,10 +8,9 @@ from django.http import HttpRequest
 from asgiref.sync import sync_to_async
 
 LOGGED_USERS : list = []
-TOURNAMENT_USERS: list = []
 class Auth:
     @staticmethod
-    async def login(ws_data: dict, ws_connection, ws, from_tournament = False):
+    async def login(ws_data: dict, ws_connection, ws):
         headers:list = ws_data.get('headers')
         if (headers is None): return False, None
         
@@ -28,30 +27,16 @@ class Auth:
         user.cookie = access_token
         user.ws = ws
         
-        if (from_tournament is False):
-            if (find_user(user_id=user_id) is not None): return False, None
-            LOGGED_USERS.append(user)
-            
-            tournament_user = find_user_tournament(user_id=user_id)
-            if (tournament_user is not None): 
-                print("Changing tournament to game route")
-                change_ws_connection(tournament_user, user)
-            
-            user.room = await Auth.restore_user_data(user)
-        else:
-            if (find_user_tournament(user_id=user_id) is not None): return False, None
-            TOURNAMENT_USERS.append(user)
-        
+        if (find_user(user_id=user_id) is not None): return False, None
+        LOGGED_USERS.append(user)
+        user.room = await Auth.restore_user_data(user)
         user.user_data = await sync_to_async(User.objects.get)(id=user_id)
         return True, user_id
     
     @staticmethod
-    async def logout(ws_connection, is_tournament = False):
+    async def logout(ws_connection):
         user = find_user(ws_connection=ws_connection)
-        
-        if (is_tournament == True):
-            user = find_user_tournament(ws_connection)
-            
+
         if (user is not None):
             try:
                 if (user.opponent is not None and user.game is not None and user.opponent.game is not None): 
@@ -67,8 +52,7 @@ class Auth:
                 RoomService.remove_player(user)
                 GameService.remove_player(user.game, user)
                 LOGGED_USERS.remove(user) if find_user(ws_connection=ws_connection) else None
-                TOURNAMENT_USERS.remove(user) if find_user_tournament(ws_connection=ws_connection) else None
-                MATCHMAKER_QUEUE.remove(user)
+                MATCHMAKER_QUEUE.remove(user) if user in MATCHMAKER_QUEUE else None
             except Exception as e:
                 print(e)
             return True
@@ -127,6 +111,7 @@ def find_user(ws_connection = None, user_id:int = None) -> Client:
     return None
 
 def find_user_tournament(ws_connection = None, user_id:int = None) -> Client:
+    from .Tournament import TOURNAMENT_USERS
     for user in TOURNAMENT_USERS:
         if user.id == user_id or user.channel_name == ws_connection:
             return user
