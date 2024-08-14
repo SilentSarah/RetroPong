@@ -1,4 +1,4 @@
-
+from asgiref.sync import sync_to_async
 import uuid
 class Tournament:
     def __init__(self, name):
@@ -104,6 +104,11 @@ async def broadcast_tournament_action(action: str, data: dict):
                 "status":"success",
                 "data": data
             })
-
+            
+async def set_tournament_played_status():
+    from .Tournament import TOURNAMENT_USERS
+    for user in TOURNAMENT_USERS:
+        user.user_data.utournamentsplayed += 1
+        await sync_to_async(user.user_data.save)()
 
 TOURNAMENTS : list[Tournament] = []

@@ -125,6 +125,7 @@ async def match_players_against_each_other(match: TournamentMatch):
         player2 = match.room.player2
         
         print("Allocating resources for a game session")
+        await send_opponents_notifications(player1, player2)
         room = Room(True, match, player1, player2)
         room.add_player(player1.id)
         room.add_player(player2.id)

@@ -40,6 +40,7 @@ class TournamentService:
         
         if (tournament.joined_players == 8):
             await broadcast_tournament_message("Tournament is starting after 1 minute")
+            await set_tournament_played_status()
             await broadcast_tournament_action("start", {})
             await start_tournament(tournament)
         

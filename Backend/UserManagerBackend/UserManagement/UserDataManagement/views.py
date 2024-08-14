@@ -199,4 +199,5 @@ def gen_notification(request: HttpRequest):
             return JsonResponse({"error":"Notification Creation Failed"}, status=400)
         return JsonResponse({"message":"Notification Sent"}, status=200)
     except Exception as e:
+        print("error:", e)
         return JsonResponse({"error":"Bad Request"}, status=401)

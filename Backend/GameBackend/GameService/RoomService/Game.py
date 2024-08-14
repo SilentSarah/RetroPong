@@ -1,8 +1,9 @@
 from datetime import datetime
 from .GamePhysics import GamePhysics
-from requests import get
+from requests import get, post
 from .models import User, MatchHistory
-import asyncio
+from asgiref.sync import sync_to_async
+import asyncio, json
 
 class GameBallData:
     def __init__(self, x: int, y: int, z: int):
@@ -73,15 +74,12 @@ class Game:
         
         if (first_player_data is None or second_player_data is None):
             self.status = "fail"
-            print("Failed to get player data", first_player_data, second_player_data)
             return (await self.player1.send_message_to_self({ "action": "game", "status": "fail", "message": "Failed to get player data" }), 
                     await self.player2.send_message_to_self({ "action": "game", "status": "fail", "message": "Failed to get player data" }),
                     self.clean_up())
 
         await self.player1.send_message_to_self({ "request": "game", "action": "start", "status": "success", "message": "Game started", "data": first_player_data })
         await self.player2.send_message_to_self({ "request": "game", "action": "start", "status": "success", "message": "Game started", "data": second_player_data })
-        print("sent info to player 1 name", self.player1.user_data.uusername)
-        print("sent info to player 2 name", self.player2.user_data.uusername)
         
             
     def clean_up(self):
@@ -161,7 +159,6 @@ class Game:
 
     async def game_simulation(self):
         await asyncio.sleep(4)
-        print("Game Status:", self.status, f"opponents: {self.player1.user_data.uusername} {self.player2.user_data.uusername}")
         while (self.status == "started"):
             if (self.game_physics.state == "running"):
                 await self.game_physics.calculate_ball_physics()
@@ -195,11 +192,7 @@ class GameService:
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
         game.readyCounter += 1 if game.readyCounter < 2 else 2
-        opponent_name = game.player1.user_data.uusername if user.id == game.player2.id else game.player2.user_data.uusername
-        print(f"recieved ready status from player: {user.user_data.uusername} match counter: {game.readyCounter}")
-        print(f"Waiting for opponent {opponent_name}, total ready count: {game.readyCounter}")
         if (game.readyCounter == 2):
-            print(f"Both players are ready {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
             game.status = "started"
             player1_data = await game.generate_data_for_player(game.player1, game.player2)
             player2_data = await game.generate_data_for_player(game.player2, game.player1)
@@ -218,7 +211,6 @@ class GameService:
         user = game.get_player1() if user.id == game.get_player1().id else game.get_player2()
         opponent = game.get_player1() if user.id == game.get_player2().id else game.get_player2()
         
-        print("Leaving Game", game)
         RUNNING_GAMES.remove(game)
         game.clean_up()
         game = None
@@ -366,7 +358,6 @@ class GameService:
         }
         game.game_physics.paddle_1.ready = False
         game.game_physics.paddle_2.ready = False
-        # print(f"Setting ready to false for players: {game.player1.user_data.uusername} {game.player2.user_data.uusername}")
         await game.player1.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_1_data } })
         await game.player2.send_message_to_self({ "request": "game", "action": "score", "status": "success", "message": "Score updated", "data": { "score": player_2_data } })
         return None
@@ -378,7 +369,6 @@ class GameService:
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
         if (game.status != "started"):
-            print(f"Game status: {game.status}")
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'Game not started' })
         
         game_physics = game.game_physics
@@ -389,7 +379,6 @@ class GameService:
         paddle_2.ready = True if paddle_2.owner.id == user.id else paddle_2.ready
         
         if (paddle_1.ready and paddle_2.ready):
-            print(f"{game.player1.user_data.uusername} {game.player2.user_data.uusername} are ready, Scores: {game.player1_score} {game.player2_score}")
             await game.game_physics.set_state("running")
         return None
     
@@ -407,7 +396,6 @@ class GameService:
         await sync_to_async(match.save)()
         
         if (game.current_room.is_tournament == True):
-            print("game is in tournament")
             return await check_if_match_inside_tournament(game, winner, loser, disconnected_user)
                     
         else:
@@ -441,9 +429,6 @@ class GameService:
         for game in RUNNING_GAMES:
             player1_id = game.get_player1().id
             player2_id = game.get_player2().id
-            # print(f"Game ID: {game.current_room.id} \n \
-            #         \t\t Player 1: {game.get_player1().user_data.uusername}\n \
-            #         \t\t Player 2: {game.get_player2().user_data.uusername}\n")
             if (game.status != "ended" or game.status != "fail"):
                 if (user.id == player1_id or user.id == player2_id):
                     return game
@@ -515,14 +500,13 @@ async def promote_tournament_matches_winners(parent, match, game, winner, loser,
     
     if (parent.room.player1 is None): 
         parent.room.player1 = winner
-        print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player1)}")
     elif (parent.room.player2 is None): 
         parent.room.player2 = winner
-        print(f"filling parent room with {winner.user_data.uusername}, type: {type(parent.room.player2)}")
     
     if (parent.room.player1 is not None and parent.room.player2 is not None):
-        print("Clearing Resources:")
         
+        loser.user_data.utournamentslost += 1
+        await sync_to_async(loser.user_data.save)()
         await asyncio.sleep(10)
         clear_running_task(game.current_room.id)
         await match_players_against_each_other(match.parent)
@@ -549,7 +533,6 @@ async def check_if_match_inside_tournament(game: Game, winner, loser, disconnect
         
     elif (parent is None):
         TOURNAMENTS[0].winner = winner
-        print(f'{winner.user_data.uusername} has won the tournament')
         await broadcast_tournament_message(f"{winner.user_data.uusername} has won the tournament")
         winner.user_data.level += winner.user_data.level * 0.015
         winner.user_data.xp += 256
@@ -564,11 +547,43 @@ async def check_if_match_inside_tournament(game: Game, winner, loser, disconnect
         
     game.clean_up()
     RUNNING_GAMES.remove(game)
-    print("Cleared Game for running games list")
     
 
 def restart_the_tournament():
-    from .Tournament import TOURNAMENTS, Tournament
+    from .Tournament import TOURNAMENTS, Tournament, TOURNAMENT_USERS
     tournament = Tournament("RetroPong")
     TOURNAMENTS.clear()
+    TOURNAMENT_USERS.clear()
     TOURNAMENTS.append(tournament)
+    
+    
+async def send_opponents_notifications(user, opponent):
+    user_notification_data = json.dumps(obj={
+        "notification": {
+            "nType": "TOURNAMENT",
+            "nContent": f"Your opponent {opponent.user_data.uusername} is ready to play",
+            "nReciever": user.id,
+            "nSender": user.id
+        }
+    })
+    
+    opponent_notification_data = json.dumps(obj={
+        "notification": {
+            "nType": "TOURNAMENT",
+            "nContent": f"Your opponent {user.user_data.uusername} is ready to play",
+            "nReciever": opponent.id,
+            "nSender": opponent.id
+        }
+    })
+    
+    header = {
+        "Authorization": f"Bearer {user.cookie}"
+    }
+    for data in [user_notification_data, opponent_notification_data]:
+        response = post("http://127.0.0.1:8001/userdata/notify", data=data, headers=header)
+        if response.status_code == 200:
+            print("Tournament Notification sent")
+        else:
+            print("Failed to send notification reason:", response.text)
+        
+    return False

@@ -347,16 +347,19 @@ class DbOps:
         
     @staticmethod
     def create_notification(user_id: int, notification_data: dict) -> bool:
-        notification_data = json.loads(notification_data)
+        notification_data = notification_data
         ns_keys = notification_data.keys()
         ns_values = notification_data.values()
+        print(notification_data)
         if ("nType" not in ns_keys 
             or "nContent" not in ns_keys 
             or "nReciever" not in ns_keys 
             or "nSender" not in ns_keys):
+            print("Missing Notification Key")
             return False
         for value in ns_values:
             if (value == None or value == ""):
+                print("Empty Notification value")
                 return False
         try:
             notification = Notification(
