@@ -11,6 +11,7 @@ from django.core.files.base import ContentFile
 from django.contrib.sites.models import Site
 from django.utils.datastructures import MultiValueDict
 from django.core.files.uploadedfile import UploadedFile
+from ..WebOps.WebOps import WebOps
 
 DEFAULT_PFP_LINK = "https://i.ibb.co/3pWy5cD/Default.png"
 DEFAULT_BG_LINK = "https://i.ibb.co/yg3Z2dy/Default-BG.png"
@@ -237,7 +238,6 @@ class DbOps:
         bg_url = user_data_copy.get('uProfilebgpic')
         pfp_response = requests.get(DEFAULT_PFP_LINK) if pfp_url is None else requests.get(pfp_url)
         bg_response = requests.get(DEFAULT_BG_LINK) if bg_url is None else requests.get(bg_url)
-        print("User Image created and loaded")
         new_user = User(
             uusername=user_data_copy.get('uUsername'),
             upassword=user_data_copy.get('uPassword'),
@@ -247,6 +247,7 @@ class DbOps:
             uregdate=datetime.datetime.now(),
             uIs42=False if is42 == 0 else True
         )
+
 
 
         new_user.uprofilepic.save(f"{user_data_copy.get('uUsername')}.jpg", ContentFile(pfp_response.content)) if pfp_response is not None and type(pfp_response) is Response else None

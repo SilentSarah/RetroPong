@@ -193,10 +193,17 @@ def get_channel_messages(request, channel_id):
     try:
         messages = ChannelMessage.objects.filter(chID=channel_id)
         users = Channel.objects.get(chID=channel_id).chMembers
-        user = [JsonObj.user_chat(User.objects.get(id=x)) for x in users]
+        user_list = []
+        for x in users:
+            try:
+                user = User.objects.get(id=x)
+                user_list.append(JsonObj.user_chat(user))
+            except:
+                pass
 
-        return JsonResponse({"messages": list(messages.values()),"users":list(user)}, status=200)
-    except:
+        return JsonResponse({"messages": list(messages.values()),"users":user_list}, status=200)
+    except Exception as e:
+        print(e)
         return JsonResponse({"status":"Not found this channel"}, status=404)
 
 @csrf_exempt
@@ -250,7 +257,7 @@ def insert_id_to_channel(request):
         if member_id not in channel.chMembers:
             channel.chMembers.append(member_id)
             channel.save()
-            return JsonResponse({"status": "Insert id to channel"}, status=200)
+            return JsonResponse({"status": "User has been inserted to global channel"}, status=200)
         else:
             return JsonResponse({"status": "ID already exists in channel"}, status=400)
     

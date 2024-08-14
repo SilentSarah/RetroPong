@@ -48,7 +48,6 @@ async function UserContactFetching() {
         LoadDataSuggestion(data.data)
         type = localStorage.getItem('type')
         LoadDataFriend(type ? type : 'online')
-        console.log(data)
         LoadChannel(data.data?.channel)
     }
     else

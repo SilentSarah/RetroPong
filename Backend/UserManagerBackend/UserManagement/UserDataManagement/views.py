@@ -88,6 +88,13 @@ def create_user(request: HttpRequest):
                 }, status=201)
             new_response.set_cookie('user_id', user.get('id'), samesite='none', secure=True)
             new_response.set_cookie('access', jwt, samesite='none', secure=True)
+            
+            chat_response = WebOps.request_endpoint("http://127.0.0.1:8002/chat/insert", "POST", {"Authorization": f"Bearer {jwt}"}, json={"id": user.get('id')})
+            if (chat_response.status_code != 200):
+                print("error:", chat_response.json())
+            else:
+                print("user has been added to chat")
+            
             return new_response
         else:
             return JsonResponse({"error":"JWT wasn't acquired please sign in manually"}, status=404)

@@ -2,7 +2,7 @@ import requests
 
 class WebOps:
     @staticmethod
-    def request_endpoint(url: str, method: str, headers: dict, data: dict = {}) -> requests.Response:
+    def request_endpoint(url: str, method: str, headers: dict, data: dict = {}, json: dict = None) -> requests.Response:
         """Creates a request to an endpoint
 
         Args:
@@ -21,5 +21,9 @@ class WebOps:
         if method == "GET":
             response = request.get(url)
         elif method == "POST":
-            response = request.post(url, data=data)
+            if (json is None):
+                response = request.post(url, data=data)
+            else:
+                response = request.post(url, json=json)
         return response
+    

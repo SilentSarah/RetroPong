@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 
 def gen_img_link(user: User) -> str:
     site = Site.objects.get_current().domain
-    return f"http://{site}/{user.uprofilepic.url}"
+    return f"http://{site}{user.uprofilepic.url}"
 
 def process_users(queryset, is_filter, filter_ids):
     
@@ -22,7 +22,7 @@ def process_users(queryset, is_filter, filter_ids):
     for user in user_data:
         if user['uprofilepic']:
             # Update the profilepic URL using gen_img_link
-            user['uprofilepic'] = gen_img_link(User(id=user['id']))
+            user['uprofilepic'] = gen_img_link(User.objects.get(id=user['id']))
 
     return user_data
 
