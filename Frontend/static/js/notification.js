@@ -11,6 +11,7 @@ const img_paths = {
     'ACCOUNT': '/static/img/general/Account.png',
     'GAME': '/static/img/general/Game.png',
     'FRIEND': '/static/img/general/Chat.png',
+    'TOURNAMENT': '/static/img/general/Tournament.png',
 }
 
 const notifications_array = []
@@ -129,6 +130,8 @@ function invokeAction(notification_data, selected_notification) {
             passUserTo('/game');
             localStorage.setItem('inviter_id', notification_data.sender);
             break;
+        case 'TOURNAMENT':
+            passUserTo('/game');
     }
 }
 

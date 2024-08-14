@@ -75,8 +75,8 @@ def find_player_in_tree(root, player):
     return False
 
 async def broadcast_tournament_changes(data: dict):
-    from .Tournament import TOURNAMENT_USERS
-    for user in TOURNAMENT_USERS:
+    from .Login import LOGGED_USERS
+    for user in LOGGED_USERS:
             print("Sending to player: ", user.id)
             await user.send_message_to_self({
                 "request":"tournament",

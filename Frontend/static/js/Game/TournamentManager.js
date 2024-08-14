@@ -55,11 +55,11 @@ export class TournamentManager {
                         player2.style.backgroundPosition = 'center';
                     }
                     if (match_data.winner === match_data.player1.id) {
-                        player1.classList.add('winner');
-                        player2.classList.add('loser');
+                        player1.classList.add('border-success');
+                        player2.classList.add('border-danger');
                     } else if (match_data.winner === match_data.player2.id) {
-                        player2.classList.add('winner');
-                        player1.classList.add('loser');
+                        player2.classList.add('border-success');
+                        player1.classList.add('border-danger');
                     }
                 });
             }
@@ -72,6 +72,7 @@ export class TournamentManager {
             winner.style.backgroundImage = `url(${data.winner.image})`;
             winner.style.backgroundSize = 'cover';
             winner.style.backgroundPosition = 'center';
+            winner.classList.add('border-warning');
         }
         TournamentManager.checkIfAlreadyInTournament(data);
     }

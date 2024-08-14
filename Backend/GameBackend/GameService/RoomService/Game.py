@@ -515,7 +515,7 @@ async def promote_tournament_matches_winners(parent, match, game, winner, loser,
             
 async def check_if_match_inside_tournament(game: Game, winner, loser, disconnected_user: bool):
     from asgiref.sync import sync_to_async
-    from .Tournament import broadcast_tournament_message, TOURNAMENTS, Tournament
+    from .Tournament import broadcast_tournament_message, TOURNAMENTS, broadcast_tournament_changes, generate_tournament_map
     match = game.current_room.match_tournament
     parent = match.parent
     match.winner = winner
@@ -544,6 +544,9 @@ async def check_if_match_inside_tournament(game: Game, winner, loser, disconnect
         
         loop = asyncio.get_event_loop()
         loop.call_later(60, restart_the_tournament)
+        
+    tournament_map = await generate_tournament_map(TOURNAMENTS[0].parent_match)
+    await broadcast_tournament_changes(tournament_map)
         
     game.clean_up()
     RUNNING_GAMES.remove(game)
