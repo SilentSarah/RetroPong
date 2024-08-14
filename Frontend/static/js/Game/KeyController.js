@@ -153,7 +153,7 @@ function pauseMenu() {
 function moveplayer(paddle, direction) {
     if (modes.V_OFFLINE == 0 && paddle.side == RIGHT_SIDE) return ;
     else if (GameStates.in_progress == 0) return ;
-    else {
+    else if (!modes.V_ONLINE) {
         const paddleMidPointY = paddle.posY;
         const paddleUpPointY = paddle.drawPosY;
         const paddleLowerPointY = paddleMidPointY + paddle.pHeight / 2;
@@ -189,25 +189,32 @@ function activate_special_ability(paddle, ability) {
     }
 }
 
-export function loadGameKeyHandlers() {
-    document.addEventListener("keydown", function(e) {
-        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0
-            || ["1", "2", "3", "i", "o", "p"].includes(e.key) && modes.V_OFFLINE && classic === true) {
-            return ;
-        }
-        if (controller[e.key]) {
-            controller[e.key].tapped = true;
-        }
-    });
-    document.addEventListener("keyup", function(e) {
-        if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0
-            || ["1", "2", "3", "i", "o", "p"].includes(e.key) && modes.V_OFFLINE && classic === true) {
-        return ;
+function listentoGameKeysAndActivate(e) {
+    if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0
+    || ["1", "2", "3", "i", "o", "p"].includes(e.key) && modes.V_OFFLINE && classic === true) {
+    return ;
     }
-        if (controller[e.key]) {
-            controller[e.key].tapped = false;
-        }
-    });
+    if (controller[e.key]) {
+        controller[e.key].tapped = true;
+    }
+}
+
+function listentoGameKeysAndDeactivate(e) {
+    if (['ArrowUp', 'ArrowDown', "1", "2", "3"].includes(e.key) && modes.V_OFFLINE === 0
+    || ["1", "2", "3", "i", "o", "p"].includes(e.key) && modes.V_OFFLINE && classic === true) {
+    return ;
+    }
+    if (controller[e.key]) {
+        controller[e.key].tapped = false;
+    }
+}
+
+export function loadGameKeyHandlers() {
+    document.removeEventListener("keydown", listentoGameKeysAndActivate);
+    document.removeEventListener("keyup", listentoGameKeysAndDeactivate);
+
+    document.addEventListener("keydown", listentoGameKeysAndActivate);
+    document.addEventListener("keyup", listentoGameKeysAndDeactivate);
 }
 
 export function activateButtonFunctions(paddle) {

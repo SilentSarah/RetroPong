@@ -106,12 +106,15 @@ export class GameProcessor {
         console.log("ROUND HAS ENDED");
         game_container.appendChild(end_div);
         clearCanvasScreen();
+        GameStates.starting = 0;
+        GameStates.in_progress = 0;
         GameStates.finished = true;
         setTimeout(() => {
             resetInGamePhysics();
             clearGameDashboard();
             clearChosenGameMode();
             renderGame();
+            unloadGameElements();
         }, 3500);
     }
 

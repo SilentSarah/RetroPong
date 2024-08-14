@@ -335,6 +335,7 @@ export function unloadGameElements() {
     bPaddle = null;
     ball = null;
     sounds = null;
+    console.log("Game Elements Unloaded", rPaddle, bPaddle, ball, sounds);
 }
 
 export function loadGameEngine(gameMode, self, opponent) {
@@ -375,6 +376,7 @@ export function loadGameEngine(gameMode, self, opponent) {
             drawGame();
             DisplayMatchStartTimer(true);
             OnGameChange();
+            console.log("Engine has loaded");
         }
     }
     
