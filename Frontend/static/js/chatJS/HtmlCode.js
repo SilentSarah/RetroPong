@@ -24,13 +24,13 @@ const Friends = (friend, type, blockedby) => {
                         <span class="description text-secondary">${friend?.udesc === null ? friend?.udesc : "No description"}</span> 
                     </div>
                 </div> 
-                <div class="align-items-center gap-2 ${blockedby.some(block=>block.id === friend.id) ? 'd-none' : 'd-flex'}">
+                <div class="align-items-center gap-2 ${blockedby?.some(block=>block.id === friend.id) ? 'd-none' : 'd-flex'}">
                     <img id="rb-0" onclick="implementBtns('toChat',${friend?.id})" src="/static/img/chat/messages.png" alt="icon" class="Rbtns ${type === 'online' || type === 'all' ? 'd-flex' : 'd-none'}" data-user-id='${friend?.id}'  >
                     <img id="rb-1" onclick="implementBtns('accept',${friend?.id})" src="/static/img/chat/valide.png" alt="icon" class="Rbtns ${type === 'pending' ? 'd-flex' : 'd-none'}"  >
                     <img id="rb-2" onclick="implementBtns('decline',${friend?.id})" src="/static/img/chat/remove.png" alt="icon" class="Rbtns ${type !== 'blocked' ? 'd-flex' : 'd-none'}"  >
                     <img id="rb-3" onclick="implementBtns('unblock',${friend?.id})" src="/static/img/chat/unblock_user.png" alt="icon" class="Rbtns ${type === 'blocked' ? 'd-flex' : 'd-none'}" >
                 </div>
-                <div class="align-items-center gap-2 ${blockedby.some(block=>block.id === friend.id) ? 'd-flex' : 'd-none'}">
+                <div class="align-items-center gap-2 ${blockedby?.some(block=>block.id === friend.id) ? 'd-flex' : 'd-none'}">
                     Can't chat with this user
                 </div>
             </div>`
