@@ -1,0 +1,55 @@
+#MainSectionRacket {
+    animation: slide-in-bottom 1.75s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards;
+}
+@keyframes slide-in-bottom {
+    0% {
+        transform: translateY(300px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.fade_in {
+    animation: fade-in 1.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+
+.slide-top {
+	animation: slide-top 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) infinite alternate-reverse both;
+}
+@keyframes slide-top {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(-100px);
+    }
+}
+
+img {
+    filter: brightness(1) !important;
+}
+
+.custom-loader {
+  width:50px;
+  height:50px;
+  border-radius:50%;
+  background:conic-gradient(#0000 10%,#EE32F4);
+  -webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+  animation:s3 1s infinite linear;
+}
+@keyframes s3 {to{transform: rotate(1turn)}}
+
+
+.glowbox{animation:glowbox 2s linear infinite alternate both}
+@keyframes glowbox{0%{box-shadow: rgba(255, 255, 255, 0.0) 0px 0px 4px;} 100%{box-shadow: rgba(255, 255, 255, .75) 0px 0px 15px;}}

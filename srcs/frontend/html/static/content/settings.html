@@ -1,0 +1,138 @@
+<div class="Ccontainer d-flex border-pink rounded-3 p-lg-3 p-sm-0 p-md-0 gap-3 position-relative z-1" style="user-select: none;">
+    <!-- Tabs -->
+    <img id="mobile_nav_btn" src="/static/img/general/StgMenuBtn.png" width="40px" height="40px" class="border rounded-3 bg-black-transparent-0-05 opacity-75 position-absolute z-sm-12 z-md-12 d-sm-block d-md-block d-lg-none side button-rp">
+    <div id="sidesetbar" class="d-sm-none d-md-none d-lg-flex flex-column align-items-center justify-content-center rounded-3 bg-white-transparent-0-15 h-100 px-2 position-sm-absolute position-md-absolute position-lg-static z-sm-11 z-md-11 backdrop-sm backdrop-md backdrop-lg">
+        <div class="d-flex w-100 align-items-center">
+            <h1 class="taprom text-chrome text-shadow mt-2 line-height-1 mx-auto">Settings</h1>
+        </div>
+        <div class="d-flex flex-column my-auto gap-3">
+            <button class="button-rp tab-btn d-flex align-items-center justify-content-center gap-1 bg-white-transparent-0-15 border-transparent-0-5 rounded-3 px-3 py-2">
+                <img src="/static/img/general/Personal.png" alt="Personal Details" width="36px" height="36px" class="mx-auto">
+                <p class="text-white m-0 tab-info" >Personal Details</p>
+            </button>
+            <button class="button-rp tab-btn d-flex align-items-center justify-content-center gap-1 bg-white-transparent-0-15 border-transparent-0-5 rounded-3 px-3 py-2">
+                <img src="/static/img/general/Security.png" alt="Personal Details" width="36px" height="36px" class="mx-auto">
+                <p class="text-white m-0 tab-info" >Account Security</p>
+            </button>
+            <button class="button-rp tab-btn d-flex align-items-center justify-content-center gap-1 bg-white-transparent-0-15 border-transparent-0-5 rounded-3 px-3 py-2">
+                <img src="/static/img/general/Privacy.png" alt="Personal Details" width="36px" height="36px" class="mx-auto">
+                <p class="text-white m-0 tab-info" >Account Privacy</p>
+            </button>
+
+        </div>
+    </div>
+    <!-- Tab Content -->
+    <div class="align-items-center bg-retropong-color rounded-3 flex-fill">
+        <!-- Personal Details -->
+        <div class="d-flex tab-content flex-column align-items-center p-3 p-sm-0 p-md-0 w-100 h-100">
+            <h2 class="taprom text-chrome line-height-1 text-shadow d-sm-none d-md-none">Personal Details</h2>
+            <!-- Bg pfp, name, title, desc -->
+            <div class="d-flex flex-column align-items-center justify-content-start bg-white-transparent-0-15 border-transparent-0-5 rounded-3 h-100 w-100 overflow-x-hidden overflow-y-auto">
+                <!-- Pfp and BG -->
+                <div class="d-flex flex-column position-relative w-100 p-2">
+                    <div id="bg" class="user-bg-picture uploadfile border-pink" onclick="handleUpload('bg')"></div>
+                    <div class="d-flex position-absolute aesthetic-placement gap-3 align-items-end">
+                        <div id="pfp" class="user-profile-picture uploadfile border-pink" onclick="handleUpload('pfp')"></div>
+                    </div>
+                </div>
+                <!-- Lower Section (Name, Username, Title, Desc) -->
+                <div class="d-flex flex-column align-items-center my-auto w-100 mt-5 ">
+                    <p class="nokora text-center text-white fs-4 fw-light text-shadow mt-sm-6">Personal Information</p>
+                    <div class="d-flex flex-wrap align-items-center justify-content-evenly w-100 mb-2">
+                        <!-- Name Username Title -->
+                        <form method="put" class="d-flex flex-column gap-3 p-2 align-items-center">
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
+                                <label for="FullName" class="text-white fw-light">Full Name (Old: <span id="fullName" class="text-pink text-turncate"></span>)</label>
+                                <input type="text" id="full_name" name="FullName" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="on">
+                            </div>
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
+                                <label for="Username" class="text-white fw-light">Username (Old: <span id="userName" class="text-pink text-turncate"></span>)</label>
+                                <input type="text" id="username" name="Username" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="username">
+                            </div>
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
+                                <label for="Title" class="text-white fw-light">Title (Old: <span id="title" class="text-pink text-turncate"></span>)</label>
+                                <input type="text" id="title" name="Title" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="on">
+                            </div>
+                            <div class="d-flex flex-column gap-1 w-100 px-5">
+                                <label for="discordid" class="text-white fw-light">Discord ID (Old: <span id="discord_id_old" class="text-pink text-turncate"></span>)</label>
+                                <input type="text" id="discordid" name="discordid" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white px-2" autocomplete="username">
+                            </div>
+                        </form>
+                        <div class="h-line d-md-block d-sm-none d-lg-none"></div>
+                        <div class="line d-md-none my-sm-1"></div>
+                        <!-- Description -->
+                        <form method="put" class="d-flex flex-column gap-3 p-2 align-items-center">
+                            <div class="d-flex flex-column gap-1">
+                                <label for="Description" class="text-white fw-light">Description</label>
+                                <textarea id="desc" maxlength="100" wrap="soft" rows="4"  name="Description" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white p-2" style="min-height:180px; max-height: 180px;"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Account Security -->
+        <div class="d-none tab-content flex-column align-items-center p-3 p-sm-0 p-md-0 w-100 h-100">
+            <h2 class="taprom text-chrome line-height-1 text-shadow d-sm-none d-md-none">Account Security</h2>
+            <div class="d-flex flex-column align-items-center justify-content-evenly bg-white-transparent-0-15 border-transparent-0-5 rounded-3 h-100 w-100 overflow-x-hidden overflow-y-auto">
+                <div class="d-flex flex-column align-items-center">
+                    <p class="nokora text-center text-white fs-4 fw-light text-shadow">Account Credentials</p>
+                    <div class="d-flex flex-wrap align-items-center justify-content-evenly w-100 border-transparent-0-5 rounded-3 p-3">
+                        <form method="put" class="d-flex flex-column gap-3 p-2">
+                            <div class="d-flex flex-column gap-1">
+                                <label for="Email" class="text-white fw-light">New Email</label>
+                                <input type="email" id="email" name="Email" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Email" autocomplete="email" >
+                            </div>
+                            <div class="d-flex flex-column gap-1 w-100">
+                                <label for="Password" class="text-white fw-light">New Password</label>
+                                <input type="password" id="Password" name="Password" class="rounded-3 border-transparent-0-5 bg-black-transparent-0-05 rp-form text-white text-center" placeholder="Password" autocomplete="new-password">
+                                <p class="text-white nokora fw-light text-center w-100" style="font-size:small;">
+                                    Your password should contain at least 8 characters<br>
+                                    1 uppercase letter, 1 lowercase letter and 1 number
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div class="d-flex flex-column align-items-center">
+                    <p class="nokora text-center text-white fs-4 fw-light text-shadow">Two Factor Authentication</p>
+                    <div class="d-flex flex-column justify-content-center align-items-center border-transparent-0-5 rounded-3 p-5 gap-3 mx-2">
+                        <p class="text-white opacity-75 text-center fs-5 fw-light text-center">
+                            Two Factor Authentication (2FA) Provides Additional layer of security. <br> No one can access your account without the security code provided by the website.<br>
+                            Would you like to <span id="2fa_text">enable</span> this feature?
+                        </p>
+                        <button id="tfa_btn" status="" class="button-rp d-flex align-items-center justify-content-center gap-2 fw-light border-transparent-2 bg-blueberry rounded-3 shadow-lg p-2">
+                            <img src="/static/img/general/2FA.png" alt="upload" width="20px" height="20px">
+                            <span id="2fa_status" class="text-white text-shadow fs-5">Enable 2FA</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Account Privacy -->
+        <div class="d-none tab-content flex-column align-items-center p-3 p-sm-0 p-md-0 w-100 h-100">
+            <h2 class="taprom text-chrome line-height-1 text-shadow d-sm-none d-md-none">Account Privacy</h2>
+            <div class="d-flex flex-column align-items-center justify-content-evenly bg-white-transparent-0-15 border-transparent-0-5 rounded-3 h-100 w-100 overflow-x-hidden overflow-y-auto">
+                <div class="d-flex flex-column align-items-center">
+                    <p class="nokora text-center text-white fs-4 fw-light text-shadow">Account Deletion</p>
+                    <div class="d-flex flex-column align-items-center justify-content-evenly w-100 border-transparent-0-5 border-transparent-0-5-sm-none rounded-3 p-3">
+                        <h4 class="taprom text-pink-gradient h1 line-height-1 text-glow">RetroPong</h4>
+                        <p class="text-white fw-light fs-5 text-center">
+                            Promisses the security and privacy of your information.<br>
+                            We're compliant with GDPR laws in the EU and offer our users the ability to manipulate their data at will.<br>
+                            Below you'll find a button that deletes your account, 
+                            Once pressed your account will be deleted instantly
+                        </p>
+                        <button 
+                        class="button-rp d-flex align-items-center justify-content-center gap-2 fw-light border-transparent-2 bg-danger text-white fs-5 rounded-3 text-shadow shadow-lg p-2"
+                        onclick="DeleteAccountPrompt()">
+                            <img src="/static/img/general/Delete.png" alt="upload" width="20px" height="20px">
+                            Delete Account
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

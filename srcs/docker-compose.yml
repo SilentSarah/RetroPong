@@ -1,0 +1,77 @@
+version: "3.3"
+services:
+  frontend:
+    container_name: rp_nginx
+    build:
+      context: "./frontend"
+      dockerfile: "Dockerfile"
+      args:
+        - HOST_ADDRESS=${HOST_ADDRESS}
+    ports:
+      - "443:443"
+    networks:
+      - rp_network
+
+  auth:
+    container_name: rp_auth
+    build:
+      context: "./auth"
+      dockerfile: "Dockerfile"
+      args:
+        - DB_NAME=${DB_NAME}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_HOST=${DB_HOST}
+        - DB_PORT=${DB_PORT}
+        - SECRET_KEY=${SECRET_KEY}
+        - CLIENT_ID=${CLIENT_ID}
+        - CLIENT_SECRET=${SECRET_ID}
+        - EMAIL_API_KEY=${EMAIL_API_KEY}
+        - RP_EMAIL=${RP_EMAIL}
+        - HOST_ADDRESS=${HOST_ADDRESS}
+        - AUTH_PORT=${AUTH_PORT}
+    ports:
+      - "8001:8001"
+    networks:
+      - rp_network
+
+  user-management:
+    container_name: rp_user_management
+    build:
+      context: "./user-management"
+      dockerfile: "Dockerfile"
+      args:
+        - DB_NAME=${DB_NAME}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_HOST=${DB_HOST}
+        - DB_PORT=${DB_PORT}
+        - SECRET_KEY=${SECRET_KEY}
+        - CLIENT_ID=${CLIENT_ID}
+        - CLIENT_SECRET=${CLIENT_ID}
+        - EMAIL_API_KEY=${EMAIL_API_KEY}
+        - RP_EMAIL=${RP_EMAIL}
+        - HOST_ADDRESS=${HOST_ADDRESS}
+        - AUTH_PORT=${AUTH_PORT}
+        - USERMGR_PORT=${USERMGR_PORT}
+    volumes:
+      - usermedia:/app:rw
+    ports:
+      - "8002:8002"
+    networks:
+      - rp_network
+
+
+
+
+networks:
+  rp_network:
+    driver: bridge
+
+volumes:
+  usermedia:
+    driver: local
+    driver_opts:
+      type: none
+      device: ~/Desktop/userdata
+      o: bind

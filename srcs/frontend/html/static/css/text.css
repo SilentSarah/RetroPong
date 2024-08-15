@@ -1,0 +1,57 @@
+.text-glow {
+    text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.50);
+}
+.text-pink {
+    background: linear-gradient(180deg, rgba(240,128,242,1) 0%, rgba(242,146,244,0.75) 75%, rgba(255,255,255,0.84) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+.text-shadow {
+    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+}
+.text-pink-gradient {
+    background: linear-gradient(180deg, rgba(240,128,242,1) 33%, rgba(255,255,255,1) 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.text-sunnyred {
+    background: linear-gradient(173.25deg, rgba(106, 237, 255, 0.2) 8.63%, rgba(0, 56, 255, 0.2) 98.08%), linear-gradient(186.75deg, #FFF065 8.37%, #FF0000 97.82%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0px 0px 10px rgba(255, 240, 101, 0.56);
+}
+.text-chrome {
+    background: linear-gradient(180deg, #FFFFFF 52%, rgba(255, 255, 255, 0) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+} 
+.text-pink-chrome {
+    background: linear-gradient(180deg, #FFFFFF 49.5%, #F080F2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    text-shadow: 0px 4px 5px rgba(0, 0, 0, 0.5);
+}
+
+.text-white-fade {
+    color: rgba(255, 255, 255, 0.80);
+}
+
+.text-shadow-drop-center {
+	animation: text-shadow-drop-center 0.6s infinite alternate both;
+}
+
+@keyframes text-shadow-drop-center {
+    0% {
+      text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    }
+    100% {
+      text-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
+    }
+  }

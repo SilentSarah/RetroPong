@@ -1,0 +1,103 @@
+<div class="Ccontainer container d-flex flex-column border-pink d-flex w-100 rounded-4 p-0 m-0 position-relative">
+    <div class="Tmenu">
+        <div class="Titems">
+            <div class="Titem" id="btnToTournament">
+                <img src="static/img/general/Info.png" alt="Logo" class="Tlogo">
+                <span>Information</span>
+            </div>
+            
+            <div class="Titem" id="btnToInformation">
+                <img src="static/img/general/Tournament.png" alt="Tournament" class="Tlogo">
+                <span>Tournament</span>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="Tournament" class="Tournament">
+        <div class="Tcontent nokora">
+            <h1>Glacier Tournament</h1>
+            <div class="Tdetails">
+                <div class="Tdetail">
+                    <img src="static/img/general/Info.png" alt="Logo" class="Tlogo">
+                    <span class="TtextDetails">Prize : <span>256 XP</span></span>
+                </div>
+                <!-- <div class="Tdetail">
+                    <img src="static/img/general/Info.png" alt="Logo" class="Tlogo">
+                    <span class="TtextDetails">Entrance Rank: <span>11</span></span>
+                </div>
+                <div class="Tdetail">
+                    <img src="static/img/general/Info.png" alt="Logo" class="Tlogo">
+                    <span class="TtextDetails">Entrance Rank: <span>11</span></span>
+                </div> -->
+            </div>
+        </div>
+
+        <div class="Trules">
+            <div class="Twrapper align-items-center">
+                <!-- <div class="TdetailRules gap-2">
+                    <img src="static/img/general/Info.png" alt="Logo" class="Tlogo">
+                    <span class="TtextDetails">Entrance Rank: <span>30/02/2025</span></span>
+                </div> -->
+                <h2 class="nokora mt-auto">Rules</h2>
+                <ul class="Tul mb-auto">
+                    <li>NO HACKING OR CHEATING</li>
+                    <li>RESPECT YOUR TEAMMATES AND YOUR OPPONENTS</li>
+                    <li>ABUSING GAME BUGS OR GLITCHES WILL CAUSE ACCOUNT TERMINATION</li>
+                    <li>LEAVING YOUR TEAMMATE ALONE ON A MATCH IS NOT ALLOWED</li>
+                    <li>PROFANITY IS NOT ALLOWED</li>
+                </ul>
+            </div>
+            <button id="tournament-join" class="btn-retro bg-bubblegum text-white fw-bold nokora mt-3" onclick="joinCurrentTournament()">
+                <img src="/static/img/game/Acess.png" width="28px" height="28px">
+            </button>
+        </div>
+    </div>
+
+
+    <div id="tournament-map" class="h-100 w-100 d-flex overflow-auto bg-black-transparent-0-75 d-none">
+        <div id="round-3" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly position-relative">
+            <h3 class="text-white fw-bold display-2 position-absolute" style="user-select: none; transform: rotateZ(90deg); left: 60px;">Quarterfinals</h3>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+        <div id="round-2" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly position-relative">
+            <h3 class="text-white fw-bold display-2 position-absolute" style="user-select: none; transform: rotateZ(90deg); left: 85px;">Semifinals</h3>
+            <div class="match d-flex flex-column gap-5">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+            <div class="match d-flex flex-column gap-5">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+        <div id="round-1" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly position-relative">
+            <h3 class="text-white fw-bold display-2 position-absolute" style="user-select: none; transform: rotateZ(90deg); left: 160px;">Finals</h3>
+            <div class="match d-flex flex-column gap-5">
+                <div class="d-flex flex-column border border-2 rounded-3 player1" style="width:64px; height: 64px;"></div>
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+        <div id="round-0" class="flex-fill border h-100 round d-flex flex-column align-items-center justify-content-evenly position-relative">
+            <h3 class="text-white fw-bold display-2 position-absolute" style="user-select: none; transform: rotateZ(90deg); left: 145px;">Winner</h3>
+            <div class="match d-flex flex-column gap-3">
+                <div class="d-flex flex-column border border-2 rounded-3 player2" style="width:64px; height: 64px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
