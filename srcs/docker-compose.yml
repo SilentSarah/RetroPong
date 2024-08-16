@@ -7,6 +7,9 @@ services:
       dockerfile: "Dockerfile"
       args:
         - HOST_ADDRESS=${HOST_ADDRESS}
+        - USERMGR_PORT=${USERMGR_PORT}
+        - AUTH_PORT=${AUTH_PORT}
+        - GAME_PORT=${GAME_PORT}
     ports:
       - "443:443"
     networks:
@@ -48,7 +51,7 @@ services:
         - DB_PORT=${DB_PORT}
         - SECRET_KEY=${SECRET_KEY}
         - CLIENT_ID=${CLIENT_ID}
-        - CLIENT_SECRET=${CLIENT_ID}
+        - CLIENT_SECRET=${SECRET_ID}
         - EMAIL_API_KEY=${EMAIL_API_KEY}
         - RP_EMAIL=${RP_EMAIL}
         - HOST_ADDRESS=${HOST_ADDRESS}
@@ -58,6 +61,31 @@ services:
       - usermedia:/app:rw
     ports:
       - "8002:8002"
+    networks:
+      - rp_network
+
+  game:
+    container_name: rp_game
+    build:
+      context: "./game"
+      dockerfile: "Dockerfile"
+      args:
+        - DB_NAME=${DB_NAME}
+        - DB_USER=${DB_USER}
+        - DB_PASSWORD=${DB_PASSWORD}
+        - DB_HOST=${DB_HOST}
+        - DB_PORT=${DB_PORT}
+        - SECRET_KEY=${SECRET_KEY}
+        - CLIENT_ID=${CLIENT_ID}
+        - CLIENT_SECRET=${CLIENT_ID}
+        - EMAIL_API_KEY=${EMAIL_API_KEY}
+        - RP_EMAIL=${RP_EMAIL}
+        - HOST_ADDRESS=${HOST_ADDRESS}
+        - AUTH_PORT=${AUTH_PORT}
+        - USERMGR_PORT=${USERMGR_PORT}
+        - GAME_PORT=${GAME_PORT}
+    ports:
+      - "8003:8003"
     networks:
       - rp_network
 

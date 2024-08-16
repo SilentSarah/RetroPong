@@ -111,8 +111,8 @@ export function clearUserDataLocally() {
 
 export function fetchUserData() {
     if (!tokenCheck()) return ;
-    // setLoadingOverlay(true);
-    fetch("https://127.0.0.1:8002/userdata/",
+    setLoadingOverlay(true);
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/`,
     { 
         method: 'GET',
         headers: {
@@ -125,7 +125,7 @@ export function fetchUserData() {
             return response.json();
         } else {
             clearUserDataLocally();
-            // setLoadingOverlay(false);
+            setLoadingOverlay(false);
         }
     })
     .then(data => {
@@ -133,7 +133,7 @@ export function fetchUserData() {
         if (window.location.pathname === "/dashboard")
             setDashboardStats();
         // DisplayNavBar();
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
     })
     .catch((error) => {
         sessionStorage.clear();
@@ -142,7 +142,7 @@ export function fetchUserData() {
             return ;
         }
         console.error('Error:', error);
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
     });
 }
 

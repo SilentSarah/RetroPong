@@ -1,4 +1,4 @@
-import { getCookie, toast, setValuesToSessionStorage, fetchUserData } from "./userdata.js";
+import { getCookie, toast, setValuesToSessionStorage, fetchUserData, setLoadingOverlay } from "./userdata.js";
 import { delete_cookie } from "./events.js";
 
 const updated_values = {};
@@ -203,8 +203,8 @@ export function SaveChanges() {
     for (const key in updated_values) {
         form.append(key, updated_values[key]);
     }
-    // clearInterval(fetchID);
-    fetch('https://127.0.0.1:8002/userdata/update', {
+    setLoadingOverlay(true);
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/update`, {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + getCookie('access'),
@@ -215,6 +215,7 @@ export function SaveChanges() {
         if (!response.ok)
             throw new Error('An Error has occured');
         toast('Changes saved', 'bg-success');
+        setLoadingOverlay(false);
         return response.json()
     })
     .then (response => {
@@ -226,6 +227,7 @@ export function SaveChanges() {
     })
     .catch((error) => {
         toast(error, 'bg-danger');
+        setLoadingOverlay(false);
     })
 }
 
@@ -321,7 +323,6 @@ export function DeleteAccount() {
         btn.innerHTML = 'Account Deleted Successfuly';
         setTimeout(() => {
             sessionStorage.clear();
-            // clearInterval(fetchID);
             delete_cookie('access');
             window.location.href = '/';
         }, 1000);

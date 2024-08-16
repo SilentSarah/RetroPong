@@ -63,6 +63,7 @@ class ViewAssist:
         """
         response = WebOps.request_endpoint("https://api.intra.42.fr/v2/me", "GET", {"Authorization": f"Bearer {access_token}"})
         response = json.loads(response.content.decode('utf-8'))
+        print("42 API User Data:", response)
         try :
             username = response.get('login')
             email = response.get('email')
@@ -198,6 +199,9 @@ class ViewAssist:
             "upassword": password_hashed,
             "TwoFactor": True if request.POST.get('two_factor') == "true" else False,
         }
+        print("-------")
+        print(data)
+        print("-------")
         return data
     
     @staticmethod

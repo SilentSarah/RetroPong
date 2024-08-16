@@ -66,8 +66,8 @@ function Invite(id, type) {
         child.disabled = true;
         child.classList.add('opacity-75', 'cursor-not-allowed');
     });
-    // setLoadingOverlay(true);
-    fetch ("https://127.0.0.1:8001/userdata/invite", {
+    setLoadingOverlay(true);
+    fetch (`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/invite`, {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + getCookie('access'),
@@ -93,7 +93,7 @@ function Invite(id, type) {
             localStorage.setItem('invitee_id', id);
             setTimeout(() => passUserTo('/game'), 1000);
         } 
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
     })
     .catch(error => {
         toast("An error occured while inviting this person.", "bg-danger");
@@ -101,7 +101,7 @@ function Invite(id, type) {
             child.disabled = false;
             child.classList.remove('opacity-75', 'cursor-not-allowed');
         });
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
     });
 }
 
@@ -166,7 +166,8 @@ function eliminateAccountSearchMenu(element) {
 
 export function DisplayProfileDetails(id) {
     if (id == undefined || id == null) return;
-    fetch ("https://127.0.0.1:8001/userdata/" + id, {
+    setLoadingOverlay(true);
+    fetch (`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/` + id, {
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + getCookie('access'),
@@ -178,10 +179,12 @@ export function DisplayProfileDetails(id) {
         for (const [key, value] of Object.entries(data)) {
             current_user[key] = value;
         }
+        setLoadingOverlay(false);
         sessionStorage.setItem("profile", JSON.stringify(current_user));
         passUserTo('/profile');
     })
     .catch(error => {
+        setLoadingOverlay(false);
         console.error('Error:', error);
     });
 }
@@ -237,7 +240,7 @@ function findUsersData(search_term) {
         search_result.innerHTML = `<p class="m-auto text-white fw-lighter fs-5">No user was found</p>`;
         return;
     }
-    fetch('https://127.0.0.1:8002/userdata/search', {
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/search`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

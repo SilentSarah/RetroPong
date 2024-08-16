@@ -239,7 +239,7 @@ export function loadEvents() {
     if (found_path !== undefined) {
         DisplayNavBar();
         if (SelfUser == undefined) {
-            tokenCheck() === true ? SelfUser = new OnlineProfile("wss://127.0.0.1:8002/ws/online/"):null;
+            tokenCheck() === true ? SelfUser = new OnlineProfile(`wss://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/ws/online/`):null;
             OnOnlineServiceClose(SelfUser);
         }
         found_path.func_arr.forEach(func => func());

@@ -101,7 +101,7 @@ export function Verify2FA() {
         toast('Please enter the full code before verifying.', 'bg-danger');
         return;
     }
-    fetch('https://127.0.0.1:8001/auth/2fa/verify', {
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.AUTH_PORT}/auth/2fa/verify`, {
         method: 'POST',
         credentials: 'include',
         headers: {

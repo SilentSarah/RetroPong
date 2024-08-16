@@ -166,7 +166,7 @@ function SetNotificationLight(check = false) {
 export class notifications {
     constructor() {
         this.delay = 0;
-        this.notifications = new WebSocket("wss://127.0.0.1:8002/ws/notifications/");
+        this.notifications = new WebSocket(`wss://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/ws/notifications/`);
         this.notifications.onopen = function(event) {
             const Authorization = {'Authorization': `Bearer ${getCookie('access')}`}
             this.send(JSON.stringify(Authorization));
@@ -190,7 +190,7 @@ export class notifications {
         }
         this.notifications.onerror = function(event) {
             delete this.notifications;
-            this.notifications = new WebSocket("wss://127.0.0.1:8002/ws/notifications/");
+            this.notifications = new WebSocket(`wss://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/ws/notifications/`);
         }
     }
 

@@ -131,10 +131,13 @@ class JwtOps:
         """
         try:
             two_factor =  TwoFactor(secret=randint(100000, 999999), user=user, created_at=timezone.now())
+            print("-------")
+            print(os.environ.get("RP_EMAIL"))
+            print("-------")
             response = requests.post(f"https://api.mailgun.net/v3/mg.retropong.games/messages",
-                                    auth=("api", os.eviron.get('EMAIL_API_KEY')),
+                                    auth=("api", os.environ.get('EMAIL_API_KEY')),
                                     data = {
-                                        "from":f'RetroPong <{os.eviron.get("RP_EMAIL")}>',
+                                        "from":f'RetroPong <{os.environ.get("RP_EMAIL")}>',
                                         "to": [user.uEmail],
                                         "subject": "Account 2FA Verification",
                                         "text": f"Your 2FA code is: {two_factor.secret}\nThis code will expire in 5 minutes.",
@@ -142,6 +145,8 @@ class JwtOps:
             if (response.status_code != 200):
                 print(response.text)
                 return False
+            else:
+                print(response.text)
             two_factor.save()
             return True
         except Exception as e:

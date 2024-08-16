@@ -12,7 +12,7 @@
 *                        1337                       *
 *****************************************************/
 
-import { getCookie } from "./userdata.js";
+import { getCookie, setLoadingOverlay } from "./userdata.js";
 import { DisplayNavBar, scanLinks } from "./events.js";
 import { initiateTwoFactorModal } from "./twoFactor.js";
 
@@ -75,7 +75,7 @@ export function passUserTo(path) {
 }
 
 export function loginWith42() {
-    fetch("https://127.0.0.1:8002/userdata/42login")
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/42login`)
     .then(response => {
         if (response.status === 200) {
             return response.text();
@@ -101,8 +101,8 @@ export function log_user_in() {
         username: username,
         password: password
     };
-    // setLoadingOverlay(true);
-    fetch('https://127.0.0.1:8001/auth/', {
+    setLoadingOverlay(true);
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.AUTH_PORT}/auth/`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -111,7 +111,7 @@ export function log_user_in() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
         if (response.status >= 400 && response.status < 500) {
             settoastmsg(toasty, 'Login failed', 'bg-danger');
             throw new Error('Invalid credentials');
@@ -207,8 +207,8 @@ export function register_user() {
         "uFname": uFname,
         "uLname": uLname,
     }
-    // setLoadingOverlay(true);
-    fetch('https://127.0.0.1:8002/userdata/create', {
+    setLoadingOverlay(true);
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/create`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -217,7 +217,7 @@ export function register_user() {
         body: JSON.stringify(data)
     })
     .then(response => {
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
         if (response.status === 201) {
             toast('Registration successful, Redirecting...', 'bg-success');
             DisplayNavBar();
@@ -234,7 +234,7 @@ export function register_user() {
     .catch((error) => {
         console.error('Error:', error);
         unblock_inputs(inputs);
-        // setLoadingOverlay(false);
+        setLoadingOverlay(false);
     });
 }
 
