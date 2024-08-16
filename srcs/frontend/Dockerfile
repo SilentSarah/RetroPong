@@ -15,5 +15,8 @@ WORKDIR /etc/nginx/ssl/
 COPY certs/c1r4p2.1337.ma.crt /etc/nginx/ssl/
 COPY certs/c1r4p2.1337.ma.key /etc/nginx/ssl/
 
+RUN mv c1r4p2.1337.ma.crt ${HOST_ADDRESS}.crt
+RUN mv c1r4p2.1337.ma.key ${HOST_ADDRESS}.key
+RUN sed -i "s/c1r4p2.1337.ma/${HOST_ADDRESS}/g" /etc/nginx/nginx.conf
 
 CMD ["nginx"]

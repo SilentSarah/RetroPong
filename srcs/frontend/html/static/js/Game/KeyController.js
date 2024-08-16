@@ -139,7 +139,7 @@ function pauseMenu() {
                 Settings
             </button>
             <button id="exit" onclick="exitGame()" class="text-white btn-retro d-flex align-items-center justify-content-start gap-2 ps-3 nokora bg-white-transparent-0-15 border-transparent-0-5">
-                <img src="/static/img/game/leave.png" width="24px" height="24px">
+                <img src="/static/img/game/Leave.png" width="24px" height="24px">
                 Exit
             </button>
         </div>

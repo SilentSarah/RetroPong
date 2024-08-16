@@ -16,8 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.http import HttpResponseNotFound
+
+def always_404(request):
+    return HttpResponseNotFound('<h1>Page not found</h1>')
 
 urlpatterns = [
+    path('', always_404),
     path('admin/', admin.site.urls),
     path('auth/', include('Authentication.urls'), name='Authentication'),
 ]
