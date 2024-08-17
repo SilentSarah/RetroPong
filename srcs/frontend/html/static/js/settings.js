@@ -308,7 +308,7 @@ export function DeleteAccount() {
     btn.innerHTML = `<div class="spinner-border text-light" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>`;
-    fetch('https://127.0.0.1:8002/userdata/delete', {
+    fetch(`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/delete`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json',
@@ -327,6 +327,7 @@ export function DeleteAccount() {
     .catch((error) => {
         toast('An error occured', 'bg-danger');
         document.querySelector('.close_btn_2').click();
+        console.log(error);
     });
 }
 

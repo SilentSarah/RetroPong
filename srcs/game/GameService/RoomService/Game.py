@@ -119,12 +119,6 @@ class Game:
             "opponent_score": self.player2_score if player_self.id == self.player1.id else self.player1_score,
             "status": self.status
         }
-        
-    async def get_player_data(self, player):
-        response = get(f"http://127.0.0.1:8001/userdata/{player.id}", headers={ "Authorization": f"Bearer {player.cookie}" })
-        if (response.status_code == 200):
-            return response.json()
-        return None
     
     def link_players(self, player1, player2):
         player1.opponent = player2
