@@ -25,9 +25,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-^a$f%2q-v*t73-o27^r%507ny(us74u!r5^-69qaabw7jjfsnc'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-SITE_ID = 1
-
 SERVER_NAME = os.environ.get('HOST_ADDRESS')
 AUTH_PORT = os.environ.get('AUTH_PORT')
 
@@ -54,7 +51,6 @@ INSTALLED_APPS = [
     "corsheaders",
     'django.contrib.admin',
     'django.contrib.auth',
-    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',

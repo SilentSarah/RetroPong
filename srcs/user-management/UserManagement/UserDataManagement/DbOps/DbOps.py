@@ -6,7 +6,6 @@ import datetime
 import requests
 from requests.models import Response
 from django.core.files.base import ContentFile
-from django.contrib.sites.models import Site
 from django.utils.datastructures import MultiValueDict
 from django.core.files.uploadedfile import UploadedFile
 
@@ -24,23 +23,28 @@ class DbOps:
             if (matches is None):
                 return {}
             match_history = {}
+            user = User.objects.get(id=id)
             for round in matches:
-                opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 and round.fOpponent != id else round.sOpponent
-                opponent = User.objects.get(id=opponent)
-                user = User.objects.get(id=id)
-                domain = Site.objects.get_current().domain + f":{os.environ.get('USERMGR_PORT')}"
-                match_history[round.id] = {
-                    "OpponentData": {
-                        "self_id": id,
-                        "self_pfp": 'https://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
-                        "self_username": user.uusername,
-                        "id": opponent.id,
-                        "pfp": 'https://{}{}'.format(domain, opponent.uprofilepic.url if opponent.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
-                        "username": opponent.uusername,
-                        "score": round.Score,
-                        "result": "WIN" if id in round.Winners else "LOSS" if opponent.id in round.Winners else "DRAW" if opponent.id in round.Winners and id in round.Winners else "DRAW",
+                    opponent = round.fOpponent if round.fOpponent != id and round.fOpponent != -1 and round.fOpponent != id else round.sOpponent
+                    try:
+                        opponent = User.objects.get(id=opponent)
+                    except Exception as e:
+                        opponent = None
+                        print("DbOps: ", e)
+                    
+                    domain = f"{os.environ.get('HOST_ADDRESS')}:{os.environ.get('USERMGR_PORT')}"
+                    match_history[round.id] = {
+                        "OpponentData": {
+                            "self_id": id,
+                            "self_pfp": 'https://{}{}'.format(domain, user.uprofilepic.url if user.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png"),
+                            "self_username": user.uusername,
+                            "id": opponent.id if opponent is not None else None,
+                            "pfp": 'https://{}{}'.format(domain, opponent.uprofilepic.url if opponent is not None and opponent.uprofilepic != "/static/img/pfp/Default.png" else "/static/img/pfp/Default.png") if opponent is not None else "/static/img/pfp/Default.png",
+                            "username": opponent.uusername if opponent is not None else "Unknown",
+                            "score": round.Score,
+                            "result": "WIN" if id in round.Winners else "LOSS" if opponent.id in round.Winners else "DRAW" if opponent.id in round.Winners and id in round.Winners else "DRAW",
+                        }
                     }
-                }
             return match_history
         except Exception as e:
             print("DbOps: ", e)
@@ -88,7 +92,7 @@ class DbOps:
                 user = User.objects.get(uusername=username)
             else:
                 user = User.objects.get(id=user_id)
-            domain = Site.objects.get_current().domain + f":{os.environ.get('USERMGR_PORT')}"
+            domain = f"{os.environ.get('HOST_ADDRESS')}:{os.environ.get('USERMGR_PORT')}"
             user = {
                 "id": user.id,
                 "username": user.uusername,
@@ -131,7 +135,7 @@ class DbOps:
         users_data = {}
         users = User.objects.filter(Q(uusername__icontains=search_term))[0:4]
         for user in users:
-            domain = Site.objects.get_current().domain + f":{os.environ.get('USERMGR_PORT')}"
+            domain = f"{os.environ.get('HOST_ADDRESS')}:{os.environ.get('USERMGR_PORT')}"
             # CODE BELOW IS FOR DEBUGGING PURPOSES ONLY ======= 
             try:
                 if (user.uprofilepic.url.find("http") != -1):
@@ -272,7 +276,7 @@ class DbOps:
             for notification in reversed(notifications):
                 sender = User.objects.get(id=notification.nSender)
                 if (sender is not None):
-                    sender_pfp = 'https://{}{}'.format(Site.objects.get_current().domain + f":{os.environ.get('USERMGR_PORT')}", sender.uprofilepic.url)
+                    sender_pfp = 'https://{}{}'.format(f"{os.environ.get('HOST_ADDRESS')}:{os.environ.get('USERMGR_PORT')}", sender.uprofilepic.url)
                     sender_username = sender.uusername
                 if (notification.id <= last_notification_id):
                     continue

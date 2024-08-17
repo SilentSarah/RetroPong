@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.sites',
     'django.contrib.staticfiles',
     'RoomService',
 ]
@@ -74,8 +73,6 @@ TEMPLATES = [
 
 # WSGI_APPLICATION = 'GameService.wsgi.application'
 ASGI_APPLICATION = 'GameService.asgi.application'
-
-SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

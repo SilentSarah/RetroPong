@@ -96,11 +96,8 @@ class Game:
         self.player2.game = None
         
     async def generate_data_for_player(self, player_self, opponent):
-        from django.contrib.sites.models import Site
-        from django.forms.models import model_to_dict
-        from asgiref.sync import sync_to_async
         
-        domain = await sync_to_async(Site.objects.get_current)()
+        domain = os.environ.get("HOST_ADDRESS")
         self_data = {
             "id": player_self.user_data.id,
             "username": player_self.user_data.uusername,

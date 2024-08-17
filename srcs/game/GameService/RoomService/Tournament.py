@@ -1,6 +1,5 @@
 from .TournamentMatch import *
 from asgiref.sync import sync_to_async
-from django.contrib.sites.models import Site
 from .Room import *
 from .Game import *
 import os
@@ -8,6 +7,7 @@ import os
 RUNNING_GAME_TOURNAMENTS: list[Game] = []
 TOURNAMENT_USERS: list = []
 USERMGR_PORT = os.environ.get('USERMGR_PORT')
+HOST_ADDRESS = os.environ.get('HOST_ADDRESS')
 
 class TournamentTask:
     match_id: str
@@ -22,11 +22,7 @@ async def setup_player_data(player):
     if player is None:
         return {}
 
-    def get_current_site():
-        return Site.objects.get_current()
-
-    site = await sync_to_async(get_current_site)()
-    site = site.domain + ":" + USERMGR_PORT
+    site = HOST_ADDRESS + ":" + USERMGR_PORT
 
     def get_user_data():
         return {
