@@ -20,7 +20,6 @@ class GameConnection {
 }
 
 export function initiateGameConnection() {
-    if (GameConnector == null || GameConnector.socket.readyState != 2)
     if (!GameConnector || GameConnector.socket.readyState != 1)
         GameConnector = new GameConnection(`wss://${window.env.HOST_ADDRESS}:${window.env.GAME_PORT}/ws/game/`);
     GameConnector.socket.onopen = function(event) {

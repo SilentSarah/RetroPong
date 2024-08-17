@@ -73,7 +73,7 @@ export const routes = [
         path: '/profile',
         on: false,
         component: () => grabContent('/static/content/dashboard.html'),
-        func_arr: [() => copyIDListener(), () =>  setDashboardStats(false)]
+        func_arr: [() => copyIDListener(), () => setDashboardStats(false)]
     },
     {
         path:'/tournament',

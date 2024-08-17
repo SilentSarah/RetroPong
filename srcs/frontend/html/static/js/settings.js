@@ -77,10 +77,8 @@ export function handleUpload(type) {
             console.log("File selected: ", this.files[0].name);
             if (type === "pfp") {
                 updated_values['pfp'] = this.files[0];
-                console.log("pfp size:", this.files[0].size);
             } else if (type === "bg") {
                 updated_values['bg'] = this.files[0];
-                console.log("pfp size:", this.files[0].size);
             }
             DisplayConfirmationPopUp();
         }
@@ -129,8 +127,6 @@ function setSettingsValues(HTMLElements, values) {
     HTMLElements.tfa_status.textContent = values.tfa === 'false' ? 'Enable' : 'Disable';
     HTMLElements.tfa_btn.setAttribute('status', values.tfa);
     HTMLElements.discordid.textContent = values.discordid === '' ? 'No Discord ID' : values.discordid;
-    console.log("PFP:", HTMLElements.pfp.style.backgroundImage);
-    console.log("BG:", HTMLElements.bg.style.backgroundImage);
 
 }
 
@@ -181,6 +177,7 @@ function validateEmail(email) {
 
 export function SaveChanges() {
     DestroyConfirmationPopUp();
+    console.log(updated_values);
     if (Object.keys(updated_values).length === 0){
         toast('No changes detected', 'bg-danger')
         return ;    
@@ -219,7 +216,7 @@ export function SaveChanges() {
         return response.json()
     })
     .then (response => {
-        for (const key of Object.entries(updated_values))
+        for (const key of Object.keys(updated_values))
             delete updated_values[key];
         setValuesToSessionStorage(response);
         loadAccountDetailsInSettings();

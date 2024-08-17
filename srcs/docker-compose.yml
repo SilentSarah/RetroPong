@@ -57,8 +57,9 @@ services:
         - HOST_ADDRESS=${HOST_ADDRESS}
         - AUTH_PORT=${AUTH_PORT}
         - USERMGR_PORT=${USERMGR_PORT}
+        - GAME_PORT=${GAME_PORT}
     volumes:
-      - usermedia:/app:rw
+      - usermedia:/app/media:rw
     ports:
       - "8002:8002"
     networks:

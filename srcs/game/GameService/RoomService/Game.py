@@ -3,7 +3,7 @@ from .GamePhysics import GamePhysics
 from requests import get, post
 from .models import User, MatchHistory
 from asgiref.sync import sync_to_async
-import asyncio, json, os
+import asyncio, json, os, random
 
 
 USERMGR_PORT = os.environ.get('USERMGR_PORT')
@@ -230,14 +230,14 @@ class GameService:
             return await user.send_message_to_self({ "request": "game", "action": action, 'status': 'fail', "message": 'You are not in a game' })
         
         
-        if (game.player1_score > 0 or game.player2_score > 0):
-            return await GameService.end_game(game, user)
-        else:
-            await user.opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' })
-            game.status = "fail"
-            game.clean_up()
-            RUNNING_GAMES.remove(game)
-            game = None
+        # if (game.player1_score > 0 or game.player2_score > 0):
+        await user.opponent.send_message_to_self({ "request": "game", "action": action, 'status': 'success', "message": 'Your opponent has left the game' })
+        return await GameService.end_game(game, user)
+        # else:
+        #     game.status = "fail"
+        #     game.clean_up()
+        #     RUNNING_GAMES.remove(game)
+        #     game = None
 
     
     @staticmethod
@@ -402,15 +402,15 @@ class GameService:
             return await check_if_match_inside_tournament(game, winner, loser, disconnected_user)
                     
         else:
-            winner.user_data.level += winner.user_data.level * 0.15
             winner.user_data.xp += 35
+            winner.user_data.level += 35 / 350
             winner.user_data.matchesplayed += 1
             winner.user_data.matcheswon += 1
             await sync_to_async(winner.user_data.save)()
 
             if (disconnected_user is None):
-                loser.user_data.level += winner.user_data.level * 0.125
                 loser.user_data.xp += 17
+                loser.user_data.level += 17 / 350
                 loser.user_data.matchesplayed += 1
                 loser.user_data.matcheslost += 1
                 await sync_to_async(loser.user_data.save)()
@@ -506,10 +506,11 @@ async def promote_tournament_matches_winners(parent, match, game, winner, loser,
     elif (parent.room.player2 is None): 
         parent.room.player2 = winner
     
+    loser.user_data.utournamentslost += 1
+    await sync_to_async(loser.user_data.save)()
+    
     if (parent.room.player1 is not None and parent.room.player2 is not None):
         
-        loser.user_data.utournamentslost += 1
-        await sync_to_async(loser.user_data.save)()
         await asyncio.sleep(10)
         clear_running_task(game.current_room.id)
         await match_players_against_each_other(match.parent)
@@ -537,8 +538,8 @@ async def check_if_match_inside_tournament(game: Game, winner, loser, disconnect
     elif (parent is None):
         TOURNAMENTS[0].winner = winner
         await broadcast_tournament_message(f"{winner.user_data.uusername} has won the tournament")
-        winner.user_data.level += winner.user_data.level * 0.015
         winner.user_data.xp += 256
+        winner.user_data.level += 256 / 350
         winner.user_data.matchesplayed += 1
         winner.user_data.matcheswon += 1
         winner.user_data.utournamentswon += 1
@@ -586,7 +587,7 @@ async def send_opponents_notifications(user, opponent):
         "Authorization": f"Bearer {user.cookie}"
     }
     for data in [user_notification_data, opponent_notification_data]:
-        response = post(f"https://{os.environ.get('HOST_ADDRESS')}:{os.environ.get('USERMGR_PORT')}/userdata/notify", data=data, headers=header)
+        response = post(f"https://{os.environ.get('HOST_ADDRESS')}:{os.environ.get('USERMGR_PORT')}/userdata/notify", data=data, headers=header, verify=False)
         if response.status_code == 200:
             print("Tournament Notification sent")
         else:

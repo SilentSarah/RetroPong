@@ -68,14 +68,11 @@ function exitGame() {
     const pause_menu_html = document.getElementById("pause-menu");
     if (pause_menu_html) pause_menu_html.remove();
 
-    GameStates.finished = 1;
     GameContainer.innerHTML = `<p class="text-white text-center nokora display-5 fw-light">Game Over!</p>`;
-    if (modes.V_OFFLINE) {
-        GameStates.in_progress = 0;
-        clearInterval(timer_match);
-    } else if (modes.V_ONLINE) {
-        GameStates.in_progress = 0;
-        clearInterval(timer_match);
+    GameStates.in_progress = 0;
+    GameStates.finished = 1;
+    clearInterval(timer_match);
+    if (modes.V_ONLINE) {
         GameProcessor.gameRequestAction('exit', {});
     }
     setTimeout(() => resetGameResourcesAndData(), 2500);

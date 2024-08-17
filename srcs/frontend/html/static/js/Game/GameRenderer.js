@@ -158,6 +158,8 @@ function renderLobby() {
 }
 
 export function renderGame() {
+    if (window.location.pathname !== "/game") 
+        return;
     renderLobby();
 }
 

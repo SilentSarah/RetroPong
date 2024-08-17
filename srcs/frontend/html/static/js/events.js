@@ -35,22 +35,22 @@ export function DisplayNavBar() {
     <div id="retro_menu" class="nav_btn ms-3 position-relative">
         <img id="retro_menu_img" src="/static/img/general/Menu.png" width="40px">
         <div id="menu_content" class="flex-column justify-content-center align-items-center gap-2 position-absolute">
-            <a href="/dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
+            <a href="/dashboard" title="Dashboard" class="nav_btn selected" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="right" data-bs-content="Right popover">
                 <img src="/static/img/general/Account.png" width="30px">
             </a>
-            <div onclick="spawnAccountSearchMenu()" class="nav_btn selected hover-cursor">
+            <div onclick="spawnAccountSearchMenu()" title="Search" class="nav_btn selected hover-cursor">
                 <img id="account_search_btn" src="/static/img/general/FindUser.png" width="30px">
             </div>
-            <a href="/chat" class="nav_btn selected">
+            <a href="/chat" title="Chat" class="nav_btn selected">
                 <img src="/static/img/general/Chat.png" width="30px">
             </a>
-            <a href="/game" class="nav_btn selected">
+            <a href="/game" title="Game" class="nav_btn selected">
                 <img src="/static/img/general/Game.png" width="30px">
             </a>
-            <a href="/tournament" class="nav_btn selected">
+            <a href="/tournament" title="Tournament" class="nav_btn selected">
                 <img src="/static/img/general/Tournament.png" width="30px">
             </a>
-            <a href="/settings" class="nav_btn selected">
+            <a href="/settings" title="Settings" class="nav_btn selected">
                 <img src="/static/img/general/Settings.png" width="30px">
             </a>
         </div>
@@ -234,7 +234,10 @@ export function loadEvents() {
     const origpath = window.location.pathname;
     const found_path = routes.find(route => route.path === origpath);
 
-    // if (origpath != '/game' && origpath != '/tournament') GameConnector ? GameConnector.close() : null;
+    if (origpath != '/game' && origpath != '/tournament') {
+        console.log('Closing Game Connection in path: ' + origpath);
+        GameConnector ? GameConnector.close() : null;
+    }
     scanLinks();
     if (found_path !== undefined) {
         DisplayNavBar();

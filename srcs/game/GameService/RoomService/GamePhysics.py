@@ -8,8 +8,8 @@ if TYPE_CHECKING:
     from .Game import Game
 
 
-BALL_SPEED = 15
-PADDLE_SPEED = 15
+BALL_SPEED = 14
+PADDLE_SPEED = 17
 PADDLE_BOOST = 1.25
 SPECIAL_ABILITY_DURATION = 7
 BALL_LIMIT = 25
@@ -144,8 +144,8 @@ class GamePhysics:
         self.screen_width = VIRTUAL_WIDTH
         self.screen_height = VIRTUAL_HEIGHT
         self.ball = BallPosition(self.screen_width / 2, self.screen_height / 2, 0.015 * self.screen_height)
-        self.paddle_1 = PaddlePosition(game.player1, 20, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
-        self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 23, self.screen_height / 2, (self.screen_height * 0.150), (self.screen_width * 0.025))
+        self.paddle_1 = PaddlePosition(game.player1, 20, self.screen_height / 2, (self.screen_height * 0.155), (self.screen_width * 0.0275))
+        self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 23, self.screen_height / 2, (self.screen_height * 0.155), (self.screen_width * 0.0275))
         self.state = "running"
         
     async def set_state(self, state):
@@ -190,26 +190,24 @@ class GamePhysics:
                 self.state = "score"
         
         if self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2 and self.ball.y >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.y <= self.paddle_1.y + self.paddle_1.height / 2:
-            self.ball.xspeed *= -1
-            self.ball.yspeed *= -1  
+            self.ball.xspeed = abs(self.ball.xspeed)  # Reflect the ball's x-speed
             self.increase_ball_speed()
             if (self.paddle_1.special_abilities.check_special_ability("railshot")):
                 self.paddle_1.special_abilities.railshot_physics(self.ball)
                 
         if self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2 and self.ball.y >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.y <= self.paddle_2.y + self.paddle_2.height / 2:
-            self.ball.xspeed *= -1
-            self.ball.yspeed *= -1
+            self.ball.xspeed = -abs(self.ball.xspeed)  # Reflect the ball's x-speed
             self.increase_ball_speed()
             if (self.paddle_2.special_abilities.check_special_ability("railshot")):
                 self.paddle_2.special_abilities.railshot_physics(self.ball)
             
-        if self.ball.y - self.ball.radius <= self.paddle_1.y + self.paddle_1.height / 2 and self.ball.y + self.ball.radius >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2:
+        if self.ball.y - self.ball.radius <= self.paddle_1.y + self.paddle_1.height / 2 and self.ball.y + self.ball.radius >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.x >= self.paddle_1.x - self.paddle_1.width / 2 and self.ball.x <= self.paddle_1.x + self.paddle_1.width / 2:
             self.ball.yspeed *= -1
             self.increase_ball_speed()
             if (self.paddle_1.special_abilities.check_special_ability("railshot")):
                 self.paddle_1.special_abilities.railshot_physics(self.ball)
                 
-        if self.ball.y - self.ball.radius <= self.paddle_2.y + self.paddle_2.height / 2 and self.ball.y + self.ball.radius >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2:
+        if self.ball.y - self.ball.radius <= self.paddle_2.y + self.paddle_2.height / 2 and self.ball.y + self.ball.radius >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.x >= self.paddle_2.x - self.paddle_2.width / 2 and self.ball.x <= self.paddle_2.x + self.paddle_2.width / 2:
             self.ball.yspeed *= -1
             self.increase_ball_speed()
             if (self.paddle_2.special_abilities.check_special_ability("railshot")):
@@ -252,14 +250,18 @@ class GamePhysics:
             return
         if player == self.paddle_1.owner:
             if direction == "up":
-                self.paddle_1.y -= self.paddle_1.yspeed
+                if (self.paddle_1.y - self.paddle_1.height / 2 > 0):
+                    self.paddle_1.y -= self.paddle_1.yspeed
             elif direction == "down":
-                self.paddle_1.y += self.paddle_1.yspeed
+                if (self.paddle_1.y + self.paddle_1.height / 2 < self.screen_height):
+                    self.paddle_1.y += self.paddle_1.yspeed
         elif player == self.paddle_2.owner:
             if direction == "up":
-                self.paddle_2.y -= self.paddle_2.yspeed
+                if (self.paddle_2.y - self.paddle_2.height / 2 > 0):
+                    self.paddle_2.y -= self.paddle_2.yspeed
             elif direction == "down":
-                self.paddle_2.y += self.paddle_2.yspeed
+                if (self.paddle_2.y + self.paddle_2.height / 2 < self.screen_height):
+                    self.paddle_2.y += self.paddle_2.yspeed
         self.check_paddle_bounds()
         
     def check_paddle_bounds(self):

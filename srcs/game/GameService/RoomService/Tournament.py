@@ -7,7 +7,7 @@ import os
 
 RUNNING_GAME_TOURNAMENTS: list[Game] = []
 TOURNAMENT_USERS: list = []
-USERMGR_PORT = {os.environ.get('USERMGR_PORT')}
+USERMGR_PORT = os.environ.get('USERMGR_PORT')
 
 class TournamentTask:
     match_id: str
@@ -26,7 +26,7 @@ async def setup_player_data(player):
         return Site.objects.get_current()
 
     site = await sync_to_async(get_current_site)()
-    site = site.domain + USERMGR_PORT
+    site = site.domain + ":" + USERMGR_PORT
 
     def get_user_data():
         return {

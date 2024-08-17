@@ -2,7 +2,7 @@ import { user_id } from "../userdata.js";
 import { GameProcessor } from "./GameProcessor.js";
 import { modes, renderGame } from "./GameRenderer.js";
 import { activateButtonFunctions, loadGameKeyHandlers } from "./KeyController.js";
-import { sanitizeHTMLCode } from "./MatchMaker.js";
+import { clearChosenGameMode, sanitizeHTMLCode } from "./MatchMaker.js";
 import { OnGameChange } from "./GameEvents.js";
 import { ballPhysics, generateRandomBallAngle, resetInGamePhysics } from "./GamePhysics.js";
 import { SpecialAbilities } from "./SpecialAbilities.js";
@@ -185,6 +185,8 @@ function generateGradient(ctx, width, height, chosenMap) {
 export function clearGameDashboard() {
     const game_dashboards = document.querySelectorAll("#game-dashboard");
     const game = document.getElementById("game");
+    if (!game || !game_dashboards) return ;
+    
     game_dashboards.forEach((element) => { element.remove()});
     game.classList.remove("h-80");
 }
@@ -239,6 +241,7 @@ export function resetGameResourcesAndData() {
     scores.forEach((score, i) => scores[i] = 0);
     unloadGameElements();
     clearGameDashboard();
+    clearChosenGameMode();
     renderGame();
 }
 

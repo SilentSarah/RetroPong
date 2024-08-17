@@ -91,7 +91,7 @@ def create_user(request: HttpRequest):
             
             chat_response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:8003/chat/insert", "POST", {"Authorization": f"Bearer {jwt}"}, json={"id": user.get('id')})
             if (chat_response.status_code != 200):
-                print("error:", chat_response.json())
+                print("error:", chat_response.content)
             else:
                 print("user has been added to chat")
             
@@ -154,8 +154,11 @@ def update_user(request: HttpRequest):
     if (token is not None and user_id is not None):
         try:
             settings_cfg = ViewAssist.generate_acc_settings_cfg(request)
-            DbOps.update_user(user_id=user_id, new_data=settings_cfg, uploaded_files=request.FILES)
+            if (DbOps.update_user(user_id=user_id, new_data=settings_cfg, uploaded_files=request.FILES) == False):
+                return JsonResponse({"error":"User Update Failed"}, status=400)
             user = DbOps.get_user(user_id=user_id)
+            if (user is None):
+                return JsonResponse({"error":"User Not Found"}, status=404)
             user.pop('password')
             return JsonResponse(user, status=200)
         except Exception as e:

@@ -22,12 +22,12 @@ class RoomConsumer(AsyncJsonWebsocketConsumer):
         
     async def receive(self, text_data):
         from .Interpreter import Interpreter
-        try:
-            body = json.loads(text_data)
-            await Interpreter.interpret(self, body)
-        except Exception as e:
-            print("Error: ", e)
-            await self.send_json({ 'Error': 'Invalid request' })
+        # try:
+        body = json.loads(text_data)
+        await Interpreter.interpret(self, body)
+        # except Exception as e:
+        #     print("Error: ", e)
+        #     await self.send_json({ 'Error': 'Invalid request' })
         
     async def send_msg(self, message):
         await self.send_json({

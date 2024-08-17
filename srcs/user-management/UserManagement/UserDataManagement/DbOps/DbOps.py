@@ -188,6 +188,7 @@ class DbOps:
             pfp_uploaded = uploaded_files.get('pfp')
             bg_uploaded = uploaded_files.get('bg')
             for key, value in new_data.items():
+                print("Setting ", key, " to ", value, " for: ", user.uusername)
                 if (value == None or value == ""):
                     continue
                 setattr(user, key, value)
@@ -323,7 +324,7 @@ class DbOps:
                     invite_notification.save()
             if (invite_type == "game"):
                 from ..WebOps.WebOps import WebOps
-                response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:8004/room/create/{invitee_id}", "POST", {
+                response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:{os.environ.get('GAME_PORT')}/room/create/{invitee_id}", "POST", {
                     "Content-Type": "application/json",
                     "Authorization": f"Bearer {token}"
                 })

@@ -2,10 +2,16 @@ import { SetTheGameMode, clearChosenGameMode } from "./MatchMaker.js";
 import { passUserTo } from "../login_register.js";
 import { user_id } from "../userdata.js";
 import { GameConnector } from "./GameConnection.js";
+import { bPaddle, ball, rPaddle, resetGameResourcesAndData } from "./GameEngine.js";
+import { GameProcessor } from "./GameProcessor.js";
 
 export class TournamentManager {
     static requestTournamentAction(action, data) {
-        if (GameConnector == null) console.error("GameConnector is not initialized");
+        if (GameConnector == null) return ;
+        if (rPaddle && bPaddle && ball) {
+            GameProcessor.gameRequestAction('exit', {});
+            resetGameResourcesAndData();
+        }
         GameConnector.send({
             "request": "tournament",
             "action": action,
@@ -41,6 +47,8 @@ export class TournamentManager {
                 const matches = rounds.querySelectorAll('.match');
                 Object.entries(match_list).forEach(([match_id, match_data], index) => {
                     const match = matches[index];
+                    match.id = match_id;
+                    // console.log(`found Match ${match_id} for match html ${match.id}, Listing Players`, match_data);
                     if (!match) return;
                     const player1 = match.querySelector('.player1');
                     const player2 = match.querySelector('.player2');

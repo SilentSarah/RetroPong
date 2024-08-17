@@ -1,7 +1,8 @@
-import { getCookie, setLoadingOverlay, toast } from './userdata.js';
+import { getCookie, setDashboardStats, setLoadingOverlay, toast } from './userdata.js';
 import { passUserTo } from './login_register.js';
 import { current_user } from "./userdata.js";
 import { DisplayMatchSeekScreen } from './Game/GameRenderer.js';
+import { sanitizeHTMLCode } from './Game/MatchMaker.js';
 
 export class OnlineProfile {
     constructor(link) {
@@ -165,6 +166,7 @@ function eliminateAccountSearchMenu(element) {
 }
 
 export function DisplayProfileDetails(id) {
+
     if (id == undefined || id == null) return;
     setLoadingOverlay(true);
     fetch (`https://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/userdata/` + id, {
@@ -176,6 +178,7 @@ export function DisplayProfileDetails(id) {
     })
     .then(response => response.json())
     .then(data => {
+        console.log("Recieved Profile Data");
         for (const [key, value] of Object.entries(data)) {
             current_user[key] = value;
         }
@@ -211,7 +214,7 @@ function displayUsersOnTheSearchMenu(data) {
         div.innerHTML = `
         <div class="d-flex align-items-center gap-1">
             <img src="${each_player.pfp}" width="50px" height="50px" class="rounded-3 object-fit-cover border-transparent-0-5">
-            <p class="text-white nokora m-0 fw-light">${each_player.username}</p>
+            <p class="text-white nokora m-0 fw-light">${sanitizeHTMLCode(each_player.username)}</p>
         </div>
         <div class="d-flex flex-column">
             <table>

@@ -21,6 +21,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     backdrop-filter: brightness(0.5);
+    user-select: none;
 	/* background-color: #000; */
 }
 
