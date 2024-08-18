@@ -46,6 +46,7 @@ class ViewAssist:
         }
         access_token = requests.post(token_url, params=params)
         access_token = access_token.json()
+        print(access_token)
         
         token = access_token.get('access_token')
         

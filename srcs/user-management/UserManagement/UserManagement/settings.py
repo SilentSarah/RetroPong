@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-^a$f%2q-v*t73-o27^r%507ny(us74u!r5^-69qaabw7jjfsnc
 SERVER_NAME = os.environ.get('HOST_ADDRESS')
 AUTH_PORT = os.environ.get('AUTH_PORT')
 
-ALLOWED_HOSTS = [f"{SERVER_NAME}"]
+ALLOWED_HOSTS = [ SERVER_NAME ]
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = [
     'accept',
@@ -42,6 +42,7 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 CORS_ALLOW_CREDENTIALS = True
+
 
 # Application definition
 

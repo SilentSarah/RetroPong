@@ -41,11 +41,7 @@ COPY JwtAuth/ /app
 COPY tools/entrypoint.sh /app 
 
 WORKDIR /app
-COPY certs/c1r4p2.1337.ma.crt /app/
-COPY certs/c1r4p2.1337.ma.key /app/
-
-RUN mv c1r4p2.1337.ma.crt ${HOST_ADDRESS}.crt
-RUN mv c1r4p2.1337.ma.key ${HOST_ADDRESS}.key
-
+COPY certs/${HOST_ADDRESS}.crt /app/
+COPY certs/${HOST_ADDRESS}.key /app/
 
 ENTRYPOINT [ "bash", "/app/entrypoint.sh" ]
