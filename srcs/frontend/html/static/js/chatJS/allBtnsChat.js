@@ -130,7 +130,7 @@ function filterFriends(type) {
 
 async function sendRequest(target_user_id, target, userId, token) {
     isRequest = true
-    const data = await fetchData(`https://127.0.0.1:8002/chat/${target}/${userId}/${target_user_id}`, 'GET', token)
+    const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/${target}/${userId}/${target_user_id}`, 'GET', token)
     ws.send(JSON.stringify({"message": "refresh" ,"id": userId , "contact_id": target_user_id,"conversation_id":""}))
     UserContactFetching()
 }
@@ -150,7 +150,7 @@ async function fetchDataChat(target_user_id)
 async function fetchDataMessagesChannel(){
     const  {userId, token} = GetUserIdToken();
 
-    const channel_message = await fetchData(`https://127.0.0.1:8002/chat/channel/${channelObj?.chID}`, 'GET', token)
+    const channel_message = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/channel/${channelObj?.chID}`, 'GET', token)
     handleChannel(channel_message)
 }
 
@@ -221,7 +221,7 @@ function AddListener()
             return
         chInput.value = ""
         chInput.focus()
-        const data = await fetchData(`https://localhost:8002/chat/channel/send/${channelObj.chID}/${userId}/`,'POST',token,{"content":value})
+        const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/channel/send/${channelObj.chID}/${userId}/`,'POST',token,{"content":value})
         console.log(data)
         fetchDataMessagesChannel()
     })

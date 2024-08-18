@@ -1,5 +1,4 @@
 
-
 function chatFriendSkeleton () {
     return `
     <div class="RectangleSK Rectangle h-10 position-relative w-100" style="backgroundColor:gray">

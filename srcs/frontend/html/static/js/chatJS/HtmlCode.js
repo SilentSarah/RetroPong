@@ -1,11 +1,18 @@
+function sanitizeHTMLCode(html) {
+    if (!html) return html;
+    if (typeof(html) !== "string") return html;
+    html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    return html;
+}
+
 const Cards = (otherUser, invitation) => {
     return `
             <div class=" Rcard d-flex flex-column p-4 gap-2">
                 <div class="d-flex align-items-center gap-2">
                     <img class="RcardImg w-30 rounded-circle" src=${otherUser?.uprofilepic ? otherUser?.uprofilepic : "https://i.pinimg.com/736x/fe/26/83/fe2683f11283ef9fe4211894d9147652.jpg"} alt="avatar">
                     <div class="d-flex flex-column">
-                        <span class="name text-white fw-bold fs-5">${otherUser?.uUsername}</span>
-                        <span class="description text-secondary">${otherUser?.udesc === null ? otherUser?.udesc : "No desciption"}</span>
+                        <span class="name text-white fw-bold fs-5">${sanitizeHTMLCode(otherUser?.uUsername)}</span>
+                        <span class="description text-secondary">${sanitizeHTMLCode(otherUser?.udesc === null ? otherUser?.udesc : "No desciption")}</span>
                     </div>
                 </div>
                 <div class="h-100 w-100 d-flex align-items-end justify-content-center">
@@ -43,12 +50,12 @@ const chatFriend = (friend) => {
             </div>
             <div class="Cinformation text-white d-flex flex-column w-90 h-30 p-3 gap-3">
                 <div class="CitemInfo d-flex flex-column"> 
-                    <span class="Cname Cbreak fw-bold">${friend.username}</span>
-                    <span class="Cdescription Cbreak">${friend.desc === null ? friend.desc : "No description"}</span>
+                    <span class="Cname Cbreak fw-bold">${sanitizeHTMLCode(friend.username)}</span>
+                    <span class="Cdescription Cbreak">${friend.desc === null ? sanitizeHTMLCode(friend.desc) : "No description"}</span>
                 </div>
                 <div class="CitemInfo d-flex flex-column"> 
-                    <span class="detailsFriend Cbreak">${friend.email}</span>
-                    <span class="detailsFriend Cbreak">ID: ${friend.id}</span>
+                    <span class="detailsFriend Cbreak">${sanitizeHTMLCode(friend.email)}</span>
+                    <span class="detailsFriend Cbreak">ID: ${sanitizeHTMLCode(friend.id)}</span>
                 </div>
            </div>`
 }
@@ -57,9 +64,9 @@ const message = (msg, target_user_id) => {
     return `<div class="slide-in-blurred-top-1 CcontentMessage d-flex align-items-end ml-2 position-relative" >
                 <div class="d-flex gap-3">
                    <img class="Ccimg rounded-circle object-fit-cover" src=${msg?.user?.profilepic} alt="avatar">
-                   <div class="${msg.user.id === target_user_id ? 'Cmessage' : 'Cmessage2'} bg-pink ">${msg.content}</div>
+                   <div class="${msg.user.id === target_user_id ? 'Cmessage' : 'Cmessage2'} bg-pink ">${sanitizeHTMLCode(msg.content)}</div>
                 </div>
-                <span class="timeChat position-absolute">${msg.user.username} <span class="timeSize fw-normal">10:00 AM</span></span>
+                <span class="timeChat position-absolute">${sanitizeHTMLCode(msg.user.username)} <span class="timeSize fw-normal">10:00 AM</span></span>
             </div>`
 }
 
@@ -69,8 +76,8 @@ const member = (member) => {
     <div class="d-flex align-items-center gap-1"> 
         <img class="chImg rounded-circle" src=${member.profilepic ?  member.profilepic :"/static/img/general/Account.png"} alt="avatar">
         <div class="d-flex flex-column">
-            <span class="chName nokora">${member.username}</span>
-            <span class="chDesc nokora">${member.desc}</span>
+            <span class="chName nokora">${sanitizeHTMLCode(member.username)}</span>
+            <span class="chDesc nokora">${sanitizeHTMLCode(member.desc)}</span>
         </div>
     </div>
     <button class="chBtn_invite">Invite</button>
@@ -81,7 +88,7 @@ const message_channel =(member, user)=>{
     return `<div class="slide-in-blurred-top-1 CcontentMessage d-flex align-items-end ml-2 position-relative" >
                 <div class="d-flex gap-3">
                    <img class="Ccimg rounded-circle object-fit-cover" src=${user?.profilepic}  alt="avatar">
-                   <div class="Cmessage bg-pink fs-small">${member.cmContent}</div>
+                   <div class="Cmessage bg-pink fs-small">${sanitizeHTMLCode(member.cmContent)}</div>
                 </div>
                 <span class="timeChat position-absolute"> <span class="timeSize fw-normal">10:00 AM</span></span>
             </div>`

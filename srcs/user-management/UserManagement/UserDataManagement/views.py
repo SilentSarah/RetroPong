@@ -89,7 +89,7 @@ def create_user(request: HttpRequest):
             new_response.set_cookie('user_id', user.get('id'), samesite='none', secure=True)
             new_response.set_cookie('access', jwt, samesite='none', secure=True)
             
-            chat_response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:8003/chat/insert", "POST", {"Authorization": f"Bearer {jwt}"}, json={"id": user.get('id')})
+            chat_response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:{os.environ.get('CHAT_PORT')}/chat/insert", "POST", {"Authorization": f"Bearer {jwt}"}, json={"id": user.get('id')})
             if (chat_response.status_code != 200):
                 print("error:", chat_response.content)
             else:
@@ -135,6 +135,12 @@ def login_42_user_callback(request: HttpRequest) -> HttpResponse:
             if (jwt_token is None):
                 return JsonResponse({"error":"JWT couldn't be acquired, please log in manually"}, status=400)
             else:
+                chat_response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:{os.environ.get('CHAT_PORT')}/chat/insert", "POST", {"Authorization": f"Bearer {jwt_token}"}, json={"id": user_data.get('id')})
+                if (chat_response.status_code != 200):
+                    print("error:", chat_response.content)
+                else:
+                    print("user has been added to chat")
+                
                 if (user_data.get('two_factor') == True):
                     res = ViewAssist.send2fa_pin_to_user(user_data.get('id'))
                     return res if res else JsonResponse({"error":"Couldn't send 2FA pin"}, status=400)

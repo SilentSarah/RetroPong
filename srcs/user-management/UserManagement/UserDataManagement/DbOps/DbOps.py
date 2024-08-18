@@ -308,7 +308,7 @@ class DbOps:
             user = User.objects.get(id=user_id)
             if (invite_type == "friend"):
                 from ..WebOps.WebOps import WebOps
-                response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:8003/chat/invite/{user_id}/{invitee_id}", "GET", {
+                response = WebOps.request_endpoint(f"https://{os.environ.get('HOST_ADDRESS')}:{os.environ.get('CHAT_PORT')}/chat/invite/{user_id}/{invitee_id}", "GET", {
                     "Content-Type": "application/json",
                     "Authorization": f"Bearer {token}"
                 })

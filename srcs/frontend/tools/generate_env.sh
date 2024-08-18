@@ -7,6 +7,7 @@ window.env = {
     USERMGR_PORT: "$USERMGR_PORT",
     AUTH_PORT: "$AUTH_PORT",
     GAME_PORT: "$GAME_PORT",
+    CHAT_PORT: "$CHAT_PORT",
 }
 EOF
 

@@ -3,7 +3,7 @@ COPY deps/requirements.txt /app/
 RUN pip install -r /app/requirements.txt
 
 LABEL Author="Sarah Hicham Meftah"
-LABEL Container="User Manager"
+LABEL Container="Chat Service"
 
 ARG DB_NAME
 ARG DB_USER
@@ -16,10 +16,10 @@ ARG CLIENT_SECRET
 ARG EMAIL_API_KEY
 ARG EMAIL_DOMAIN
 ARG HOST_ADDRESS
-ARG AUTH_PORT
-ARG USERMGR_PORT
-ARG GAME_PORT
+ARG RP_EMAIL
 ARG CHAT_PORT
+ARG USERMGR_PORT
+ARG AUTH_PORT
 
 
 ENV DB_NAME=${DB_NAME}
@@ -33,22 +33,23 @@ ENV CLIENT_SECRET=${CLIENT_SECRET}
 ENV EMAIL_API_KEY=${EMAIL_API_KEY}
 ENV EMAIL_DOMAIN=${EMAIL_DOMAIN}
 ENV HOST_ADDRESS=${HOST_ADDRESS}
-ENV AUTH_PORT=${AUTH_PORT}
-ENV USERMGR_PORT=${USERMGR_PORT}
-ENV GAME_PORT=${GAME_PORT}
+ENV RP_EMAIL=${RP_EMAIL}
 ENV CHAT_PORT=${CHAT_PORT}
+ENV USERMGR_PORT=${USERMGR_PORT}
+ENV AUTH_PORT=${AUTH_PORT}
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-COPY UserManagement/ /app/
-COPY tools/entrypoint.sh /app/
+COPY backend/ /app
+COPY tools/entrypoint.sh /app 
 
 WORKDIR /app
-COPY certs/c1r4p2.1337.ma.crt .
-COPY certs/c1r4p2.1337.ma.key .
+COPY certs/c1r4p2.1337.ma.crt /app/
+COPY certs/c1r4p2.1337.ma.key /app/
 
 RUN mv c1r4p2.1337.ma.crt ${HOST_ADDRESS}.crt
 RUN mv c1r4p2.1337.ma.key ${HOST_ADDRESS}.key
 
-ENTRYPOINT [ "bash", "entrypoint.sh" ]
+
+ENTRYPOINT [ "bash", "/app/entrypoint.sh" ]

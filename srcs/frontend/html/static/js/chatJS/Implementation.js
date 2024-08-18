@@ -1,3 +1,4 @@
+
 let ws = null
 let listenToSend = false
 let contact_id = null
@@ -11,7 +12,7 @@ function Websocket() {
     const userId = getCookie('user_id')
     if (userId != "") {
         if (!ws)
-            ws = new WebSocket(`wss://localhost:8002/ws/chat/${userId}`)
+            ws = new WebSocket(`wss://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/ws/chat/${userId}`)
         ws.onopen = (event) => console.log('Connected to chat server')
         ws.onerror = (event) => console.log('Error', event)
         ws.onclose = (event) => {
@@ -42,7 +43,7 @@ async function UserContactFetching() {
         SkeletonCards() // skeleton cards
         SkeletonFriends() // skeleton friends
     }
-    const data = await fetchData(`https://127.0.0.1:8002/chat/contact/${userId}`, 'GET', token) // fetch data
+    const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/contact/${userId}`, 'GET', token) // fetch data
     if (data.status === "200") {
         dataUser = data.data // store data to value dataUser
         LoadDataSuggestion(data.data)
@@ -59,7 +60,7 @@ async function UserContactFetching() {
 // fetch conversation
 async function DataChatFetching(target_user_id) {
     const { userId, token } = GetUserIdToken()
-    const data = await fetchData(`https://127.0.0.1:8002/chat/isExistConversation/${userId}/${target_user_id}/`, 'GET', token)
+    const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/isExistConversation/${userId}/${target_user_id}/`, 'GET', token)
     return data
 }
 
@@ -131,7 +132,7 @@ function LoadChannel(channel) {
 // send invite
 async function SendInvite(target_user_id) {
     const { userId, token } = GetUserIdToken();
-    const data = await fetchData(`https://127.0.0.1:8002/chat/invite/${userId}/${target_user_id}`, 'GET', token)
+    const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/invite/${userId}/${target_user_id}`, 'GET', token)
     LoadDataSuggestion(dataUser, target_user_id)
     ws.send(JSON.stringify({ "message": "invite", "id": userId, "contact_id": target_user_id, "conversation_id": "" }))
 }
@@ -140,11 +141,11 @@ async function SendInvite(target_user_id) {
 async function createNotification(value, receiver, sender, token) {
     const content = {
         "nType": "MESSAGE",
-        "nContent": value,
+        "nContent": "has sent you a message",
         "nReciever": receiver,
         "nSender": sender
     }
-    await fetchData(`https://127.0.0.1:8002/chat/notification}`, 'POST', token, { "notification": content })
+    await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/notification`, 'POST', token, { "notification": content })
 }
 
 //send message
@@ -160,7 +161,7 @@ const ClickSend = async (value, target_user_id) => {
     createNotification(value, target_user_id, userId, token)
     LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'))
     ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation }))
-    data = await fetchData(`https://127.0.0.1:8002/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })
+    data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })
 }
 
 

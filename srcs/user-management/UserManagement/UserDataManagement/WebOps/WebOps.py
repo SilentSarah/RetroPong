@@ -19,7 +19,7 @@ class WebOps:
             request.headers[key] = value
         request.headers = headers
         if method == "GET":
-            response = request.get(url)
+            response = request.get(url, verify=False)
         elif method == "POST":
             if (json is None):
                 response = request.post(url, data=data, verify=False)
