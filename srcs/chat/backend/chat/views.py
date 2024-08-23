@@ -249,7 +249,11 @@ def insert_id_to_channel(request):
     try:
         data = json.loads(request.body)
         channel_id = 1  # You might want to use a dynamic channel ID
-        channel = Channel.objects.get(chID=channel_id)
+        try :
+            channel = Channel.objects.get(chID=channel_id)
+        except Exception:
+            Channel.objects.create(chID=channel_id, chName="Global", chMembers=[user_id], chDesc="Global channel", chAdmin=user_id)
+            return JsonResponse({"status": "User has been inserted to global channel"}, status=200)
 
         # Assuming chMembers is a JSONField or similar list field
         if not isinstance(data, dict) or "id" not in data:

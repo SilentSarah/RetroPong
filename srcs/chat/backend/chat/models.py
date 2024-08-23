@@ -26,7 +26,7 @@ class User(models.Model):
 
     class Meta:
         db_table = 'UserDataManagement_user'
-        managed=True
+        managed=False
     
     def __str__(self):
         return self.uUsername + " " + str(self.id)

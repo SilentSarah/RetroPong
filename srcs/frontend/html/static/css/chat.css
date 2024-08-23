@@ -433,6 +433,7 @@ body {
 }
 
 .chatHeader {
+    height: 10% !important;
     background: rgb(130, 77, 133);
     background: linear-gradient(90deg, rgba(130, 77, 133, 1) 0%, rgba(0, 0, 0, 1) 50%, rgba(131, 77, 133, 1) 100%);
 }

@@ -2,18 +2,18 @@
     <!--Sidebar-->
     <div id="sidebar" class="sidebar d-flex flex-column h-100 p-2 overflow-auto gap-2">
         <div class="menu align-items-center gap-3 pt-2" onclick="openMenu()">
-            <img class="menu w-60 cursor" src="/static/img/general/menu.png" alt="logo">
+            <img class="menu w-60 cursor" src="/static/img/general/Menu.png" alt="logo">
         </div>
         <div class="items slide-in-blurred-left  gap-3 position-relative">
-            <img id='chat' class="btn_msg w-100 cursor" src="/static/img/general/DM 1.png" onclick="transition('chat')"alt="avatar">
+            <img id='chat' class="btn_msg cursor" width="60px" height="60px" src="/static/img/general/Messages.png" onclick="transition('chat')"alt="avatar">
             <span class="title_btn text-white">Messages</span>
         </div>
         <div id="channel" class="items slide-in-blurred-left gap-3 d-none">
-            <img id="channel_id" class="btn_msg w-100 cursor rounded_channel" src="/static/img/general/gmc.webp" onclick="implementBtns('toChannel')" alt="avatar">
+            <img id="channel_id" class="btn_msg cursor rounded_channel" width="60px" height="60px" src="/static/img/general/gmc.webp" onclick="implementBtns('toChannel')" alt="avatar">
             <span id="channel_title" class="title_btn text-white"></span>
         </div>
         <div class="items slide-in-blurred-left gap-3">
-            <img id="discover" class="btn_msg w-100 cursor" src="/static/img/general/discover.png"
+            <img id="discover" class="btn_msg cursor" width="60px" height="60px" src="/static/img/general/discover.png"
                 onclick="transition('discover')" alt="avatar">
             <span class="title_btn text-white">Discover</span>
         </div>
@@ -72,10 +72,10 @@
             <img id="contact_user" onclick="appearInfoFriend()" class="Cback cursor position-absolute rounded-circle"src="/static/img/general/Account.png" alt="back">
         </div>
 
-        <div class="Ccontent d-flex h-100 w-100 ">
+        <div class="Ccontent d-flex h-90 w-100 ">
 
             <div class="Cconverstation w-80 h-100 p-4 overflow-hidden">
-                <div id="CcontentConver" class="CcontentConver w-100 h-80 d-flex flex-column overflow-auto gap-4">
+                <div id="CcontentConver" class="CcontentConver w-100 h-90 d-flex flex-column overflow-auto gap-4">
                     <!--messages-->
                 </div>
                 <!--Send message-->
@@ -128,7 +128,7 @@
                 </div>
             </div>
             <!--Friend info-->
-            <div id='chUser' class="chFriends d-flex flex-column w-20">
+            <div id='chUser' class="chFriends d-flex flex-column w-20 overflow-y-auto">
                 
  
             </div>

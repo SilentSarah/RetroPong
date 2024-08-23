@@ -57,7 +57,7 @@ function DisplayRoomOptions() {
 				class="bg-white-transparent-0-15 border-transparent-0-5 rounded-5 position-absolute p-2"
 				style="top: 1.3rem; right: 5rem;"
 				onclick="renderLobby()">
-                    <img src="/static/img/game/back.png" width="18px" height="18px">
+                    <img src="/static/img/game/Back.png" width="18px" height="18px">
                 </button>
 			<h1 class="text-white text-center py-2 taprom line-height-1 text-glow border-transparent-0-5">Available Rooms</h1>
 			<div id="rooms-container" class="d-flex flex-column align-items-center border-transparent-0-5 overflow-y-auto gap-3 py-4 h-75 flex-fill">

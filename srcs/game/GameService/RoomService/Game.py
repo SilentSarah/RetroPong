@@ -4,6 +4,7 @@ from requests import get, post
 from .models import User, MatchHistory
 from asgiref.sync import sync_to_async
 import asyncio, json, os, random
+from decimal import Decimal
 
 
 USERMGR_PORT = os.environ.get('USERMGR_PORT')
@@ -394,14 +395,14 @@ class GameService:
                     
         else:
             winner.user_data.xp += 35
-            winner.user_data.level += 35 / 350
+            winner.user_data.level += Decimal(35) / Decimal(350)
             winner.user_data.matchesplayed += 1
             winner.user_data.matcheswon += 1
             await sync_to_async(winner.user_data.save)()
 
             if (disconnected_user is None):
                 loser.user_data.xp += 17
-                loser.user_data.level += 17 / 350
+                loser.user_data.level += Decimal(17) / Decimal(350)
                 loser.user_data.matchesplayed += 1
                 loser.user_data.matcheslost += 1
                 await sync_to_async(loser.user_data.save)()
@@ -530,7 +531,7 @@ async def check_if_match_inside_tournament(game: Game, winner, loser, disconnect
         TOURNAMENTS[0].winner = winner
         await broadcast_tournament_message(f"{winner.user_data.uusername} has won the tournament")
         winner.user_data.xp += 256
-        winner.user_data.level += 256 / 350
+        winner.user_data.level += Decimal(256) / Decimal(350)
         winner.user_data.matchesplayed += 1
         winner.user_data.matcheswon += 1
         winner.user_data.utournamentswon += 1
@@ -548,8 +549,9 @@ async def check_if_match_inside_tournament(game: Game, winner, loser, disconnect
     
 
 def restart_the_tournament():
-    from .Tournament import TOURNAMENTS, Tournament, TOURNAMENT_USERS
+    from .Tournament import TOURNAMENTS, Tournament, TOURNAMENT_USERS, generate_match_tree
     tournament = Tournament("RetroPong")
+    tournament.parent_match = generate_match_tree(0)
     TOURNAMENTS.clear()
     TOURNAMENT_USERS.clear()
     TOURNAMENTS.append(tournament)

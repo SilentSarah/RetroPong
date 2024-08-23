@@ -316,11 +316,11 @@ export function enableAccountSearchMenu() {
         div.innerHTML = `
         <div class="w-100 d-flex flex-column mb-2">
             <div class="d-flex align-items-center justify-content-between">
-            <label for="users_search" class="text-white nokora fs-5 fw-light opacity-75">Account Search</label>
-            <div class="d-flex align-items-center mb-1 opacity-75">
-                ${DetectOSAndReturnKey()}
-                <img src="/static/img/general/K.png" alt="K Key" width="24px">
-            </div>
+                <label for="users_search" class="text-white nokora fs-5 fw-light opacity-75">Account Search</label>
+                <div class="d-flex align-items-center mb-1 opacity-75">
+                    ${DetectOSAndReturnKey()}
+                    <img src="/static/img/general/K.png" alt="K Key" width="24px">
+                </div>
             </div>
             <input type="text" id="users_search" class="bg-white-transparent-0-25 border-transparent-0-5 px-2 text-white fs-5 fw-light" placeholder="Search for Someone">
         </div>

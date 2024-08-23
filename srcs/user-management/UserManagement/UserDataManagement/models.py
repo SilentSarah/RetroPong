@@ -84,3 +84,17 @@ class Notification(models.Model):
 class NotificationAdmin(ModelAdmin):
     list_display = ['nType', 'nContent', 'nDate', 'nReciever', 'nSender']
     search_fields = ['nType', 'nContent', 'nDate',  'nReciever', 'nSender']
+    
+class TwoFactor(models.Model):
+    id = models.AutoField(primary_key=True)
+    secret = models.IntegerField()
+    created_at = models.DateTimeField()
+    verified = models.BooleanField(default=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.user.uUsername
+    
+    class Meta:
+        db_table = 'UserDataManagement_twofactor'
+        managed=True

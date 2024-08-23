@@ -102,7 +102,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'OPTIONS': {
-            'options': '-c search_path=schema'
+            'options': '-c search_path=public'
         },
         'NAME': os.environ.get('DB_NAME'),
         'USER': os.environ.get('DB_USER'),

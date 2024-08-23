@@ -23,6 +23,7 @@ class Users(models.Model):
     
     class Meta:
         db_table = 'UserDataManagement_user'
+        managed=False
 
 class UsersAdmin(ModelAdmin):
     list_display = ['id', 'uUsername', 'uPassword', 'uEmail', 'uFname', 'uLname', 'uRegdate', 'uDesc', 'uIp', 'ucIDs']
@@ -41,3 +42,4 @@ class TwoFactor(models.Model):
     
     class Meta:
         db_table = 'UserDataManagement_twofactor'
+        managed=False

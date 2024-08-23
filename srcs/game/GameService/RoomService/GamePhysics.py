@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 from time import sleep
 import random
 from datetime import datetime
-import math
 
 if TYPE_CHECKING:
     from .Game import Game
@@ -141,12 +140,12 @@ class BallPosition:
 class GamePhysics:
     def __init__(self, game):
         self.game: Game = game
+        self.state = "running"
         self.screen_width = VIRTUAL_WIDTH
         self.screen_height = VIRTUAL_HEIGHT
-        self.ball = BallPosition(self.screen_width / 2, self.screen_height / 2, 0.015 * self.screen_height)
+        self.ball = BallPosition(self.screen_width / 2 , self.screen_height / 2, 0.015 * self.screen_height)
         self.paddle_1 = PaddlePosition(game.player1, 20, self.screen_height / 2, (self.screen_height * 0.155), (self.screen_width * 0.0275))
         self.paddle_2 = PaddlePosition(game.player2, self.screen_width - 23, self.screen_height / 2, (self.screen_height * 0.155), (self.screen_width * 0.0275))
-        self.state = "running"
         
     async def set_state(self, state):
         self.state = state
@@ -186,44 +185,61 @@ class GamePhysics:
             if ((self.paddle_1.special_abilities.check_special_ability("guard") and self.ball.x <= 0) or (self.ball.x + self.ball.diameter >= self.screen_width and self.paddle_2.special_abilities.check_special_ability("guard"))):
                 self.ball.xspeed *= -1
             else:
+                # self.ball.xspeed *= -1
                 await self.set_score_for_player()
                 self.state = "score"
         
-        if self.ball.x - self.ball.radius <= self.paddle_1.x + self.paddle_1.width / 2 and self.ball.y >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.y <= self.paddle_1.y + self.paddle_1.height / 2:
-            self.ball.xspeed = abs(self.ball.xspeed)  # Reflect the ball's x-speed
-            self.increase_ball_speed()
-            if (self.paddle_1.special_abilities.check_special_ability("railshot")):
-                self.paddle_1.special_abilities.railshot_physics(self.ball)
-                
-        if self.ball.x + self.ball.radius >= self.paddle_2.x - self.paddle_2.width / 2 and self.ball.y >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.y <= self.paddle_2.y + self.paddle_2.height / 2:
-            self.ball.xspeed = -abs(self.ball.xspeed)  # Reflect the ball's x-speed
-            self.increase_ball_speed()
-            if (self.paddle_2.special_abilities.check_special_ability("railshot")):
-                self.paddle_2.special_abilities.railshot_physics(self.ball)
+        ball_left = self.ball.x - self.ball.radius
+        ball_right = self.ball.x + self.ball.radius
+        ball_top = self.ball.y - self.ball.radius
+        ball_bottom = self.ball.y + self.ball.radius
+    
+        # Paddle 1 Collision Detection
+        if (self.check_if_point_is_inside_area(ball_left, self.ball.y, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)
+            or self.check_if_point_is_inside_area(self.ball.x, ball_top, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
             
-        if self.ball.y - self.ball.radius <= self.paddle_1.y + self.paddle_1.height / 2 and self.ball.y + self.ball.radius >= self.paddle_1.y - self.paddle_1.height / 2 and self.ball.x >= self.paddle_1.x - self.paddle_1.width / 2 and self.ball.x <= self.paddle_1.x + self.paddle_1.width / 2:
-            self.ball.yspeed *= -1
+            if (self.check_if_point_is_inside_area(ball_left, self.ball.y, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
+                self.ball.xspeed = abs(self.ball.xspeed)
+                self.increase_ball_speed()
+                if (self.paddle_1.special_abilities.check_special_ability("railshot")):
+                    self.paddle_1.special_abilities.railshot_physics(self.ball)
+
+            if (self.check_if_point_is_inside_area(self.ball.x, ball_top, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
+                self.ball.yspeed = abs(self.ball.yspeed)
+                self.increase_ball_speed()
+                if (self.paddle_1.special_abilities.check_special_ability("railshot")):
+                    self.paddle_1.special_abilities.railshot_physics(self.ball)
+                    
+        elif (self.check_if_point_is_inside_area(ball_left, ball_top, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
+            self.ball.xspeed = abs(self.ball.xspeed)
+            self.ball.yspeed = abs(self.ball.yspeed)
             self.increase_ball_speed()
             if (self.paddle_1.special_abilities.check_special_ability("railshot")):
                 self.paddle_1.special_abilities.railshot_physics(self.ball)
-                
-        if self.ball.y - self.ball.radius <= self.paddle_2.y + self.paddle_2.height / 2 and self.ball.y + self.ball.radius >= self.paddle_2.y - self.paddle_2.height / 2 and self.ball.x >= self.paddle_2.x - self.paddle_2.width / 2 and self.ball.x <= self.paddle_2.x + self.paddle_2.width / 2:
-            self.ball.yspeed *= -1
-            self.increase_ball_speed()
-            if (self.paddle_2.special_abilities.check_special_ability("railshot")):
-                self.paddle_2.special_abilities.railshot_physics(self.ball)
+
+        # Paddle 2 Collision Detection
+        if (self.check_if_point_is_inside_area(ball_right, self.ball.y, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)
+            or self.check_if_point_is_inside_area(self.ball.x, ball_bottom, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)):
             
-        if (self.check_if_point_is_inside_area(self.ball.x, self.ball.y, self.paddle_1.x - self.paddle_1.width / 2, self.paddle_1.y - self.paddle_1.height / 2, self.paddle_1.x + self.paddle_1.width / 2, self.paddle_1.y + self.paddle_1.height / 2)):
-            self.ball.xspeed *= -1
-            self.increase_ball_speed()
-            if (self.paddle_1.special_abilities.check_special_ability("railshot")):
-                self.paddle_1.special_abilities.railshot_physics(self.ball)
-                
-        if (self.check_if_point_is_inside_area(self.ball.x, self.ball.y, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)):
-            self.ball.xspeed *= -1
+            if (self.check_if_point_is_inside_area(ball_right, self.ball.y, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)):
+                self.ball.xspeed = -abs(self.ball.xspeed)
+                self.increase_ball_speed()
+                if (self.paddle_2.special_abilities.check_special_ability("railshot")):
+                    self.paddle_2.special_abilities.railshot_physics(self.ball)
+
+            if (self.check_if_point_is_inside_area(self.ball.x, ball_bottom, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)):
+                self.ball.yspeed = -abs(self.ball.yspeed)
+                self.increase_ball_speed()
+                if (self.paddle_2.special_abilities.check_special_ability("railshot")):
+                    self.paddle_2.special_abilities.railshot_physics(self.ball)
+                    
+        elif (self.check_if_point_is_inside_area(ball_right, ball_top, self.paddle_2.x - self.paddle_2.width / 2, self.paddle_2.y - self.paddle_2.height / 2, self.paddle_2.x + self.paddle_2.width / 2, self.paddle_2.y + self.paddle_2.height / 2)):
+            self.ball.xspeed = -abs(self.ball.xspeed)
+            self.ball.yspeed = abs(self.ball.yspeed)
             self.increase_ball_speed()
             if (self.paddle_2.special_abilities.check_special_ability("railshot")):
                 self.paddle_2.special_abilities.railshot_physics(self.ball)
+                
 
         
             

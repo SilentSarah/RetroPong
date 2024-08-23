@@ -1,5 +1,6 @@
 from asgiref.sync import sync_to_async
-import uuid
+import uuid, asyncio
+
 class Tournament:
     def __init__(self, name):
         self.id: str = str(uuid.uuid4())
@@ -104,6 +105,7 @@ async def broadcast_tournament_action(action: str, data: dict):
                 "status":"success",
                 "data": data
             })
+            await asyncio.sleep(0.5)
             
 async def set_tournament_played_status():
     from .Tournament import TOURNAMENT_USERS
