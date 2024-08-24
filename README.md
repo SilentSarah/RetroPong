@@ -64,7 +64,7 @@ RP (**RetroPong**) is an extension of 42's common core last project **ft_transce
 - Visually appealing **Dashboard**, detailed with information about you as a member of **RP.**
 - **Profile** system allowing you to search for people and check their profiles.
 - **Invite System** giving the users the abilities to befriend others or invite them to a match of Pong.
-- Instantaneous **Notification System** letting the user know when an event has happend, a new friend request or a tournament update.
+- Instantaneous **Notification System** letting the user know when an event, a new friend request or a tournament update has happend.
 
 ## Technologies
 
