@@ -4,19 +4,17 @@
 
 <h1 style="text-align: center; font-family: system-ui;">RetroPong</h1>
 
-## Introduction
-
 RP (**RetroPong**) is an extension of 42's common core last project **ft_transcendence** with emphasis on Aesthetics and simplicity. The website contains the famous game **PingPong** with improvements, new additions and features, RetroPong comes as well with a chat page allowing users to chat and engage privately in real-time or socialize with people globally.
 
 ## Media
 
-<img src="https://i.imgur.com/dTcPIMk.jpeg" width="1280" height="720">
+<img src="https://i.imgur.com/dTcPIMk.jpeg" width="960" height="540" style="object-fit: cover;">
 
-<img src="https://i.imgur.com/Qao4KGK.jpeg" width="1280" height="720">
+<img src="https://i.imgur.com/Qao4KGK.jpeg" width="960" height="540">
 
-<img src="https://i.imgur.com/z7hNz7Y.jpeg" width="1280" height="720">
+<img src="https://i.imgur.com/z7hNz7Y.jpeg" width="960" height="540">
 
-<img src="https://i.imgur.com/8jS3TVM.jpeg" width="1280" height="720">
+<img src="https://i.imgur.com/8jS3TVM.jpeg" width="960" height="540">
 
 **For more pictures please visit the link below**
 
