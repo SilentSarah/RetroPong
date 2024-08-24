@@ -76,6 +76,10 @@ RP (**RetroPong**) is an extension of 42's common core last project **ft_transce
 	<img src="https://i.imgur.com/IfeMTPT.png" width="64" height="64">
 </div>
 
+## Credits
+- Sarah Hicham Meftah - Design, Auth, User Management, Game.
+- Ahmed Sekkak - Chat 
+
 ## Important Information
 
-**This effort was done by a single person, just know that there could be buggy/missing features that you may expect from the website, i will try to improve upon what exists and make it more suitable and accessible to people, thank you!**
+**This Website may contain bugs, glitches and missing features, i am trying to improve upon what exists and strive to make it as accessible and conventient to users as possible, thank you!**
