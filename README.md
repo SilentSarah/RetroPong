@@ -8,7 +8,7 @@ RP (**RetroPong**) is an extension of 42's common core last project **ft_transce
 
 ## Media
 
-<img src="https://i.imgur.com/dTcPIMk.jpeg" width="960" height="540" style="object-fit: cover;">
+<img src="https://i.imgur.com/dTcPIMk.jpeg" width="960" height="540">
 
 <img src="https://i.imgur.com/Qao4KGK.jpeg" width="960" height="540">
 
