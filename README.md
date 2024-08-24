@@ -46,6 +46,19 @@ RP (**RetroPong**) is an extension of 42's common core last project **ft_transce
 - **Special abilities** are here! let's spice up the game with abilities that give you an edge over your opponent!
 - **Tournaments** for fun an engaging matches between friends and family, supports maximum of 8 players.
 
+### Account Data
+
+- RP is **GDPR** compliant, the website does not store any tracking information or keeps user data after deletion
+- Privacy is of upmost respect, web crawlers/scrapers cannot access user accounts without logging in first.
+- Members will have access to all of their information and they can change or delete it at will, nothing is saved other than the information that the member has put.
+- Accounts can be deleted at will, RP will not store any details or account information after deletion and any match history / chat will be replaced with a non accessible dummy account.
+
+### Security
+
+- Secured against **SQL injections** preventing hackers from accessing RP's data through conventional input manipulation
+- Sanitized HTML code which protects against **XSS injecions.**
+- **Two Factor Authentication** is supported giving the users a second layer of protection against hackers.
+
 ### Miscellaneous
 
 - Visually appealing **Dashboard**, detailed with information about you as a member of **RP.**
@@ -62,3 +75,7 @@ RP (**RetroPong**) is an extension of 42's common core last project **ft_transce
 	<img src="https://i.imgur.com/zJ6HpCr.png" width="64" height="64">
 	<img src="https://i.imgur.com/IfeMTPT.png" width="64" height="64">
 </div>
+
+## Important Information
+
+**This effort was done by a single person, just know that there could be buggy/missing features that you may expect from the website, i will try to improve upon what exists and make it more suitable and accessible to people, thank you!**
