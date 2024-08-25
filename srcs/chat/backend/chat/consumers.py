@@ -2,6 +2,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 from channels.db import database_sync_to_async
+from datetime import datetime
 
 
 class UpdateConsumer(AsyncWebsocketConsumer):
@@ -65,6 +66,7 @@ class UpdateConsumer(AsyncWebsocketConsumer):
 
         contact_id = text_data_json['contact_id']
         coversation_id = text_data_json['conversation_id']
+        
 
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -73,7 +75,8 @@ class UpdateConsumer(AsyncWebsocketConsumer):
                 'message': message,
                 'id': id,
                 'contact_id': contact_id,
-                'conversation_id': coversation_id
+                'conversation_id': coversation_id,
+                'created': datetime.now()
             }
         )
 
@@ -93,13 +96,15 @@ class UpdateConsumer(AsyncWebsocketConsumer):
         id = event['id']
         contact_id = event['contact_id']
         coversation_id = event['conversation_id']
-
+        created = event['created']
+        
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'message': message,
             'id': id,
             'contact_id': contact_id,
-            'conversation_id': coversation_id
+            'conversation_id': coversation_id,
+            'created': created
         }))
 
 

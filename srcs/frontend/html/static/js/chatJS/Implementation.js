@@ -1,24 +1,31 @@
 
-let ws = null
+import { LoadMessageRealTime, fetchData, searchOtherUser, typeofData, GetUserIdToken, setDataUser, dataUser } from "./tools.js"
+import { SkeletonCards, SkeletonFriends, handleError } from "./skeleton.js"
+import { Friends, Cards, chatFriend, message } from "./HtmlCode.js"
+import { setIsRequest } from "./allBtnsChat.js"
+import { getCookie, user_id } from "../userdata.js"
+
+
 let listenToSend = false
 let contact_id = null
-let target_id = ""
 let conversation = ""
 let storeDataWs = {}
 let storeDataUser = {}
-let channelObj = {}
+let target_id = ""
+export let ws = null
+export let channelObj = {}
 
-function Websocket() {
-    const userId = getCookie('user_id')
+export function Websocket() {
+    const userId = user_id || getCookie('user_id');
     if (userId != "") {
         if (!ws)
             ws = new WebSocket(`wss://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/ws/chat/${userId}`)
         ws.onopen = (event) => console.log('Connected to chat server')
         ws.onerror = (event) => console.log('Error', event)
         ws.onclose = (event) => {
-            console.log('closing socket!', event)
             ws = null
-            setTimeout(() => { Websocket() }, 2000)
+            // console.log('closing socket!', event)
+            // setTimeout(() => { Websocket() }, 2000)
         }
         ws.onmessage = function (event) {
             console.log("111", event)
@@ -28,7 +35,7 @@ function Websocket() {
             if ((data.contact_id === parseInt(userId)) && data.conversation_id === conversation) {
                 if (data.message !== "refresh" && data.message !== "invite") {
                     const contact_user = dataUser.friends.filter(friend => friend.id === parseInt(data.id))[0]
-                    LoadMessageRealTime(data.message, contact_user?.uprofilepic, contact_user?.uUsername)
+                    LoadMessageRealTime(data.message, contact_user?.uprofilepic, contact_user?.uUsername, data.created)
                 }
             }
             UserContactFetching()
@@ -45,20 +52,20 @@ async function UserContactFetching() {
     }
     const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/contact/${userId}`, 'GET', token) // fetch data
     if (data.status === "200") {
-        dataUser = data.data // store data to value dataUser
+        setDataUser(data.data) // store data to value dataUser
         LoadDataSuggestion(data.data)
-        type = localStorage.getItem('type')
+        const type = localStorage.getItem('type')
         LoadDataFriend(type ? type : 'online')
         LoadChannel(data.data?.channel)
     }
     else
         handleError()
     setTimeout(() => {  if(data.status !== "200") handleError()}, 5000)
-    isRequest = false // to handle request by request to avoid many requests
+    setIsRequest(false); // to handle request by request to avoid many requests
 }
 
 // fetch conversation
-async function DataChatFetching(target_user_id) {
+export async function DataChatFetching(target_user_id) {
     const { userId, token } = GetUserIdToken()
     const data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/isExistConversation/${userId}/${target_user_id}/`, 'GET', token)
     return data
@@ -72,8 +79,10 @@ function LoadDataSuggestion(data, target_user_id) {
     const btn_search = document.getElementById('btn_search')
     let content = ""
 
-    if (data?.otherUser?.length === 0)
-        Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
+    if (data?.otherUser?.length === 0) {
+        if (Rcards)
+            Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
+    }
     else if (target_user_id) {
         const id = document.getElementById(`${target_user_id + 'id'}`)
         if (id)
@@ -83,19 +92,25 @@ function LoadDataSuggestion(data, target_user_id) {
         data?.otherUser?.forEach(friend => {
             content += Cards(friend, target_user_id ? data?.invitation?.concat(target_user_id) : data?.invitation)
         });
-        if (content === "")
-            Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
-        else
-            Rcards.innerHTML = content
+        if (content === "") {
+            if (Rcards)
+                Rcards.innerHTML = `<h4 class="text-secondary">No friends yet</h4>`
+        }
+        else {
+            if (Rcards)
+                Rcards.innerHTML = content
+        }
     }
-    btn_search.addEventListener('click', () => {
-        searchOtherUser(search.value, data?.otherUser)
-    })
+    if (btn_search) {
+        btn_search.addEventListener('click', () => {
+            searchOtherUser(search.value, data?.otherUser)
+        })
+    }
 }
 
 
 // friends online
-async function LoadDataFriend(type) {
+export async function LoadDataFriend(type) {
     localStorage.setItem('type', type)
     let typeData = typeofData(type)
     const resUsers = document.getElementById('resUsers')
@@ -153,13 +168,14 @@ const ClickSend = async (value, target_user_id) => {
     const Cinput = document.getElementById('Cinput');
     const { userId, token } = GetUserIdToken();
     let data = []
-
+    const date = new Date(Date.now());
+    console.log(date);
     if (value === "")
         return
     Cinput.value = ""
     Cinput.focus()
     createNotification(value, target_user_id, userId, token)
-    LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'))
+    LoadMessageRealTime(value, sessionStorage.getItem('profilepic'), sessionStorage.getItem('username'), date.toUTCString())
     ws.send(JSON.stringify({ "message": value, "id": userId, "contact_id": target_id, "conversation_id": conversation }))
     data = await fetchData(`https://${window.env.HOST_ADDRESS}:${window.env.CHAT_PORT}/chat/sendMessage/${userId}/${target_id}/${JSON.parse(localStorage.getItem('coversation_id'))}`, 'POST', token, { "content": value })
 }
@@ -181,7 +197,7 @@ async function SendMessage(target_user_id) {
 }
 
 // load data to chat page
-loadDataChat = (data, target_user_id) => {
+export const loadDataChat = (data, target_user_id) => {
     const CinfoUser = document.getElementById('CinfoUser');
     const CcontentConver = document.getElementById('CcontentConver');
     const Cinput = document.getElementById('Cinput');
@@ -208,3 +224,9 @@ loadDataChat = (data, target_user_id) => {
 //             circleStatus.classList.add('offline')
 //         }
 // }, 1000)
+
+export function setTargetId(id) {
+    target_id = id
+}
+
+window.SendInvite = SendInvite

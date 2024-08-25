@@ -20,6 +20,7 @@ import { log_user_in, register_user, passUserTo } from "./login_register.js";
 import { notifications } from "./notification.js";
 import { DestroyConfirmationPopUp } from "./settings.js";
 import { GameConnector } from "./Game/GameConnection.js";
+import { ws } from "./chatJS/Implementation.js";
 
 
 let notificationHandler = null;
@@ -234,10 +235,10 @@ export function loadEvents() {
     const origpath = window.location.pathname;
     const found_path = routes.find(route => route.path === origpath);
 
-    if (origpath != '/game' && origpath != '/tournament') {
-        console.log('Closing Game Connection in path: ' + origpath);
+    if (origpath != '/game' && origpath != '/tournament')
         GameConnector ? GameConnector.close() : null;
-    }
+    if (origpath != '/chat')
+        ws ? ws.close() : null;
     scanLinks();
     if (found_path !== undefined) {
         DisplayNavBar();

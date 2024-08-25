@@ -19,6 +19,7 @@ import { renderGame } from "./Game/GameRenderer.js";
 import { initiateGameConnection } from "./Game/GameConnection.js";
 import { TournamentMenu } from "./Game/Tournament_misc.js";
 import { listTournamentMembers } from "./Game/TournamentManager.js";
+import { Websocket } from "./chatJS/Implementation.js";
 
 
 export let fetchID;

@@ -1,5 +1,5 @@
 
-function chatFriendSkeleton () {
+export function chatFriendSkeleton () {
     return `
     <div class="RectangleSK Rectangle h-10 position-relative w-100" style="backgroundColor:gray">
         <div class="RimgSK Rimg Cimg position-absolute rounded-circle" src="" alt="avatar"></div>
@@ -17,7 +17,7 @@ function chatFriendSkeleton () {
     </div>`
 }
 
-function contentMessageSkeleton(){
+export function contentMessageSkeleton(){
     return `<div class="CcontentMessageSK CcontentMessage d-flex align-items-end position-relative" >
                 <div class="d-flex gap-3 w-100 align-items-center">
                    <div class="CcimgSK Ccimg rounded-circle w-10"></div>
@@ -66,7 +66,7 @@ const CardsSkeleton = () => {
 }
 
 
-function SkeletonCards(){
+export function SkeletonCards(){
     const Rcards = document.getElementById('Rcards')
     if (Rcards === null) return;
 
@@ -76,7 +76,7 @@ function SkeletonCards(){
 
 }
 
-function SkeletonFriends(){
+export function SkeletonFriends(){
     const resUsers = document.getElementById('resUsers')
     if (resUsers === null) return;
 
@@ -86,7 +86,7 @@ function SkeletonFriends(){
         }
 }
 
-function handleError()
+export function handleError()
 {
     const resUsers = document.getElementById('resUsers')
     const Rcards = document.getElementById('Rcards')

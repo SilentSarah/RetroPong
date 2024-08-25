@@ -1,3 +1,7 @@
+import { loadDataChat, DataChatFetching, channelObj, setTargetId, ws, LoadDataFriend } from "./Implementation.js";
+import { member, message_channel } from "./HtmlCode.js";
+import { contentMessageSkeleton, chatFriendSkeleton } from "./skeleton.js";
+import { fetchData, GetUserIdToken } from "./tools.js";
 let c = true
 let isRequest = false 
 
@@ -21,6 +25,10 @@ const closeSidebar = (sidebar, items) => {
         item.style.display = 'none';
     })
     c = true
+}
+
+export function setIsRequest(value) {
+    isRequest = value
 }
 
 const resetsettings = (sidebar, items) => {
@@ -169,7 +177,7 @@ async function implementBtns(target, target_user_id) {
         page_discover.classList.add('d-none');
         page_channel.classList.add('d-none');
         Cback.src = "/static/img/general/Account.png"
-        target_id = target_user_id
+        setTargetId(target_user_id)
         const data = await fetchDataChat(target_user_id)
         localStorage.setItem('coversation_id', data.data.conversation_id)
         loadDataChat(data?.data, target_user_id)
@@ -227,3 +235,8 @@ function AddListener()
     })
 }
  
+window.implementBtns = implementBtns;
+window.appearInfoFriend = appearInfoFriend;
+window.transition = transition;
+window.openMenu = openMenu;
+window.filterFriends = filterFriends;

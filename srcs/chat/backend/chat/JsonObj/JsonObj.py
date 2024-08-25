@@ -66,7 +66,8 @@ class JsonObj:
             "desc": user.udesc,
             "isOnline": user.isOnline
         }             
-
+        
+    @staticmethod
     def messages(messages,user):
         return {
             "id": messages.id,

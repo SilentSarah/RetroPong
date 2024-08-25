@@ -1,6 +1,8 @@
-let dataUser = []
+import { Cards, message } from './HtmlCode.js'
+import { user_id } from '../userdata.js'
 
-async function fetchData(url, method, token, content) {
+export let dataUser = []
+export async function fetchData(url, method, token, content) {
     return await fetch(url, {
            method: method,
            body: JSON.stringify(content),
@@ -14,8 +16,12 @@ async function fetchData(url, method, token, content) {
                return { "error": error, "status": "500" };
            });
 }
+
+export function setDataUser(data) {
+    dataUser = data
+}
  
-function searchOtherUser(values, otherUser) {
+export function searchOtherUser(values, otherUser) {
     const Rcards = document.getElementById('Rcards')
     if (Rcards === null) return;
     
@@ -33,7 +39,7 @@ function searchOtherUser(values, otherUser) {
     });
 }
 
-const typeofData = (type) => {
+export const typeofData = (type) => {
     if (type === 'online')
         return dataUser?.friends?.filter(friend => friend.isOnline === true)
     else if (type === 'all')
@@ -44,21 +50,22 @@ const typeofData = (type) => {
         return dataUser?.blocked
 }
 
-const GetUserIdToken=()=>{
+export const GetUserIdToken=()=>{
     const userId = getCookie('user_id')
     const token = 'Bearer ' + getCookie('access')
     return {userId, token}
 }
 
 // load message in real time 
-function LoadMessageRealTime(value, profilepic, username) {
+export function LoadMessageRealTime(value, profilepic, username, date) {
     console.log(profilepic)
     const CcontentConver = document.getElementById('CcontentConver');
     if (CcontentConver === null) return;
 
     CcontentConver.innerHTML += message({
-        "content": value, "user":
-            { "profilepic": profilepic, "username": username }
+        "content": value, 
+        "user": { "profilepic": profilepic, "username": username, id: user_id },
+        "created": date
     })
     CcontentConver.scrollTop = CcontentConver.scrollHeight
 }
