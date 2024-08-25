@@ -78,8 +78,7 @@ function clearNotificationArray() {
 function constructNotification(each_notification, notifications_container) {
     const notification_Data = constructNotificationData(each_notification);
     let notification = document.createElement('div');
-    if (last_notification_id === undefined || last_notification_id != notification_Data.id)
-    {
+    if (last_notification_id === undefined || last_notification_id != notification_Data.id) {
         setTimeout(() => {
             notifications_container.insertBefore(notification, notifications_container.firstChild);
             notification.outerHTML = `
@@ -100,7 +99,7 @@ function constructNotification(each_notification, notifications_container) {
                     </button>
                 </div>
             </div>`;
-        }, delay); 
+        }, delay);
         delay += 250;
         notifications_array.push(notification);
         last_notification_id = notification_Data.id;
@@ -150,12 +149,36 @@ function saveNotificationData(data) {
     }
 }
 
-function SetNotificationLight(check = false) {
+function notifyMe(data) {
+    if (data == null) return;
+    if (!("Notification" in window)) {
+        alert("This browser does not support desktop notification");
+    } else if (Notification.permission === "granted") {
+        const notification = new Notification("RetroPong", {
+            body: `${data.sender_username} ${data.content}`,
+            icon: data.sender_pfp
+        });
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+            if (permission === "granted") {
+                const notification = new Notification("RetroPong", {
+                    body: `${data.sender_username} ${data.content}`,
+                    icon: data.sender_pfp
+                });
+            }
+        });
+    }
+}
+
+
+function SetNotificationLight(check = false, data = null) {
     const notification_light = document.getElementById('notification_light');
     const last_notification_id_saved = parseInt(localStorage.getItem('last_notification_id'));
     if (check == true) {
-        if (last_notification_id_saved == null || last_notification_id_saved != last_notification_id)
+        if (last_notification_id_saved == null || last_notification_id_saved != last_notification_id) {
             notification_light.classList.replace('d-none', 'd-block');
+            notifyMe(data);
+        }
     }
     else {
         localStorage.setItem('last_notification_id', last_notification_id);
@@ -167,28 +190,29 @@ export class notifications {
     constructor() {
         this.delay = 0;
         this.notifications = new WebSocket(`wss://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/ws/notifications/`);
-        this.notifications.onopen = function(event) {
-            const Authorization = {'Authorization': `Bearer ${getCookie('access')}`}
+        this.notifications.onopen = function (event) {
+            const Authorization = { 'Authorization': `Bearer ${getCookie('access')}` }
             this.send(JSON.stringify(Authorization));
         }
-        this.notifications.onmessage = function(event) {
+        this.notifications.onmessage = function (event) {
             let data = JSON.parse(event.data);
             const notifications_container = document.getElementById('notifications_container');
             if (controlNotificationFlow(data, notifications_container) == 1)
                 return;
             clearNotificationArray();
             saveNotificationData(data);
-            for (const [key, value] of Object.entries(data['Notifications']))
+            for (const [key, value] of Object.entries(data['Notifications'])) {
                 constructNotification(value, notifications_container);
-            SetNotificationLight(true);
-        }    
-        this.notifications.onclose = function(event) {
+                SetNotificationLight(true, value);
+            }
+        }
+        this.notifications.onclose = function (event) {
             const notifications_container = document.getElementById('notifications_container');
             if (notifications_container)
                 notifications_container.innerHTML = `<p class="text-secondary text-center nokora fw-light my-auto fade_in">No Notifications</p>`;
             console.log("Connection closed");
         }
-        this.notifications.onerror = function(event) {
+        this.notifications.onerror = function (event) {
             delete this.notifications;
             this.notifications = new WebSocket(`wss://${window.env.HOST_ADDRESS}:${window.env.USERMGR_PORT}/ws/notifications/`);
         }
