@@ -1,5 +1,9 @@
 <div class="Ccontainer px-0 border-pink rounded-3 position-relative overflow-y-hidden" style="user-select: none;">
 	<div id="game-container" class="d-flex justify-content-center position-absolute flex-column w-100 h-100">
+		<img id="GuideScreen" src="/static/img/game/GuideScreen.svg" class="w-80 h-100 position-absolute z-5" style="left: 5%;">
+		<button class="border-transparent-0-5 rounded-5 position-relative z-1 bg-white-transparent-0-15 p-2" style="top: 1.75rem; left: 1.75rem;" onclick="LeaveMatchMaker()">
+			<img src="/static/img/game/Back.png" width="32px" height="32px">
+		</button>
 	</div>
 	<div id="game-utils" class="d-flex flex-column h-100 w-100">
 		<canvas id="game" class="w-100 h-100 bg-black-transparent-0-5"></canvas>

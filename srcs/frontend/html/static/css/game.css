@@ -1,8 +1,8 @@
 
 :root {
-    --midnight: linear-gradient(180deg, #282828 0%, #000000 100%);
-    --pastel: linear-gradient(180deg, #CBFFE6 0%, #BFB9FF 50.27%, #FFCFEA 100%);
-    --sunrise: linear-gradient(180deg, #FFA3AC 0%, #FFBA81 50.27%, #FFD156 100%);
+    --midnight: linear-gradient(180deg, #3c3c3c 0%, #000000 100%);
+    --ocean: linear-gradient(180deg, #19404F 0%, #6D6C83 50.27%, #A04970 100%);
+    --inferno: linear-gradient(180deg, #1F0021 0%, #751006 100%);
 }
 
 .game-bg {
@@ -174,11 +174,11 @@
 }
 
 .backdrop_btn:nth-child(2) {
-    background: var(--sunrise);
+    background: var(--inferno);
 }
 
 .backdrop_btn:last-child {
-    background: var(--pastel);
+    background: var(--ocean);
 }
 
 .backdrop_btn:hover {

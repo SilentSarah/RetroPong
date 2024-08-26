@@ -120,10 +120,27 @@ function renderOfflineModes() {
     game_container.appendChild(div);
 }
 
+function renderGuide() {
+    const game_container = document.getElementById('game-container');
+    const div = document.createElement('div');
+    {
+        div.classList.add("d-flex", "flex-column", "w-100", "h-100", "justify-content-center", "align-items-center", "gap-2");
+        div.id = "guide";
+        div.innerHTML = `
+        <img id="GuideScreen" src="/static/img/game/GuideScreen.svg" class="w-80 h-100 position-absolute z-5">
+        <button class="border-transparent-0-5 rounded-5 position-relative z-1 bg-white-transparent-0-15 p-2" style="width: max-content; bottom: -40%;" onclick="renderLobby()">
+            <img src="/static/img/game/Back.png" width="32px" height="32px">
+        </button>
+        `;
+    }
+    game_container.innerHTML = "";
+    game_container.appendChild(div);
+}
+
 function renderLobby() {
     const lobby = document.createElement('div');
     {
-        lobby.classList.add("d-flex", "flex-column", "align-items-center", "justify-content-center", "gap-3", "h-100", "w-100");
+        lobby.classList.add("d-flex", "flex-column", "align-items-center", "justify-content-center", "gap-3", "h-100", "w-100", "position-relative");
     }
     const game_logo = document.createElement("h1");
     {
@@ -149,6 +166,9 @@ function renderLobby() {
         <button class="btn-retro d-flex align-items-center justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 py-2" id="Local" onclick="renderOfflineModes()">
             <img src="/static/img/game/Local.png" width="32px" height="32px">
             Local
+        </button>
+        <button class="d-flex align-items-center position-absolute justify-content-center gap-2 bg-white-transparent-0-15 border-transparent-0-5 text-white rounded-5 p-2" id="Guide" onclick="renderGuide()" style="position: relative;top: 66%;">
+            <img src="/static/img/game/help.png" width="32px" height="32px">
         </button>`;
     }
     game_container.innerHTML = "";
@@ -172,3 +192,4 @@ window.DisplayMatchSeekScreen = DisplayMatchSeekScreen;
 window.exitMatchSeekScreen  = exitMatchSeekScreen;
 window.renderOfflineModes = renderOfflineModes;
 window.LoadOfflineMode = LoadOfflineMode;
+window.renderGuide = renderGuide;

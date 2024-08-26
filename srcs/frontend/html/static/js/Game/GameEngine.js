@@ -17,9 +17,9 @@ export const GameStates = {
 const scores = [0, 0];
 const maps = {
     "RetroPong": ["#282828", "#000000", "#000000", "#000000"],
-    "Sunrise": ["#000000","#FFA3AC", "#FFBA81", "#FFD156", "#FFD178" , "#1B1B1B"],
-    "Midnight": ["#000000"],
-    "Pastel": ["#CBFFE6", "#BFB9FF", "#FFCFEA"],
+    "Ocean": ["#19404F","#6D6C83", "#A04970"],
+    "Inferno": ["#1F0021", "#751006"],
+    "Midnight": ["#3c3c3c", "#000000"],
 }
 
 export let timer_match = null

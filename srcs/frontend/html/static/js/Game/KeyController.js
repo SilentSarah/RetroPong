@@ -104,8 +104,8 @@ function DisplayGameOptions() {
             <h3 class="text-white nokora fw-bold">Backdrop</h3>
             <div class="d-flex gap-2 align-items-center px-2">
                 <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Midnight')">Midnight</button>
-                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Sunrise')">Sunrise</button>
-                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Pastel')">Pastel</button>
+                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Inferno')">Inferno</button>
+                <button class="backdrop_btn text-shadow fw-bold text-white fs-4" onclick="setGameBackdrop('Ocean')">Ocean</button>
             </div>
         </div>
         <button class="border-transparent-0-5 rounded-5 bg-black-transparent-0-05 p-2 text-white fw-bold fs-4" onclick="pauseMenu()">
