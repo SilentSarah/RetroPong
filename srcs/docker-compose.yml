@@ -152,7 +152,7 @@ services:
     container_name: rp_adminer
     image: "adminer"
     ports:
-      - "8080:8080"
+      - "8020:8020"
     networks:
       - rp_network
 
