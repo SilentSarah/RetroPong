@@ -12,8 +12,9 @@ services:
         - AUTH_PORT=${AUTH_PORT}
         - GAME_PORT=${GAME_PORT}
         - CHAT_PORT=${CHAT_PORT}
-    ports:
-      - "443:443"
+    labels:
+      - "traefik.http.routers.nginx.rule=Host(`${HOST_ADDRESS}`)"
+      - "traefik.http.routers.nginx.entrypoints=web"
     networks:
       - rp_network
 
