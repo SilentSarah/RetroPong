@@ -166,11 +166,11 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /home/sarah/data/media
+      device: /home/ubuntu/data/media
       o: bind
   db_data:
     driver: local
     driver_opts:
       type: none
-      device: /home/sarah/data/db
+      device: /home/ubuntu/data/db
       o: bind
