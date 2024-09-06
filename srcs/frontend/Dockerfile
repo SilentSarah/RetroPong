@@ -23,8 +23,8 @@ WORKDIR /var/www/html
 RUN bash generate_env.sh
 
 WORKDIR /etc/nginx/ssl/
-COPY certs/$HOST_ADDRESS.crt /etc/nginx/ssl/
-COPY certs/$HOST_ADDRESS.key /etc/nginx/ssl/
+COPY certs/10.11.248.159.crt /etc/nginx/ssl/$HOST_ADDRESS.crt
+COPY certs/10.11.248.159.key /etc/nginx/ssl/$HOST_ADDRESS.key
 
 RUN sed -i "s/c1r4p2.1337.ma/${HOST_ADDRESS}/g" /etc/nginx/nginx.conf
 
