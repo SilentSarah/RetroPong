@@ -43,8 +43,9 @@ COPY GameService/ /app/
 COPY tools/entrypoint.sh /app/
 
 WORKDIR /app
-COPY certs/${HOST_ADDRESS}.crt .
-COPY certs/${HOST_ADDRESS}.key .
+
+COPY certs/10.11.248.159.crt ./$HOST_ADDRESS.crt
+COPY certs/10.11.248.159.key ./$HOST_ADDRESS.key
 
 
 ENTRYPOINT [ "bash", "entrypoint.sh" ]
