@@ -196,16 +196,16 @@ class DbOps:
                 if (value == None or value == ""):
                     continue
                 setattr(user, key, value)
+                
             if (uploaded_files is not None):
                 if (pfp_uploaded is not None):
-                    print(pfp_uploaded.size)
                     user.uprofilepic.delete()
                     user.uprofilepic.save(f"{user.uusername + pfp_uploaded.name}", pfp_uploaded)
                 if (bg_uploaded is not None):
                     user.uprofilebgpic.delete()
                     user.uprofilebgpic.save(f"{user.uusername + bg_uploaded.name}", bg_uploaded)
             notification = Notification(
-                nType="ACCOUNT",
+                nType="ACCOUNT", 
                 nContent="Your account settings has been updated",
                 nReciever=user_id,
                 nSender=user_id,
