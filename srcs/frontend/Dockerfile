@@ -26,6 +26,6 @@ WORKDIR /etc/nginx/ssl/
 COPY certs/$HOST_ADDRESS.crt /etc/nginx/ssl/
 COPY certs/$HOST_ADDRESS.key /etc/nginx/ssl/
 
-RUN sed -i "s/c1r4p2.1337.ma/${HOST_ADDRESS}/g" /etc/nginx/nginx.conf
+RUN sed -i "s/CHANGE_ME/${HOST_ADDRESS}/g" /etc/nginx/nginx.conf
 
 CMD ["nginx"]

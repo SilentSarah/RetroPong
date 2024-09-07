@@ -5,7 +5,7 @@ import { scanLinks } from './events.js';
 import { passUserTo } from './login_register.js';
 
 let delay = 0;
-export let last_notification_id = undefined;
+export let last_notification_id = localStorage.getItem('last_notification_id');
 const img_paths = {
     'MESSAGE': '/static/img/general/Chat.png',
     'ACCOUNT': '/static/img/general/Account.png',
@@ -78,7 +78,7 @@ function clearNotificationArray() {
 function constructNotification(each_notification, notifications_container) {
     const notification_Data = constructNotificationData(each_notification);
     let notification = document.createElement('div');
-    if (last_notification_id === undefined || last_notification_id != notification_Data.id) {
+    if (!last_notification_id || last_notification_id != notification_Data.id) {
         setTimeout(() => {
             notifications_container.insertBefore(notification, notifications_container.firstChild);
             notification.outerHTML = `
@@ -196,6 +196,7 @@ export class notifications {
         }
         this.notifications.onmessage = function (event) {
             let data = JSON.parse(event.data);
+            let last_notification;
             const notifications_container = document.getElementById('notifications_container');
             if (controlNotificationFlow(data, notifications_container) == 1)
                 return;
@@ -203,8 +204,9 @@ export class notifications {
             saveNotificationData(data);
             for (const [key, value] of Object.entries(data['Notifications'])) {
                 constructNotification(value, notifications_container);
-                SetNotificationLight(true, value);
+                last_notification = value;
             }
+            SetNotificationLight(true, last_notification);
         }
         this.notifications.onclose = function (event) {
             const notifications_container = document.getElementById('notifications_container');

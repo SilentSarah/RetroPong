@@ -313,7 +313,7 @@ export function DisplayMatchStartTimer(ready_state) {
         }
         GameContainer.innerHTML = "";
         const p = document.createElement('p');
-        const text_color = (localStorage.getItem("chosenMap") ?? selectedBg) === "Midnight" ? "text-white" : "text-black";
+        const text_color = "text-white";
         p.classList.add(text_color, "fs-1", "taprom", "w-100", "h-100", "d-flex", "justify-content-center", "align-items-center", "mb-5");
         p.innerText = `Match Starting in ${timeObj.time}`;
         GameContainer.appendChild(p);
