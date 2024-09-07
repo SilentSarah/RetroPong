@@ -3,6 +3,7 @@
 import { getCookie } from './userdata.js';
 import { scanLinks } from './events.js';
 import { passUserTo } from './login_register.js';
+import { sanitizeHTMLCode } from './Game/MatchMaker.js';
 
 let delay = 0;
 export let last_notification_id = undefined;
@@ -91,7 +92,7 @@ function constructNotification(each_notification, notifications_container) {
                 <div id="noti_body" class="d-flex align-items-center justify-content-start gap-2">
                     <img src="${notification_Data.sender_pfp}" width="40px" height="40px" class="object-fit-cover border-pink rounded-3">
                     <p class="text-white m-0 fw-light text-turncate" style="font-size: 0.85rem;">
-                        <span class="nokora text-pink text-turncate fw-bold">${notification_Data.sender_username}</span>
+                        <span class="nokora text-pink text-turncate fw-bold">${sanitizeHTMLCode(notification_Data.sender_username)}</span>
                         ${notification_Data.content}
                     </p>
                     <button class="border-pink goto ms-auto" onclick="invokeActivity(${notification_Data.id})">

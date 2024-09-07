@@ -378,7 +378,7 @@ export function loadGameEngine(gameMode, self, opponent) {
             loadGameDashboard(self, opponent);
             drawGame();
             DisplayMatchStartTimer(true);
-            OnGameChange();
+            // OnGameChange();
             console.log("Engine has loaded");
         }
     }
