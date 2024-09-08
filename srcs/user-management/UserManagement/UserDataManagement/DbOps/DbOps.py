@@ -199,14 +199,24 @@ class DbOps:
                 
             if (uploaded_files is not None):
                 if (pfp_uploaded is not None):
-                    if (pfp_uploaded.name.split('.')[-1] not in ['jpg', 'jpeg', 'png'] or pfp_uploaded.content_type == 'image/svg+xml'):
+                    if (pfp_uploaded.name.split('.')[-1] not in ['jpg', 'jpeg', 'png', 'gif'] or pfp_uploaded.content_type == 'image/svg+xml'):
                         return False
+
+                    file_size_mb = pfp_uploaded.size / (1024 * 1024)
+                    if (file_size_mb > 3):
+                        return False
+                    
                     user.uprofilepic.delete()
                     user.uprofilepic.save(f"{user.uusername + pfp_uploaded.name}", pfp_uploaded)
                     
                 if (bg_uploaded is not None):
-                    if (bg_uploaded.name.split('.')[-1] not in ['jpg', 'jpeg', 'png'] or bg_uploaded.content_type == 'image/svg+xml'):
+                    if (bg_uploaded.name.split('.')[-1] not in ['jpg', 'jpeg', 'png', 'gif'] or bg_uploaded.content_type == 'image/svg+xml'):
                         return False
+                
+                    file_size_mb = bg_uploaded.size / (1024 * 1024)
+                    if (file_size_mb > 3):
+                        return False
+                    
                     user.uprofilebgpic.delete()
                     user.uprofilebgpic.save(f"{user.uusername + bg_uploaded.name}", bg_uploaded)
             notification = Notification(
