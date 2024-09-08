@@ -6,7 +6,8 @@ import { passUserTo } from './login_register.js';
 import { sanitizeHTMLCode } from './Game/MatchMaker.js';
 
 let delay = 0;
-export let last_notification_id = localStorage.getItem('last_notification_id');
+export let last_notification_id = undefined;
+let last_notification_id_saved = parseInt(localStorage.getItem('last_notification_id'));
 const img_paths = {
     'MESSAGE': '/static/img/general/Chat.png',
     'ACCOUNT': '/static/img/general/Account.png',
@@ -79,7 +80,7 @@ function clearNotificationArray() {
 function constructNotification(each_notification, notifications_container) {
     const notification_Data = constructNotificationData(each_notification);
     let notification = document.createElement('div');
-    if (!last_notification_id || last_notification_id != notification_Data.id) {
+    if (last_notification_id === undefined || last_notification_id != notification_Data.id) {
         setTimeout(() => {
             notifications_container.insertBefore(notification, notifications_container.firstChild);
             notification.outerHTML = `
@@ -174,9 +175,11 @@ function notifyMe(data) {
 
 function SetNotificationLight(check = false, data = null) {
     const notification_light = document.getElementById('notification_light');
-    const last_notification_id_saved = parseInt(localStorage.getItem('last_notification_id'));
     if (check == true) {
-        if (last_notification_id_saved == null || last_notification_id_saved != last_notification_id) {
+        if (last_notification_id_saved == null || last_notification_id_saved < last_notification_id) {
+            console.log("Last Notification ID: ", last_notification_id, "Saved: ", last_notification_id_saved);
+            localStorage.setItem('last_notification_id', last_notification_id);
+            last_notification_id_saved = last_notification_id;
             notification_light.classList.replace('d-none', 'd-block');
             notifyMe(data);
         }
@@ -197,7 +200,6 @@ export class notifications {
         }
         this.notifications.onmessage = function (event) {
             let data = JSON.parse(event.data);
-            let last_notification;
             const notifications_container = document.getElementById('notifications_container');
             if (controlNotificationFlow(data, notifications_container) == 1)
                 return;
@@ -205,9 +207,8 @@ export class notifications {
             saveNotificationData(data);
             for (const [key, value] of Object.entries(data['Notifications'])) {
                 constructNotification(value, notifications_container);
-                last_notification = value;
+                SetNotificationLight(true, value);
             }
-            SetNotificationLight(true, last_notification);
         }
         this.notifications.onclose = function (event) {
             const notifications_container = document.getElementById('notifications_container');
