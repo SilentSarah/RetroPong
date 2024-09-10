@@ -7,7 +7,7 @@ SERVER_NAME = os.environ.get('HOST_ADDRESS')
 USERMGR_PORT = os.environ.get('USERMGR_PORT')
 
 def gen_img_link(user: User) -> str:
-    return f"http://{SERVER_NAME}:{USERMGR_PORT}{user.uprofilepic.url}"
+    return f"https://{SERVER_NAME}:{USERMGR_PORT}{user.uprofilepic.url}"
 
 def process_users(queryset, is_filter, filter_ids):
     
