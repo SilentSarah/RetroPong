@@ -86,7 +86,8 @@ class ViewAssist:
                 "uDesc": "",
                 "uIp": "",
                 "ucIDs": [],
-                "uIs42": True
+                "uIs42": True,
+                "id_42": response.get('id')
             }
         except Exception as e:
             print(e)
@@ -104,11 +105,11 @@ class ViewAssist:
         Returns:
             dict: returns a dictionary containing the user data
         """
-        user_data = DbOps.get_user(username=required_data.get('uUsername'))
+        user_data = DbOps.get_user(id_42=required_data.get('id_42'))
         if (user_data is None):
             if (DbOps.create_user(required_data, 1) == False):
                 return None
-            user_data = DbOps.get_user(username=required_data.get('uUsername'))
+            user_data = DbOps.get_user(id_42=required_data.get('id_42'))
         
         return user_data
     
