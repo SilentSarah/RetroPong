@@ -41,6 +41,7 @@ class User(models.Model):
     ARequests = ArrayField(models.IntegerField(), db_column='ARequests', default=list)
     TwoFactor = models.BooleanField(db_column='TwoFactor', default=False)
     isOnline = models.BooleanField(db_column='online', default=False)
+    id_42 = models.IntegerField(db_column='id_42', default=-1)
 
 class UsersAdmin(ModelAdmin):
     list_display = ['uusername', 'upassword', 'uemail', 'ufname', 'ulname' ,'uregdate', 'uprofilepic', 'uprofilebgpic', 'udesc', 'uip', 'ucids', 'uIs42', 'matchesplayed', 'matcheswon', 'matcheslost', 'xp', 'rank']

@@ -78,7 +78,7 @@ class DbOps:
             return None
 
     @staticmethod
-    def get_user(user_id: int = -1, username: str = None) -> dict:
+    def get_user(user_id: int = -1, username: str = None, id_42: int = None) -> dict:
         """Retrieves userdata from the database
 
         Args:
@@ -88,7 +88,9 @@ class DbOps:
             User: Database User Object
         """
         try:
-            if (username is not None):
+            if (id_42 is not None):
+                user = User.objects.get(id_42=id_42)
+            elif (username is not None):
                 user = User.objects.get(uusername=username)
             else:
                 user = User.objects.get(id=user_id)
@@ -262,7 +264,8 @@ class DbOps:
             ufname=user_data_copy.get('uFname'),
             ulname=user_data_copy.get('uLname'),
             uregdate=datetime.datetime.now(),
-            uIs42=False if is42 == 0 else True
+            uIs42=False if is42 == 0 else True,
+            id_42=user_data_copy.get('id_42'),
         )
 
 
